@@ -10,9 +10,6 @@
       <PhpUnitSettings load_method="CUSTOM_LOADER" />
     </phpunit_settings>
   </component>
-  <component name="ProjectDictionaryState">
-    <dictionary name="iarro" />
-  </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
       <profile-state>
