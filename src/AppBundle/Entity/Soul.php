@@ -39,6 +39,11 @@ class Soul
     private $gamer;
 
     /**
+     * @var Human
+     */
+    private $incarnation;
+
+    /**
      * @return int
      */
     public function getId()
@@ -84,6 +89,22 @@ class Soul
     public function setGamer($gamer)
     {
         $this->gamer = $gamer;
+    }
+
+    /**
+     * @return Human
+     */
+    public function getIncarnation()
+    {
+        return $this->incarnation;
+    }
+
+    /**
+     * @param Human $incarnation
+     */
+    public function setIncarnation($incarnation)
+    {
+        $this->incarnation = $incarnation;
     }
 
 

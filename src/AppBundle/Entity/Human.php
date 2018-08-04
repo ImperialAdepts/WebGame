@@ -50,9 +50,9 @@ class Human
     private $familyId;
 
     /**
-     * @var Humans
+     * @var Human
      *
-     * @ORM\ManyToOne(targetEntity="Humans")
+     * @ORM\ManyToOne(targetEntity="Human")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="father_human_id", referencedColumnName="id")
      * })
@@ -60,9 +60,9 @@ class Human
     private $fatherHuman;
 
     /**
-     * @var Humans
+     * @var Human
      *
-     * @ORM\ManyToOne(targetEntity="Humans")
+     * @ORM\ManyToOne(targetEntity="Human")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="mother_human_id", referencedColumnName="id")
      * })
@@ -70,9 +70,9 @@ class Human
     private $motherHuman;
 
     /**
-     * @var Souls
+     * @var Soul
      *
-     * @ORM\ManyToOne(targetEntity="Souls")
+     * @ORM\OneToOne(targetEntity="Soul", inversedBy="incarnation")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="soul_id", referencedColumnName="id")
      * })

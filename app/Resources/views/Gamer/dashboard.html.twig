@@ -5,7 +5,11 @@
 		<h1>Souls</h1>
 		<ul>
 			{% for soul in souls %}
-				<li>{{ soul.name }}</li>
+				<li>
+					{{ soul.name }}
+					{% if soul.incarnation is null %}connect human{% endif %}
+					{% if soul.incarnation is not null %}play{% endif %}
+				</li>
 			{% endfor %}
 		</ul>
 	</div>
