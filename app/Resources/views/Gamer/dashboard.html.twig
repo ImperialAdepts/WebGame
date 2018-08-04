@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<div id="wrapper">
+		<h1>Souls</h1>
+		<ul>
+			{% for soul in souls %}
+				<li>{{ soul.name }}</li>
+			{% endfor %}
+		</ul>
+	</div>
+{% endblock %}

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Soul
  *
  * @ORM\Table(name="souls", indexes={@ORM\Index(name="souls_gamers_FK", columns={"user_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\SoulRepository")
  */
 class Soul
 {
@@ -31,12 +31,60 @@ class Soul
     /**
      * @var Gamer
      *
-     * @ORM\ManyToOne(targetEntity="Gamers")
+     * @ORM\ManyToOne(targetEntity="Gamer")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * })
      */
-    private $user;
+    private $gamer;
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return Gamer
+     */
+    public function getGamer()
+    {
+        return $this->gamer;
+    }
+
+    /**
+     * @param Gamer $gamer
+     */
+    public function setGamer($gamer)
+    {
+        $this->gamer = $gamer;
+    }
 
 
 }
