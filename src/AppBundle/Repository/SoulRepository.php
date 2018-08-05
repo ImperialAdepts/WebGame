@@ -17,6 +17,10 @@ class SoulRepository extends \Doctrine\ORM\EntityRepository
 
 	public function getByGamer(Entity\Gamer $gamer)
 	{
-
+		return $this->getEntityManager()
+			->createQuery(
+				'SELECT p FROM AppBundle:Soul p WHERE p.gamer_id = %s ORDER BY p.name ASC', $gamer.getId()
+			)
+			->getResult();
 	}
 }

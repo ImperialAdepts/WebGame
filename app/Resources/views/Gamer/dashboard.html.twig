@@ -7,8 +7,14 @@
 			{% for soul in souls %}
 				<li>
 					{{ soul.name }}
-					{% if soul.incarnation is null %}connect human{% endif %}
-					{% if soul.incarnation is not null %}play{% endif %}
+					{{ dump(soul) }}
+					{% if soul.incarnations is empty %}
+						<a href="{{ path('human_incarnation_list', {'soul': soul.id }) }}">connect human</a>
+					{% else %}
+						{% for human in soul.incarnations %}
+							<a href="{{ path('human_dashboard', {'human': human.id }) }}">Play as {{ human.name }}</a>
+						{% endfor %}
+					{% endif %}
 				</li>
 			{% endfor %}
 		</ul>

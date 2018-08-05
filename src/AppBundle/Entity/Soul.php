@@ -40,8 +40,9 @@ class Soul
 
     /**
      * @var Human
+     * @ORM\OneToMany(targetEntity="Human", mappedBy="soul")
      */
-    private $incarnation;
+    private $incarnations;
 
     /**
      * @return int
@@ -94,17 +95,17 @@ class Soul
     /**
      * @return Human
      */
-    public function getIncarnation()
+    public function getIncarnations()
     {
-        return $this->incarnation;
+        return $this->incarnations;
     }
 
     /**
-     * @param Human $incarnation
+     * @param Human $incarnations
      */
-    public function setIncarnation($incarnation)
+    public function setIncarnations($incarnations)
     {
-        $this->incarnation = $incarnation;
+        $this->incarnations = $incarnations;
     }
 
 

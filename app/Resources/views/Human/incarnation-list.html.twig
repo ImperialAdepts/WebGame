@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<div id="wrapper">
+		<h1>Humans to incarnate for {{ soul.name }}</h1>
+		<ul>
+			{% for human in humans %}
+				<li>
+					{{ human.name }}
+					<a href="{{ path('human_connect', {'soul': soul.id, 'human': human.id}) }}">connect human</a>
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
+{% endblock %}
