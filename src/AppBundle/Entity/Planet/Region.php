@@ -130,7 +130,7 @@ class Region
 	/**
 	 * Set ores
 	 *
-	 * @param \stdClass $oreDeposits
+	 * @param array $oreDeposits
 	 *
 	 * @return Region
 	 */
@@ -144,7 +144,7 @@ class Region
 	/**
 	 * Get ores
 	 *
-	 * @return \stdClass
+	 * @return OreDeposit[]
 	 */
 	public function getOreDeposits()
 	{

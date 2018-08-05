@@ -34,6 +34,8 @@
 							{% for deposit in region.oreDeposits %}
 								{{ deposit.amount }}T of {{ deposit.type }}<br/>
 							{% endfor %}
+							<a href="{{ path('region_deposit_screening', {
+								'regionUuid': region.uuid, 'human': human.id}) }}">Deposit screening</a>
 						</td>
 					</tr>
 				{% endif %}

@@ -62,6 +62,23 @@ class OreDeposit
     }
 
     /**
+     * @return Region
+     */
+    public function getRegion()
+    {
+        return $this->region;
+    }
+
+    /**
+     * @param Region $region
+     */
+    public function setRegion($region)
+    {
+        $this->region = $region;
+    }
+
+
+    /**
      * Set type
      *
      * @param string $type
