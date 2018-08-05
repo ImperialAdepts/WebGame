@@ -60,4 +60,6 @@ class HumanController extends Controller
 			'nextRegions' => $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getRegionNeighbarhood($centralRegion),
 		]);
 	}
+	
+	
 }

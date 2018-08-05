@@ -29,6 +29,13 @@ class Region
 	private $settlement;
 
 	/**
+	 * @var BuildingProject
+	 *
+	 * @ORM\OneToOne(targetEntity="BuildingProject", mappedBy="region")
+	 */
+	private $project;
+
+	/**
 	 * @var float
 	 *
 	 * @ORM\Column(name="fertility", type="float")
@@ -101,6 +108,22 @@ class Region
 	public function getSettlement()
 	{
 		return $this->settlement;
+	}
+
+	/**
+	 * @return BuildingProject
+	 */
+	public function getProject()
+	{
+		return $this->project;
+	}
+
+	/**
+	 * @param BuildingProject $project
+	 */
+	public function setProject($project)
+	{
+		$this->project = $project;
 	}
 
 	/**

@@ -65,7 +65,7 @@ class Settlement
     /**
      * Set owner
      *
-     * @param \stdClass $owner
+     * @param \AppBundle\Entity\Human $owner
      *
      * @return Settlement
      */
@@ -79,7 +79,7 @@ class Settlement
     /**
      * Get owner
      *
-     * @return \stdClass
+     * @return \AppBundle\Entity\Human
      */
     public function getOwner()
     {
@@ -89,7 +89,7 @@ class Settlement
     /**
      * Set manager
      *
-     * @param \stdClass $manager
+     * @param \AppBundle\Entity\Human $manager
      *
      * @return Settlement
      */
@@ -103,7 +103,7 @@ class Settlement
     /**
      * Get manager
      *
-     * @return \stdClass
+     * @return \AppBundle\Entity\Human
      */
     public function getManager()
     {

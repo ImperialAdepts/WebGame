@@ -15,7 +15,7 @@ class RegionRepository extends \Doctrine\ORM\EntityRepository
 
 	public function getRegionNeighbarhood(Entity\Planet\Region $region)
 	{
-		$regionIds = range($region->getUuid() + 1, $region->getUuid() + 20);
+		$regionIds = range($region->getUuid(), $region->getUuid() + 10);
 		$regions = [];
 		foreach ($regionIds as $id) {
 			$regions[] = $this->getByUuid($id);
@@ -28,7 +28,6 @@ class RegionRepository extends \Doctrine\ORM\EntityRepository
 		$region = $this->getEntityManager()->find(Entity\Planet\Region::class, $uuid);
 		if (!$region) {
 			$region = new Entity\Planet\Region($uuid);
-//			$this->getEntityManager()->persist($region);
 		}
 		return $region;
 	}

@@ -19,12 +19,14 @@ class RegionController extends Controller
 	{
 		$region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getByUuid($regionUuid);
 
-		$settlement = new Entity\Planet\Settlement();
-		$settlement->setType($type);
-		$settlement->setOwner($human);
-		$settlement->setManager($human);
-		$region->setSettlement($settlement);
-		$this->getDoctrine()->getManager()->persist($settlement);
+		$project = new Entity\Planet\BuildingProject();
+		$project->setRegion($region);
+		$project->setBuilding($type);
+		// TODO: vytahnout z rozumnejsiho mista
+		$project->setMandaysLeft(strlen($type));
+		$project->setPriority(3);
+
+		$this->getDoctrine()->getManager()->persist($project);
 		$this->getDoctrine()->getManager()->persist($region);
 		$this->getDoctrine()->getManager()->flush();
 		return $this->redirectToRoute('human_dashboard', [
