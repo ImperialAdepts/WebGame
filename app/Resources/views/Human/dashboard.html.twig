@@ -3,27 +3,40 @@
 {% block body %}
 	<div id="wrapper">
 		<h1>Human {{ human.name }} [{{ human.soul.name }}]</h1>
+
 		<table>
 			{% for region in nextRegions %}
-				<tr>
-					<td>{{ region.uuid }}</td>
-					<td>
-						{% if region.settlement is not null %}
-							{{ region.settlement.type }}
-						{% else %}
-							<a href="">Create village settlement</a>
-							<a href="">Create farm</a>
-							<a href="">Create mine</a>
-							<a href="">Create factory</a>
-							<a href="">Create lab</a>
-						{% endif %}
-					</td>
-					<td>
-						{% for deposit in region.oreDeposits %}
-							{{ deposit.amount }}T of {{ deposit.type }}<br/>
-						{% endfor %}
-					</td>
-				</tr>
+				{% if region is null %}
+					<td>{{ dump(region) }}</td>
+				{% else %}
+					<tr>
+						<td>{{ region.uuid }}</td>
+						<td>
+							{% if region.settlement is not null %}
+								{{ region.settlement.type }}
+							{% else %}
+								<a href="{{ path('region_build_settlement', {
+									'regionUuid': region.uuid, 'type': 'village', 'human': human.id}) }}">
+									Create village settlement</a>
+								<a href="{{ path('region_build_settlement', {
+									'regionUuid': region.uuid, 'type': 'farm', 'human': human.id}) }}">Create farm</a>
+								<a href="{{ path('region_build_settlement', {
+									'regionUuid': region.uuid, 'type': 'mine', 'human': human.id}) }}">Create mine</a>
+								<a href="{{ path('region_build_settlement', {
+									'regionUuid': region.uuid, 'type': 'factory', 'human': human.id}) }}">Create
+									factory</a>
+								<a href="{{ path('region_build_settlement', {
+									'regionUuid': region.uuid, 'type': 'laboratory', 'human': human.id}) }}">Create
+									lab</a>
+							{% endif %}
+						</td>
+						<td>
+							{% for deposit in region.oreDeposits %}
+								{{ deposit.amount }}T of {{ deposit.type }}<br/>
+							{% endfor %}
+						</td>
+					</tr>
+				{% endif %}
 			{% endfor %}
 		</table>
 	</div>
