@@ -53,8 +53,11 @@ class HumanController extends Controller
 	 */
 	public function dashboardAction(Entity\Human $human, Request $request)
 	{
+		$centralRegion = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getByUuid(0);
 		return $this->render('Human/dashboard.html.twig', [
 			'human' => $human,
+			'centralRegion' => $centralRegion,
+			'nextRegions' => $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getRegionNeighbarhood($centralRegion),
 		]);
 	}
 }

@@ -3,20 +3,30 @@
 {% block body %}
 	<div id="wrapper">
 		<h1>Human {{ human.name }} [{{ human.soul.name }}]</h1>
-		<ul>
-			{#{% for soul in souls %}#}
-				{#<li>#}
-					{#{{ soul.name }}#}
-					{#{{ dump(soul) }}#}
-					{#{% if soul.incarnations is empty %}#}
-						{#<a href="{{ path('human_incarnation_list', {'soul': soul.id }) }}">connect human</a>#}
-					{#{% else %}#}
-						{#{% for human in soul.incarnations %}#}
-							{#<a href="{{ path('human_dashboard', {'human': human.id }) }}">Play as {{ human.name }}</a>#}
-						{#{% endfor %}#}
-					{#{% endif %}#}
-				{#</li>#}
-			{#{% endfor %}#}
-		</ul>
+		<table>
+			{% for region in nextRegions %}
+				<tr>
+					<td>{{ region.uuid }}</td>
+					<td>
+						{% if region.settlement is not null %}
+							{{ region.settlement.type }}
+						{% else %}
+							<a href="">Create village settlement</a>
+							<a href="">Create farm</a>
+							<a href="">Create mine</a>
+							<a href="">Create factory</a>
+							<a href="">Create lab</a>
+						{% endif %}
+					</td>
+					<td>
+						{% for deposit in region.oreDeposits %}
+							{{ deposit.amount }}T of {{ deposit.type }}<br/>
+						{% endfor %}
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
 	</div>
 {% endblock %}
+
+

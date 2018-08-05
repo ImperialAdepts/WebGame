@@ -17,7 +17,7 @@ class GamerController extends Controller
 	public function loginAction($username, Request $request)
 	{
 		$this->get('session')->set('current-gamer', $username);
-		return $this->redirectToRoute('gamer/');
+		return $this->forward('AppBundle:Gamer:dashboard');
 	}
 
 	/**
