@@ -1,7 +1,32 @@
-	<div id="wrapper">
-		<ul>
-			{% for gamer in gamers %}
-				<li><a href="{{ path('gamer_login', {'username': gamer.name }) }}">{{ gamer.name }}</a></li>
-			{% endfor %}
-		</ul>
-	</div>
+{% macro production_info(region) %}
+	{% if region.settlement is not null %}
+		{% if region.settlement.type == 'village' %}
+			<dt>Capacity</dt>
+			<dd>1000</dd>
+			<dt>People count</dt>
+			<dd>1000</dd>
+		{% endif %}
+		{% if region.settlement.type == 'mine' %}
+			<dt>Capacity</dt>
+			<dd>1000</dd>
+			<dt>People count</dt>
+			<dd>1000</dd>
+		{% endif %}
+	{% endif %}
+{% endmacro %}
+
+{% macro deposit_info(region, human) %}
+	{% for deposit in region.oreDeposits %}
+		{{ deposit.amount }}T of {{ deposit.type }}<br/>
+	{% endfor %}
+	{% if region.oreDeposits is not empty and region.settlement is null %}
+		<a href="{{ path('region_build_settlement', {
+			'regionUuid': region.uuid, 'type': 'mine', 'human': human.id}) }}">Create
+			mine</a>
+		<br/>
+	{% endif %}
+	{% if region.oreDeposits is empty %}
+		<a href="{{ path('region_deposit_screening', {
+			'regionUuid': region.uuid, 'human': human.id}) }}">Deposit screening</a>
+	{% endif %}
+{% endmacro %}

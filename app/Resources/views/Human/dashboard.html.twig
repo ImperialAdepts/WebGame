@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import 'Planet/region-fragment.html.twig' as regioMacro %}
 
 {% block body %}
 	<div id="wrapper">
@@ -39,22 +40,12 @@
 									<a href="{{ path('region_build_settlement', {
 										'regionUuid': region.uuid, 'type': 'laboratory', 'human': human.id}) }}">Create
 										lab</a><br/>
+								{% else %}
+									{{ regioMacro.production_info(region) }}
 								{% endif %}
 							</td>
 							<td>
-								{% for deposit in region.oreDeposits %}
-									{{ deposit.amount }}T of {{ deposit.type }}<br/>
-								{% endfor %}
-								{% if region.oreDeposits is not empty and region.settlement is null %}
-									<a href="{{ path('region_build_settlement', {
-										'regionUuid': region.uuid, 'type': 'mine', 'human': human.id}) }}">Create
-										mine</a>
-									<br/>
-								{% endif %}
-								{% if region.oreDeposits is empty %}
-									<a href="{{ path('region_deposit_screening', {
-										'regionUuid': region.uuid, 'human': human.id}) }}">Deposit screening</a>
-								{% endif %}
+								{{ regioMacro.deposit_info(region, human) }}
 							</td>
 						{% endif %}
 					</tr>
