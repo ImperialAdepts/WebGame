@@ -1,0 +1,32 @@
+parameters:
+    resource_descriptor:
+        blueprint:
+            name: 'Copy of blueprint'
+            traits: ['comodity']
+        food:
+            name: 'Simple food'
+            traits: ['comodity']
+        ironOre:
+            name: 'Iron ore'
+            traits: ['comodity']
+        ironPlate:
+            name: 'Iron plate'
+            traits: ['comodity']
+        oilBarrel:
+            name: 'Barrel of raw oil'
+            traits: ['comodity']
+        mine:
+            name: 'Mine'
+            traits: ['settlement']
+        village:
+            name: 'Village'
+            traits: ['settlement']
+        lab:
+            name: 'Laboratory'
+            traits: ['settlement']
+        farm:
+            name: 'Farm'
+            traits: ['settlement']
+        warehouse:
+            name: 'Warehouse'
+            traits: ['building']
