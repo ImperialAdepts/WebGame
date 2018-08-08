@@ -2,16 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8395c98a-660c-4e23-b8f7-b846ae6769a6" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/AppBundle/Builder/PlanetBuilder.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/config/resource_decriptors.yml" afterPath="$PROJECT_DIR$/app/config/resource_decriptors.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Controller/CronController.php" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/CronController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Controller/HumanController.php" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/HumanController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Descriptor/ResourceDescriptorEnum.php" afterPath="$PROJECT_DIR$/src/AppBundle/Descriptor/ResourceDescriptorEnum.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Entity/ResourceDeposit.php" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/ResourceDeposit.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Fixture/ResourceAndBlueprintFixture.php" afterPath="$PROJECT_DIR$/src/AppBundle/Fixture/ResourceAndBlueprintFixture.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Repository/BlueprintRepository.php" afterPath="$PROJECT_DIR$/src/AppBundle/Repository/BlueprintRepository.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Repository/HumanRepository.php" afterPath="$PROJECT_DIR$/src/AppBundle/Repository/HumanRepository.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Resources/views/Human/dashboard.html.twig" afterPath="$PROJECT_DIR$/app/Resources/views/Human/dashboard.html.twig" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Resources/views/Planet/region-fragment.html.twig" afterPath="$PROJECT_DIR$/app/Resources/views/Planet/region-fragment.html.twig" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Entity/Planet/Settlement.php" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/Planet/Settlement.php" />
     </list>
     <ignored path="ImperiumSandbox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -33,6 +27,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="Region.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/AppBundle/Entity/Planet/Region.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-54">
+              <caret line="12" column="6" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="6" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="resource_decriptors.yml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/config/resource_decriptors.yml">
           <provider selected="true" editor-type-id="text-editor">
@@ -43,21 +47,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HumanController.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/HumanController.php">
+      <file leaf-file-name="dashboard.html.twig" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Resources/views/Human/dashboard.html.twig">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="626">
-              <caret line="68" column="8" selection-start-line="68" selection-start-column="8" selection-end-line="68" selection-end-column="104" />
+            <state relative-caret-position="234">
+              <caret line="22" column="63" selection-start-line="22" selection-start-column="63" selection-end-line="22" selection-end-column="63" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CronController.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/CronController.php">
+      <file leaf-file-name="region-fragment.html.twig" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Resources/views/Planet/region-fragment.html.twig">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="576">
-              <caret line="32" column="13" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
+            <state relative-caret-position="54">
+              <caret line="3" column="45" selection-start-line="3" selection-start-column="45" selection-end-line="3" selection-end-column="45" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Settlement.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/AppBundle/Entity/Planet/Settlement.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="216">
+              <caret line="36" column="52" selection-start-line="36" selection-start-column="52" selection-end-line="36" selection-end-column="52" />
               <folding />
             </state>
           </provider>
@@ -111,11 +125,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ResourceDeposit.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ResourceDeposit.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/AppBundle/Entity/ResourceDeposit.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="594">
-              <caret line="33" column="40" selection-start-line="33" selection-start-column="40" selection-end-line="33" selection-end-column="40" />
+            <state relative-caret-position="432">
+              <caret line="24" column="15" selection-start-line="24" selection-start-column="15" selection-end-line="24" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -159,10 +173,7 @@
         <option value="$PROJECT_DIR$/src/AppBundle/Entity/Planet/Region.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Repository/Planet/BuildingProjectRepository.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Entity/Planet/BuildingProject.php" />
-        <option value="$PROJECT_DIR$/src/AppBundle/Entity/Planet/Settlement.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Repository/Planet/RegionRepository.php" />
-        <option value="$PROJECT_DIR$/app/Resources/views/Planet/region-fragment.html.twig" />
-        <option value="$PROJECT_DIR$/app/Resources/views/Human/dashboard.html.twig" />
         <option value="$PROJECT_DIR$/src/AppBundle/CompilerPass/CompileResourceDescriptors.php" />
         <option value="$PROJECT_DIR$/app/config/config.yml" />
         <option value="$PROJECT_DIR$/src/AppBundle/Entity/Resource.php" />
@@ -172,7 +183,6 @@
         <option value="$PROJECT_DIR$/src/AppBundle/Manager/PlanetaryBuilder.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Builder/PlanetaryBuilder.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Controller/CronController.php" />
-        <option value="$PROJECT_DIR$/src/AppBundle/Controller/HumanController.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Descriptor/ResourceDescriptorEnum.php" />
         <option value="$PROJECT_DIR$/app/config/resource_decriptors.yml" />
         <option value="$PROJECT_DIR$/src/AppBundle/Repository/HumanRepository.php" />
@@ -180,6 +190,10 @@
         <option value="$PROJECT_DIR$/src/AppBundle/Fixture/ResourceAndBlueprintFixture.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Builder/PlanetBuilder.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Entity/ResourceDeposit.php" />
+        <option value="$PROJECT_DIR$/src/AppBundle/Controller/HumanController.php" />
+        <option value="$PROJECT_DIR$/src/AppBundle/Entity/Planet/Settlement.php" />
+        <option value="$PROJECT_DIR$/app/Resources/views/Human/dashboard.html.twig" />
+        <option value="$PROJECT_DIR$/app/Resources/views/Planet/region-fragment.html.twig" />
       </list>
     </option>
   </component>
@@ -690,12 +704,12 @@
       <option name="presentableId" value="Default" />
       <updated>1533398161282</updated>
       <workItem from="1533398163817" duration="32482000" />
-      <workItem from="1533565803567" duration="12719000" />
+      <workItem from="1533565803567" duration="14465000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="45201000" />
+    <option name="totallyTimeSpent" value="46947000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1919" y="0" width="1922" height="1055" extended-state="6" />
@@ -874,42 +888,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppBundle/Entity/Planet/Region.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="12" column="6" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/AppBundle/Entity/Planet/BuildingProject.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2322">
           <caret line="129" column="20" selection-start-line="129" selection-start-column="20" selection-end-line="129" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppBundle/Entity/Planet/Settlement.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1890">
-          <caret line="105" column="38" selection-start-line="105" selection-start-column="38" selection-end-line="105" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Resources/views/Planet/region-fragment.html.twig">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="17" column="35" selection-start-line="17" selection-start-column="35" selection-end-line="17" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Resources/views/Human/dashboard.html.twig">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="846">
-          <caret line="47" column="72" selection-start-line="47" selection-start-column="72" selection-end-line="47" selection-end-column="72" />
           <folding />
         </state>
       </provider>
@@ -1055,14 +1037,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/config/resource_decriptors.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="3" column="25" selection-start-line="3" selection-start-column="25" selection-end-line="3" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/AppBundle/Descriptor/ResourceDescriptorEnum.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
@@ -1075,14 +1049,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="576">
           <caret line="32" column="13" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/HumanController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="626">
-          <caret line="68" column="8" selection-start-line="68" selection-start-column="8" selection-end-line="68" selection-end-column="104" />
           <folding />
         </state>
       </provider>
@@ -1135,6 +1101,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/AppBundle/Entity/ResourceDeposit.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="24" column="15" selection-start-line="24" selection-start-column="15" selection-end-line="24" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/HumanController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="590">
+          <caret line="66" column="74" selection-start-line="66" selection-start-column="74" selection-end-line="66" selection-end-column="74" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/config/resource_decriptors.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="25" selection-start-line="3" selection-start-column="25" selection-end-line="3" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/AppBundle/Builder/PlanetBuilder.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="482">
@@ -1143,10 +1133,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppBundle/Entity/ResourceDeposit.php">
+    <entry file="file://$PROJECT_DIR$/src/AppBundle/Entity/Planet/Region.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="594">
-          <caret line="33" column="40" selection-start-line="33" selection-start-column="40" selection-end-line="33" selection-end-column="40" />
+        <state relative-caret-position="-54">
+          <caret line="12" column="6" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Resources/views/Planet/region-fragment.html.twig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="45" selection-start-line="3" selection-start-column="45" selection-end-line="3" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Resources/views/Human/dashboard.html.twig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="22" column="63" selection-start-line="22" selection-start-column="63" selection-end-line="22" selection-end-column="63" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AppBundle/Entity/Planet/Settlement.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="36" column="52" selection-start-line="36" selection-start-column="52" selection-end-line="36" selection-end-column="52" />
           <folding />
         </state>
       </provider>

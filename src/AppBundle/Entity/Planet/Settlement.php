@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity\Planet;
 
+use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -51,6 +52,12 @@ class Settlement
      */
     private $regions;
 
+    /**
+     * @var ResourceDeposit[]
+     *
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\ResourceDeposit", mappedBy="settlement")
+     */
+    private $resourceDeposits;
 
     /**
      * Get id
@@ -150,6 +157,21 @@ class Settlement
         $this->regions = $regions;
     }
 
+    /**
+     * @return \AppBundle\Entity\ResourceDeposit[]
+     */
+    public function getResourceDeposits()
+    {
+        return $this->resourceDeposits;
+    }
+
+    /**
+     * @param \AppBundle\Entity\ResourceDeposit[] $resourceDeposits
+     */
+    public function setResourceDeposits($resourceDeposits)
+    {
+        $this->resourceDeposits = $resourceDeposits;
+    }
 
 }
 

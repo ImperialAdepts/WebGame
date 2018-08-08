@@ -1,3 +1,17 @@
+{% macro resource_deposit_info(region) %}
+	{% if region.settlement is not null %}
+		{% for deposit in region.settlement.resourceDeposits %}
+			<dt>{{ deposit.resourceDescriptor }}</dt>
+			<dd>{{ deposit.amount }}</dd>
+		{% endfor %}
+	{% endif %}
+
+	{% for deposit in region.oreDeposits %}
+		<dt>{{ deposit.type }}</dt>
+		<dd>{{ deposit.amount }}</dd>
+	{% endfor %}
+{% endmacro %}
+
 {% macro production_info(region) %}
 	{% if region.settlement is not null %}
 		{% if region.settlement.type == 'village' %}

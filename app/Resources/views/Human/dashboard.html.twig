@@ -19,6 +19,9 @@
 								nature
 							{% endif %}
 						</td>
+						<td>
+							{{ regioMacro.resource_deposit_info(region, human) }}
+						</td>
 						{% if region.project is not null %}
 							<td colspan="2">
 								Project {{ region.project.building }}...
