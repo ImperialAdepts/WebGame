@@ -31,19 +31,20 @@ class ResourceDeposit
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
+     * @ORM\Column(name="name", type="string", length=255)
      */
     private $resourceDescriptor;
 
     /**
-     * @var \stdClass
+     * @var Blueprint
      *
-     * @ORM\Column(name="blueprint", type="object", nullable=false)
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Blueprint")
+     * @ORM\JoinColumn(fieldName="blueprint_id", referencedColumnName="id", nullable=true)
      */
     private $blueprint;
 
     /**
-     * @var \AppBundle\Entity\Planet\Settlement
+     * @var Planet\Settlement
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Planet\Settlement")
      * @ORM\JoinColumn(fieldName="settlement_id", referencedColumnName="id")

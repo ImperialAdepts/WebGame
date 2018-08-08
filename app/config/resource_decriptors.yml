@@ -1,6 +1,9 @@
 parameters:
     resource_descriptor:
         blueprint:
+            name: 'People'
+            traits: ['comodity']
+        blueprint:
             name: 'Copy of blueprint'
             traits: ['comodity']
         food:

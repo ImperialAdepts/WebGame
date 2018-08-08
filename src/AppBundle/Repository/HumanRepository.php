@@ -15,4 +15,13 @@ class HumanRepository extends \Doctrine\ORM\EntityRepository
 			->getResult();
 	}
 
+	public function findAllIncarnated()
+	{
+		return $this->getEntityManager()
+			->createQuery(
+				'SELECT h FROM AppBundle:Human h WHERE h.soul IS NOT NULL ORDER BY h.name ASC'
+			)
+			->getResult();
+	}
+
 }

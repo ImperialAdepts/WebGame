@@ -5,6 +5,7 @@ final class ResourceDescriptorEnum
 {
 	const MANDAY = 'manday';
 	const TIME = 'time';
+	const PEOPLE = 'people';
 	const BLUEPRINT_COPY = 'blueprint';
 	const SIMPLE_FOOD = 'food';
 	const IRON_ORE = 'ironOre';

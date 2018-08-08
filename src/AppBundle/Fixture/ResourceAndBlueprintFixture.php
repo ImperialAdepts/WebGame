@@ -53,6 +53,17 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 		$manager->persist($labBlueprint);
 
 		$manager->flush();
+
+		$builder = new \AppBundle\Builder\PlanetBuilder($manager);
+		$humans = $manager->getRepository(Entity\Human::class)->findAllIncarnated();
+		$regionId = 0;
+		foreach ($humans as $human) {
+			$centralRegion = $manager->getRepository(Entity\Planet\Region::class)->getByUuid($regionId);
+			$builder->newColony($centralRegion, $human);
+			$regionId += 20;
+		}
+
+		$manager->flush();
 	}
 
 	private function createBlueprint($name, $resource, array $requirements = [])

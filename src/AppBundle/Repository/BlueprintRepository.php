@@ -10,4 +10,13 @@ namespace AppBundle\Repository;
  */
 class BlueprintRepository extends \Doctrine\ORM\EntityRepository
 {
+
+	public function getByName($name)
+	{
+		return $this->getEntityManager()
+			->createQuery(
+				"SELECT b FROM AppBundle:Blueprint b WHERE b.description = '$name' ORDER BY b.id ASC"
+			)
+			->getOneOrNullResult();
+	}
 }

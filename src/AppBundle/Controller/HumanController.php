@@ -60,6 +60,19 @@ class HumanController extends Controller
 			'nextRegions' => $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getRegionNeighbarhood($centralRegion),
 		]);
 	}
-	
+
+	/**
+	 * @Route("/{human}/newcolony", name="human_newcolony")
+	 */
+	public function newColonyAction(Entity\Human $human, Request $request)
+	{
+		$centralRegion = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getByUuid(0);
+		$builder = new \AppBundle\Builder\PlanetBuilder($this->getDoctrine()->getManager());
+		$builder->newColony($centralRegion, $human);
+
+		return $this->redirectToRoute('human_dashboard', [
+			'human' => $human->getId(),
+		]);
+	}
 	
 }
