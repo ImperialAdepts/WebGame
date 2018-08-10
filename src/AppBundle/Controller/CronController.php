@@ -23,8 +23,7 @@ class CronController extends Controller
 		$builder = new PlanetBuilder($this->getDoctrine()->getManager());
 		/** @var Entity\Planet\BuildingProject $project */
 		foreach ($projects as $project) {
-			echo $project->getRegion()->getUuid().' '.$project->getBuilding().' Left '.$project->getMandaysLeft()."<br>\n";
-			$project->setMandaysLeft($project->getMandaysLeft()-1);
+			$builder->buildProjectStep($project);
 			if ($project->isDone()) {
 				$builder->buildProject($project);
 				$this->getDoctrine()->getManager()->remove($project);
@@ -34,7 +33,16 @@ class CronController extends Controller
 		}
 		$this->getDoctrine()->getManager()->flush();
 
-		return new \Symfony\Component\HttpFoundation\Response("OK");
+		$response = "";
+		foreach ($projects as $project) {
+			$response .= "PROJECT at " . $project->getRegion()->getUuid() . ' ' . $project->getBuildingBlueprint()->getDescription()."\n<br>";
+			if (!$project->getSteplogs()) continue;
+			foreach ($project->getSteplogs() as $log) {
+				$response .= "$log\n<br>";
+			}
+		}
+
+		return new \Symfony\Component\HttpFoundation\Response($response);
 	}
 
 }

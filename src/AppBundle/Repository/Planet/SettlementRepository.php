@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Repository\Planet;
+use AppBundle\Entity;
 
 /**
  * SettlementRepository
@@ -10,4 +11,22 @@ namespace AppBundle\Repository\Planet;
  */
 class SettlementRepository extends \Doctrine\ORM\EntityRepository
 {
+	public function getAll()
+	{
+		return $this->getEntityManager()
+			->createQuery(
+				"SELECT s FROM AppBundle:Planet\Settlement s"
+			)
+			->getResult();
+	}
+
+	public function getByHumanSupervisor(Entity\Human $human)
+	{
+		$id = $human->getId();
+		return $this->getEntityManager()
+			->createQuery(
+				"SELECT s FROM AppBundle:Planet\Settlement s WHERE s.manager = '$id'"
+			)
+			->getResult();
+	}
 }

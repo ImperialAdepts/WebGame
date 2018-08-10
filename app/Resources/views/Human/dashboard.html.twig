@@ -24,25 +24,17 @@
 						</td>
 						{% if region.project is not null %}
 							<td colspan="2">
-								Project {{ region.project.building }}...
-								<br/> Needs {{ region.project.mandaysLeft }} MD
+								Project {{ region.project.buildingBlueprint.description }}...
+								<br/> {{ dump(region.project.missingResources) }}
 							</td>
 						{% else %}
 							<td>
 								{% if region.settlement is null %}
-									<a href="{{ path('region_build_settlement', {
-										'regionUuid': region.uuid, 'type': 'village', 'human': human.id}) }}">
-										Create village settlement</a><br/>
-									<a href="{{ path('region_build_settlement', {
-										'regionUuid': region.uuid, 'type': 'farm', 'human': human.id}) }}">Create
-										farm</a>
-									<br/>
-									<a href="{{ path('region_build_settlement', {
-										'regionUuid': region.uuid, 'type': 'factory', 'human': human.id}) }}">Create
-										factory</a><br/>
-									<a href="{{ path('region_build_settlement', {
-										'regionUuid': region.uuid, 'type': 'laboratory', 'human': human.id}) }}">Create
-										lab</a><br/>
+									{% for blueprint in buildingBlueprints %}
+										<a href="{{ path('region_build_settlement', {
+											'regionUuid': region.uuid, 'blueprintId': blueprint.id, 'human': human.id}) }}">
+											Create {{ blueprint.description }} settlement</a><br/>
+									{% endfor %}
 								{% else %}
 									{{ regioMacro.production_info(region) }}
 								{% endif %}

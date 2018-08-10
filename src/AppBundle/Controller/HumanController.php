@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity;
+use AppBundle\Fixture\ResourceAndBlueprintFixture;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -54,10 +55,19 @@ class HumanController extends Controller
 	public function dashboardAction(Entity\Human $human, Request $request)
 	{
 		$centralRegion = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getByUuid(0);
+
+		// TODO: predelat rozumne
+		$blueprints = [];
+		$blueprints[] = $this->getDoctrine()->getRepository(Entity\Blueprint::class)->getByName(ResourceAndBlueprintFixture::FARM_BLUEPRINT);
+		$blueprints[] = $this->getDoctrine()->getRepository(Entity\Blueprint::class)->getByName(ResourceAndBlueprintFixture::VILLAGE_BLUEPRINT);
+		$blueprints[] = $this->getDoctrine()->getRepository(Entity\Blueprint::class)->getByName(ResourceAndBlueprintFixture::MINE_BLUEPRINT);
+		$blueprints[] = $this->getDoctrine()->getRepository(Entity\Blueprint::class)->getByName(ResourceAndBlueprintFixture::LAB_BLUEPRINT);
+
 		return $this->render('Human/dashboard.html.twig', [
 			'human' => $human,
 			'centralRegion' => $centralRegion,
 			'nextRegions' => $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getRegionNeighbarhood($centralRegion),
+			'buildingBlueprints' => $blueprints, // todo
 		]);
 	}
 

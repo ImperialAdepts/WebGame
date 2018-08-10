@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity\Planet;
 
+use AppBundle\Descriptor\ResourceDescriptorEnum;
+use AppBundle\Entity\Blueprint;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,172 +14,241 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class BuildingProject
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+	/**
+	 * @var int
+	 *
+	 * @ORM\Column(name="id", type="integer")
+	 * @ORM\Id
+	 * @ORM\GeneratedValue(strategy="AUTO")
+	 */
+	private $id;
 
-    /**
-     * @var Region
-     *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Planet\Region", inversedBy="project")
-     * @ORM\JoinColumn(name="region_uuid", referencedColumnName="uuid")
-     */
-    private $region;
+	/**
+	 * @var Region
+	 *
+	 * @ORM\OneToOne(targetEntity="AppBundle\Entity\Planet\Region", inversedBy="project")
+	 * @ORM\JoinColumn(name="region_uuid", referencedColumnName="uuid")
+	 */
+	private $region;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="building", type="string", length=255)
-     */
-    private $building;
+	/**
+	 * @var Blueprint
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Blueprint")
+	 * @ORM\JoinColumn(name="building_blueprint_id", referencedColumnName="id")
+	 */
+	private $buildingBlueprint;
 
-    /**
-     * @var \AppBundle\Entity\Human
-     *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Human")
-     * @ORM\JoinColumn(name="supervisor_id", referencedColumnName="id")
-     */
-    private $supervisor;
+	/**
+	 * @var \AppBundle\Entity\Human
+	 *
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Human")
+	 * @ORM\JoinColumn(name="supervisor_id", referencedColumnName="id")
+	 */
+	private $supervisor;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="priority", type="integer")
-     */
-    private $priority;
+	/**
+	 * @var int
+	 *
+	 * @ORM\Column(name="priority", type="integer")
+	 */
+	private $priority;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="mandays_left", type="integer")
-     */
-    private $mandaysLeft;
+	/**
+	 * @var float[] resourceDescriptor => amount
+	 *
+	 * @ORM\Column(name="missing_resources", type="array")
+	 */
+	private $missingResources;
 
-    /**
-     * @return bool
-     */
-    public function isDone()
-    {
-        return $this->getMandaysLeft() <= 0;
-    }
+	/**
+	 * @var string[]
+	 *
+	 * @ORM\Column(name="steplogs", type="array")
+	 */
+	private $steplogs;
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+	/**
+	 * @return bool
+	 */
+	public function isDone()
+	{
+		$resourceLeft = 0;
+		foreach ($this->getMissingResources() as $resource => $amount) {
+			$resourceLeft += $amount;
+		}
+		return $resourceLeft <= 0;
+	}
 
-    /**
-     * Set region
-     *
-     * @param Region $region
-     *
-     * @return BuildingProject
-     */
-    public function setRegion($region)
-    {
-        $this->region = $region;
+	/**
+	 * Get id
+	 *
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set region
+	 *
+	 * @param Region $region
+	 *
+	 * @return BuildingProject
+	 */
+	public function setRegion($region)
+	{
+		$this->region = $region;
 
-    /**
-     * Get region
-     *
-     * @return Region
-     */
-    public function getRegion()
-    {
-        return $this->region;
-    }
+		return $this;
+	}
 
-    /**
-     * Set building
-     *
-     * @param string $building
-     *
-     * @return BuildingProject
-     */
-    public function setBuilding($building)
-    {
-        $this->building = $building;
+	/**
+	 * Get region
+	 *
+	 * @return Region
+	 */
+	public function getRegion()
+	{
+		return $this->region;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set building
+	 *
+	 * @param Blueprint $buildingBlueprint
+	 *
+	 * @return BuildingProject
+	 */
+	public function setBuildingBlueprint(Blueprint $buildingBlueprint)
+	{
+		$this->buildingBlueprint = $buildingBlueprint;
 
-    /**
-     * Get building
-     *
-     * @return string
-     */
-    public function getBuilding()
-    {
-        return $this->building;
-    }
+		return $this;
+	}
 
-    /**
-     * @return \AppBundle\Entity\Human
-     */
-    public function getSupervisor()
-    {
-        return $this->supervisor;
-    }
+	/**
+	 * Get building
+	 *
+	 * @return Blueprint
+	 */
+	public function getBuildingBlueprint()
+	{
+		return $this->buildingBlueprint;
+	}
 
-    /**
-     * @param \AppBundle\Entity\Human $supervisor
-     */
-    public function setSupervisor($supervisor)
-    {
-        $this->supervisor = $supervisor;
-    }
+	/**
+	 * @return \AppBundle\Entity\Human
+	 */
+	public function getSupervisor()
+	{
+		return $this->supervisor;
+	}
 
-    /**
-     * Set priority
-     *
-     * @param integer $priority
-     *
-     * @return BuildingProject
-     */
-    public function setPriority($priority)
-    {
-        $this->priority = $priority;
+	/**
+	 * @param \AppBundle\Entity\Human $supervisor
+	 */
+	public function setSupervisor($supervisor)
+	{
+		$this->supervisor = $supervisor;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set priority
+	 *
+	 * @param integer $priority
+	 *
+	 * @return BuildingProject
+	 */
+	public function setPriority($priority)
+	{
+		$this->priority = $priority;
 
-    /**
-     * Get priority
-     *
-     * @return int
-     */
-    public function getPriority()
-    {
-        return $this->priority;
-    }
+		return $this;
+	}
 
-    /**
-     * @return int
-     */
-    public function getMandaysLeft()
-    {
-        return $this->mandaysLeft;
-    }
+	/**
+	 * Get priority
+	 *
+	 * @return int
+	 */
+	public function getPriority()
+	{
+		return $this->priority;
+	}
 
-    /**
-     * @param int $mandaysLeft
-     */
-    public function setMandaysLeft($mandaysLeft)
-    {
-        $this->mandaysLeft = $mandaysLeft;
-    }
+	/**
+	 * @return int
+	 */
+	public function getMandaysLeft()
+	{
+		if (!array_key_exists(ResourceDescriptorEnum::MANDAY, $this->missingResources)) {
+			return 0;
+		}
+		return $this->missingResources[ResourceDescriptorEnum::MANDAY];
+	}
+
+	/**
+	 * @param int $mandaysLeft
+	 */
+	public function setMandaysLeft($mandaysLeft)
+	{
+		$this->missingResources[ResourceDescriptorEnum::MANDAY] = $mandaysLeft;
+	}
+
+	/**
+	 * @return float[]
+	 */
+	public function getMissingResources()
+	{
+		return $this->missingResources;
+	}
+
+	public function getMissingResource($resource)
+	{
+		if (!array_key_exists($resource, $this->missingResources)) {
+			return 0;
+		}
+		return $this->missingResources[$resource];
+	}
+
+	/**
+	 * @param float[] $missingResources
+	 */
+	public function setMissingResources($missingResources)
+	{
+		$this->missingResources = $missingResources;
+	}
+
+	public function setMissingResource($resource, $count)
+	{
+		$this->missingResources[$resource] = $count;
+	}
+
+	/**
+	 * @return \string[]
+	 */
+	public function getSteplogs()
+	{
+		return $this->steplogs;
+	}
+
+	/**
+	 * @param \string[] $steplogs
+	 */
+	public function setSteplogs($steplogs)
+	{
+		$this->steplogs = $steplogs;
+	}
+
+	/**
+	 * @param \string[] $steplogs
+	 */
+	public function addSteplog($steplog)
+	{
+		$this->steplogs[] = $steplog;
+	}
+
 }
 

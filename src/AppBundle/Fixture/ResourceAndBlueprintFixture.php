@@ -13,6 +13,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 	const VILLAGE_BLUEPRINT = 'Basic village';
 	const LAB_BLUEPRINT = 'Basic lab';
 	const FARM_BLUEPRINT = 'Basic farm';
+	const WAREHOUSE_BLUEPRINT = 'Container warehouse';
 
 	/**
 	 * Load data fixtures with the passed EntityManager
@@ -51,6 +52,11 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 			ResourceDescriptorEnum::IRON_PLATE => 200,
 		]);
 		$manager->persist($labBlueprint);
+		$warehouseBlueprint = $this->createBlueprint(self::WAREHOUSE_BLUEPRINT, ResourceDescriptorEnum::WAREHOUSE, [
+			ResourceDescriptorEnum::MANDAY => 200,
+			ResourceDescriptorEnum::IRON_PLATE => 100,
+		]);
+		$manager->persist($warehouseBlueprint);
 
 		$manager->flush();
 

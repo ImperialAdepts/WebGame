@@ -13,17 +13,19 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegionController extends Controller
 {
 	/**
-	 * @Route("/build/{type}/{regionUuid}/{human}", name="region_build_settlement")
+	 * @Route("/build/{blueprintId}/{regionUuid}/{human}", name="region_build_settlement")
 	 */
-	public function buildAction($type, $regionUuid, Entity\Human $human, Request $request)
+	public function buildAction($blueprintId, $regionUuid, Entity\Human $human, Request $request)
 	{
 		$region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getByUuid($regionUuid);
+		$blueprint = $this->getDoctrine()->getManager()->find(Entity\Blueprint::class, $blueprintId);
 
 		$project = new Entity\Planet\BuildingProject();
 		$project->setRegion($region);
-		$project->setBuilding($type);
-		// TODO: vytahnout z rozumnejsiho mista
-		$project->setMandaysLeft(strlen($type));
+		$project->setBuildingBlueprint($blueprint);
+		$project->setMandaysLeft($blueprint->getMandays());
+		$project->setMissingResources($blueprint->getRequirements());
+		$project->setSupervisor($human);
 		$project->setPriority(3);
 
 		$this->getDoctrine()->getManager()->persist($project);

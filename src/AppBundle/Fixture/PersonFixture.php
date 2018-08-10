@@ -36,6 +36,7 @@ class PersonFixture extends \Doctrine\Bundle\FixturesBundle\Fixture
 		$human3 = new \AppBundle\Entity\Human();
 		$human3->setName('Persefone');
 		$human3->setBornIn(20);
+		$human3->setSoul($king1);
 		$manager->persist($human3);
 
 		$manager->flush();

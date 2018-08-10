@@ -89,11 +89,11 @@ class Region
 	/**
 	 * Set settlement
 	 *
-	 * @param \stdClass $settlement
+	 * @param Settlement $settlement
 	 *
 	 * @return Region
 	 */
-	public function setSettlement($settlement)
+	public function setSettlement(Settlement $settlement)
 	{
 		$this->settlement = $settlement;
 
