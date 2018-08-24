@@ -1,0 +1,7 @@
+{% macro maintanance_controls() %}
+	<ul>
+		<li><a href="{{ path('cron_maintanance') }}">Maintanance</a></li>
+		<li><a href="{{ path('cron_births') }}">Birth</a></li>
+		<li><a href="{{ path('cron_build_projects') }}">Build</a></li>
+	</ul>
+{% endmacro %}

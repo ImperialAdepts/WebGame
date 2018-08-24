@@ -1,9 +1,12 @@
 {% extends 'base.html.twig' %}
 {% import 'Planet/region-fragment.html.twig' as regioMacro %}
+{% import 'Planet/maintanance.html.twig' as cron %}
 
 {% block body %}
 	<div id="wrapper">
 		<h1>Human {{ human.name }} [{{ human.soul.name }}]</h1>
+
+		<div style="position: relative; width: 200px; float: right;">{{ cron.maintanance_controls() }}</div>
 
 		<table border="1">
 			{% for region in nextRegions %}
