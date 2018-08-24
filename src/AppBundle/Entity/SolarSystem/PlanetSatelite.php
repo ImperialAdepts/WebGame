@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Entity;
+namespace AppBundle\Entity\SolarSystem;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -33,7 +33,7 @@ class PlanetSatelite
      *
      * @ORM\Column(name="orbit_id", type="bigint", nullable=false)
      */
-    private $orbitId;
+    private $orbitUuid;
 
     /**
      * @var string

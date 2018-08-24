@@ -1,16 +1,16 @@
 <?php
 
-namespace AppBundle\Entity;
+namespace AppBundle\Entity\SolarSystem;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * SolarSystemName
+ * SystemGivenName
  *
  * @ORM\Table(name="solar_system_names")
  * @ORM\Entity
  */
-class SolarSystemName
+class SystemGivenName
 {
     /**
      * @var integer

@@ -57,6 +57,9 @@ class Region
 	 */
 	private $height;
 
+	/** @var integer */
+	private $planetUuid;
+
 	/**
 	 * Region constructor.
 	 * @param int $uuid
@@ -66,6 +69,7 @@ class Region
 		$this->uuid = $uuid;
 		// generovani
 		srand($uuid);
+		$this->planetUuid = ($uuid / 1000) % 3;
 		$this->fertility = rand(0, $uuid);
 		$this->height = rand(0, $uuid);
 	}
@@ -103,7 +107,7 @@ class Region
 	/**
 	 * Get settlement
 	 *
-	 * @return \stdClass
+	 * @return Settlement
 	 */
 	public function getSettlement()
 	{
@@ -196,6 +200,33 @@ class Region
 	public function getHeight()
 	{
 		return $this->height;
+	}
+
+	public function getPlanetUuid()
+	{
+		return $this->planetUuid;
+	}
+
+	/**
+	 * @return integer land space in m2
+	 */
+	public function getArea()
+	{
+		// TODO vylovit z informaci o planete
+		return 200;
+	}
+
+	/**
+	 * @return integer empty land space in m2
+	 */
+	public function getEmptyArea()
+	{
+		if ($this->getSettlement() === null) {
+			return $this->getArea();
+		} else {
+			// TODO: vytahnout spravnou hodnotu ze settlementu
+			return $this->getArea() / 2;
+		}
 	}
 }
 

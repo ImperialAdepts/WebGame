@@ -10,6 +10,9 @@
 		<dt>{{ deposit.type }}</dt>
 		<dd>{{ deposit.amount }}</dd>
 	{% endfor %}
+
+	<dt>Empty space</dt>
+	<dd>{{ region.emptyArea }} from {{ region.area }}</dd>
 {% endmacro %}
 
 {% macro production_info(region) %}
