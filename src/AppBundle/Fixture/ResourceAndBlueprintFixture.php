@@ -62,11 +62,13 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 
 		$builder = new \AppBundle\Builder\PlanetBuilder($manager);
 		$humans = $manager->getRepository(Entity\Human::class)->findAllIncarnated();
-		$regionId = 0;
+		$planetUuid = substr(md5('sdfgdsfghdfghsdafasdfasdgsdfgdfg'), 0, 20);
+		$poleCount = 2;
+		$eastCount = 0;
 		foreach ($humans as $human) {
-			$centralRegion = $manager->getRepository(Entity\Planet\Region::class)->getByUuid($regionId);
+			$regionUuid = \AppBundle\UuidSerializer\Region::getRegionUuidByCoordinates($planetUuid, 1, $poleCount++, $eastCount++);
+			$centralRegion = $manager->getRepository(Entity\Planet\Region::class)->getByUuid($regionUuid);
 			$builder->newColony($centralRegion, $human);
-			$regionId += 20;
 		}
 
 		$manager->flush();

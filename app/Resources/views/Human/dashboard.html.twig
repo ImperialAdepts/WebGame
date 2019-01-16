@@ -46,7 +46,8 @@
 								{{ regioMacro.deposit_info(region, human) }}
 							</td>
 							<td>
-								<h3>Planet {{ region.planetUuid }}</h3>
+								<h3>Planet {{ region.planet.name }}</h3>
+								<span>Planet uuid: {{ region.planetUuid }}</span>
 							</td>
 						{% endif %}
 					</tr>

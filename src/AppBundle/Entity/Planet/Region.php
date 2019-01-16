@@ -2,7 +2,9 @@
 
 namespace AppBundle\Entity\Planet;
 
+use AppBundle\Entity\SolarSystem\Planet;
 use Doctrine\ORM\Mapping as ORM;
+use AppBundle\UuidSerializer;
 
 /**
  * Region
@@ -13,10 +15,11 @@ use Doctrine\ORM\Mapping as ORM;
 class Region
 {
 	/**
-	 * @var int
+	 * @var string
 	 *
-	 * @ORM\Column(name="uuid", type="integer")
+	 * @ORM\Column(name="uuid", type="string", length=30)
 	 * @ORM\Id
+	 * @ORM\GeneratedValue(strategy="NONE")
 	 */
 	private $uuid;
 
@@ -57,8 +60,15 @@ class Region
 	 */
 	private $height;
 
-	/** @var integer */
+	/** @var string */
 	private $planetUuid;
+
+	/**
+	 * @var Planet
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SolarSystem\Planet")
+	 * @ORM\JoinColumn(fieldName="planetUuid", referencedColumnName="uuid")
+	 */
+	private $planet;
 
 	/**
 	 * Region constructor.
@@ -68,12 +78,11 @@ class Region
 	{
 		$this->uuid = $uuid;
 		// generovani
-		srand($uuid);
-		$this->planetUuid = ($uuid / 1000) % 3;
-		$this->fertility = rand(0, $uuid);
-		$this->height = rand(0, $uuid);
+		$generator = new UuidSerializer\Region($uuid);
+		$this->planetUuid = $generator->getPlanetUuid();
+		$this->fertility = $generator->getFertility();
+		$this->height = $generator->getHeight();
 	}
-
 
 	/**
 	 * Get id
@@ -202,11 +211,21 @@ class Region
 		return $this->height;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getPlanetUuid()
 	{
 		return $this->planetUuid;
 	}
 
+	/**
+	 * @return Planet
+	 */
+	public function getPlanet()
+	{
+		return $this->planet;
+	}
 	/**
 	 * @return integer land space in m2
 	 */

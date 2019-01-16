@@ -3,33 +3,55 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use AppBundle\UuidSerializer;
 
 /**
  * SolarSystem
  *
- * @ORM\Table(name="solar_system")
+ * @ORM\Table(name="solar_systems")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolarSystemRepository")
  */
 class SolarSystem
 {
     /**
-     * @var int
+     * @var string
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="uuid", type="string", length=15)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="NONE")
      */
-    private $id;
+    private $uuid;
 
+    /** @var UuidSerializer\System */
+    private $UUID;
+
+    /**
+     * SolarSystem constructor.
+     * @param string $uuid
+     */
+    public function __construct($uuid)
+    {
+        $this->uuid = $uuid;
+        $this->UUID = new UuidSerializer\System($uuid);
+    }
+
+    public function getId()
+    {
+        return $this->uuid;
+    }
 
     /**
      * Get id
      *
-     * @return int
+     * @return string
      */
-    public function getId()
+    public function getUuid()
     {
-        return $this->id;
+        return $this->uuid;
+    }
+
+    public function getGalaxyUuid() {
+        return $this->UUID->getGalaxyUuid();
     }
 }
 

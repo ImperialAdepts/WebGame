@@ -2,24 +2,25 @@
 
 namespace AppBundle\Entity\SolarSystem;
 
+use AppBundle\UuidSerializer;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Planet
  *
  * @ORM\Table(name="planets")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\PlanetRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\SolarSystem\PlanetRepository")
  */
 class Planet
 {
 	/**
 	 * @var int
 	 *
-	 * @ORM\Column(name="uuid", type="integer")
+	 * @ORM\Column(name="uuid", type="string", length=20)
 	 * @ORM\Id
-	 * @ORM\GeneratedValue(strategy="AUTO")
+	 * @ORM\GeneratedValue(strategy="NONE")
 	 */
-	private $id;
+	private $uuid;
 
 	/** @var integer */
 	private $orbitUuid;
@@ -30,25 +31,6 @@ class Planet
 	/** @var float */
 	private $gravity;
 
-	/**
-	 * Get id
-	 *
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-	/**
-	 * Get id
-	 *
-	 * @return int
-	 */
-	public function getUuid()
-	{
-		return $this->id;
-	}
 
 	/**
 	 * Planet constructor.
@@ -58,9 +40,34 @@ class Planet
 	{
 		$this->uuid = $uuid;
 		// generovani
-		srand($uuid);
-		$this->gravity = random_int(200, 2000) / 1000;
-		$this->diameter = random_int(2000, 100000);
+		$generator = new UuidSerializer\Planet($uuid);
+		$this->gravity = $generator->getGravity();
+		$this->diameter = $generator->getDiameter();
+	}
+
+	public function getName()
+	{
+		return UuidSerializer\UuidName::getPlanetName($this->uuid);
+	}
+
+	/**
+	 * Get id
+	 *
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->uuid;
+	}
+
+	/**
+	 * Get id
+	 *
+	 * @return int
+	 */
+	public function getUuid()
+	{
+		return $this->uuid;
 	}
 
 	/**

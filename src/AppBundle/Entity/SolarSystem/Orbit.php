@@ -3,11 +3,16 @@
 namespace AppBundle\Entity\SolarSystem;
 
 use Doctrine\ORM\Mapping as ORM;
+use AppBundle\UuidSerializer;
 
 /**
  * Orbit
  *
- * @ORM\Table(name="solar_system_orbits", uniqueConstraints={@ORM\UniqueConstraint(name="solar_system_orbit_position_UN", columns={"radius", "offset", "orbiting_planet_uuid"})}, indexes={@ORM\Index(name="solar_system_orbits_solar_systems_FK", columns={"system_uuid"}), @ORM\Index(name="solar_system_orbits_planets_FK", columns={"orbiting_planet_uuid"})})
+ * @ORM\Table(name="solar_system_orbits",
+ *	uniqueConstraints={
+ * 	},
+ *  indexes={
+ *  })
  * @ORM\Entity
  */
 class Orbit
@@ -15,17 +20,20 @@ class Orbit
 	/**
 	 * @var integer
 	 *
-	 * @ORM\Column(name="id", type="bigint", nullable=false)
+	 * @ORM\Column(name="id", type="string", length=20, nullable=false)
 	 * @ORM\Id
-	 * @ORM\GeneratedValue(strategy="IDENTITY")
+	 * @ORM\GeneratedValue(strategy="NONE")
 	 */
 	private $uuid;
 
-	/** @var integer */
+	/** @var string */
 	private $systemUuid;
 
-	/** @var integer */
+	/** @var string */
 	private $orbitingPlanetUuid;
+
+	/** @var string */
+	private $orbitedPlanetUuid;
 
 	/** @var integer */
 	private $radius;
@@ -41,11 +49,12 @@ class Orbit
 	{
 		$this->uuid = $uuid;
 		// generovani
-		srand($uuid);
-		$this->systemUuid = random_int(0, 2000);
-		$this->orbitingPlanetUuid = random_int(0, 100000);
-		$this->radius = $uuid * 3;
-		$this->offset = $uuid * 31 % 360;
+		$generator = new UuidSerializer\Orbit($uuid);
+		$this->systemUuid = $generator->getSystemUuid();
+		$this->orbitingPlanetUuid = $generator->getOrbitingPlanetUuid();
+		$this->orbitedPlanetUuid = $generator->getOrbitedPlanetUuid();
+		$this->radius = $generator->getRadius();
+		$this->offset = $generator->getOffset();
 	}
 
 	/**
