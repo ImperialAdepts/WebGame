@@ -33,10 +33,3 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
-
-    doctrine.orm.uuid_entity_manager:
-        public: true
-        class: AppBundle\Doctrine\UuidEntityManager
-        arguments: ['@database_connection', '@doctrine.orm.default_configuration', '@doctrine.dbal.default_connection.event_manager']
-#        parent: doctrine.orm.entity_manager
-#        decorates: doctrine.orm.entity_manager
