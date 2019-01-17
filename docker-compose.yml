@@ -15,6 +15,7 @@ services:
         - MYSQL_DATABASE=imperium
         - MYSQL_USER=imperator
         - MYSQL_PASSWORD=muaddib
+        - DATABASE_URL=mysql://imperator:muaddib@mysql:3306/imperium
       ports:
         - "2002:3306"
 
