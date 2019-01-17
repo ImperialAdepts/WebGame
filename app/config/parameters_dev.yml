@@ -1,0 +1,12 @@
+# devel accesses to docker dev database
+parameters:
+    database_host: mysql
+    database_port: 3306
+    database_name: imperium
+    database_user: imperator
+    database_password: muaddib
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: 6449ef2bef3fb2a6d2b2234402da95abd5d5df4c
