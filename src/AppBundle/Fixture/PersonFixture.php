@@ -16,28 +16,46 @@ class PersonFixture extends \Doctrine\Bundle\FixturesBundle\Fixture
 		$troi->setPassword('troi');
 		$manager->persist($troi);
 
-		$king1 = new \AppBundle\Entity\Soul();
-		$king1->setGamer($troi);
-		$king1->setName('King I.');
-		$manager->persist($king1);
-
-		$human1 = new \AppBundle\Entity\Human();
-		$human1->setName('Odin');
-		$human1->setBornIn(0);
-		$human1->setSoul($king1);
-		$manager->persist($human1);
-
-		$human2 = new \AppBundle\Entity\Human();
-		$human2->setName('Zeus');
-		$human2->setBornIn(10);
-		$human2->setSoul($king1);
-		$manager->persist($human2);
-
-		$human3 = new \AppBundle\Entity\Human();
-		$human3->setName('Persefone');
-		$human3->setBornIn(20);
-		$human3->setSoul($king1);
-		$manager->persist($human3);
+        {
+            $soul = new \AppBundle\Entity\Soul();
+            $soul->setGamer($troi);
+            $soul->setName('Odin');
+            $manager->persist($soul);
+            {
+                $human = new \AppBundle\Entity\Human();
+                $human->setName('Erik krvava sekera');
+                $human->setBornIn(0);
+                $human->setSoul($soul);
+                $manager->persist($human);
+            }
+            {
+                $human = new \AppBundle\Entity\Human();
+                $human->setName('Rudovous');
+                $human->setBornIn(0);
+                $human->setSoul($soul);
+                $manager->persist($human);
+            }
+        }
+        {
+            $soul = new \AppBundle\Entity\Soul();
+            $soul->setGamer($troi);
+            $soul->setName('Zeus');
+            $manager->persist($soul);
+            {
+                $human = new \AppBundle\Entity\Human();
+                $human->setName('Herakles');
+                $human->setBornIn(0);
+                $human->setSoul($soul);
+                $manager->persist($human);
+            }
+            {
+                $human = new \AppBundle\Entity\Human();
+                $human->setName('Oidipus');
+                $human->setBornIn(0);
+                $human->setSoul($soul);
+                $manager->persist($human);
+            }
+        }
 
 		$manager->flush();
 

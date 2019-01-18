@@ -16,7 +16,9 @@
 					<tr>
 						<td>
 							{% if region.settlement is not null %}
-								<strong>{{ region.settlement.type }}</strong>
+								<strong>{{ region.settlement.type }}</strong><br>
+                                <small> ruled by </small><br>
+								<strong>{{ region.settlement.manager.name }}</strong>
 							{% else %}
 								nature
 							{% endif %}
