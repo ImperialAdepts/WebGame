@@ -14,7 +14,6 @@
 					<td>{{ dump(region) }}</td>
 				{% else %}
 					<tr>
-						<td>{{ region.uuid }}</td>
 						<td>
 							{% if region.settlement is not null %}
 								<strong>{{ region.settlement.type }}</strong>
@@ -23,7 +22,8 @@
 							{% endif %}
 						</td>
 						<td>
-							{{ regioMacro.resource_deposit_info(region, human) }}
+							{# TODO: opravit vypisovani maker #}
+							{#{{ regioMacro.resource_deposit_info({r:region, h:human}) }}#}
 						</td>
 						{% if region.project is not null %}
 							<td colspan="2">
@@ -35,7 +35,12 @@
 								{% if region.settlement is null %}
 									{% for blueprint in buildingBlueprints %}
 										<a href="{{ path('region_build_settlement', {
-											'regionUuid': region.uuid, 'blueprintId': blueprint.id, 'human': human.id}) }}">
+											'regionC': region.peakCenter.id,
+											'regionL': region.peakLeft.id,
+											'regionR': region.peakRight.id,
+											'blueprintId': blueprint.id,
+											'human': human.id
+										}) }}">
 											Create {{ blueprint.description }} settlement</a><br/>
 									{% endfor %}
 								{% else %}
@@ -43,11 +48,9 @@
 								{% endif %}
 							</td>
 							<td>
-								{{ regioMacro.deposit_info(region, human) }}
-							</td>
-							<td>
-								<h3>Planet {{ region.planet.name }}</h3>
-								<span>Planet uuid: {{ region.planetUuid }}</span>
+								{{ dump(human) }}
+								{{ dump(region) }}
+								{#{{ regioMacro.deposit_info(region, human) }}#}
 							</td>
 						{% endif %}
 					</tr>

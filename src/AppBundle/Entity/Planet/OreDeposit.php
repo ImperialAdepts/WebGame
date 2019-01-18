@@ -22,12 +22,12 @@ class OreDeposit
     private $id;
 
     /**
-     * @var Region
+     * @var Peak
      *
-     * @ORM\ManyToOne(targetEntity="Region")
-     * @ORM\JoinColumn(name="region_uuid", referencedColumnName="uuid")
+     * @ORM\ManyToOne(targetEntity="Peak")
+     * @ORM\JoinColumn(name="peak_id", referencedColumnName="id")
      */
-    private $region;
+    private $peak;
 
     /**
      * @var string
@@ -62,19 +62,19 @@ class OreDeposit
     }
 
     /**
-     * @return Region
+     * @return Peak
      */
-    public function getRegion()
+    public function getPeak()
     {
-        return $this->region;
+        return $this->peak;
     }
 
     /**
-     * @param Region $region
+     * @param Peak $peak
      */
-    public function setRegion($region)
+    public function setPeak(Peak $peak)
     {
-        $this->region = $region;
+        $this->peak = $peak;
     }
 
 

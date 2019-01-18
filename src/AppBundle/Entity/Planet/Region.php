@@ -1,13 +1,9 @@
 <?php
 
 namespace AppBundle\Entity\Planet;
-
-use AppBundle\Entity\SolarSystem\Planet;
 use Doctrine\ORM\Mapping as ORM;
-use AppBundle\UuidSerializer;
-
 /**
- * Region
+ * Region - map unit
  *
  * @ORM\Table(name="planet_regions")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\Planet\RegionRepository")
@@ -15,13 +11,35 @@ use AppBundle\UuidSerializer;
 class Region
 {
 	/**
-	 * @var string
+	 * @var Peak
 	 *
-	 * @ORM\Column(name="uuid", type="string", length=30)
 	 * @ORM\Id
+     * @ORM\ManyToOne(targetEntity="Peak")
+     * @ORM\JoinColumn(name="peak_center_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     *
 	 * @ORM\GeneratedValue(strategy="NONE")
 	 */
-	private $uuid;
+	private $peakCenter;
+
+    /**
+     * @var Peak
+     *
+     * @ORM\Id
+     * @ORM\ManyToOne(targetEntity="Peak")
+     * @ORM\JoinColumn(name="peak_left_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $peakLeft;
+
+    /**
+     * @var Peak
+     *
+     * @ORM\Id
+     * @ORM\ManyToOne(targetEntity="Peak")
+     * @ORM\JoinColumn(name="peak_right_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $peakRight;
 
 	/**
 	 * @var Settlement
@@ -45,59 +63,43 @@ class Region
 	 */
 	private $fertility;
 
-	/**
-	 * @var OreDeposit
-	 * Known deposits, not all!
-	 *
-	 * @ORM\OneToMany(targetEntity="OreDeposit", mappedBy="region")
-	 */
-	private $oreDeposits;
+    /**
+     * Region constructor.
+     * @param Peak $peakCenter
+     * @param Peak $peakLeft
+     * @param Peak $peakRight
+     */
+    public function __construct(Peak $peakCenter, Peak $peakLeft, Peak $peakRight)
+    {
+        $this->peakCenter = $peakCenter;
+        $this->peakLeft = $peakLeft;
+        $this->peakRight = $peakRight;
+    }
 
-	/**
-	 * @var int
-	 *
-	 * @ORM\Column(name="height", type="integer")
-	 */
-	private $height;
+    /**
+     * @return Peak
+     */
+    public function getPeakCenter()
+    {
+        return $this->peakCenter;
+    }
 
-	/** @var string */
-	private $planetUuid;
+    /**
+     * @return Peak
+     */
+    public function getPeakLeft()
+    {
+        return $this->peakLeft;
+    }
 
-	/**
-	 * @var Planet
-	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SolarSystem\Planet")
-	 * @ORM\JoinColumn(fieldName="planetUuid", referencedColumnName="uuid")
-	 */
-	private $planet;
+    /**
+     * @return Peak
+     */
+    public function getPeakRight()
+    {
+        return $this->peakRight;
+    }
 
-	/**
-	 * Region constructor.
-	 * @param int $uuid
-	 */
-	public function __construct($uuid = null)
-	{
-		$this->uuid = $uuid;
-		// generovani
-		$generator = new UuidSerializer\Region($uuid);
-		$this->planetUuid = $generator->getPlanetUuid();
-		$this->fertility = $generator->getFertility();
-		$this->height = $generator->getHeight();
-	}
-
-	/**
-	 * Get id
-	 *
-	 * @return int
-	 */
-	public function getUuid()
-	{
-		return $this->uuid;
-	}
-
-	public function getId()
-	{
-		return $this->getUuid();
-	}
 
 	/**
 	 * Set settlement
@@ -164,68 +166,19 @@ class Region
 	}
 
 	/**
-	 * Set ores
-	 *
-	 * @param array $oreDeposits
-	 *
-	 * @return Region
-	 */
-	public function setOreDeposits($oreDeposits)
-	{
-		$this->oreDeposits = $oreDeposits;
-
-		return $this;
-	}
-
-	/**
 	 * Get ores
 	 *
 	 * @return OreDeposit[]
 	 */
-	public function getOreDeposits()
+	public function getAvailableOreDeposits()
 	{
-		return $this->oreDeposits;
+		return array_merge(
+		    $this->getPeakCenter()->getOreDeposits(),
+		    $this->getPeakLeft()->getOreDeposits(),
+		    $this->getPeakRight()->getOreDeposits()
+        );
 	}
 
-	/**
-	 * Set height
-	 *
-	 * @param integer $height
-	 *
-	 * @return Region
-	 */
-	public function setHeight($height)
-	{
-		$this->height = $height;
-
-		return $this;
-	}
-
-	/**
-	 * Get height
-	 *
-	 * @return int
-	 */
-	public function getHeight()
-	{
-		return $this->height;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getPlanetUuid()
-	{
-		return $this->planetUuid;
-	}
-
-	/**
-	 * @return Planet
-	 */
-	public function getPlanet()
-	{
-		return $this->planet;
-	}
 	/**
 	 * @return integer land space in m2
 	 */

@@ -2,7 +2,7 @@
 
 namespace AppBundle\Repository\Planet;
 
-use AppBundle\Entity;
+use AppBundle\Entity\Planet\Region;
 
 /**
  * RegionRepository
@@ -13,22 +13,15 @@ use AppBundle\Entity;
 class RegionRepository extends \Doctrine\ORM\EntityRepository
 {
 
-	public function getRegionNeighbarhood(Entity\Planet\Region $region)
+    /**
+     * TODO: prepsat aby to tahalo sousedy do nejake rozumne vzdalenosti
+     *
+     * @param Region $region
+     * @return Region[]
+     */
+	public function getRegionNeighbarhood(Region $region)
 	{
-		$regionIds = range($region->getUuid(), $region->getUuid() + 10);
-		$regions = [];
-		foreach ($regionIds as $id) {
-			$regions[] = $this->getByUuid($id);
-		}
-		return $regions;
+		return $this->findAll();
 	}
 
-	public function getByUuid($uuid)
-	{
-		$region = $this->getEntityManager()->find(Entity\Planet\Region::class, $uuid);
-		if (!$region) {
-			$region = new Entity\Planet\Region($uuid);
-		}
-		return $region;
-	}
 }

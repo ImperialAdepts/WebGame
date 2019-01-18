@@ -4,7 +4,6 @@ namespace AppBundle\Entity\SolarSystem;
 
 use AppBundle\UuidSerializer;
 use Doctrine\ORM\Mapping as ORM;
-
 /**
  * Planet
  *
@@ -30,7 +29,6 @@ class Planet
 
 	/** @var float */
 	private $gravity;
-
 
 	/**
 	 * Planet constructor.

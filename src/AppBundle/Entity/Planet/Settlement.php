@@ -4,9 +4,8 @@ namespace AppBundle\Entity\Planet;
 
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
-
 /**
- * Settlement
+ * Settlement - management unit
  *
  * @ORM\Table(name="planet_settlements")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\Planet\SettlementRepository")

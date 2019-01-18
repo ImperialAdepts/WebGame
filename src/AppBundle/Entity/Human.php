@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Planet;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -48,6 +49,16 @@ class Human
      * @ORM\Column(name="family_id", type="bigint", nullable=true)
      */
     private $familyId;
+
+    /**
+     * @var Planet\Settlement
+     *
+     * @ORM\ManyToOne(targetEntity="\AppBundle\Entity\Planet\Settlement")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="current_settlement_id", referencedColumnName="id")
+     * })
+     */
+    private $currentPosition;
 
     /**
      * @var Human
@@ -140,6 +151,22 @@ class Human
     public function setDiedIn($diedIn)
     {
         $this->diedIn = $diedIn;
+    }
+
+    /**
+     * @return Settlement
+     */
+    public function getCurrentPosition()
+    {
+        return $this->currentPosition;
+    }
+
+    /**
+     * @param Planet\Settlement $currentPosition
+     */
+    public function setCurrentPosition(Planet\Settlement $currentPosition)
+    {
+        $this->currentPosition = $currentPosition;
     }
 
     /**

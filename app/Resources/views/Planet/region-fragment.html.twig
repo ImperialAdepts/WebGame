@@ -1,4 +1,6 @@
-{% macro resource_deposit_info(region) %}
+{% macro resource_deposit_info(args) %}
+	{% set region = args.r %}
+	{% set human = args.h %}
 	{% if region.settlement is not null %}
 		{% for deposit in region.settlement.resourceDeposits %}
 			<dt>{{ deposit.resourceDescriptor }}</dt>
@@ -6,7 +8,7 @@
 		{% endfor %}
 	{% endif %}
 
-	{% for deposit in region.oreDeposits %}
+	{% for deposit in region.availableOreDeposits %}
 		<dt>{{ deposit.type }}</dt>
 		<dd>{{ deposit.amount }}</dd>
 	{% endfor %}
@@ -33,16 +35,16 @@
 {% endmacro %}
 
 {% macro deposit_info(region, human) %}
-	{% for deposit in region.oreDeposits %}
+	{% for deposit in region.availableOreDeposits %}
 		{{ deposit.amount }}T of {{ deposit.type }}<br/>
 	{% endfor %}
-	{% if region.oreDeposits is not empty and region.settlement is null %}
+	{% if region.availableOreDeposits is not empty and region.settlement is null %}
 		<a href="{{ path('region_build_settlement', {
 			'regionUuid': region.uuid, 'type': 'mine', 'human': human.id}) }}">Create
 			mine</a>
 		<br/>
 	{% endif %}
-	{% if region.oreDeposits is empty %}
+	{% if region.availableOreDeposits is empty %}
 		<a href="{{ path('region_deposit_screening', {
 			'regionUuid': region.uuid, 'human': human.id}) }}">Deposit screening</a>
 	{% endif %}

@@ -13,12 +13,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegionController extends Controller
 {
 	/**
-	 * @Route("/build/{blueprintId}/{regionUuid}/{human}", name="region_build_settlement")
+	 * @Route("/build/{blueprintId}/{regionC}_{regionL}_{regionR}/{human}", name="region_build_settlement")
 	 */
-	public function buildAction($blueprintId, $regionUuid, Entity\Human $human, Request $request)
+	public function buildAction($blueprintId, Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Entity\Human $human, Request $request)
 	{
-		$region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getByUuid($regionUuid);
+		$region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->find($regionC, $regionL, $regionR);
 		$blueprint = $this->getDoctrine()->getManager()->find(Entity\Blueprint::class, $blueprintId);
+
+		// TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
 
 		$project = new Entity\Planet\BuildingProject();
 		$project->setRegion($region);
@@ -50,13 +52,13 @@ class RegionController extends Controller
 			$lightDeposit->setType('ironOre');
 			$lightDeposit->setAmount(random_int(50, 100));
 			$lightDeposit->setQuality(100);
-			$lightDeposit->setRegion($region);
+			$lightDeposit->setPeak($region);
 			$deposits[] = $lightDeposit;
 			$heavyDeposit = new Entity\Planet\OreDeposit();
 			$heavyDeposit->setType('ironOre');
 			$heavyDeposit->setAmount(random_int(200, 1000));
 			$heavyDeposit->setQuality(10);
-			$heavyDeposit->setRegion($region);
+			$heavyDeposit->setPeak($region);
 			$deposits[] = $heavyDeposit;
 			$region->setOreDeposits($deposits);
 			$this->getDoctrine()->getManager()->persist($lightDeposit);
@@ -68,13 +70,13 @@ class RegionController extends Controller
 			$lightDeposit->setType('oil');
 			$lightDeposit->setAmount(random_int(10, 100));
 			$lightDeposit->setQuality(100);
-			$lightDeposit->setRegion($region);
+			$lightDeposit->setPeak($region);
 			$deposits[] = $lightDeposit;
 			$heavyDeposit = new Entity\Planet\OreDeposit();
 			$heavyDeposit->setType('oil');
 			$heavyDeposit->setAmount(random_int(1000, 10000));
 			$heavyDeposit->setQuality(10);
-			$heavyDeposit->setRegion($region);
+			$heavyDeposit->setPeak($region);
 			$deposits[] = $heavyDeposit;
 			$region->setOreDeposits($deposits);
 			$this->getDoctrine()->getManager()->persist($lightDeposit);

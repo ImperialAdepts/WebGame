@@ -54,7 +54,11 @@ class HumanController extends Controller
 	 */
 	public function dashboardAction(Entity\Human $human, Request $request)
 	{
-		$centralRegion = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getByUuid(0);
+	    $regions = $human->getCurrentPosition()->getRegions();
+	    foreach ($regions as $region) {
+	        $centralRegion = $region;
+	        break;
+        }
 
 		// TODO: predelat rozumne
 		$blueprints = [];
