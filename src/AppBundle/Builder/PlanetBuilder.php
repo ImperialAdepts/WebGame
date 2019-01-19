@@ -35,22 +35,21 @@ class PlanetBuilder
 		$this->entityManager->persist($project->getRegion());
 	}
 
-	public function buildProjectStep(Entity\Planet\BuildingProject $project)
+	public function buildProjectStep(Entity\Planet\CurrentBuildingProject $project)
 	{
 		$resourceSettlements = $this->entityManager->getRepository(Entity\Planet\Settlement::class)->getByHumanSupervisor($project->getSupervisor());
-		$project->setSteplogs([]);
 
 		$mandays = [];
 		/** @var Entity\Planet\Settlement $settlement */
 		foreach ($resourceSettlements as $settlement) {
 			$people = $settlement->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
 			if ($people) {
-				$project->addSteplog("Settlement #{$settlement->getId()} has {$people->getAmount()} people");
+				$project->addNotification("Settlement #{$settlement->getId()} has {$people->getAmount()} people");
 				$mandays[$settlement->getId()] = $people->getAmount() * self::STEP_DAY_COUNT;
 			} else {
-				$project->addSteplog("There is no people in Settlement #{$settlement->getId()} there are only that:");
+				$project->addNotification("There is no people in Settlement #{$settlement->getId()} there are only that:");
 				foreach ($settlement->getResourceDeposits() as $r => $deposit) {
-					$project->addSteplog("...{$deposit->getAmount()} of {$deposit->getResourceDescriptor()}/key:$r");
+					$project->addNotification("...{$deposit->getAmount()} of {$deposit->getResourceDescriptor()}/key:$r");
 				}
 				$mandays[$settlement->getId()] = 0;
 			}
@@ -58,15 +57,15 @@ class PlanetBuilder
 
 		$missingResources = array_keys($project->getMissingResources());
 		foreach ($missingResources as $resource) {
-			$project->addSteplog("Finding $resource...");
+			$project->addNotification("Finding $resource...");
 			/** @var Entity\Planet\Settlement $settlement */
 			foreach ($resourceSettlements as $settlement) {
 				$missingResource = $project->getMissingResource($resource);
-				$project->addSteplog("Finding amount $missingResource of $resource in Settlement #{$settlement->getId()}");
+				$project->addNotification("Finding amount $missingResource of $resource in Settlement #{$settlement->getId()}");
 
 				if ($resource == ResourceDescriptorEnum::MANDAY) {
 					$storedAmount = $mandays[$settlement->getId()];
-					$project->addSteplog("There is $storedAmount mandays");
+					$project->addNotification("There is $storedAmount mandays");
 					if ($storedAmount > $missingResource) {
 						$mandays[$settlement->getId()] = $storedAmount - $missingResource;
 						$project->setMissingResource($resource, 0);
@@ -79,14 +78,14 @@ class PlanetBuilder
 					}
 					continue;
 				} elseif ($settlement->getResourceDeposit($resource) == null) {
-					$project->addSteplog("There is no $resource in Settlement #{$settlement->getId()} there are only that:");
+					$project->addNotification("There is no $resource in Settlement #{$settlement->getId()} there are only that:");
 					foreach ($settlement->getResourceDeposits() as $r => $deposit) {
-						$project->addSteplog("...{$deposit->getAmount()} of {$deposit->getResourceDescriptor()}/$r");
+						$project->addNotification("...{$deposit->getAmount()} of {$deposit->getResourceDescriptor()}/$r");
 					}
 					continue;
 				} else {
 					$storedAmount = $settlement->getResourceDeposit($resource)->getAmount();
-					$project->addSteplog("There is $storedAmount of $resource");
+					$project->addNotification("There is $storedAmount of $resource");
 					if ($storedAmount > $missingResource) {
 						$settlement->getResourceDeposit($resource)->setAmount($storedAmount - $missingResource);
 						$project->setMissingResource($resource, 0);

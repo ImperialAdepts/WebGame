@@ -13,12 +13,24 @@ class BuildingProjectRepository extends \Doctrine\ORM\EntityRepository
 	/**
 	 * @return \AppBundle\Entity\Planet\BuildingProject[[]
 	 */
-	public function getAllSortedByPriority()
+	public function getActiveSortedByPriority()
 	{
 		return $this->getEntityManager()
 			->createQuery(
-				'SELECT p FROM AppBundle:Planet\BuildingProject p ORDER BY p.priority ASC'
+				'SELECT p FROM AppBundle:Planet\CurrentBuildingProject p ORDER BY p.priority ASC'
 			)
 			->getResult();
 	}
+
+    /**
+     * @return \AppBundle\Entity\Planet\BuildingProject[[]
+     */
+//    public function getHistorySortedByTime()
+//    {
+//        return $this->getEntityManager()
+//            ->createQuery(
+//                'SELECT p FROM AppBundle:Planet\BuildingProject p WHERE p.historyRecord = true ORDER BY p.priority ASC'
+//            )
+//            ->getResult();
+//    }
 }

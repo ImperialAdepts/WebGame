@@ -4,15 +4,16 @@ namespace AppBundle\Entity\Planet;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Entity\Blueprint;
+use AppBundle\Entity\ProjectNotification;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * BuildingProject
  *
- * @ORM\Table(name="planet_building_project")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\Planet\BuildingProjectRepository")
+ * @ ORM\Entity(repositoryClass="AppBundle\Repository\Planet\BuildingProjectRepository")
+ * @ORM\MappedSuperclass
  */
-class BuildingProject
+abstract class BuildingProject
 {
 	/**
 	 * @var int
@@ -51,38 +52,11 @@ class BuildingProject
 	 */
 	private $supervisor;
 
-	/**
-	 * @var int
-	 *
-	 * @ORM\Column(name="priority", type="integer")
-	 */
-	private $priority;
-
-	/**
-	 * @var float[] resourceDescriptor => amount
-	 *
-	 * @ORM\Column(name="missing_resources", type="array")
-	 */
-	private $missingResources;
-
-	/**
-	 * @var string[]
-	 *
-	 * @ORM\Column(name="steplogs", type="array")
-	 */
-	private $steplogs;
 
 	/**
 	 * @return bool
 	 */
-	public function isDone()
-	{
-		$resourceLeft = 0;
-		foreach ($this->getMissingResources() as $resource => $amount) {
-			$resourceLeft += $amount;
-		}
-		return $resourceLeft <= 0;
-	}
+	public abstract function isDone();
 
 	/**
 	 * Get id
@@ -159,100 +133,9 @@ class BuildingProject
 	}
 
 	/**
-	 * Set priority
-	 *
-	 * @param integer $priority
-	 *
-	 * @return BuildingProject
+	 * @return ProjectNotification[]
 	 */
-	public function setPriority($priority)
-	{
-		$this->priority = $priority;
-
-		return $this;
-	}
-
-	/**
-	 * Get priority
-	 *
-	 * @return int
-	 */
-	public function getPriority()
-	{
-		return $this->priority;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getMandaysLeft()
-	{
-		if (!array_key_exists(ResourceDescriptorEnum::MANDAY, $this->missingResources)) {
-			return 0;
-		}
-		return $this->missingResources[ResourceDescriptorEnum::MANDAY];
-	}
-
-	/**
-	 * @param int $mandaysLeft
-	 */
-	public function setMandaysLeft($mandaysLeft)
-	{
-		$this->missingResources[ResourceDescriptorEnum::MANDAY] = $mandaysLeft;
-	}
-
-	/**
-	 * @return float[]
-	 */
-	public function getMissingResources()
-	{
-		return $this->missingResources;
-	}
-
-	public function getMissingResource($resource)
-	{
-		if (!array_key_exists($resource, $this->missingResources)) {
-			return 0;
-		}
-		return $this->missingResources[$resource];
-	}
-
-	/**
-	 * @param float[] $missingResources
-	 */
-	public function setMissingResources($missingResources)
-	{
-		$this->missingResources = $missingResources;
-	}
-
-	public function setMissingResource($resource, $count)
-	{
-		$this->missingResources[$resource] = $count;
-	}
-
-	/**
-	 * @return \string[]
-	 */
-	public function getSteplogs()
-	{
-		return $this->steplogs;
-	}
-
-	/**
-	 * @param \string[] $steplogs
-	 */
-	public function setSteplogs($steplogs)
-	{
-		$this->steplogs = $steplogs;
-	}
-
-	/**
-	 * @param \string[] $steplogs
-	 */
-	public function addSteplog($steplog)
-	{
-		$this->steplogs[] = $steplog;
-	}
+	public abstract function getNotifications();
 
 }
 

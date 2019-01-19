@@ -24,28 +24,33 @@ class CronController extends Controller
 	 */
 	public function buildAction(Request $request)
 	{
-		$projects = $this->getDoctrine()->getRepository(Entity\Planet\BuildingProject::class)->getAllSortedByPriority();
-		$builder = new PlanetBuilder($this->getDoctrine()->getManager());
-		/** @var Entity\Planet\BuildingProject $project */
-		foreach ($projects as $project) {
-			$builder->buildProjectStep($project);
-			if ($project->isDone()) {
-				$builder->buildProject($project);
-				$this->getDoctrine()->getManager()->remove($project);
-			} else {
-				$this->getDoctrine()->getManager()->persist($project);
-			}
-		}
-		$this->getDoctrine()->getManager()->flush();
+
+        $projects = $this->getDoctrine()->getRepository(Entity\Planet\CurrentBuildingProject::class)->getActiveSortedByPriority();
+        $builder = new PlanetBuilder($this->getDoctrine()->getManager());
+        /** @var Entity\Planet\BuildingProject $project */
+        foreach ($projects as $project) {
+            $builder->buildProjectStep($project);
+            if ($project->isDone()) {
+                $builder->buildProject($project);
+                $this->getDoctrine()->getManager()->remove($project);
+            } else {
+                $this->getDoctrine()->getManager()->persist($project);
+            }
+        }
+        $this->getDoctrine()->getManager()->flush();
 
 		$response = "";
-		foreach ($projects as $project) {
-			$response .= "PROJECT at " . $project->getRegion()->getCoords() . ' ' . $project->getBuildingBlueprint()->getDescription() . "\n<br>";
-			if (!$project->getSteplogs()) continue;
-			foreach ($project->getSteplogs() as $log) {
-				$response .= "$log\n<br>";
-			}
-		}
+//		echo "Count=".count($projects)."<br>\n";
+//		/** @var Entity\Planet\CurrentBuildingProject $projectA */
+//        foreach ($projects as $projectA) {
+//            echo "{$projectA->getRegion()->getCoords()} :";
+//            echo "{$projectA->getBuildingBlueprint()->getDescription()}<br>\n";
+//			$response .= "PROJECT at " . $projectA->getRegion()->getCoords() . ' ' . $projectA->getBuildingBlueprint()->getDescription() . "\n<br>";
+//			if (!$projectA->getNotifications()) continue;
+//			foreach ($projectA->getNotifications() as $notification) {
+//				$response .= "{$notification->getDescription()}\n<br>";
+//			}
+//		}
 
 		return new Response($response);
 	}

@@ -22,7 +22,7 @@ class RegionController extends Controller
 
 		// TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
 
-		$project = new Entity\Planet\BuildingProject();
+		$project = new Entity\Planet\CurrentBuildingProject();
 		$project->setRegion($region);
 		$project->setBuildingBlueprint($blueprint);
 		$project->setMandaysLeft($blueprint->getMandays());

@@ -55,11 +55,18 @@ class Region
 	private $settlement;
 
 	/**
-	 * @var BuildingProject
+	 * @var CurrentBuildingProject
 	 *
-	 * @ORM\OneToOne(targetEntity="BuildingProject", mappedBy="region")
+	 * @ORM\OneToOne(targetEntity="CurrentBuildingProject", mappedBy="region")
 	 */
 	private $project;
+
+    /**
+     * @var HistoryBuildingProject[]
+     *
+     * @ORM\OneToMany(targetEntity="HistoryBuildingProject", mappedBy="region")
+     */
+    private $projectHistory;
 
 	/**
 	 * @var float
@@ -134,7 +141,7 @@ class Region
 	}
 
 	/**
-	 * @return BuildingProject
+	 * @return CurrentBuildingProject
 	 */
 	public function getProject()
 	{
@@ -142,12 +149,29 @@ class Region
 	}
 
 	/**
-	 * @param BuildingProject $project
+	 * @param CurrentBuildingProject $project
 	 */
-	public function setProject($project)
+	public function setProject(CurrentBuildingProject $project)
 	{
 		$this->project = $project;
 	}
+
+    /**
+     * @return HistoryBuildingProject[]
+     */
+    public function getProjectHistory()
+    {
+        return $this->projectHistory;
+    }
+
+    /**
+     * @param HistoryBuildingProject[] $projectHistory
+     */
+    public function setProjectHistory($projectHistory)
+    {
+        $this->projectHistory = $projectHistory;
+    }
+
 
 	/**
 	 * Set fertility
