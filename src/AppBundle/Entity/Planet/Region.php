@@ -15,8 +15,9 @@ class Region
 	 *
 	 * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Peak")
-     * @ORM\JoinColumn(name="peak_center_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
-     *
+     * @ORM\JoinColumns{
+     *  @ORM\JoinColumn(name="peak_center_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * }
 	 * @ORM\GeneratedValue(strategy="NONE")
 	 */
 	private $peakCenter;
@@ -26,7 +27,9 @@ class Region
      *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Peak")
+     * @ORM\JoinColumns{
      * @ORM\JoinColumn(name="peak_left_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * }
      * @ORM\GeneratedValue(strategy="NONE")
      */
     private $peakLeft;
@@ -36,7 +39,9 @@ class Region
      *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Peak")
+     * @ORM\JoinColumns{
      * @ORM\JoinColumn(name="peak_right_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * }
      * @ORM\GeneratedValue(strategy="NONE")
      */
     private $peakRight;
@@ -100,6 +105,9 @@ class Region
         return $this->peakRight;
     }
 
+    public function getCoords() {
+        return $this->getPeakCenter()->getId()."_".$this->getPeakLeft()->getId()."_".$this->getPeakRight()->getId();
+    }
 
 	/**
 	 * Set settlement

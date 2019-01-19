@@ -10,19 +10,21 @@
 
 		<table border="1">
 			{% for region in nextRegions %}
-				{% if region is null %}
-					<td>{{ dump(region) }}</td>
-				{% else %}
+				{% if region is not null %}
 					<tr>
-						<td>
+						<td colspan="3">
+							{{ region.coords }}:
 							{% if region.settlement is not null %}
-								<strong>{{ region.settlement.type }}</strong><br>
-                                <small> ruled by </small><br>
+								<strong>{{ region.settlement.type }}</strong>
+								<small> ruled by </small>
 								<strong>{{ region.settlement.manager.name }}</strong>
 							{% else %}
 								nature
 							{% endif %}
 						</td>
+					</tr>
+					<tr>
+
 						<td>
 							{# TODO: opravit vypisovani maker #}
 							{#{{ regioMacro.resource_deposit_info({r:region, h:human}) }}#}

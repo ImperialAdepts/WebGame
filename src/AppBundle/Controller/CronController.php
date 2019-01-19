@@ -40,7 +40,7 @@ class CronController extends Controller
 
 		$response = "";
 		foreach ($projects as $project) {
-			$response .= "PROJECT at " . $project->getRegion()->getUuid() . ' ' . $project->getBuildingBlueprint()->getDescription() . "\n<br>";
+			$response .= "PROJECT at " . $project->getRegion()->getCoords() . ' ' . $project->getBuildingBlueprint()->getDescription() . "\n<br>";
 			if (!$project->getSteplogs()) continue;
 			foreach ($project->getSteplogs() as $log) {
 				$response .= "$log\n<br>";

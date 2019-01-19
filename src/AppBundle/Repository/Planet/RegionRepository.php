@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository\Planet;
 
+use AppBundle\Entity\Planet\Peak;
 use AppBundle\Entity\Planet\Region;
 
 /**
@@ -23,5 +24,12 @@ class RegionRepository extends \Doctrine\ORM\EntityRepository
 	{
 		return $this->findAll();
 	}
+
+	public function findByPeaks(Peak $regionC, Peak $regionL, Peak $regionR) {
+        return $this->findOneBy([
+            'peakCenter' => $regionC,
+            'peakLeft' => $regionL,
+            'peakRight' => $regionR]);
+    }
 
 }

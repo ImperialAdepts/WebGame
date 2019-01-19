@@ -27,9 +27,11 @@ class BuildingProject
 	 * @var Region
 	 *
 	 * @ORM\OneToOne(targetEntity="AppBundle\Entity\Planet\Region", inversedBy="project")
-	 * @ORM\JoinColumn(name="region_peak_center_id", referencedColumnName="peak_center_id")
-	 * @ORM\JoinColumn(name="region_peak_left_id", referencedColumnName="peak_left_id")
-	 * @ORM\JoinColumn(name="region_peak_right_id", referencedColumnName="peak_right_id")
+     * @ORM\JoinColumns(
+	 *  @ORM\JoinColumn(name="region_peak_center_id", referencedColumnName="peak_center_id"),
+	 *  @ORM\JoinColumn(name="region_peak_left_id", referencedColumnName="peak_left_id"),
+	 *  @ORM\JoinColumn(name="region_peak_right_id", referencedColumnName="peak_right_id")
+     * )
 	 */
 	private $region;
 

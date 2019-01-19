@@ -17,7 +17,7 @@ class RegionController extends Controller
 	 */
 	public function buildAction($blueprintId, Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Entity\Human $human, Request $request)
 	{
-		$region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->find($regionC, $regionL, $regionR);
+		$region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
 		$blueprint = $this->getDoctrine()->getManager()->find(Entity\Blueprint::class, $blueprintId);
 
 		// TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
