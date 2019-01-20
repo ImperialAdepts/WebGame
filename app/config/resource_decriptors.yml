@@ -1,10 +1,8 @@
 parameters:
     resource_descriptor:
+        # klice odpovidaji enumu ResourceDescriptorEnum -> pridat je i tam
         blueprint:
             name: 'People'
-            traits: ['comodity']
-        blueprint:
-            name: 'Copy of blueprint'
             traits: ['comodity']
         food:
             name: 'Simple food'
@@ -18,18 +16,30 @@ parameters:
         oilBarrel:
             name: 'Barrel of raw oil'
             traits: ['comodity']
-        mine:
-            name: 'Mine'
+        resourceDistrict:
+            name: 'Resource district'
             traits: ['settlement']
         village:
             name: 'Village'
             traits: ['settlement']
-        lab:
-            name: 'Laboratory'
+        labD:
+            name: 'Laboratory district'
             traits: ['settlement']
-        farm:
-            name: 'Farm'
+        farmD:
+            name: 'Farm district'
             traits: ['settlement']
         warehouse:
             name: 'Warehouse'
+            traits: ['building']
+        mine:
+            name: 'Mine'
+            traits: ['building']
+        furnace:
+            name: 'Blast furnace'
+            traits: ['building']
+        lab:
+            name: 'Laboratory'
+            traits: ['building']
+        cropField:
+            name: 'Field'
             traits: ['building']

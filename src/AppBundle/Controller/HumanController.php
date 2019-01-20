@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Builder\PlanetBuilder;
 use AppBundle\Entity;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -13,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class HumanController extends Controller
 {
-	/**
+    /**
 	 * @Route("/incarnation-list/{soul}", name="human_incarnation_list")
 	 */
 	public function incarnationListAction(Entity\Soul $soul, Request $request)
@@ -60,18 +61,20 @@ class HumanController extends Controller
 	        break;
         }
 
-		// TODO: predelat rozumne
-		$blueprints = [];
-		$blueprints[] = $this->getDoctrine()->getRepository(Entity\Blueprint::class)->getByName(ResourceAndBlueprintFixture::FARM_BLUEPRINT);
-		$blueprints[] = $this->getDoctrine()->getRepository(Entity\Blueprint::class)->getByName(ResourceAndBlueprintFixture::VILLAGE_BLUEPRINT);
-		$blueprints[] = $this->getDoctrine()->getRepository(Entity\Blueprint::class)->getByName(ResourceAndBlueprintFixture::MINE_BLUEPRINT);
-		$blueprints[] = $this->getDoctrine()->getRepository(Entity\Blueprint::class)->getByName(ResourceAndBlueprintFixture::LAB_BLUEPRINT);
+	    $regions = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getRegionNeighbarhood($centralRegion);
 
+		$blueprintsByRegions = [];
+	    /** @var PlanetBuilder $builder */
+	    $builder = $this->get('planet_builder');
+	    /** @var Entity\Planet\Region $region */
+        foreach ($regions as $region) {
+	        $blueprintsByRegions[$region->getCoords()] = $builder->getAvailableBlueprints($region, $human);
+        }
 		return $this->render('Human/dashboard.html.twig', [
 			'human' => $human,
 			'centralRegion' => $centralRegion,
-			'nextRegions' => $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getRegionNeighbarhood($centralRegion),
-			'buildingBlueprints' => $blueprints, // todo
+			'nextRegions' => $regions,
+			'buildingBlueprints' => $blueprintsByRegions,
 		]);
 	}
 

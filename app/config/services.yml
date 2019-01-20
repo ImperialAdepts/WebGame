@@ -29,6 +29,11 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    planet_builder:
+        class: AppBundle\Builder\PlanetBuilder
+        public: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
     # add more services, or override services that need manual wiring
     # AppBundle\Service\ExampleService:
     #     arguments:

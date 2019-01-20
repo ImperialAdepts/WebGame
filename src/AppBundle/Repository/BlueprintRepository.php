@@ -19,4 +19,14 @@ class BlueprintRepository extends \Doctrine\ORM\EntityRepository
 			)
 			->getOneOrNullResult();
 	}
+
+    public function getAll()
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                "SELECT b FROM AppBundle:Blueprint b ORDER BY b.id ASC"
+            )
+            ->getResult();
+    }
+
 }

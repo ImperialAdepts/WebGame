@@ -12,7 +12,7 @@
 			{% for region in nextRegions %}
 				{% if region is not null %}
 					<tr>
-						<td colspan="3">
+						<td colspan="2">
 							{{ region.coords }}:
 							{% if region.settlement is not null %}
 								<strong>{{ region.settlement.type }}</strong>
@@ -42,18 +42,16 @@
 							</td>
 						{% else %}
 							<td>
-								{% if region.settlement is null %}
-									{% for blueprint in buildingBlueprints %}
-										<a href="{{ path('region_build_settlement', {
-											'regionC': region.peakCenter.id,
-											'regionL': region.peakLeft.id,
-											'regionR': region.peakRight.id,
-											'blueprintId': blueprint.id,
-											'human': human.id
-										}) }}">
-											Create {{ blueprint.description }} settlement</a><br/>
-									{% endfor %}
-								{% endif %}
+								{% for blueprint in buildingBlueprints[region.coords] %}
+									<a href="{{ path('region_build_settlement', {
+										'regionC': region.peakCenter.id,
+										'regionL': region.peakLeft.id,
+										'regionR': region.peakRight.id,
+										'blueprintId': blueprint.id,
+										'human': human.id
+									}) }}">
+										Build {{ blueprint.description }}</a><br/>
+								{% endfor %}
 							</td>
 						{% endif %}
 						<td>

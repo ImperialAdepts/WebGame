@@ -51,12 +51,20 @@ class Blueprint
 	private $space;
 
 	/**
+     * Everythink will be consumed
 	 * @var string[] resource_descriptor => count
 	 *
 	 * @ORM\Column(name="requirements", type="json_array")
 	 */
 	private $requirements;
 
+    /**
+     * Must be at place
+     * @var string[] resource_descriptor => count
+     *
+     * @ORM\Column(name="constraints", type="json_array")
+     */
+    private $constraints;
 
 	/**
 	 * Get id
@@ -185,6 +193,23 @@ class Blueprint
 	{
 		return $this->requirements;
 	}
+
+    /**
+     * @return string[]
+     */
+    public function getConstraints()
+    {
+        return $this->constraints;
+    }
+
+    /**
+     * @param string[] $constraints
+     */
+    public function setConstraints($constraints)
+    {
+        $this->constraints = $constraints;
+    }
+
 
 	public function getResourcesPerManday()
 	{

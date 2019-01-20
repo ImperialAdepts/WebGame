@@ -15,5 +15,9 @@ final class ResourceDescriptorEnum
 	const FARM = 'farm';
 	const VILLAGE = 'village';
 	const LABORATORY = 'lab';
+    const RESOURCE_DISTRICT = 'resourceDistrict';
+    const FARM_DISTRICT = 'farmD';
+    const LABORATORY_DISTRICT = 'labD';
 	const WAREHOUSE = 'warehouse';
+	const FURNACE = 'furnace';
 }
