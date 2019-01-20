@@ -1,0 +1,73 @@
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="root">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Resource" type="ResourceType" maxOccurs="unbounded"/>
+                <xs:element name="Technology" type="TechnologyType" maxOccurs="unbounded"/>
+                <xs:element name="Blueprint" type="BlueprintType" maxOccurs="unbounded"/>
+                <xs:element name="ColonizationPack" type="ColonizationPackType" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:complexType name="ResourceType">
+        <xs:attribute name="id" type="xs:ID"/>
+    </xs:complexType>
+    <xs:complexType name="ResourceRefType">
+        <xs:attribute name="ref" type="xs:IDREF"/>
+    </xs:complexType>
+    <xs:complexType name="ResourcePriceRefType">
+        <xs:attribute name="ref" type="xs:IDREF"/>
+        <xs:attribute name="count" type="xs:positiveInteger"/>
+    </xs:complexType>
+    <xs:complexType name="PriceSummaryType">
+        <xs:sequence minOccurs="1">
+            <xs:element name="Resource" type="ResourcePriceRefType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="Product" type="BlueprintProductRefType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:ID"/>
+    </xs:complexType>
+
+
+    <xs:complexType name="TechnologyType">
+        <xs:sequence minOccurs="0">
+            <xs:element name="price" type="PriceSummaryType"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:ID"/>
+    </xs:complexType>
+    <xs:complexType name="TechnologyRefType">
+        <xs:attribute name="ref" type="xs:IDREF"/>
+    </xs:complexType>
+
+
+    <xs:complexType name="BlueprintType">
+        <xs:sequence>
+            <xs:element name="Technology" type="TechnologyRefType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="build">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="price" type="PriceSummaryType"/>
+                        <xs:element name="constraints" type="PriceSummaryType" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:ID"/>
+    </xs:complexType>
+    <xs:complexType name="BlueprintRefType">
+        <xs:attribute name="ref" type="xs:IDREF"/>
+    </xs:complexType>
+    <xs:complexType name="BlueprintProductRefType">
+        <xs:attribute name="blueprint" type="xs:IDREF"/>
+        <xs:attribute name="count" type="xs:positiveInteger"/>
+    </xs:complexType>
+
+    <xs:complexType name="ColonizationPackType">
+        <xs:sequence>
+            <xs:element name="Resource" type="ResourcePriceRefType" maxOccurs="unbounded"/>
+            <xs:element name="Blueprint" type="BlueprintRefType" maxOccurs="unbounded"/>
+            <xs:element name="Product" type="BlueprintProductRefType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

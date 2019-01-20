@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="tech-tree.xsd">
+    <Resource id="human"/>
+    <Resource id="manpower"/>
+    <Resource id="stone_block"/>
+    <Resource id="iron_ore_deposit"/>
+    <Resource id="iron_ore"/>
+    <Resource id="land_space"/>
+    <Resource id="electricity"/>
+    <Technology id="land_building">
+        <price>
+            <Resource ref="stone_block"/>
+            <Resource ref="land_space"/>
+        </price>
+    </Technology>
+    <Technology id="iron_processing">
+        <price>
+            <Resource ref="iron_ore"/>
+            <Resource ref="electricity"/>
+        </price>
+    </Technology>
+    <Blueprint id="settlement_village">
+        <build>
+            <price>
+                <Resource ref="manpower" count="20"/>
+            </price>
+        </build>
+    </Blueprint>
+    <Blueprint id="settlement_resource">
+        <build>
+            <price>
+                <Resource ref="manpower" count="20"/>
+            </price>
+            <constraints>
+                <Product blueprint="settlement_village"/>
+            </constraints>
+        </build>
+    </Blueprint>
+    <Blueprint id="settlement_laboratory">
+        <build>
+            <price>
+                <Resource ref="manpower" count="20"/>
+            </price>
+            <constraints>
+                <Product blueprint="settlement_village"/>
+            </constraints>
+        </build>
+    </Blueprint>
+    <Blueprint id="settlement_farm">
+        <build>
+            <price>
+                <Resource ref="manpower" count="20"/>
+            </price>
+            <constraints>
+                <Product blueprint="settlement_village"/>
+            </constraints>
+        </build>
+    </Blueprint>
+    <Blueprint id="basic_iron_mine">
+        <Technology ref="iron_processing"/>
+        <Technology ref="land_building"/>
+        <build>
+            <price>
+                <Resource ref="iron_ore_deposit" count="10"/>
+                <Resource ref="electricity" count="1000"/>
+            </price>
+            <constraints>
+                <Product blueprint="settlement_resource"/>
+            </constraints>
+        </build>
+    </Blueprint>
+    <Blueprint id="basic_iron_furnace">
+        <Technology ref="iron_processing"/>
+        <Technology ref="land_building"/>
+        <build>
+            <price>
+                <Resource ref="iron_ore" count="10"/>
+                <Resource ref="electricity" count="1000"/>
+            </price>
+            <constraints>
+                <Product blueprint="settlement_resource"/>
+            </constraints>
+        </build>
+    </Blueprint>
+    <ColonizationPack>
+        <Resource ref="human" count="1000"/>
+        <Blueprint ref="basic_iron_mine"/>
+        <Product blueprint="basic_iron_mine" count="1000"/>
+    </ColonizationPack>
+</root>
