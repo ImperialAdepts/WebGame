@@ -43,3 +43,6 @@ parameters:
         cropField:
             name: 'Field'
             traits: ['building']
+    resources: []
+    use_cases: []
+    default_blueprints: []
