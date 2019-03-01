@@ -25,8 +25,10 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
         $parser = new Crawler(file_get_contents($techTreeFile));
 
         $useCases = $this->compileUseCases($parser);
+        $blueprints = $this->compileBlueprints($parser);
 
         $container->setParameter('use_cases', $useCases);
+        $container->setParameter('default_blueprints', $blueprints);
     }
 
     /**
@@ -65,7 +67,6 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
                 $nodeInfo['traits'][] = $node->text();
             });
             $useCaseNode->filterXPath("//inputResource")->each(function (Crawler $node, $i) use (&$nodeInfo) {
-                $inputResources[] = $node->attr('ref');
                 $nodeInfo['inputResource'][] = $node->attr('ref');
             });
             $useCaseNode->filterXPath("//inputProduct")->each(function (Crawler $node, $i) use (&$nodeInfo) {
@@ -117,6 +118,48 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
             }
         }
         return $useCases;
+    }
+
+    private function compileBlueprints(Crawler $parser)
+    {
+        $blueprints = [];
+        $parser->filterXPath('//Blueprint')->each(function (Crawler $blueprintNode, $i) use (&$blueprints) {
+            $nodeInfo = [
+                'building_requirements' => [],
+                'constraints' => [],
+                'output' => [],
+                'technologies' => [],
+            ];
+            if ($blueprintNode->attr('output') != null) {
+                $nodeInfo['output'][] = $blueprintNode->attr('output');
+            }
+            $blueprintNode->filterXPath('//price/Resource')->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                if (!empty($node->attr('ref')) && $node->attr('count') > 0) {
+                    $nodeInfo['building_requirements'][$node->attr('ref')] = $node->attr('count');
+                }
+            });
+            $blueprintNode->filterXPath("//price/Product")->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                if (!empty($node->attr('ref')) && $node->attr('count') > 0) {
+                    $nodeInfo['building_requirements'][$node->attr('ref')] = $node->attr('count');
+                }
+            });
+            $blueprintNode->filterXPath("//constraints/Resource")->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                if (!empty($node->attr('ref')) && $node->attr('count') > 0) {
+                    $nodeInfo['constraints'][$node->attr('ref')] = $node->attr('count');
+                }
+            });
+            $blueprintNode->filterXPath("//constraints/Product")->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                if (!empty($node->attr('ref')) && $node->attr('count') > 0) {
+                    $nodeInfo['constraints'][$node->attr('ref')] = $node->attr('count');
+                }
+            });
+            $blueprintNode->filterXPath("//Technology")->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                $nodeInfo['technologies'][] = $node->attr('ref');
+            });
+            $blueprints[$blueprintNode->attr('id')] = $nodeInfo;
+        });
+
+        return $blueprints;
     }
 
 }

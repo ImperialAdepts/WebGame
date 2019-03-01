@@ -32,3 +32,4 @@ parameters:
             traits: ['building']
     resources: []
     use_cases: []
+    default_blueprints: []
