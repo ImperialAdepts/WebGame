@@ -1,0 +1,122 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: troi
+ * Date: 20.1.19
+ * Time: 13:20
+ */
+
+namespace AppBundle\CompilerPass;
+
+
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DomCrawler\Crawler;
+
+class TechnologyTreeCompilerPass implements CompilerPassInterface
+{
+
+    /**
+     * You can modify the container here before it is dumped to PHP code.
+     */
+    public function process(ContainerBuilder $container)
+    {
+        $techTreeFile = realpath($container->getParameter('kernel.project_dir')."/app/Resources/technology-tree.xml");
+        $parser = new Crawler(file_get_contents($techTreeFile));
+
+        $useCases = $this->compileUseCases($parser);
+
+        $container->setParameter('use_cases', $useCases);
+    }
+
+    /**
+     * @param $useCases[]
+     * @param string $useCaseName
+     * @return string[]
+     */
+    private function getParents($useCases, $useCaseName) {
+        if (!isset($useCases[$useCaseName])) return [];
+        $parents = $useCases[$useCaseName]['parents'];
+        $parentsWithGrandparents = [];
+        foreach ($parents as $parent) {
+            $parentsWithGrandparents[] = $parent;
+            $parentsWithGrandparents = array_merge($parentsWithGrandparents, $this->getParents($useCases, $parent));
+        }
+        return array_unique($parentsWithGrandparents);
+    }
+
+    /**
+     * @param Crawler $parser
+     * @return array
+     */
+    private function compileUseCases(Crawler $parser)
+    {
+        $useCases = [];
+        $parser->filterXPath('//UseCase')->each(function (Crawler $useCaseNode, $i) use (&$useCases) {
+            $nodeInfo = [
+                'traits' => [],
+                'inputResource' => [],
+                'inputProduct' => [],
+                'outputResource' => [],
+                'outputProduct' => [],
+                'parents' => [],
+            ];
+            $useCaseNode->filterXPath('//trait')->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                $nodeInfo['traits'][] = $node->text();
+            });
+            $useCaseNode->filterXPath("//inputResource")->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                $inputResources[] = $node->attr('ref');
+                $nodeInfo['inputResource'][] = $node->attr('ref');
+            });
+            $useCaseNode->filterXPath("//inputProduct")->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                $nodeInfo['inputProduct'][] = $node->attr('blueprint');
+            });
+            $useCaseNode->filterXPath("//outputResource")->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                $nodeInfo['outputResource'][] = $node->attr('ref');
+            });
+            $useCaseNode->filterXPath("//outputProduct")->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                $nodeInfo['outputProduct'][] = $node->attr('blueprint');
+            });
+            $useCaseNode->filterXPath("//parent")->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                $nodeInfo['parents'][] = $node->attr('ref');
+            });
+            $useCases[$useCaseNode->attr('id')] = $nodeInfo;
+        });
+        foreach ($useCases as $name => &$useCase) {
+            $useCase['parents'] = $this->getParents($useCases, $name);
+        }
+
+        // copy parent items to children
+        foreach ($useCases as $name => &$useCase) {
+            foreach ($useCase['parents'] as $parentName) {
+                $parent = $useCases[$parentName];
+                foreach ($parent['traits'] as $parentTrait) {
+                    $useCase['traits'][] = $parentTrait;
+                }
+                $useCase['traits'] = array_unique($useCase['traits']);
+
+                foreach ($parent['inputResource'] as $parentTrait) {
+                    $useCase['inputResource'][] = $parentTrait;
+                }
+                $useCase['inputResource'] = array_unique($useCase['inputResource']);
+
+                foreach ($parent['inputProduct'] as $parentTrait) {
+                    $useCase['inputProduct'][] = $parentTrait;
+                }
+                $useCase['inputProduct'] = array_unique($useCase['inputProduct']);
+
+                foreach ($parent['outputResource'] as $parentTrait) {
+                    $useCase['outputResource'][] = $parentTrait;
+                }
+                $useCase['outputResource'] = array_unique($useCase['outputResource']);
+
+                foreach ($parent['outputProduct'] as $parentTrait) {
+                    $useCase['outputProduct'][] = $parentTrait;
+                }
+                $useCase['outputProduct'] = array_unique($useCase['outputProduct']);
+            }
+        }
+        return $useCases;
+    }
+
+}

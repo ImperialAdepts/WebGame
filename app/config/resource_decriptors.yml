@@ -3,9 +3,6 @@ parameters:
         blueprint:
             name: 'People'
             traits: ['comodity']
-        blueprint:
-            name: 'Copy of blueprint'
-            traits: ['comodity']
         food:
             name: 'Simple food'
             traits: ['comodity']
@@ -33,3 +30,5 @@ parameters:
         warehouse:
             name: 'Warehouse'
             traits: ['building']
+    resources: []
+    use_cases: []

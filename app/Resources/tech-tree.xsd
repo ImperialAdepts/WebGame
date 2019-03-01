@@ -5,6 +5,7 @@
                 <xs:element name="Resource" type="ResourceType" maxOccurs="unbounded"/>
                 <xs:element name="Technology" type="TechnologyType" maxOccurs="unbounded"/>
                 <xs:element name="Blueprint" type="BlueprintType" maxOccurs="unbounded"/>
+                <xs:element name="UseCase" type="UseCaseType" maxOccurs="unbounded"/>
                 <xs:element name="ColonizationPack" type="ColonizationPackType" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
@@ -13,6 +14,7 @@
 
     <xs:complexType name="ResourceType">
         <xs:attribute name="id" type="xs:ID"/>
+        <xs:attribute name="unit" type="xs:string"/>
     </xs:complexType>
     <xs:complexType name="ResourceRefType">
         <xs:attribute name="ref" type="xs:IDREF"/>
@@ -26,13 +28,25 @@
             <xs:element name="Resource" type="ResourcePriceRefType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="Product" type="BlueprintProductRefType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="id" type="xs:ID"/>
+    </xs:complexType>
+    <xs:complexType name="InputRefsType">
+        <xs:sequence minOccurs="1">
+            <xs:element name="Resource" type="ResourceRefType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="Product" type="BlueprintRefType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
     </xs:complexType>
 
 
     <xs:complexType name="TechnologyType">
         <xs:sequence minOccurs="0">
-            <xs:element name="price" type="PriceSummaryType"/>
+            <xs:element name="inputs" type="InputRefsType"/>
+            <xs:element name="usage" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="use" type="UseCaseRefType" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
         </xs:sequence>
         <xs:attribute name="id" type="xs:ID"/>
     </xs:complexType>
@@ -54,6 +68,7 @@
             </xs:element>
         </xs:sequence>
         <xs:attribute name="id" type="xs:ID"/>
+        <xs:attribute name="output" type="xs:IDREF"/>
     </xs:complexType>
     <xs:complexType name="BlueprintRefType">
         <xs:attribute name="ref" type="xs:IDREF"/>
@@ -61,6 +76,21 @@
     <xs:complexType name="BlueprintProductRefType">
         <xs:attribute name="blueprint" type="xs:IDREF"/>
         <xs:attribute name="count" type="xs:positiveInteger"/>
+    </xs:complexType>
+
+    <xs:complexType name="UseCaseType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="parent" type="UseCaseRefType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="inputResource" type="ResourceRefType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="inputProduct" type="BlueprintProductRefType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="trait" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="outputResource" type="ResourceRefType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="outputProduct" type="BlueprintProductRefType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:ID"/>
+    </xs:complexType>
+    <xs:complexType name="UseCaseRefType">
+        <xs:attribute name="ref" type="xs:IDREF"/>
     </xs:complexType>
 
     <xs:complexType name="ColonizationPackType">

@@ -2,25 +2,59 @@
 <root xmlns:xsd="http://www.w3.org/2001/XMLSchema"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="tech-tree.xsd">
-    <Resource id="human"/>
-    <Resource id="manpower"/>
-    <Resource id="stone_block"/>
-    <Resource id="iron_ore_deposit"/>
-    <Resource id="iron_ore"/>
-    <Resource id="land_space"/>
-    <Resource id="electricity"/>
-    <Technology id="land_building">
-        <price>
-            <Resource ref="stone_block"/>
-            <Resource ref="land_space"/>
-        </price>
+    <Resource id="human" unit="human"/>
+    <Resource id="manpower" unit="manday"/>
+    <Resource id="food_energy" unit="MJ"/>
+    <Resource id="weight" unit="kg"/>
+    <Resource id="stone_block" unit="block"/>
+    <Resource id="iron_ore_deposit" unit="kg"/>
+    <Resource id="iron_ore" unit="kg"/>
+    <Resource id="wood" unit="kg"/>
+    <Resource id="land_space" unit="m2"/>
+    <Resource id="electricity" unit="kWh"/>
+
+    <Technology id="wood_mining_tools">
+        <inputs>
+            <Resource ref="wood"/>
+            <Resource ref="basic_iron_plate"/>
+        </inputs>
+        <usage>
+            <use ref="tool"/>
+        </usage>
     </Technology>
-    <Technology id="iron_processing">
-        <price>
+    <Technology id="hand_mine">
+        <inputs>
+            <Resource ref="iron_ore"/>
+            <Resource ref="manpower"/>
+            <Resource ref="electricity"/>
+        </inputs>
+        <usage>
+            <use ref="deep_ground_mine"/>
+        </usage>
+    </Technology>
+    <Technology id="hand_iron_processing">
+        <inputs>
+            <Resource ref="iron_ore"/>
+            <Resource ref="manpower"/>
+            <Resource ref="electricity"/>
+        </inputs>
+        <usage>
+            <use ref="factory"/>
+        </usage>
+    </Technology>
+    <Technology id="automatic_iron_processing">
+        <inputs>
             <Resource ref="iron_ore"/>
             <Resource ref="electricity"/>
-        </price>
+        </inputs>
+        <usage>
+            <use ref="factory"/>
+            <use ref="control_unit"/>
+        </usage>
     </Technology>
+
+
+
     <Blueprint id="settlement_village">
         <build>
             <price>
@@ -58,35 +92,158 @@
             </constraints>
         </build>
     </Blueprint>
+
+    <Blueprint id="primitive_mining_tool">
+        <Technology ref="wood_mining_tools"/>
+        <build>
+            <price>
+                <Resource ref="manpower" count="2"/>
+                <Resource ref="wood" count="1"/>
+                <Resource ref="basic_iron_plate" count="1"/>
+            </price>
+        </build>
+    </Blueprint>
+    <Blueprint id="primitive_harvest_tool">
+        <build>
+            <price>
+                <Resource ref="manpower" count="2"/>
+                <Resource ref="wood" count="1"/>
+                <Resource ref="basic_iron_plate" count="1"/>
+                <Product blueprint="basic_iron_plate" count="1"/>
+            </price>
+        </build>
+    </Blueprint>
     <Blueprint id="basic_iron_mine">
-        <Technology ref="iron_processing"/>
-        <Technology ref="land_building"/>
+        <Technology ref="hand_mine"/>
+        <build>
+            <price>
+                <Resource ref="iron_ore_deposit" count="1"/>
+                <Resource ref="electricity" count="100"/>
+                <Resource ref="manpower" count="300"/>
+            </price>
+        </build>
+    </Blueprint>
+    <Blueprint id="primitive_iron_mining" output="iron_ore">
         <build>
             <price>
                 <Resource ref="iron_ore_deposit" count="10"/>
-                <Resource ref="electricity" count="1000"/>
+                <Resource ref="electricity" count="1"/>
+                <Resource ref="manpower" count="2"/>
             </price>
             <constraints>
-                <Product blueprint="settlement_resource"/>
+                <Product blueprint="basic_iron_mine"/>
+                <Product blueprint="primitive_mining_tool"/>
             </constraints>
         </build>
     </Blueprint>
     <Blueprint id="basic_iron_furnace">
-        <Technology ref="iron_processing"/>
-        <Technology ref="land_building"/>
+        <Technology ref="factory"/>
         <build>
             <price>
-                <Resource ref="iron_ore" count="10"/>
-                <Resource ref="electricity" count="1000"/>
+                <Resource ref="iron_ore" count="5"/>
+                <Resource ref="stone_block" count="200"/>
             </price>
             <constraints>
                 <Product blueprint="settlement_resource"/>
             </constraints>
         </build>
     </Blueprint>
+    <Blueprint id="basic_iron_plate">
+        <build>
+            <price>
+                <Resource ref="iron_ore" count="10"/>
+                <Resource ref="manpower" count="2"/>
+                <Resource ref="electricity" count="200"/>
+            </price>
+            <constraints>
+                <Product blueprint="basic_iron_furnace"/>
+            </constraints>
+        </build>
+    </Blueprint>
+    <Blueprint id="handmade_planting_wheet" output="basic_food">
+        <build>
+            <price>
+                <Resource ref="manpower" count="30"/>
+            </price>
+            <constraints>
+                <Product blueprint="settlement_village"/>
+            </constraints>
+        </build>
+    </Blueprint>
+    <Blueprint id="primitive_tool_planting_wheet" output="basic_food">
+        <build>
+            <price>
+                <Resource ref="manpower" count="1"/>
+            </price>
+            <constraints>
+                <Product blueprint="primitive_harvest_tool" count="1"/>
+                <Product blueprint="settlement_village"/>
+            </constraints>
+        </build>
+    </Blueprint>
+
+    <UseCase id="administrative_district"><trait>test</trait></UseCase>
+    <UseCase id="land_building">
+        <inputResource ref="land_space"/>
+    </UseCase>
+    <UseCase id="portables">
+        <outputResource ref="weight"/>
+    </UseCase>
+    <UseCase id="resource_deposit">
+        <parent ref="portables"/>
+    </UseCase>
+    <UseCase id="energy_source">
+        <outputResource ref="electricity"/>
+    </UseCase>
+    <UseCase id="energy_consumer">
+        <inputResource ref="electricity"/>
+    </UseCase>
+    <UseCase id="energy_deposit">
+        <inputResource ref="electricity"/>
+        <trait>capacity</trait>
+        <outputResource ref="electricity"/>
+    </UseCase>
+    <UseCase id="transport_vehicle">
+        <trait>speed</trait>
+        <trait>weight_capacity</trait>
+    </UseCase>
+    <UseCase id="control_unit">
+        <inputResource ref="human"/>
+    </UseCase>
+    <UseCase id="living_buildings">
+        <parent ref="land_building"/>
+        <parent ref="energy_consumer"/>
+    </UseCase>
+    <UseCase id="electric_plant">
+        <parent ref="land_building"/>
+        <parent ref="energy_source"/>
+    </UseCase>
+    <UseCase id="portable_generator">
+        <parent ref="portables"/>
+        <parent ref="energy_source"/>
+    </UseCase>
+    <UseCase id="factory">
+        <parent ref="land_building"/>
+        <parent ref="energy_consumer"/>
+        <trait>human_capacity</trait>
+    </UseCase>
+    <UseCase id="deep_ground_mine">
+        <parent ref="factory"/>
+    </UseCase>
+    <UseCase id="tool">
+        <parent ref="portables"/>
+        <trait>maintenance</trait>
+    </UseCase>
+    <UseCase id="basic_food">
+        <parent ref="resource_deposit"/>
+        <parent ref="portables"/>
+        <trait>energy</trait>
+    </UseCase>
+
     <ColonizationPack>
         <Resource ref="human" count="1000"/>
         <Blueprint ref="basic_iron_mine"/>
-        <Product blueprint="basic_iron_mine" count="1000"/>
+        <Product blueprint="basic_iron_plate" count="10000"/>
+        <Product blueprint="basic_food" count="10000"/>
     </ColonizationPack>
 </root>
