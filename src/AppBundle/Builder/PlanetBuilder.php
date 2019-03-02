@@ -25,12 +25,9 @@ class PlanetBuilder
 
 	public function buildProject(Entity\Planet\BuildingProject $project)
 	{
-		$settlement = new Entity\Planet\Settlement();
-		$settlement->setType($project->getBuildingBlueprint());
-		$settlement->setRegions([$project->getRegion()]);
-		$settlement->setOwner($project->getSupervisor());
-		$settlement->setManager($project->getSupervisor());
-		$project->getRegion()->setSettlement($settlement);
+        /** @var Entity\Planet\Settlement $settlement */
+		$settlement = $project->getRegion()->getSettlement();
+		$settlement->addResourceDeposit($project->getBuildingBlueprint(), 1);
 		$this->entityManager->persist($settlement);
 		$this->entityManager->persist($project->getRegion());
 	}

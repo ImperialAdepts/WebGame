@@ -16,7 +16,7 @@ class Region
 	 * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Peak")
      * @ORM\JoinColumns{
-     *  @ORM\JoinColumn(name="peak_center_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     *  @ORM\JoinColumn(name="peak_center_id", referencedColumnName="id", nullable=false)
      * }
 	 * @ORM\GeneratedValue(strategy="NONE")
 	 */
@@ -28,7 +28,7 @@ class Region
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Peak")
      * @ORM\JoinColumns{
-     * @ORM\JoinColumn(name="peak_left_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="peak_left_id", referencedColumnName="id", nullable=false)
      * }
      * @ORM\GeneratedValue(strategy="NONE")
      */
@@ -40,7 +40,7 @@ class Region
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Peak")
      * @ORM\JoinColumns{
-     * @ORM\JoinColumn(name="peak_right_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="peak_right_id", referencedColumnName="id", nullable=false)
      * }
      * @ORM\GeneratedValue(strategy="NONE")
      */
@@ -57,14 +57,14 @@ class Region
 	/**
 	 * @var CurrentBuildingProject
 	 *
-	 * @ORM\OneToOne(targetEntity="CurrentBuildingProject", mappedBy="region")
+	 * @ORM\OneToOne(targetEntity="CurrentBuildingProject", inversedBy="region")
 	 */
 	private $project;
 
     /**
      * @var HistoryBuildingProject[]
      *
-     * @ORM\OneToMany(targetEntity="HistoryBuildingProject", mappedBy="region")
+     * @ORM\OneToMany(targetEntity="HistoryBuildingProject", mappedBy="region", cascade={"remove"}, orphanRemoval=true)
      */
     private $projectHistory;
 

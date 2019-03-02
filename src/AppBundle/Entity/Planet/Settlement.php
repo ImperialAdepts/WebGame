@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity\Planet;
 
+use AppBundle\Entity\Blueprint;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
 /**
@@ -54,7 +55,7 @@ class Settlement
 	/**
 	 * @var ResourceDeposit[]
 	 *
-	 * @ORM\OneToMany(targetEntity="AppBundle\Entity\ResourceDeposit", mappedBy="settlement")
+	 * @ORM\OneToMany(targetEntity="AppBundle\Entity\ResourceDeposit", mappedBy="settlement", cascade={"all"})
 	 */
 	private $resourceDeposits;
 
@@ -184,5 +185,18 @@ class Settlement
 		$this->resourceDeposits = $resourceDeposits;
 	}
 
+    public function addResourceDeposit(Blueprint $blueprint, $amount)
+    {
+        if (($deposit = $this->getResourceDeposit($blueprint->getResourceDescriptor())) != null) {
+            $deposit->setAmount($deposit->getAmount() + $amount);
+        } else {
+            $deposit = new ResourceDeposit();
+            $deposit->setAmount($amount);
+            $deposit->setResourceDescriptor($blueprint->getResourceDescriptor());
+            $deposit->setBlueprint($blueprint);
+            $deposit->setSettlement($this);
+            $this->getResourceDeposits()->add($deposit);
+        }
+    }
 }
 

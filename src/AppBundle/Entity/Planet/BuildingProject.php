@@ -27,11 +27,11 @@ abstract class BuildingProject
 	/**
 	 * @var Region
 	 *
-	 * @ORM\OneToOne(targetEntity="AppBundle\Entity\Planet\Region", inversedBy="project")
+	 * @ORM\OneToOne(targetEntity="AppBundle\Entity\Planet\Region", mappedBy="project")
      * @ORM\JoinColumns(
-	 *  @ORM\JoinColumn(name="region_peak_center_id", referencedColumnName="peak_center_id"),
-	 *  @ORM\JoinColumn(name="region_peak_left_id", referencedColumnName="peak_left_id"),
-	 *  @ORM\JoinColumn(name="region_peak_right_id", referencedColumnName="peak_right_id")
+	 *  @ORM\JoinColumn(name="region_peak_center_id", referencedColumnName="peak_center_id", nullable=false),
+	 *  @ORM\JoinColumn(name="region_peak_left_id", referencedColumnName="peak_left_id", nullable=false),
+	 *  @ORM\JoinColumn(name="region_peak_right_id", referencedColumnName="peak_right_id", nullable=false)
      * )
 	 */
 	private $region;

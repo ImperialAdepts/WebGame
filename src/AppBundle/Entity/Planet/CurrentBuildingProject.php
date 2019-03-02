@@ -128,8 +128,7 @@ class CurrentBuildingProject extends BuildingProject
         $projectNotification = new ProjectNotification();
         $projectNotification->setProject($this);
         $projectNotification->setDescription($notificationText);
-        // TODO: nastavit cas NOW
-        $projectNotification->setCreationTime(666);
+        $projectNotification->setCreationTime(time());
         $notifications = $this->getNotifications();
 		$notifications[] = $projectNotification;
 		$this->setNotifications($notifications);
