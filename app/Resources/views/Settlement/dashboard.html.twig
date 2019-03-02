@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+{% import 'Planet/region-fragment.html.twig' as regioMacro %}
+{% import 'Planet/maintanance.html.twig' as cron %}
+
+{% block body %}
+	<div id="wrapper">
+		<h1>Settlement {{ settlement.type }} {{ settlement.id }}</h1>
+		<h2>ruled by {{ settlement.manager.name }}, owned by {{ settlement.owner.name }}</h2>
+
+		<div style="position: relative; width: 200px; float: right;">{{ cron.maintanance_controls() }}</div>
+
+		{% for region in settlement.regions %}
+			<h3>Region {{ region.coords }}</h3>
+
+			{% if region.project is null %}
+				{% for blueprint in buildingBlueprints[region.coords] %}
+					<a href="{{ path('region_build_settlement', {
+						'regionC': region.peakCenter.id,
+						'regionL': region.peakLeft.id,
+						'regionR': region.peakRight.id,
+						'blueprintId': blueprint.id,
+						'human': human.id
+					}) }}">
+						Build {{ blueprint.description }}</a><br/>
+				{% endfor %}
+			{% else %}
+				Project {{ region.project.buildingBlueprint.description }}...
+				<br/> {{ dump(region.project.missingResources) }}
+				<ul>
+					{% for notification in region.project.notifications %}
+						<li>{{ notification.description }}</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		{% endfor %}
+
+		<h4>Resources</h4>
+		{% for deposit in settlement.resourceDeposits %}
+			<dt>{{ deposit.resourceDescriptor }}</dt>
+			<dd>{{ deposit.amount }}</dd>
+		{% endfor %}
+	</div>
+{% endblock %}
+
+

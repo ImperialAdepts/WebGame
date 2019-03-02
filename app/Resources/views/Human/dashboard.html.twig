@@ -23,6 +23,11 @@
 							{% endif %}
 						</td>
 						<td>History:</td>
+						<td>
+							{% if region.settlement is not null %}
+								<a href="{{ path('settlement_dashboard', {'settlement': region.settlement.id}) }}">settlement_dashboard</a>
+							{% endif %}
+						</td>
 					</tr>
 					<tr>
 
