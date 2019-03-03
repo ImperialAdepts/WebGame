@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Descriptor\UseCaseEnum;
+
 /**
  * BlueprintRepository
  *
@@ -34,6 +36,17 @@ class BlueprintRepository extends \Doctrine\ORM\EntityRepository
         return $this->getEntityManager()
             ->createQuery(
                 "SELECT b FROM AppBundle:Blueprint b WHERE b.useCases LIKE '%$useCase%' ORDER BY b.id ASC"
+            )
+            ->getResult();
+    }
+
+    public function getWarehouseable()
+    {
+        $buildingUC = UseCaseEnum::LAND_BUILDING;
+        $portableUC = UseCaseEnum::PORTABLES;
+        return $this->getEntityManager()
+            ->createQuery(
+                "SELECT b FROM AppBundle:Blueprint b WHERE b.useCases LIKE '%$portableUC%' AND b.useCases NOT LIKE '%$buildingUC%' ORDER BY b.id ASC"
             )
             ->getResult();
     }

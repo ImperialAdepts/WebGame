@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Descriptor\UseCaseEnum;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -155,6 +156,21 @@ class ResourceDeposit
     public function getSettlement()
     {
         return $this->settlement;
+    }
+
+    public function getUseCases() {
+        if ($this->getBlueprint() != null) return $this->getBlueprint()->getUseCases();
+        return UseCaseEnum::RESOURCE_DEPOSIT;
+    }
+
+    public function getSpace() {
+        if ($this->getBlueprint() == null) return 0;
+        return $this->amount * $this->getBlueprint()->getSpace();
+    }
+
+    public function getWeight() {
+        if ($this->getBlueprint() == null) return 0;
+        return $this->amount * $this->getBlueprint()->getWeight();
     }
 }
 

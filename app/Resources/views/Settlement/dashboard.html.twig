@@ -9,6 +9,11 @@
 
 		<div style="position: relative; width: 200px; float: right;">{{ cron.maintanance_controls() }}</div>
 
+		{{ render(controller('AppBundle:Settlement:warehouseContent', {
+			'settlement': settlement.id,
+			'human': human.id
+		})) }}
+
 		{% for region in settlement.regions %}
 			<h3>Region {{ region.coords }}</h3>
 
@@ -35,12 +40,6 @@
 					{% endfor %}
 				</ul>
 			{% endif %}
-		{% endfor %}
-
-		<h4>Resources</h4>
-		{% for deposit in settlement.resourceDeposits %}
-			<dt>{{ deposit.resourceDescriptor }}</dt>
-			<dd>{{ deposit.amount }}</dd>
 		{% endfor %}
 	</div>
 {% endblock %}

@@ -1,0 +1,16 @@
+<div>
+	{% if resources|length > 0 %}
+		<strong>Warehouse content:</strong>
+		<small>Space capacity: X/Ym3 </small>
+		<small>Weight capacity: X/Ykg </small>
+		<ul>
+			{% for deposit in resources %}
+				<li>
+					<strong>{{ deposit.blueprint.description }}</strong>, {{ deposit.resourceDescriptor }}, {{ deposit.space }}m3, {{ deposit.weight }}kg
+				</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<small>There is nothing in warehouse.</small>
+	{% endif %}
+</div>

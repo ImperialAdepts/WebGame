@@ -31,12 +31,16 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 		$ironPlateBlueprint = $this->createBlueprint(self::IRON_PLATE_BLUEPRINT, ResourceDescriptorEnum::IRON_PLATE, [
 			ResourceDescriptorEnum::MANDAY => 0.5,
 			ResourceDescriptorEnum::IRON_ORE => 2,
-		], [UseCaseEnum::LAND_BUILDING]);
+		], [
+
+        ], [UseCaseEnum::PORTABLES]);
 		$manager->persist($ironPlateBlueprint);
 		$oilBarrelBlueprint = $this->createBlueprint(self::OIL_BARREL_BLUEPRINT, ResourceDescriptorEnum::OIL_BARREL, [
 			ResourceDescriptorEnum::MANDAY => 0.3,
 			ResourceDescriptorEnum::IRON_PLATE => 3,
-		]);
+		], [
+
+        ], [UseCaseEnum::PORTABLES]);
 		$manager->persist($oilBarrelBlueprint);
 
         // --------------- BUILDINGS

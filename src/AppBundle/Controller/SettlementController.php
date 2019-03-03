@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,5 +32,29 @@ class SettlementController extends Controller
             'human' => $settlement->getManager(),
         ]);
 	}
+
+    /**
+     * @Route("/settlement_warehouses/{settlement}/{human}", name="settlement_warehouses")
+     */
+    public function warehouseContentAction(Entity\Planet\Settlement $settlement, Entity\Human $human, Request $request)
+    {
+        $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getWarehouseable();
+        $resourceDescriptors = [];
+        /** @var Entity\Blueprint $blueprint */
+        foreach ($blueprints as $blueprint) {
+            $resourceDescriptors[$blueprint->getResourceDescriptor()] = null;
+        }
+        $warehouseContent = [];
+        foreach ($settlement->getResourceDeposits() as $deposit) {
+            if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
+                $warehouseContent[] = $deposit;
+            }
+        }
+
+        return $this->render('Settlement/warehouse-content-fragment.html.twig', [
+            'resources' => $warehouseContent,
+            'human' => $human,
+        ]);
+    }
 
 }
