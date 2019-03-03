@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Descriptor\Adapters\AbstractResourceDepositAdapter;
 use AppBundle\Descriptor\UseCaseEnum;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -171,6 +172,18 @@ class ResourceDeposit
     public function getWeight() {
         if ($this->getBlueprint() == null) return 0;
         return $this->amount * $this->getBlueprint()->getWeight();
+    }
+
+    /**
+     * @param string $useCaseName useCase from UseCaseEnum
+     * @return AbstractResourceDepositAdapter|null
+     */
+    public function asUseCase($useCaseName) {
+        $adapterName = UseCaseEnum::getAdapter($useCaseName);
+        if ($adapterName == null) {
+            throw new \InvalidArgumentException("UseCase $useCaseName doesn't have adapter yet.");
+        }
+        return new $adapterName($this);
     }
 }
 

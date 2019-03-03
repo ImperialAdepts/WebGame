@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Descriptor\Adapters;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity;
@@ -97,10 +98,13 @@ class SettlementController extends Controller
         foreach ($blueprints as $blueprint) {
             $resourceDescriptors[$blueprint->getResourceDescriptor()] = null;
         }
-        $buldings = [];
+
+        /** @var Adapters\LandBuildingng $houses */
+        $houses = [];
+        /** @var Entity\ResourceDeposit $deposit */
         foreach ($settlement->getResourceDeposits() as $deposit) {
             if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
-                $buldings[] = $deposit;
+                $houses[] = $deposit->asUseCase(UseCaseEnum::LIVING_BUILDINGS);
             }
         }
         $peopleCount = 0;
@@ -109,10 +113,9 @@ class SettlementController extends Controller
         }
 
         $housingCapacity = 0;
-        /** @var Entity\ResourceDeposit $bulding */
-        foreach ($buldings as $bulding) {
-            // TODO: nahradit konstantu kapacitou budovy
-            $housingCapacity += $bulding->getAmount()*10;
+        /** @var Entity\ResourceDeposit $house */
+        foreach ($houses as $house) {
+            $housingCapacity += $house->getLivingCapacity();
         }
 
         $foodEnergy = 0;
@@ -124,7 +127,7 @@ class SettlementController extends Controller
             'people' => $peopleCount,
             'foodEnergy' => $foodEnergy,
             'housingCapacity' => $housingCapacity,
-            'buildings' => $buldings,
+            'houses' => $houses,
             'human' => $human,
         ]);
     }

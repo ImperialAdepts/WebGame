@@ -1,6 +1,9 @@
 <?php
 namespace AppBundle\Descriptor;
 
+use AppBundle\Descriptor\Adapters\LandBuilding;
+use AppBundle\Descriptor\Adapters\LivingBuilding;
+
 /**
  * Odpovida ID UseCase v xml s technologiemi
  */
@@ -22,4 +25,12 @@ class UseCaseEnum
 	const DEEP_GROUND_MINE = 'deep_ground_mine';
 	const TOOL = 'tool';
 	const BASIC_FOOD = 'basic_food';
+
+	public static function getAdapter($useCaseName) {
+	    switch ($useCaseName) {
+            case self::LIVING_BUILDINGS: return LivingBuilding::class;
+            case self::LAND_BUILDING: return LandBuilding::class;
+            default: return null;
+        }
+    }
 }
