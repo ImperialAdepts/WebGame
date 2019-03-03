@@ -66,6 +66,13 @@ class Blueprint
      */
     private $constraints;
 
+    /**
+     * @var string[]
+     *
+     * @ORM\Column(name="use_cases", type="json_array")
+     */
+    private $useCases;
+
 	/**
 	 * Get id
 	 *
@@ -210,6 +217,21 @@ class Blueprint
         $this->constraints = $constraints;
     }
 
+    /**
+     * @return string[]
+     */
+    public function getUseCases()
+    {
+        return $this->useCases;
+    }
+
+    /**
+     * @param string[] $useCases
+     */
+    public function setUseCases(array $useCases)
+    {
+        $this->useCases = $useCases;
+    }
 
 	public function getResourcesPerManday()
 	{

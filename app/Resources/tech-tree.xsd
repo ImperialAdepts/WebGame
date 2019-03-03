@@ -58,6 +58,7 @@
     <xs:complexType name="BlueprintType">
         <xs:sequence>
             <xs:element name="Technology" type="TechnologyRefType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="usedAs" type="UseCaseRefType"/>
             <xs:element name="build">
                 <xs:complexType>
                     <xs:sequence>

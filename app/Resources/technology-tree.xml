@@ -56,6 +56,7 @@
 
 
     <Blueprint id="settlement_village">
+        <usedAs ref="administrative_district"/>
         <build>
             <price>
                 <Resource ref="manpower" count="20"/>
@@ -63,6 +64,7 @@
         </build>
     </Blueprint>
     <Blueprint id="settlement_resource">
+        <usedAs ref="administrative_district"/>
         <build>
             <price>
                 <Resource ref="manpower" count="20"/>
@@ -73,6 +75,7 @@
         </build>
     </Blueprint>
     <Blueprint id="settlement_laboratory">
+        <usedAs ref="administrative_district"/>
         <build>
             <price>
                 <Resource ref="manpower" count="20"/>
@@ -83,6 +86,7 @@
         </build>
     </Blueprint>
     <Blueprint id="settlement_farm">
+        <usedAs ref="administrative_district"/>
         <build>
             <price>
                 <Resource ref="manpower" count="20"/>
@@ -95,6 +99,7 @@
 
     <Blueprint id="primitive_mining_tool">
         <Technology ref="wood_mining_tools"/>
+        <usedAs ref="tool"/>
         <build>
             <price>
                 <Resource ref="manpower" count="2"/>
@@ -104,6 +109,7 @@
         </build>
     </Blueprint>
     <Blueprint id="primitive_harvest_tool">
+        <usedAs ref="tool"/>
         <build>
             <price>
                 <Resource ref="manpower" count="2"/>
@@ -115,6 +121,7 @@
     </Blueprint>
     <Blueprint id="basic_iron_mine">
         <Technology ref="hand_mine"/>
+        <usedAs ref="land_building"/>
         <build>
             <price>
                 <Resource ref="iron_ore_deposit" count="1"/>
@@ -124,6 +131,7 @@
         </build>
     </Blueprint>
     <Blueprint id="primitive_iron_mining" output="iron_ore">
+        <usedAs ref="land_building"/>
         <build>
             <price>
                 <Resource ref="iron_ore_deposit" count="10"/>
@@ -138,6 +146,7 @@
     </Blueprint>
     <Blueprint id="basic_iron_furnace">
         <Technology ref="factory"/>
+        <usedAs ref="land_building"/>
         <build>
             <price>
                 <Resource ref="iron_ore" count="5"/>
@@ -149,6 +158,7 @@
         </build>
     </Blueprint>
     <Blueprint id="basic_iron_plate">
+        <usedAs ref="portables"/>
         <build>
             <price>
                 <Resource ref="iron_ore" count="10"/>
@@ -161,6 +171,7 @@
         </build>
     </Blueprint>
     <Blueprint id="handmade_planting_wheet" output="basic_food">
+        <usedAs ref="portables"/>
         <build>
             <price>
                 <Resource ref="manpower" count="30"/>
@@ -171,6 +182,7 @@
         </build>
     </Blueprint>
     <Blueprint id="primitive_tool_planting_wheet" output="basic_food">
+        <usedAs ref="portables"/>
         <build>
             <price>
                 <Resource ref="manpower" count="1"/>
@@ -182,7 +194,10 @@
         </build>
     </Blueprint>
 
-    <UseCase id="administrative_district"><trait>test</trait></UseCase>
+    <!-- every id MUST have line i UseCaseEnum-->
+    <!-- every trait MUST have line i UseCaseTraitEnum-->
+    <!-- don't use strings in code directly -->
+    <UseCase id="administrative_district"/>
     <UseCase id="land_building">
         <inputResource ref="land_space"/>
     </UseCase>

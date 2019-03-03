@@ -2,6 +2,7 @@
 namespace AppBundle\Fixture;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
+use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity;
 
 class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixture
@@ -30,7 +31,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 		$ironPlateBlueprint = $this->createBlueprint(self::IRON_PLATE_BLUEPRINT, ResourceDescriptorEnum::IRON_PLATE, [
 			ResourceDescriptorEnum::MANDAY => 0.5,
 			ResourceDescriptorEnum::IRON_ORE => 2,
-		]);
+		], [UseCaseEnum::LAND_BUILDING]);
 		$manager->persist($ironPlateBlueprint);
 		$oilBarrelBlueprint = $this->createBlueprint(self::OIL_BARREL_BLUEPRINT, ResourceDescriptorEnum::OIL_BARREL, [
 			ResourceDescriptorEnum::MANDAY => 0.3,
@@ -44,62 +45,62 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 			ResourceDescriptorEnum::IRON_PLATE => 300,
 		], [
             ResourceDescriptorEnum::VILLAGE => 1,
-        ]);
+        ], [UseCaseEnum::LAND_BUILDING]);
         $manager->persist($mineBlueprint);
         $furnaceBlueprint = $this->createBlueprint(self::FURNACE_BLUEPRINT, ResourceDescriptorEnum::FURNACE, [
             ResourceDescriptorEnum::MANDAY => 1000,
             ResourceDescriptorEnum::IRON_PLATE => 500,
         ], [
             ResourceDescriptorEnum::RESOURCE_DISTRICT => 1,
-        ]);
+        ], [UseCaseEnum::LAND_BUILDING]);
 		$manager->persist($furnaceBlueprint);
         $labBlueprint = $this->createBlueprint(self::LAB_BLUEPRINT, ResourceDescriptorEnum::LABORATORY, [
             ResourceDescriptorEnum::MANDAY => 500,
             ResourceDescriptorEnum::IRON_PLATE => 200,
         ], [
             ResourceDescriptorEnum::VILLAGE => 1,
-        ]);
+        ], [UseCaseEnum::LAND_BUILDING]);
         $manager->persist($labBlueprint);
         $farmBlueprint = $this->createBlueprint(self::FARM_BLUEPRINT, ResourceDescriptorEnum::FARM, [
             ResourceDescriptorEnum::MANDAY => 30,
         ], [
             ResourceDescriptorEnum::VILLAGE => 1,
-        ]);
+        ], [UseCaseEnum::LAND_BUILDING]);
         $manager->persist($farmBlueprint);
         $warehouse = $this->createBlueprint(self::WAREHOUSE_BLUEPRINT, ResourceDescriptorEnum::WAREHOUSE, [
             ResourceDescriptorEnum::MANDAY => 10,
             ResourceDescriptorEnum::IRON_PLATE => 10,
         ], [
             ResourceDescriptorEnum::VILLAGE => 1,
-        ]);
+        ], [UseCaseEnum::LAND_BUILDING]);
         $manager->persist($warehouse);
 
         // --------------- SETTLEMENTS
 		$villageBlueprint = $this->createBlueprint(self::VILLAGE_BLUEPRINT, ResourceDescriptorEnum::VILLAGE, [
 			ResourceDescriptorEnum::MANDAY => 100,
 			ResourceDescriptorEnum::IRON_PLATE => 20,
-		]);
+		], [UseCaseEnum::ADMINISTRATIVE_DISTRICT]);
 		$manager->persist($villageBlueprint);
         $resourceDistrictBlueprint = $this->createBlueprint(self::MINE_DISTRICT_BLUEPRINT, ResourceDescriptorEnum::RESOURCE_DISTRICT, [
             ResourceDescriptorEnum::MANDAY => 10,
             ResourceDescriptorEnum::IRON_PLATE => 1,
         ], [
             ResourceDescriptorEnum::VILLAGE => 1,
-        ]);
+        ], [UseCaseEnum::ADMINISTRATIVE_DISTRICT]);
         $manager->persist($resourceDistrictBlueprint);
         $farmDBlueprint = $this->createBlueprint(self::FARM_DISTRICT_BLUEPRINT, ResourceDescriptorEnum::FARM_DISTRICT, [
             ResourceDescriptorEnum::MANDAY => 10,
             ResourceDescriptorEnum::IRON_PLATE => 1,
         ], [
             ResourceDescriptorEnum::VILLAGE => 1,
-        ]);
+        ], [UseCaseEnum::ADMINISTRATIVE_DISTRICT]);
         $manager->persist($farmDBlueprint);
         $labDBlueprint = $this->createBlueprint(self::LAB_DISTRICT_BLUEPRINT, ResourceDescriptorEnum::LABORATORY_DISTRICT, [
             ResourceDescriptorEnum::MANDAY => 10,
             ResourceDescriptorEnum::IRON_PLATE => 1,
         ], [
             ResourceDescriptorEnum::VILLAGE => 1,
-        ]);
+        ], [UseCaseEnum::ADMINISTRATIVE_DISTRICT]);
 		$manager->persist($labDBlueprint);
 
 
@@ -121,7 +122,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 		$manager->flush();
 	}
 
-	private function createBlueprint($name, $resource, array $requirements = [], array $constraints = [])
+	private function createBlueprint($name, $resource, array $requirements = [], array $constraints = [], array $useCases = [])
 	{
 		$blueprint = new Entity\Blueprint();
 		$blueprint->setDescription($name);
@@ -130,6 +131,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 		$blueprint->setConstraints($constraints);
 		$blueprint->setSpace(1);
 		$blueprint->setWeight(1);
+		$blueprint->setUseCases($useCases);
 		return $blueprint;
 	}
 }
