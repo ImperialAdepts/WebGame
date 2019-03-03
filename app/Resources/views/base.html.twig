@@ -1,3 +1,5 @@
+{% import 'Planet/maintanance.html.twig' as cron %}
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -47,8 +49,10 @@
                 <small>{% block pagedescription %}{% endblock %}</small>
             </div>
             <div id="player-title">
-                <strong>{{ sessionSettings.human.soul.name }}</strong> in
-                <strong>{{ sessionSettings.human.name }}</strong>
+                <a href="{{ path('gamer_dashboard') }}">
+                    <strong>{{ sessionSettings.human.soul.name }}</strong> in
+                    <strong>{{ sessionSettings.human.name }}</strong>
+                </a>
             </div>
         </div>
         <div id="content">

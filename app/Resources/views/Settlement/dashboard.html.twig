@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import 'Planet/region-fragment.html.twig' as regioMacro %}
-{% import 'Planet/maintanance.html.twig' as cron %}
 
 {% block pagetitle %}Settlement {{ settlement.type }} {{ settlement.id }}{% endblock %}
 {% block pagedescription %}ruled by {{ settlement.manager.name }}, owned by {{ settlement.owner.name }}{% endblock %}
