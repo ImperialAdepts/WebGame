@@ -56,6 +56,23 @@ class RegionController extends Controller
         ]);
     }
 
+    /**
+     * @Route("/available-settlements/{regionC}_{regionL}_{regionR}/{human}", name="region_settlement_availability")
+     */
+    public function availableSettlementsAction(Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Entity\Human $human, Request $request)
+    {
+        $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::ADMINISTRATIVE_DISTRICT);
+
+        // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
+
+        return $this->render('Region/available-settlements-fragment.html.twig', [
+            'blueprints' => $blueprints,
+            'region' => $region,
+            'human' => $human,
+        ]);
+    }
+
 	/**
 	 * @Route("/screen/{regionUuid}/{human}", name="region_deposit_screening")
 	 */

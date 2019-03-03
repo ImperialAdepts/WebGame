@@ -1,0 +1,41 @@
+<div>
+	{% if blueprints|length > 0 %}
+		{% if region.settlement is null %}
+			<strong>Available settlements:</strong>
+			<ul>
+				{% for buildingBlueprint in blueprints %}
+					<li>
+						<a href="{{ path('region_build_settlement', {
+							'regionC': region.peakCenter.id,
+							'regionL': region.peakLeft.id,
+							'regionR': region.peakRight.id,
+							'blueprintId': buildingBlueprint.id,
+							'human': human.id
+						}) }}">
+							Settle as {{ buildingBlueprint.description }}</a>
+						[{{ buildingBlueprint.id }}]
+					</li>
+				{% endfor %}
+			</ul>
+		{% else %}
+			<strong>Change settlement type to:</strong>
+			<ul>
+				{% for buildingBlueprint in blueprints %}
+					<li>
+						<a href="{{ path('region_build_settlement', {
+							'regionC': region.peakCenter.id,
+							'regionL': region.peakLeft.id,
+							'regionR': region.peakRight.id,
+							'blueprintId': buildingBlueprint.id,
+							'human': human.id
+						}) }}">
+							Upgrade to {{ buildingBlueprint.description }}</a>
+						[{{ buildingBlueprint.id }}]
+					</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% else %}
+		<small>You can't settle anything here.</small>
+	{% endif %}
+</div>

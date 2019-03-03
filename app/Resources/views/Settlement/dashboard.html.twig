@@ -19,6 +19,13 @@
 					'regionR': region.peakRight.id,
 					'human': human.id
 				})) }}
+
+				{{ render(controller('AppBundle:Region:availableSettlements', {
+					'regionC': region.peakCenter.id,
+					'regionL': region.peakLeft.id,
+					'regionR': region.peakRight.id,
+					'human': human.id
+				})) }}
 			{% else %}
 				Project {{ region.project.buildingBlueprint.description }}...
 				<br/> {{ dump(region.project.missingResources) }}
