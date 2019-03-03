@@ -137,6 +137,13 @@ class PlanetBuilder
 		$oilDeposit->setSettlement($settlement);
 		$this->entityManager->persist($oilDeposit);
 
+        $oilGenerator = new Entity\ResourceDeposit();
+        $oilGenerator->setAmount(2);
+        $oilGenerator->setResourceDescriptor(ResourceDescriptorEnum::OIL_GENERATOR);
+        $oilGenerator->setBlueprint($this->getBlueprint(ResourceAndBlueprintFixture::OIL_GENERATOR));
+        $oilGenerator->setSettlement($settlement);
+        $this->entityManager->persist($oilGenerator);
+
 		$food = new Entity\ResourceDeposit();
 		$food->setAmount(10000);
 		$food->setResourceDescriptor(ResourceDescriptorEnum::SIMPLE_FOOD);

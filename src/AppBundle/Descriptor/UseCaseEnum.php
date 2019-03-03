@@ -1,6 +1,7 @@
 <?php
 namespace AppBundle\Descriptor;
 
+use AppBundle\Descriptor\Adapters\EnergySource;
 use AppBundle\Descriptor\Adapters\LandBuilding;
 use AppBundle\Descriptor\Adapters\LivingBuilding;
 
@@ -30,6 +31,7 @@ class UseCaseEnum
 	    switch ($useCaseName) {
             case self::LIVING_BUILDINGS: return LivingBuilding::class;
             case self::LAND_BUILDING: return LandBuilding::class;
+            case self::ENERGY_SOURCE: return EnergySource::class;
             default: return null;
         }
     }

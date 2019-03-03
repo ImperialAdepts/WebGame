@@ -20,8 +20,9 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
     const MINE_DISTRICT_BLUEPRINT = 'Mine district upgrade';
     const LAB_DISTRICT_BLUEPRINT = 'Laboratory district upgrade';
     const FARM_DISTRICT_BLUEPRINT = 'Farm district upgrade';
+    const OIL_GENERATOR = 'Oil generator';
 
-	/**
+    /**
 	 * Load data fixtures with the passed EntityManager
 	 *
 	 * @param \Doctrine\Common\Persistence\ObjectManager $manager
@@ -86,12 +87,21 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
             ResourceDescriptorEnum::VILLAGE => 1,
         ], [UseCaseEnum::LAND_BUILDING, UseCaseEnum::LIVING_BUILDINGS]);
         $manager->persist($house);
+        $oilGenerator = $this->createBlueprint(self::OIL_GENERATOR, ResourceDescriptorEnum::OIL_GENERATOR, [
+            ResourceDescriptorEnum::MANDAY => 10,
+            ResourceDescriptorEnum::IRON_PLATE => 20,
+            ResourceDescriptorEnum::OIL_BARREL => 2,
+        ], [
+        ], [UseCaseEnum::PORTABLES, UseCaseEnum::PORTABLE_GENERATOR, UseCaseEnum::ENERGY_SOURCE]);
+        $manager->persist($oilGenerator);
 
         // --------------- SETTLEMENTS
 		$villageBlueprint = $this->createBlueprint(self::VILLAGE_BLUEPRINT, ResourceDescriptorEnum::VILLAGE, [
 			ResourceDescriptorEnum::MANDAY => 100,
 			ResourceDescriptorEnum::IRON_PLATE => 20,
-		], [UseCaseEnum::ADMINISTRATIVE_DISTRICT]);
+		], [
+
+        ], [UseCaseEnum::ADMINISTRATIVE_DISTRICT]);
 		$manager->persist($villageBlueprint);
         $resourceDistrictBlueprint = $this->createBlueprint(self::MINE_DISTRICT_BLUEPRINT, ResourceDescriptorEnum::RESOURCE_DISTRICT, [
             ResourceDescriptorEnum::MANDAY => 10,

@@ -21,4 +21,5 @@ final class ResourceDescriptorEnum
 	const WAREHOUSE = 'warehouse';
 	const FURNACE = 'furnace';
     const SIMPLE_HOUSE = 'house';
+    const OIL_GENERATOR = 'oilGenerator';
 }
