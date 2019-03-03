@@ -1,22 +1,22 @@
 {% extends 'base.html.twig' %}
 
+{% block pagetitle %}Souls{% endblock %}
+{% block pagedescription %}{% endblock %}
+
 {% block body %}
-	<div id="wrapper">
-		<h1>Souls</h1>
-		<ul>
-			{% for soul in souls %}
-				<li>
-					{{ soul.name }}
-					{{ dump(soul) }}
-					{% if soul.incarnations is empty %}
-						<a href="{{ path('human_incarnation_list', {'soul': soul.id }) }}">connect human</a>
-					{% else %}
-						{% for human in soul.incarnations %}
-							<a href="{{ path('human_play_as', {'human': human.id }) }}">Play as {{ human.name }}</a>
-						{% endfor %}
-					{% endif %}
-				</li>
-			{% endfor %}
-		</ul>
-	</div>
+	<ul>
+		{% for soul in souls %}
+			<li>
+				{{ soul.name }}
+				{{ dump(soul) }}
+				{% if soul.incarnations is empty %}
+					<a href="{{ path('human_incarnation_list', {'soul': soul.id }) }}">connect human</a>
+				{% else %}
+					{% for human in soul.incarnations %}
+						<a href="{{ path('human_play_as', {'human': human.id }) }}">Play as {{ human.name }}</a>
+					{% endfor %}
+				{% endif %}
+			</li>
+		{% endfor %}
+	</ul>
 {% endblock %}

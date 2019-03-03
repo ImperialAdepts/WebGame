@@ -2,54 +2,50 @@
 {% import 'Planet/region-fragment.html.twig' as regioMacro %}
 {% import 'Planet/maintanance.html.twig' as cron %}
 
+{% block pagetitle %}Settlement {{ settlement.type }} {{ settlement.id }}{% endblock %}
+{% block pagedescription %}ruled by {{ settlement.manager.name }}, owned by {{ settlement.owner.name }}{% endblock %}
+
 {% block body %}
-	<div id="wrapper">
-		<h1>Settlement {{ settlement.type }} {{ settlement.id }}</h1>
-		<h2>ruled by {{ settlement.manager.name }}, owned by {{ settlement.owner.name }}</h2>
+	{{ render(controller('AppBundle:Settlement:warehouseContent', {
+		'settlement': settlement.id,
+		'human': human.id
+	})) }}
 
-		<div style="position: relative; width: 200px; float: right;">{{ cron.maintanance_controls() }}</div>
+	{{ render(controller('AppBundle:Settlement:buildings', {
+		'settlement': settlement.id,
+		'human': human.id
+	})) }}
 
-		{{ render(controller('AppBundle:Settlement:warehouseContent', {
-			'settlement': settlement.id,
-			'human': human.id
-		})) }}
+	{{ render(controller('AppBundle:Settlement:housing', {
+		'settlement': settlement.id,
+		'human': human.id
+	})) }}
 
-        {{ render(controller('AppBundle:Settlement:buildings', {
-            'settlement': settlement.id,
-            'human': human.id
-        })) }}
+	{% for region in settlement.regions %}
+		<h3>Region {{ region.coords }}</h3>
 
-		{{ render(controller('AppBundle:Settlement:housing', {
-			'settlement': settlement.id,
-			'human': human.id
-		})) }}
+		{% if region.project is null %}
+			{{ render(controller('AppBundle:Region:availableBuildings', {
+				'regionC': region.peakCenter.id,
+				'regionL': region.peakLeft.id,
+				'regionR': region.peakRight.id
+			})) }}
 
-		{% for region in settlement.regions %}
-			<h3>Region {{ region.coords }}</h3>
-
-			{% if region.project is null %}
-				{{ render(controller('AppBundle:Region:availableBuildings', {
-					'regionC': region.peakCenter.id,
-					'regionL': region.peakLeft.id,
-					'regionR': region.peakRight.id
-				})) }}
-
-				{{ render(controller('AppBundle:Region:availableSettlements', {
-					'regionC': region.peakCenter.id,
-					'regionL': region.peakLeft.id,
-					'regionR': region.peakRight.id
-				})) }}
-			{% else %}
-				Project {{ region.project.buildingBlueprint.description }}...
-				<br/> {{ dump(region.project.missingResources) }}
-				<ul>
-					{% for notification in region.project.notifications %}
-						<li>{{ notification.description }}</li>
-					{% endfor %}
-				</ul>
-			{% endif %}
-		{% endfor %}
-	</div>
+			{{ render(controller('AppBundle:Region:availableSettlements', {
+				'regionC': region.peakCenter.id,
+				'regionL': region.peakLeft.id,
+				'regionR': region.peakRight.id
+			})) }}
+		{% else %}
+			Project {{ region.project.buildingBlueprint.description }}...
+			<br/> {{ dump(region.project.missingResources) }}
+			<ul>
+				{% for notification in region.project.notifications %}
+					<li>{{ notification.description }}</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endfor %}
 {% endblock %}
 
 

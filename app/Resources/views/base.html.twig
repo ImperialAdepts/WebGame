@@ -2,12 +2,61 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block pagetitle %}Welcome!{% endblock %} :: Imperial Sandbox</title>
+        <style type="text/css">
+            html, body {
+                padding: 0;
+                margin: 0;
+            }
+            #header {
+                height: 100px;
+                background-color: #7DA0B1;
+                padding: 10px;
+            }
+            #header h1 {
+                margin-bottom: 0;
+            }
+            #header #game-title {
+                position: relative;
+                float: left;
+            }
+            #header #player-title {
+                position: relative;
+                float: right;
+            }
+            body #content {
+                position: relative;
+                float: left;
+                padding: 15px;
+            }
+            #cheat-panel {
+                position: relative;
+                width: 200px;
+                float: right;
+                background-color: #6b9311;
+            }
+        </style>
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <div id="header">
+            <div id="game-title">
+                <strong>Imperial sandbox</strong><br>
+                <h1>{{ block('pagetitle') }}</h1>
+                <small>{% block pagedescription %}{% endblock %}</small>
+            </div>
+            <div id="player-title">
+                <strong>{{ sessionSettings.human.soul.name }}</strong> in
+                <strong>{{ sessionSettings.human.name }}</strong>
+            </div>
+        </div>
+        <div id="content">
+            {% block body %}{% endblock %}
+        </div>
+        <div id="cheat-panel">
+            {% block cheatpanel %}{{ cron.maintanance_controls() }}{% endblock %}
+        </div>
         {% block javascripts %}{% endblock %}
     </body>
 </html>
