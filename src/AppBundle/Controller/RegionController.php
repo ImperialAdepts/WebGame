@@ -14,10 +14,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegionController extends Controller
 {
 	/**
-	 * @Route("/build/{blueprintId}/{regionC}_{regionL}_{regionR}/{human}", name="region_build_settlement")
+	 * @Route("/build/{blueprintId}/{regionC}_{regionL}_{regionR}", name="region_build_settlement")
 	 */
-	public function buildAction($blueprintId, Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Entity\Human $human, Request $request)
+	public function buildAction($blueprintId, Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Request $request)
 	{
+        /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
 		$region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
 		$blueprint = $this->getDoctrine()->getManager()->find(Entity\Blueprint::class, $blueprintId);
 
@@ -40,10 +42,12 @@ class RegionController extends Controller
 	}
 
     /**
-     * @Route("/available-buildings/{regionC}_{regionL}_{regionR}/{human}", name="region_build_availability")
+     * @Route("/available-buildings/{regionC}_{regionL}_{regionR}", name="region_build_availability")
      */
-    public function availableBuildingsAction(Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Entity\Human $human, Request $request)
+    public function availableBuildingsAction(Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Request $request)
     {
+        /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
         $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
         $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LAND_BUILDING);
 
@@ -57,10 +61,12 @@ class RegionController extends Controller
     }
 
     /**
-     * @Route("/available-settlements/{regionC}_{regionL}_{regionR}/{human}", name="region_settlement_availability")
+     * @Route("/available-settlements/{regionC}_{regionL}_{regionR}", name="region_settlement_availability")
      */
-    public function availableSettlementsAction(Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Entity\Human $human, Request $request)
+    public function availableSettlementsAction(Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Request $request)
     {
+        /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
         $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
         $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::ADMINISTRATIVE_DISTRICT);
 
@@ -74,10 +80,12 @@ class RegionController extends Controller
     }
 
 	/**
-	 * @Route("/screen/{regionUuid}/{human}", name="region_deposit_screening")
+	 * @Route("/screen/{regionUuid}", name="region_deposit_screening")
 	 */
-	public function depositScreeningAction($regionUuid, Entity\Human $human, Request $request)
+	public function depositScreeningAction($regionUuid, Request $request)
 	{
+	    /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
 		$region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getByUuid($regionUuid);
 
 		srand($regionUuid);

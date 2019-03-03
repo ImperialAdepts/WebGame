@@ -31,15 +31,13 @@
 				{{ render(controller('AppBundle:Region:availableBuildings', {
 					'regionC': region.peakCenter.id,
 					'regionL': region.peakLeft.id,
-					'regionR': region.peakRight.id,
-					'human': human.id
+					'regionR': region.peakRight.id
 				})) }}
 
 				{{ render(controller('AppBundle:Region:availableSettlements', {
 					'regionC': region.peakCenter.id,
 					'regionL': region.peakLeft.id,
-					'regionR': region.peakRight.id,
-					'human': human.id
+					'regionR': region.peakRight.id
 				})) }}
 			{% else %}
 				Project {{ region.project.buildingBlueprint.description }}...

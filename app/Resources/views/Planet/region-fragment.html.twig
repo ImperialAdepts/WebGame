@@ -40,12 +40,12 @@
 	{% endfor %}
 	{% if region.availableOreDeposits is not empty and region.settlement is null %}
 		<a href="{{ path('region_build_settlement', {
-			'regionUuid': region.uuid, 'type': 'mine', 'human': human.id}) }}">Create
+			'regionUuid': region.uuid, 'type': 'mine'}) }}">Create
 			mine</a>
 		<br/>
 	{% endif %}
 	{% if region.availableOreDeposits is empty %}
 		<a href="{{ path('region_deposit_screening', {
-			'regionUuid': region.uuid, 'human': human.id}) }}">Deposit screening</a>
+			'regionUuid': region.uuid}) }}">Deposit screening</a>
 	{% endif %}
 {% endmacro %}

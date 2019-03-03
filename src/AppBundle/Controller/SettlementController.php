@@ -59,10 +59,12 @@ class SettlementController extends Controller
     }
 
     /**
-     * @Route("/settlement_buildings/{settlement}/{human}", name="settlement_buildings")
+     * @Route("/settlement_buildings/{settlement}", name="settlement_buildings")
      */
-    public function buildingsAction(Entity\Planet\Settlement $settlement, Entity\Human $human, Request $request)
+    public function buildingsAction(Entity\Planet\Settlement $settlement, Request $request)
     {
+        /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
         $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LAND_BUILDING);
         $resourceDescriptors = [];
         /** @var Entity\Blueprint $blueprint */
@@ -83,10 +85,12 @@ class SettlementController extends Controller
     }
 
     /**
-     * @Route("/settlement_housing/{settlement}/{human}", name="settlement_housing")
+     * @Route("/settlement_housing/{settlement}", name="settlement_housing")
      */
-    public function housingAction(Entity\Planet\Settlement $settlement, Entity\Human $human, Request $request)
+    public function housingAction(Entity\Planet\Settlement $settlement, Request $request)
     {
+        /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
         $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LIVING_BUILDINGS);
         $resourceDescriptors = [];
         /** @var Entity\Blueprint $blueprint */

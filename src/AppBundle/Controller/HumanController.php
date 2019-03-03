@@ -50,11 +50,23 @@ class HumanController extends Controller
 		return $this->forward('AppBundle:Gamer:dashboard');
 	}
 
+    /**
+     * @Route("/play-as-{human}", name="human_play_as")
+     */
+    public function playAsHumanAction(Entity\Human $human, Request $request)
+    {
+        $this->get('logged_user_settings')->setHuman($human);
+        return $this->redirectToRoute('human_dashboard', [
+            'human' => $human->getId(),
+        ]);
+    }
+
 	/**
-	 * @Route("/{human}", name="human_dashboard")
+	 * @Route("/", name="human_dashboard")
 	 */
-	public function dashboardAction(Entity\Human $human, Request $request)
+	public function dashboardAction(Request $request)
 	{
+        $human = $this->get('logged_user_settings')->getHuman();
 	    $regions = $human->getCurrentPosition()->getRegions();
 	    foreach ($regions as $region) {
 	        $centralRegion = $region;
@@ -88,7 +100,6 @@ class HumanController extends Controller
 		$builder->newColony($centralRegion, $human);
 
 		return $this->redirectToRoute('human_dashboard', [
-			'human' => $human->getId(),
 		]);
 	}
 	
