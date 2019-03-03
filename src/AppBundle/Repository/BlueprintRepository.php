@@ -29,4 +29,13 @@ class BlueprintRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    public function getByUseCase($useCase)
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                "SELECT b FROM AppBundle:Blueprint b WHERE b.useCases LIKE '%$useCase%' ORDER BY b.id ASC"
+            )
+            ->getResult();
+    }
+
 }

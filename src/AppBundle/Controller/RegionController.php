@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,6 +38,23 @@ class RegionController extends Controller
 			'human' => $human->getId(),
 		]);
 	}
+
+    /**
+     * @Route("/available-buildings/{regionC}_{regionL}_{regionR}/{human}", name="region_build_availability")
+     */
+    public function availableBuildingsAction(Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Entity\Human $human, Request $request)
+    {
+        $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LAND_BUILDING);
+
+        // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
+
+        return $this->render('Region/available-buildings-fragment.html.twig', [
+            'blueprints' => $blueprints,
+            'region' => $region,
+            'human' => $human,
+        ]);
+    }
 
 	/**
 	 * @Route("/screen/{regionUuid}/{human}", name="region_deposit_screening")

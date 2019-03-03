@@ -13,16 +13,12 @@
 			<h3>Region {{ region.coords }}</h3>
 
 			{% if region.project is null %}
-				{% for blueprint in buildingBlueprints[region.coords] %}
-					<a href="{{ path('region_build_settlement', {
-						'regionC': region.peakCenter.id,
-						'regionL': region.peakLeft.id,
-						'regionR': region.peakRight.id,
-						'blueprintId': blueprint.id,
-						'human': human.id
-					}) }}">
-						Build {{ blueprint.description }}</a><br/>
-				{% endfor %}
+				{{ render(controller('AppBundle:Region:availableBuildings', {
+					'regionC': region.peakCenter.id,
+					'regionL': region.peakLeft.id,
+					'regionR': region.peakRight.id,
+					'human': human.id
+				})) }}
 			{% else %}
 				Project {{ region.project.buildingBlueprint.description }}...
 				<br/> {{ dump(region.project.missingResources) }}

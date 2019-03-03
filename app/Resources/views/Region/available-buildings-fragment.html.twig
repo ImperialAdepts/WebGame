@@ -1,0 +1,22 @@
+<div>
+	{% if blueprints|length > 0 %}
+		<strong>Buildings to build:</strong>
+		<ul>
+			{% for buildingBlueprint in blueprints %}
+				<li>
+					<a href="{{ path('region_build_settlement', {
+						'regionC': region.peakCenter.id,
+						'regionL': region.peakLeft.id,
+						'regionR': region.peakRight.id,
+						'blueprintId': buildingBlueprint.id,
+						'human': human.id
+					}) }}">
+						Build {{ buildingBlueprint.description }}</a>
+					[{{ buildingBlueprint.id }}]
+				</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<small>You can't build anything here.</small>
+	{% endif %}
+</div>
