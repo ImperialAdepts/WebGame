@@ -1,0 +1,21 @@
+<div>
+	<strong>Housing:</strong>
+	<dt>People:</dt>
+	<dd>{{ people }}</dd>
+	<dt>Food:</dt>
+	<dd>{{ foodEnergy }}</dd>
+	{% if buildings|length > 0 %}
+		<dt>Housing capacity:</dt>
+		<dd>{{ housingCapacity }}</dd>
+		<ul>
+			{% for deposit in buildings %}
+				<li>
+					<strong>{{ deposit.blueprint.description }}</strong>&times;{{ deposit.amount }}, {{ deposit.resourceDescriptor }}, {{ deposit.space }} m3, {{ deposit.weight }} kg
+				</li>
+			{% endfor %}
+		</ul>
+
+	{% else %}
+		<small>There is nothing to live.</small>
+	{% endif %}
+</div>

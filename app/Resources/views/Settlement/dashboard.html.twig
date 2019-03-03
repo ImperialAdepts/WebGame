@@ -19,6 +19,11 @@
             'human': human.id
         })) }}
 
+		{{ render(controller('AppBundle:Settlement:housing', {
+			'settlement': settlement.id,
+			'human': human.id
+		})) }}
+
 		{% for region in settlement.regions %}
 			<h3>Region {{ region.coords }}</h3>
 

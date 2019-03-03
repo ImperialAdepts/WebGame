@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -81,4 +82,46 @@ class SettlementController extends Controller
         ]);
     }
 
+    /**
+     * @Route("/settlement_housing/{settlement}/{human}", name="settlement_housing")
+     */
+    public function housingAction(Entity\Planet\Settlement $settlement, Entity\Human $human, Request $request)
+    {
+        $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LIVING_BUILDINGS);
+        $resourceDescriptors = [];
+        /** @var Entity\Blueprint $blueprint */
+        foreach ($blueprints as $blueprint) {
+            $resourceDescriptors[$blueprint->getResourceDescriptor()] = null;
+        }
+        $buldings = [];
+        foreach ($settlement->getResourceDeposits() as $deposit) {
+            if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
+                $buldings[] = $deposit;
+            }
+        }
+        $peopleCount = 0;
+        if ($settlement->getResourceDeposit(ResourceDescriptorEnum::PEOPLE) != null) {
+            $peopleCount = $settlement->getResourceDeposit(ResourceDescriptorEnum::PEOPLE)->getAmount();
+        }
+
+        $housingCapacity = 0;
+        /** @var Entity\ResourceDeposit $bulding */
+        foreach ($buldings as $bulding) {
+            // TODO: nahradit konstantu kapacitou budovy
+            $housingCapacity += $bulding->getAmount()*10;
+        }
+
+        $foodEnergy = 0;
+        if ($settlement->getResourceDeposit(ResourceDescriptorEnum::SIMPLE_FOOD) != null) {
+            $foodEnergy = $settlement->getResourceDeposit(ResourceDescriptorEnum::SIMPLE_FOOD)->getAmount();
+        }
+
+        return $this->render('Settlement/housing.html.twig', [
+            'people' => $peopleCount,
+            'foodEnergy' => $foodEnergy,
+            'housingCapacity' => $housingCapacity,
+            'buildings' => $buldings,
+            'human' => $human,
+        ]);
+    }
 }

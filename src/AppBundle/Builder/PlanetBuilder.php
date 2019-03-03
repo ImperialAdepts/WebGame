@@ -109,6 +109,13 @@ class PlanetBuilder
 		$this->entityManager->persist($settlement);
 		$this->entityManager->persist($region);
 
+        $houses = new Entity\ResourceDeposit();
+        $houses->setAmount(10);
+        $houses->setResourceDescriptor(ResourceDescriptorEnum::SIMPLE_HOUSE);
+        $houses->setBlueprint($this->getBlueprint(ResourceAndBlueprintFixture::HOUSE_BLUEPRINT));
+        $houses->setSettlement($settlement);
+        $this->entityManager->persist($houses);
+
 		$warehouses = new Entity\ResourceDeposit();
 		$warehouses->setAmount(10);
 		$warehouses->setResourceDescriptor(ResourceDescriptorEnum::WAREHOUSE);

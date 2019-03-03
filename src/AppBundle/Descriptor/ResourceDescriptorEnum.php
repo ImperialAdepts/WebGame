@@ -20,4 +20,5 @@ final class ResourceDescriptorEnum
     const LABORATORY_DISTRICT = 'labD';
 	const WAREHOUSE = 'warehouse';
 	const FURNACE = 'furnace';
+    const SIMPLE_HOUSE = 'house';
 }

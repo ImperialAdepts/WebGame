@@ -13,6 +13,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 	const MINE_BLUEPRINT = 'Basic mine';
 	const FURNACE_BLUEPRINT = 'Blast furnace';
 	const VILLAGE_BLUEPRINT = 'Basic village';
+	const HOUSE_BLUEPRINT = 'Basic house';
 	const LAB_BLUEPRINT = 'Basic lab';
 	const FARM_BLUEPRINT = 'Basic farm';
 	const WAREHOUSE_BLUEPRINT = 'Container warehouse';
@@ -78,6 +79,13 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
             ResourceDescriptorEnum::VILLAGE => 1,
         ], [UseCaseEnum::LAND_BUILDING]);
         $manager->persist($warehouse);
+        $house = $this->createBlueprint(self::HOUSE_BLUEPRINT, ResourceDescriptorEnum::SIMPLE_HOUSE, [
+            ResourceDescriptorEnum::MANDAY => 100,
+            ResourceDescriptorEnum::IRON_PLATE => 10,
+        ], [
+            ResourceDescriptorEnum::VILLAGE => 1,
+        ], [UseCaseEnum::LAND_BUILDING, UseCaseEnum::LIVING_BUILDINGS]);
+        $manager->persist($house);
 
         // --------------- SETTLEMENTS
 		$villageBlueprint = $this->createBlueprint(self::VILLAGE_BLUEPRINT, ResourceDescriptorEnum::VILLAGE, [
