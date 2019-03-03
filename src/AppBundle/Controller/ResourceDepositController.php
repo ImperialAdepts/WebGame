@@ -23,9 +23,11 @@ class ResourceDepositController extends Controller
         $adapters = [];
         if ($deposit->getBlueprint() != null) {
             foreach ($deposit->getBlueprint()->getUseCases() as $useCase) {
-                if (($adapter = $deposit->asUseCase($useCase)) != null) {
+                // TODO: podminku pouzivat jen na vyvojovem prostredi
+//                if (($adapter = $deposit->asUseCase($useCase)) != null) {
+                $adapter = $deposit->asUseCase($useCase);
                     $adapters[$useCase] = $adapter;
-                }
+//                }
             }
         }
         return $this->render('ResourceDeposit/resource-deposit-fragment.html.twig', [

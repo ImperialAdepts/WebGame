@@ -5,10 +5,14 @@
 			{% for name, adapter in adapters %}
 				<td>
 					<strong>{{ name }}</strong>
-					{{ render(controller('AppBundle:ResourceDeposit:adapterDetail', {
-						'useCase': name,
-						'deposit': adapter.deposit.id
-					})) }}
+					{% if adapter is not null%}
+						{{ render(controller('AppBundle:ResourceDeposit:adapterDetail', {
+							'useCase': name,
+							'deposit': adapter.deposit.id
+						})) }}
+					{% else %}
+						<br/><small>Adapter missing</small>
+					{% endif %}
 				</td>
 			{% endfor %}
 		</tr>
