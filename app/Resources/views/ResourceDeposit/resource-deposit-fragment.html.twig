@@ -1,0 +1,16 @@
+<div class="resource-deposit">
+	<strong>{{ deposit.blueprint.description }}</strong>&times;{{ deposit.amount }}
+	<table border="1">
+		<tr>
+			{% for name, adapter in adapters %}
+				<td>
+					<strong>{{ name }}</strong>
+					{{ render(controller('AppBundle:ResourceDeposit:adapterDetail', {
+						'useCase': name,
+						'deposit': adapter.deposit.id
+					})) }}
+				</td>
+			{% endfor %}
+		</tr>
+	</table>
+</div>

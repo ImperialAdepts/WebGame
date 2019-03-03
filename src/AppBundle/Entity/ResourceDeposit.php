@@ -181,7 +181,7 @@ class ResourceDeposit
     public function asUseCase($useCaseName) {
         $adapterName = UseCaseEnum::getAdapter($useCaseName);
         if ($adapterName == null) {
-            throw new \InvalidArgumentException("UseCase $useCaseName doesn't have adapter yet.");
+            return null;
         }
         return new $adapterName($this);
     }

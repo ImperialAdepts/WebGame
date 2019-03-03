@@ -10,7 +10,9 @@
 		<ul>
 			{% for house in houses %}
 				<li>
-					<strong>{{ house.blueprint.description }}</strong>&times;{{ house.amount }}, {{ house.resourceDescriptor }}, capacity {{ house.livingCapacity }}
+					{{ render(controller('AppBundle:ResourceDeposit:depositDetail', {
+						'deposit': house.deposit.id,
+					})) }}
 				</li>
 			{% endfor %}
 		</ul>

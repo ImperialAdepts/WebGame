@@ -6,7 +6,9 @@
 		<ul>
 			{% for deposit in buildings %}
 				<li>
-					<strong>{{ deposit.blueprint.description }}</strong>&times;{{ deposit.amount }}, {{ deposit.resourceDescriptor }}, {{ deposit.space }}m2, {{ deposit.weight }}kg
+					{{ render(controller('AppBundle:ResourceDeposit:depositDetail', {
+						'deposit': deposit.id,
+					})) }}
 				</li>
 			{% endfor %}
 		</ul>
