@@ -56,7 +56,8 @@
 							</td>
 						{% endif %}
 						<td>
-							{{ regioMacro.production_info(region) }}
+							<dt>Fertility:</dt>
+							<dd>{{ region.fertility }}</dd>
 						</td>
 						<td>
 							{% for project in region.projectHistory %}
