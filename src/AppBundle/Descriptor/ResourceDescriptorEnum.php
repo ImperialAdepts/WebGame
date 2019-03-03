@@ -3,21 +3,21 @@ namespace AppBundle\Descriptor;
 
 final class ResourceDescriptorEnum
 {
-	const MANDAY = 'manday';
+	const MANDAY = 'manpower';
 	const TIME = 'time';
-	const PEOPLE = 'people';
+	const PEOPLE = 'human';
 	const BLUEPRINT_COPY = 'blueprint';
-	const SIMPLE_FOOD = 'food';
-	const IRON_ORE = 'ironOre';
-	const IRON_PLATE = 'ironPlate';
+	const SIMPLE_FOOD = 'basic_food';
+	const IRON_ORE = 'iron_ore';
+	const IRON_PLATE = 'basic_iron_plate';
 	const OIL_BARREL = 'oilBarrel';
 	const MINE = 'mine';
 	const FARM = 'farm';
-	const VILLAGE = 'village';
+	const VILLAGE = 'settlement_village';
 	const LABORATORY = 'lab';
-    const RESOURCE_DISTRICT = 'resourceDistrict';
-    const FARM_DISTRICT = 'farmD';
-    const LABORATORY_DISTRICT = 'labD';
+    const RESOURCE_DISTRICT = 'settlement_resource';
+    const FARM_DISTRICT = 'settlement_farm';
+    const LABORATORY_DISTRICT = 'settlement_laboratory';
 	const WAREHOUSE = 'warehouse';
 	const FURNACE = 'furnace';
     const SIMPLE_HOUSE = 'house';

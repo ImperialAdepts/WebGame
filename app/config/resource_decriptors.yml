@@ -1,48 +1,5 @@
 parameters:
-    resource_descriptor:
-        # klice odpovidaji enumu ResourceDescriptorEnum -> pridat je i tam
-        blueprint:
-            name: 'People'
-            traits: ['comodity']
-        food:
-            name: 'Simple food'
-            traits: ['comodity']
-        ironOre:
-            name: 'Iron ore'
-            traits: ['comodity']
-        ironPlate:
-            name: 'Iron plate'
-            traits: ['comodity']
-        oilBarrel:
-            name: 'Barrel of raw oil'
-            traits: ['comodity']
-        resourceDistrict:
-            name: 'Resource district'
-            traits: ['settlement']
-        village:
-            name: 'Village'
-            traits: ['settlement']
-        labD:
-            name: 'Laboratory district'
-            traits: ['settlement']
-        farmD:
-            name: 'Farm district'
-            traits: ['settlement']
-        warehouse:
-            name: 'Warehouse'
-            traits: ['building']
-        mine:
-            name: 'Mine'
-            traits: ['building']
-        furnace:
-            name: 'Blast furnace'
-            traits: ['building']
-        lab:
-            name: 'Laboratory'
-            traits: ['building']
-        cropField:
-            name: 'Field'
-            traits: ['building']
     resources: []
     use_cases: []
     default_blueprints: []
+    default_colonization_packs: []

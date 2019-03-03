@@ -66,6 +66,11 @@
 							</ul>
 						{% endfor %}
 					</td>
+					<td><a href="{{ path('human_newcolony', {
+							'regionC': region.peakCenter.id,
+							'regionL': region.peakLeft.id,
+							'regionR': region.peakRight.id
+						}) }}">New colony</a> </td>
 				</tr>
 			{% endif %}
 		{% endfor %}

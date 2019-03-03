@@ -13,14 +13,17 @@ class PlanetBuilder
 
 	/** @var EntityManager */
 	private $entityManager;
+	private $colonyPacks;
 
-	/**
-	 * PlanetBuilder constructor.
-	 * @param EntityManager $entityManager
-	 */
-	public function __construct(EntityManager $entityManager)
+    /**
+     * PlanetBuilder constructor.
+     * @param EntityManager $entityManager
+     * @param $colonyPacks
+     */
+	public function __construct(EntityManager $entityManager, $colonyPacks)
 	{
 		$this->entityManager = $entityManager;
+		$this->colonyPacks = $colonyPacks;
 	}
 
 	public function buildProject(Entity\Planet\BuildingProject $project)
@@ -98,7 +101,7 @@ class PlanetBuilder
 		}
 	}
 
-	public function newColony(Entity\Planet\Region $region, Entity\Human $human)
+	public function newColony(Entity\Planet\Region $region, Entity\Human $human, $colonizationPack)
 	{
 		$settlement = new Entity\Planet\Settlement();
 		$settlement->setType(ResourceDescriptorEnum::VILLAGE);
@@ -109,52 +112,23 @@ class PlanetBuilder
 		$this->entityManager->persist($settlement);
 		$this->entityManager->persist($region);
 
-        $houses = new Entity\ResourceDeposit();
-        $houses->setAmount(10);
-        $houses->setResourceDescriptor(ResourceDescriptorEnum::SIMPLE_HOUSE);
-        $houses->setBlueprint($this->getBlueprint(ResourceAndBlueprintFixture::HOUSE_BLUEPRINT));
-        $houses->setSettlement($settlement);
-        $this->entityManager->persist($houses);
+		$colonyPack = $this->colonyPacks[$colonizationPack];
 
-		$warehouses = new Entity\ResourceDeposit();
-		$warehouses->setAmount(10);
-		$warehouses->setResourceDescriptor(ResourceDescriptorEnum::WAREHOUSE);
-		$warehouses->setBlueprint($this->getBlueprint(ResourceAndBlueprintFixture::WAREHOUSE_BLUEPRINT));
-		$warehouses->setSettlement($settlement);
-		$this->entityManager->persist($warehouses);
-
-		$ironPlateDeposit = new Entity\ResourceDeposit();
-		$ironPlateDeposit->setAmount(2000);
-		$ironPlateDeposit->setResourceDescriptor(ResourceDescriptorEnum::IRON_PLATE);
-		$ironPlateDeposit->setBlueprint($this->getBlueprint(ResourceAndBlueprintFixture::IRON_PLATE_BLUEPRINT));
-		$ironPlateDeposit->setSettlement($settlement);
-		$this->entityManager->persist($ironPlateDeposit);
-
-		$oilDeposit = new Entity\ResourceDeposit();
-		$oilDeposit->setAmount(50000);
-		$oilDeposit->setResourceDescriptor(ResourceDescriptorEnum::OIL_BARREL);
-		$oilDeposit->setBlueprint($this->getBlueprint(ResourceAndBlueprintFixture::OIL_BARREL_BLUEPRINT));
-		$oilDeposit->setSettlement($settlement);
-		$this->entityManager->persist($oilDeposit);
-
-        $oilGenerator = new Entity\ResourceDeposit();
-        $oilGenerator->setAmount(2);
-        $oilGenerator->setResourceDescriptor(ResourceDescriptorEnum::OIL_GENERATOR);
-        $oilGenerator->setBlueprint($this->getBlueprint(ResourceAndBlueprintFixture::OIL_GENERATOR));
-        $oilGenerator->setSettlement($settlement);
-        $this->entityManager->persist($oilGenerator);
-
-		$food = new Entity\ResourceDeposit();
-		$food->setAmount(10000);
-		$food->setResourceDescriptor(ResourceDescriptorEnum::SIMPLE_FOOD);
-		$food->setSettlement($settlement);
-		$this->entityManager->persist($food);
-
-		$people = new Entity\ResourceDeposit();
-		$people->setAmount(200);
-		$people->setResourceDescriptor(ResourceDescriptorEnum::PEOPLE);
-		$people->setSettlement($settlement);
-		$this->entityManager->persist($people);
+		foreach ($this->colonyPacks as $colonyPackName => $colonyPack) {
+//		    echo "\n<br>Colony pack $colonyPackName";
+//		    var_dump($colonyPack);
+            foreach ($colonyPack['deposits'] as $resource => $data) {
+//                echo "\n<br>\t resource $resource";
+                $resourceDeposit = new Entity\ResourceDeposit();
+                $resourceDeposit->setAmount($data['amount']);
+                $resourceDeposit->setResourceDescriptor($resource);
+                if (isset($data['blueprint']) && ($blueprint = $this->getBlueprint($data['blueprint'])) != null) {
+                    $resourceDeposit->setBlueprint($blueprint);
+                }
+                $resourceDeposit->setSettlement($settlement);
+                $this->entityManager->persist($resourceDeposit);
+            }
+        }
 	}
 
 	public function getAvailableBlueprints(Entity\Planet\Region $region, Entity\Human $human) {

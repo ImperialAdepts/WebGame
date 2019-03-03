@@ -49,6 +49,7 @@ services:
         public: true
         arguments:
             - '@doctrine.orm.entity_manager'
+            - '%default_colonization_packs%'
 
     # add more services, or override services that need manual wiring
     # AppBundle\Service\ExampleService:

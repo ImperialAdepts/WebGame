@@ -193,6 +193,31 @@
             </constraints>
         </build>
     </Blueprint>
+    <Blueprint id="warehouse">
+        <usedAs ref="land_building"/>
+        <build>
+            <price>
+                <Resource ref="manpower" count="30"/>
+                <Product blueprint="basic_iron_plate" count="50"/>
+            </price>
+            <constraints>
+                <Product blueprint="settlement_village"/>
+            </constraints>
+        </build>
+    </Blueprint>
+    <Blueprint id="container_house">
+        <usedAs ref="land_building"/>
+        <usedAs ref="living_buildings"/>
+        <build>
+            <price>
+                <Resource ref="manpower" count="30"/>
+                <Product blueprint="basic_iron_plate" count="50"/>
+            </price>
+            <constraints>
+                <Product blueprint="settlement_village"/>
+            </constraints>
+        </build>
+    </Blueprint>
 
     <!-- every id MUST have line i UseCaseEnum-->
     <!-- every trait MUST have line i UseCaseTraitEnum-->
@@ -255,10 +280,11 @@
         <trait>energy</trait>
     </UseCase>
 
-    <ColonizationPack>
+    <ColonizationPack id="simple">
         <Resource ref="human" count="1000"/>
         <Blueprint ref="basic_iron_mine"/>
         <Product blueprint="basic_iron_plate" count="10000"/>
         <Product blueprint="basic_food" count="10000"/>
+        <Product blueprint="warehouse" count="10"/>
     </ColonizationPack>
 </root>

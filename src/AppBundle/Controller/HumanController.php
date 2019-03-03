@@ -91,13 +91,15 @@ class HumanController extends Controller
 	}
 
 	/**
-	 * @Route("/{human}/newcolony", name="human_newcolony")
+	 * @Route("/newcolony/{regionC}_{regionL}_{regionR}", name="human_newcolony")
 	 */
-	public function newColonyAction(Entity\Human $human, Request $request)
+	public function newColonyAction(Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR,Request $request)
 	{
-		$centralRegion = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getByUuid(0);
-		$builder = new \AppBundle\Builder\PlanetBuilder($this->getDoctrine()->getManager());
-		$builder->newColony($centralRegion, $human);
+        $human = $this->get('logged_user_settings')->getHuman();
+        $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+		$builder = new \AppBundle\Builder\PlanetBuilder($this->getDoctrine()->getManager(), $this->getParameter('default_colonization_packs'));
+		$builder->newColony($region, $human, 'simple');
+        $this->getDoctrine()->getManager()->flush();
 
 		return $this->redirectToRoute('human_dashboard', [
 		]);

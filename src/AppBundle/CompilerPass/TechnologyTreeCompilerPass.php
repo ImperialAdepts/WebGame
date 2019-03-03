@@ -26,9 +26,11 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
 
         $useCases = $this->compileUseCases($parser);
         $blueprints = $this->compileBlueprints($parser);
+        $colonizationPacks = $this->compileColonies($parser);
 
         $container->setParameter('use_cases', $useCases);
         $container->setParameter('default_blueprints', $blueprints);
+        $container->setParameter('default_colonization_packs', $colonizationPacks);
     }
 
     /**
@@ -164,6 +166,34 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
         });
 
         return $blueprints;
+    }
+
+    private function compileColonies(Crawler $parser)
+    {
+        $colonies = [];
+        $parser->filterXPath('//ColonizationPack')->each(function (Crawler $colonyPack, $i) use (&$colonies) {
+            $nodeInfo = [
+                'deposits' => [],
+            ];
+            $colonyPack->filterXPath('//Resource')->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                if (!empty($node->attr('ref')) && $node->attr('count') > 0) {
+                    $nodeInfo['deposits'][$node->attr('ref')] = [
+                        'amount' => $node->attr('count')
+                    ];
+                }
+            });
+            $colonyPack->filterXPath("//Product")->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                if (!empty($node->attr('blueprint')) && $node->attr('count') > 0) {
+                    $nodeInfo['deposits'][$node->attr('blueprint')] = [
+                        'blueprint' => $node->attr('blueprint'),
+                        'amount' => $node->attr('count'),
+                    ];
+                }
+            });
+            $colonies[$colonyPack->attr('id')] = $nodeInfo;
+        });
+
+        return $colonies;
     }
 
 }
