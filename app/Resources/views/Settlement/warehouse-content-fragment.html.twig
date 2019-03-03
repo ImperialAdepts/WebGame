@@ -6,7 +6,7 @@
 		<ul>
 			{% for deposit in resources %}
 				<li>
-					<strong>{{ deposit.blueprint.description }}</strong>, {{ deposit.resourceDescriptor }}, {{ deposit.space }}m3, {{ deposit.weight }}kg
+					<strong>{{ deposit.blueprint.description }}</strong>&times;{{ deposit.amount }}, {{ deposit.resourceDescriptor }}, {{ deposit.space }}m3, {{ deposit.weight }}kg
 				</li>
 			{% endfor %}
 		</ul>

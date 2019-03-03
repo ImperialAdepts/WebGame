@@ -57,4 +57,28 @@ class SettlementController extends Controller
         ]);
     }
 
+    /**
+     * @Route("/settlement_buildings/{settlement}/{human}", name="settlement_buildings")
+     */
+    public function buildingsAction(Entity\Planet\Settlement $settlement, Entity\Human $human, Request $request)
+    {
+        $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LAND_BUILDING);
+        $resourceDescriptors = [];
+        /** @var Entity\Blueprint $blueprint */
+        foreach ($blueprints as $blueprint) {
+            $resourceDescriptors[$blueprint->getResourceDescriptor()] = null;
+        }
+        $buldings = [];
+        foreach ($settlement->getResourceDeposits() as $deposit) {
+            if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
+                $buldings[] = $deposit;
+            }
+        }
+
+        return $this->render('Settlement/buildings-fragment.html.twig', [
+            'buildings' => $buldings,
+            'human' => $human,
+        ]);
+    }
+
 }
