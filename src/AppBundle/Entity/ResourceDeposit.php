@@ -46,12 +46,16 @@ class ResourceDeposit
     private $blueprint;
 
     /**
-     * @var Planet\Settlement
+     * @var Planet\Region
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Planet\Settlement")
-     * @ORM\JoinColumn(fieldName="settlement_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Planet\Region")
+     * @ORM\JoinColumns(
+     *  @ORM\JoinColumn(name="region_peak_center_id", referencedColumnName="peak_center_id", nullable=false),
+     *  @ORM\JoinColumn(name="region_peak_left_id", referencedColumnName="peak_left_id", nullable=false),
+     *  @ORM\JoinColumn(name="region_peak_right_id", referencedColumnName="peak_right_id", nullable=false)
+     * )
      */
-    private $settlement;
+    private $region;
 
     /**
      * Get id
@@ -92,7 +96,7 @@ class ResourceDeposit
      *
      * @param string $resourceDescriptor
      *
-     * @return Resource
+     * @return ResourceDeposit
      */
     public function setResourceDescriptor($resourceDescriptor)
     {
@@ -116,7 +120,7 @@ class ResourceDeposit
      *
      * @param Blueprint $blueprint
      *
-     * @return Resource
+     * @return ResourceDeposit
      */
     public function setBlueprint(Blueprint $blueprint)
     {
@@ -138,13 +142,13 @@ class ResourceDeposit
     /**
      * Set settlement
      *
-     * @param Planet\Settlement $settlement
+     * @param Planet\Region $region
      *
      * @return ResourceDeposit
      */
-    public function setSettlement(Planet\Settlement $settlement)
+    public function setRegion(Planet\Region $region)
     {
-        $this->settlement = $settlement;
+        $this->region = $region;
 
         return $this;
     }
@@ -152,11 +156,11 @@ class ResourceDeposit
     /**
      * Get settlement
      *
-     * @return Planet\Settlement
+     * @return Planet\Region
      */
-    public function getSettlement()
+    public function getRegion()
     {
-        return $this->settlement;
+        return $this->region;
     }
 
     public function getUseCases() {

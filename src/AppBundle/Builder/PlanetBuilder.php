@@ -28,72 +28,76 @@ class PlanetBuilder
 
 	public function buildProject(Entity\Planet\BuildingProject $project)
 	{
-        /** @var Entity\Planet\Settlement $settlement */
-		$settlement = $project->getRegion()->getSettlement();
-		$settlement->addResourceDeposit($project->getBuildingBlueprint(), 1);
-		$this->entityManager->persist($settlement);
+        $project->getRegion()->addResourceDeposit($project->getBuildingBlueprint(), 1);
 		$this->entityManager->persist($project->getRegion());
 	}
 
 	public function buildProjectStep(Entity\Planet\CurrentBuildingProject $project)
 	{
 		$resourceSettlements = $this->entityManager->getRepository(Entity\Planet\Settlement::class)->getByHumanSupervisor($project->getSupervisor());
-
+        $regions = [];
+        /** @var Entity\Planet\Settlement $settlement */
+        foreach ($resourceSettlements as $settlement) {
+            foreach ($settlement->getRegions() as $region) {
+                $regions[] = $region;
+            }
+        }
 		$mandays = [];
-		/** @var Entity\Planet\Settlement $settlement */
-		foreach ($resourceSettlements as $settlement) {
-			$people = $settlement->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
+		/** @var Entity\Planet\Region $region */
+		foreach ($regions as $region) {
+			$people = $region->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
 			if ($people) {
-				$project->addNotification("Settlement #{$settlement->getId()} has {$people->getAmount()} people");
-				$mandays[$settlement->getId()] = $people->getAmount() * self::STEP_DAY_COUNT;
+				$project->addNotification("Region #{$region->getCoords()} has {$people->getAmount()} people");
+				$mandays[$region->getCoords()] = $people->getAmount() * self::STEP_DAY_COUNT;
 			} else {
-				$project->addNotification("There is no people in Settlement #{$settlement->getId()} there are only that:");
-				foreach ($settlement->getResourceDeposits() as $r => $deposit) {
+				$project->addNotification("There is no people in Settlement #{$region->getCoords()} there are only that:");
+				foreach ($region->getResourceDeposits() as $r => $deposit) {
 					$project->addNotification("...{$deposit->getAmount()} of {$deposit->getResourceDescriptor()}/key:$r");
 				}
-				$mandays[$settlement->getId()] = 0;
+				$mandays[$region->getCoords()] = 0;
 			}
 		}
 
 		$missingResources = array_keys($project->getMissingResources());
-		foreach ($missingResources as $resource) {
-			$project->addNotification("Finding $resource...");
-			/** @var Entity\Planet\Settlement $settlement */
-			foreach ($resourceSettlements as $settlement) {
+        /** @var Entity\Planet\Region $region */
+        foreach ($regions as $region) {
+		    foreach ($missingResources as $resource) {
+			    $project->addNotification("Finding $resource...");
+
 				$missingResource = $project->getMissingResource($resource);
-				$project->addNotification("Finding amount $missingResource of $resource in Settlement #{$settlement->getId()}");
+				$project->addNotification("Finding amount $missingResource of $resource in Settlement #{$region->getCoords()}");
 
 				if ($resource == ResourceDescriptorEnum::MANDAY) {
-					$storedAmount = $mandays[$settlement->getId()];
+					$storedAmount = $mandays[$region->getCoords()];
 					$project->addNotification("There is $storedAmount mandays");
 					if ($storedAmount > $missingResource) {
-						$mandays[$settlement->getId()] = $storedAmount - $missingResource;
+						$mandays[$region->getCoords()] = $storedAmount - $missingResource;
 						$project->setMissingResource($resource, 0);
-						$this->entityManager->persist($settlement);
+						$this->entityManager->persist($region);
 						break;
 					}
 					if ($storedAmount <= $missingResource) {
-						$mandays[$settlement->getId()] = 0;
+						$mandays[$region->getCoords()] = 0;
 						$project->setMissingResource($resource, $missingResource - $storedAmount);
 					}
 					continue;
-				} elseif ($settlement->getResourceDeposit($resource) == null) {
-					$project->addNotification("There is no $resource in Settlement #{$settlement->getId()} there are only that:");
-					foreach ($settlement->getResourceDeposits() as $r => $deposit) {
+				} elseif ($region->getResourceDeposit($resource) == null) {
+					$project->addNotification("There is no $resource in Region #{$region->getCoords()} there are only that:");
+					foreach ($region->getResourceDeposits() as $r => $deposit) {
 						$project->addNotification("...{$deposit->getAmount()} of {$deposit->getResourceDescriptor()}/$r");
 					}
 					continue;
 				} else {
-					$storedAmount = $settlement->getResourceDeposit($resource)->getAmount();
+					$storedAmount = $region->getResourceDeposit($resource)->getAmount();
 					$project->addNotification("There is $storedAmount of $resource");
 					if ($storedAmount > $missingResource) {
-						$settlement->getResourceDeposit($resource)->setAmount($storedAmount - $missingResource);
+						$region->getResourceDeposit($resource)->setAmount($storedAmount - $missingResource);
 						$project->setMissingResource($resource, 0);
-						$this->entityManager->persist($settlement);
+						$this->entityManager->persist($region);
 						break;
 					}
 					if ($storedAmount <= $missingResource) {
-						$this->entityManager->remove($settlement->getResourceDeposit($resource));
+						$this->entityManager->remove($region->getResourceDeposit($resource));
 						$project->setMissingResource($resource, $missingResource - $storedAmount);
 					}
 				}
@@ -125,7 +129,7 @@ class PlanetBuilder
                 if (isset($data['blueprint']) && ($blueprint = $this->getBlueprint($data['blueprint'])) != null) {
                     $resourceDeposit->setBlueprint($blueprint);
                 }
-                $resourceDeposit->setSettlement($settlement);
+                $resourceDeposit->setRegion($settlement->getMainRegion());
                 $this->entityManager->persist($resourceDeposit);
             }
         }
@@ -154,7 +158,7 @@ class PlanetBuilder
                 if ($region->getSettlement() == null) {
                     continue 2;
                 }
-                $resourceDeposit = $region->getSettlement()->getResourceDeposit($resourceType);
+                $resourceDeposit = $region->getResourceDeposit($resourceType);
                 if ($resourceDeposit == null || $resourceDeposit->getAmount() < $amount) {
                     continue 2;
                 }

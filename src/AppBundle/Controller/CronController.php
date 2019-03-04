@@ -62,37 +62,40 @@ class CronController extends Controller
 	{
 		$settlements = $this->getDoctrine()->getRepository(Entity\Planet\Settlement::class)->getAll();
 
-		/** @var Entity\Planet\Settlement $settlement */
-		foreach ($settlements as $settlement) {
-			$foodDeposit = $settlement->getResourceDeposit(ResourceDescriptorEnum::SIMPLE_FOOD);
-			$peopleDeposit = $settlement->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
-			if (!$peopleDeposit) continue;
+        /** @var Entity\Planet\Settlement $settlement */
+        foreach ($settlements as $settlement) {
+            /** @var Entity\Planet\Region $region */
+            foreach ($settlement->getRegions() as $region) {
+                $foodDeposit = $region->getResourceDeposit(ResourceDescriptorEnum::SIMPLE_FOOD);
+                $peopleDeposit = $region->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
+                if (!$peopleDeposit) continue;
 
-			$foodNedded = $peopleDeposit ? $peopleDeposit->getAmount() * self::PEOPLE_CONSUMPTION : 0;
-			$foodHave = $foodDeposit ? $foodDeposit->getAmount() : 0;
+                $foodNedded = $peopleDeposit ? $peopleDeposit->getAmount() * self::PEOPLE_CONSUMPTION : 0;
+                $foodHave = $foodDeposit ? $foodDeposit->getAmount() : 0;
 
-			if ($foodDeposit) {
-				if ($foodHave > $foodNedded) {
-					$foodDeposit->setAmount($foodHave - $foodNedded);
-				} else {
-					$foodDeposit->setAmount(0);
-					$this->getDoctrine()->getManager()->remove($foodDeposit);
-				}
-				$this->getDoctrine()->getManager()->persist($foodDeposit);
-			}
+                if ($foodDeposit) {
+                    if ($foodHave > $foodNedded) {
+                        $foodDeposit->setAmount($foodHave - $foodNedded);
+                    } else {
+                        $foodDeposit->setAmount(0);
+                        $this->getDoctrine()->getManager()->remove($foodDeposit);
+                    }
+                    $this->getDoctrine()->getManager()->persist($foodDeposit);
+                }
 
-			if ($foodHave < $foodNedded) {
-				$hungryPeople = ($foodNedded - $foodHave) / self::PEOPLE_CONSUMPTION;
-				$diedPeople = round($hungryPeople * self::PEOPLE_STARVATION_RATIO) + 1;
-				$newPeopleCount = $peopleDeposit->getAmount() - $diedPeople;
-				$peopleDeposit->setAmount($newPeopleCount);
-				if ($newPeopleCount < 1) {
-					$this->getDoctrine()->getManager()->remove($peopleDeposit);
-				}
-			}
+                if ($foodHave < $foodNedded) {
+                    $hungryPeople = ($foodNedded - $foodHave) / self::PEOPLE_CONSUMPTION;
+                    $diedPeople = round($hungryPeople * self::PEOPLE_STARVATION_RATIO) + 1;
+                    $newPeopleCount = $peopleDeposit->getAmount() - $diedPeople;
+                    $peopleDeposit->setAmount($newPeopleCount);
+                    if ($newPeopleCount < 1) {
+                        $this->getDoctrine()->getManager()->remove($peopleDeposit);
+                    }
+                }
 
-			$this->getDoctrine()->getManager()->persist($peopleDeposit);
-		}
+                $this->getDoctrine()->getManager()->persist($peopleDeposit);
+            }
+        }
 		$this->getDoctrine()->getManager()->flush();
 
 		$response = "";
@@ -107,16 +110,19 @@ class CronController extends Controller
 	{
 		$settlements = $this->getDoctrine()->getRepository(Entity\Planet\Settlement::class)->getAll();
 
-		/** @var Entity\Planet\Settlement $settlement */
-		foreach ($settlements as $settlement) {
-			$peopleDeposit = $settlement->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
-			if (!$peopleDeposit) continue;
+        /** @var Entity\Planet\Settlement $settlement */
+        foreach ($settlements as $settlement) {
+            /** @var Entity\Planet\Region $region */
+            foreach ($settlement->getRegions() as $region) {
+                $peopleDeposit = $region->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
+                if (!$peopleDeposit) continue;
 
-			$newborn = round($peopleDeposit->getAmount() * self::PEOPLE_BASE_FERTILITY_RATE / 20) + 1;
-			$newPeopleCount = $peopleDeposit->getAmount() + $newborn;
-			$peopleDeposit->setAmount($newPeopleCount);
+                $newborn = round($peopleDeposit->getAmount() * self::PEOPLE_BASE_FERTILITY_RATE / 20) + 1;
+                $newPeopleCount = $peopleDeposit->getAmount() + $newborn;
+                $peopleDeposit->setAmount($newPeopleCount);
 
-			$this->getDoctrine()->getManager()->persist($peopleDeposit);
+                $this->getDoctrine()->getManager()->persist($peopleDeposit);
+            }
 		}
 		$this->getDoctrine()->getManager()->flush();
 

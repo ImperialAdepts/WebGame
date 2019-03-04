@@ -47,9 +47,11 @@ class SettlementController extends Controller
             $resourceDescriptors[$blueprint->getResourceDescriptor()] = null;
         }
         $warehouseContent = [];
-        foreach ($settlement->getResourceDeposits() as $deposit) {
-            if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
-                $warehouseContent[] = $deposit;
+        foreach ($settlement->getResourceDeposits() as $deposits) {
+            foreach ($deposits as $deposit) {
+                if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
+                    $warehouseContent[] = $deposit;
+                }
             }
         }
 
@@ -73,9 +75,11 @@ class SettlementController extends Controller
             $resourceDescriptors[$blueprint->getResourceDescriptor()] = null;
         }
         $buldings = [];
-        foreach ($settlement->getResourceDeposits() as $deposit) {
-            if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
-                $buldings[] = $deposit;
+        foreach ($settlement->getResourceDeposits() as $deposits) {
+            foreach ($deposits as $deposit) {
+                if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
+                    $buldings[] = $deposit;
+                }
             }
         }
 
@@ -99,28 +103,29 @@ class SettlementController extends Controller
             $resourceDescriptors[$blueprint->getResourceDescriptor()] = null;
         }
 
-        /** @var Adapters\LandBuildingng $houses */
+        /** @var Adapters\LivingBuilding[] $houses */
         $houses = [];
         /** @var Entity\ResourceDeposit $deposit */
-        foreach ($settlement->getResourceDeposits() as $deposit) {
-            if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
-                $houses[] = $deposit->asUseCase(UseCaseEnum::LIVING_BUILDINGS);
+        foreach ($settlement->getResourceDeposits() as $deposits) {
+            foreach ($deposits as $deposit) {
+                if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
+                    $houses[] = $deposit->asUseCase(UseCaseEnum::LIVING_BUILDINGS);
+                }
             }
         }
-        $peopleCount = 0;
-        if ($settlement->getResourceDeposit(ResourceDescriptorEnum::PEOPLE) != null) {
-            $peopleCount = $settlement->getResourceDeposit(ResourceDescriptorEnum::PEOPLE)->getAmount();
-        }
+        $peopleCount = $settlement->getPeopleCount();
 
         $housingCapacity = 0;
-        /** @var Entity\ResourceDeposit $house */
+        /** @var Adapters\LivingBuilding $house */
         foreach ($houses as $house) {
             $housingCapacity += $house->getLivingCapacity();
         }
 
         $foodEnergy = 0;
-        if ($settlement->getResourceDeposit(ResourceDescriptorEnum::SIMPLE_FOOD) != null) {
-            $foodEnergy = $settlement->getResourceDeposit(ResourceDescriptorEnum::SIMPLE_FOOD)->getAmount();
+        foreach ($settlement->getResourceDeposits(ResourceDescriptorEnum::SIMPLE_FOOD) as $deposits) {
+            foreach ($deposits as $deposit) {
+                $foodEnergy += $deposit->getAmount();
+            }
         }
 
         return $this->render('Settlement/housing.html.twig', [

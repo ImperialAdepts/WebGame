@@ -1,6 +1,8 @@
 <?php
 
 namespace AppBundle\Entity\Planet;
+use AppBundle\Entity\Blueprint;
+use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
 /**
  * Region - map unit
@@ -53,6 +55,13 @@ class Region
 	 * @ORM\JoinColumn(name="settlement_id", referencedColumnName="id")
 	 */
 	private $settlement;
+
+    /**
+     * @var ResourceDeposit[]
+     *
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\ResourceDeposit", mappedBy="region", cascade={"all"})
+     */
+    private $resourceDeposits;
 
 	/**
 	 * @var CurrentBuildingProject
@@ -139,6 +148,48 @@ class Region
 	{
 		return $this->settlement;
 	}
+
+    /**
+     * @return \AppBundle\Entity\ResourceDeposit[]
+     */
+    public function getResourceDeposits()
+    {
+        return $this->resourceDeposits;
+    }
+
+    /**
+     * @param $resourceDescriptor
+     * @return ResourceDeposit|null
+     */
+    public function getResourceDeposit($resourceDescriptor)
+    {
+        foreach ($this->getResourceDeposits() as $deposit) {
+            if ($deposit->getResourceDescriptor() == $resourceDescriptor) return $deposit;
+        }
+        return null;
+    }
+
+    /**
+     * @param \AppBundle\Entity\ResourceDeposit[] $resourceDeposits
+     */
+    public function setResourceDeposits($resourceDeposits)
+    {
+        $this->resourceDeposits = $resourceDeposits;
+    }
+
+    public function addResourceDeposit(Blueprint $blueprint, $amount)
+    {
+        if (($deposit = $this->getResourceDeposit($blueprint->getResourceDescriptor())) != null) {
+            $deposit->setAmount($deposit->getAmount() + $amount);
+        } else {
+            $deposit = new ResourceDeposit();
+            $deposit->setAmount($amount);
+            $deposit->setResourceDescriptor($blueprint->getResourceDescriptor());
+            $deposit->setBlueprint($blueprint);
+            $deposit->setRegion($this);
+            $this->getResourceDeposits()->add($deposit);
+        }
+    }
 
 	/**
 	 * @return CurrentBuildingProject

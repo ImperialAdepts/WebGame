@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity\Planet;
 
+use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Entity\Blueprint;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
@@ -51,13 +52,6 @@ class Settlement
 	 * @ORM\OneToMany(targetEntity="Region", mappedBy="settlement")
 	 */
 	private $regions;
-
-	/**
-	 * @var ResourceDeposit[]
-	 *
-	 * @ORM\OneToMany(targetEntity="AppBundle\Entity\ResourceDeposit", mappedBy="settlement", cascade={"all"})
-	 */
-	private $resourceDeposits;
 
 	/**
 	 * Get id
@@ -141,6 +135,17 @@ class Settlement
 		return $this->type;
 	}
 
+	// TODO: predelat tak, aby byl hlavni region nastavitelny
+
+    /**
+     * @return Region
+     */
+	public function getMainRegion() {
+        foreach ($this->getRegions() as $region) {
+            return $region;
+        }
+    }
+
 	/**
 	 * @return Region[]
 	 */
@@ -158,45 +163,39 @@ class Settlement
 	}
 
 	/**
-	 * @return \AppBundle\Entity\ResourceDeposit[]
-	 */
-	public function getResourceDeposits()
-	{
-		return $this->resourceDeposits;
-	}
-
-	/**
 	 * @param $resourceDescriptor
-	 * @return ResourceDeposit|null
+	 * @return ResourceDeposit[] region_coords => ResourceDeposit[]
 	 */
-	public function getResourceDeposit($resourceDescriptor)
+	public function getResourceDeposits($resourceDescriptor = null)
 	{
-		foreach ($this->getResourceDeposits() as $deposit) {
-			if ($deposit->getResourceDescriptor() == $resourceDescriptor) return $deposit;
-		}
-		return null;
-	}
-
-	/**
-	 * @param \AppBundle\Entity\ResourceDeposit[] $resourceDeposits
-	 */
-	public function setResourceDeposits($resourceDeposits)
-	{
-		$this->resourceDeposits = $resourceDeposits;
-	}
-
-    public function addResourceDeposit(Blueprint $blueprint, $amount)
-    {
-        if (($deposit = $this->getResourceDeposit($blueprint->getResourceDescriptor())) != null) {
-            $deposit->setAmount($deposit->getAmount() + $amount);
-        } else {
-            $deposit = new ResourceDeposit();
-            $deposit->setAmount($amount);
-            $deposit->setResourceDescriptor($blueprint->getResourceDescriptor());
-            $deposit->setBlueprint($blueprint);
-            $deposit->setSettlement($this);
-            $this->getResourceDeposits()->add($deposit);
+	    $deposits = [];
+	    /** @var Region $region */
+        foreach ($this->getRegions() as $region) {
+            if ($resourceDescriptor != null) {
+                if (($localDeposit = $region->getResourceDeposit($resourceDescriptor)) != null) {
+                    $deposits[$region->getCoords()][] = $localDeposit;
+                }
+            } else {
+                foreach ($region->getResourceDeposits() as $deposit) {
+                    $deposits[$region->getCoords()][] = $deposit;
+                }
+            }
         }
+		return $deposits;
+	}
+
+    /**
+     * @return int
+     */
+	public function getPeopleCount() {
+        $depositsByRegions = $this->getResourceDeposits(ResourceDescriptorEnum::PEOPLE);
+        $counter = 0;
+        foreach ($depositsByRegions as $deposits) {
+            foreach ($deposits as $deposit) {
+                $counter += $deposit->getAmount();
+            }
+        }
+        return $counter;
     }
 }
 
