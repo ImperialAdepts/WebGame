@@ -57,7 +57,7 @@ class Region
 	/**
 	 * @var CurrentBuildingProject
 	 *
-	 * @ORM\OneToOne(targetEntity="CurrentBuildingProject", inversedBy="region")
+	 * @ORM\OneToOne(targetEntity="CurrentBuildingProject", mappedBy="region")
 	 */
 	private $project;
 
