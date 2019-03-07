@@ -17,9 +17,7 @@ class Region
 	 *
 	 * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Peak")
-     * @ORM\JoinColumns{
-     *  @ORM\JoinColumn(name="peak_center_id", referencedColumnName="id", nullable=false)
-     * }
+     * @ORM\JoinColumn(name="peak_center_id", referencedColumnName="id", nullable=false)
 	 * @ORM\GeneratedValue(strategy="NONE")
 	 */
 	private $peakCenter;
@@ -29,9 +27,7 @@ class Region
      *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Peak")
-     * @ORM\JoinColumns{
      * @ORM\JoinColumn(name="peak_left_id", referencedColumnName="id", nullable=false)
-     * }
      * @ORM\GeneratedValue(strategy="NONE")
      */
     private $peakLeft;
@@ -41,9 +37,7 @@ class Region
      *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Peak")
-     * @ORM\JoinColumns{
      * @ORM\JoinColumn(name="peak_right_id", referencedColumnName="id", nullable=false)
-     * }
      * @ORM\GeneratedValue(strategy="NONE")
      */
     private $peakRight;

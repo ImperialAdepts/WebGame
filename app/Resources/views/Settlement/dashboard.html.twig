@@ -20,6 +20,10 @@
 		'human': human.id
 	})) }}
 
+	{{ render(controller('AppBundle:Settlement:connectableRegions', {
+		'settlement': settlement.id
+	})) }}
+
 	{% for region in settlement.regions %}
 		<h3>Region {{ region.coords }}</h3>
 

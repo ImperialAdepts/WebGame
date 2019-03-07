@@ -15,14 +15,31 @@ class RegionRepository extends \Doctrine\ORM\EntityRepository
 {
 
     /**
-     * TODO: prepsat aby to tahalo sousedy do nejake rozumne vzdalenosti
-     *
      * @param Region $region
      * @return Region[]
      */
-	public function getRegionNeighbarhood(Region $region)
+	public function getRegionNeighbourhood(Region $region)
 	{
-		return $this->findAll();
+	    return $this->findAll();
+	    $c = $region->getPeakCenter()->getId();
+	    $r = $region->getPeakRight()->getId();
+	    $l = $region->getPeakLeft()->getId();
+        return $this->getEntityManager()
+//            ->createQuery(
+//                "SELECT r FROM AppBundle:Planet\Region r WHERE "
+//                . "(r.peakCenter=$c AND r.peakLeft=$l AND r.peakRight!=$r) OR "
+//                . "(r.peakCenter=$c AND r.peakLeft!=$l AND r.peakRight=$r) OR "
+//                . "(r.peakCenter!=$c AND r.peakLeft=$l AND r.peakRight=$r)"
+//            )
+            ->createQuery(
+                "SELECT r FROM AppBundle:Planet\Region r, AppBundle:Planet\Region c WHERE "
+                . "c.peakCenter=$c AND c.peakLeft=$l AND c.peakRight=$r AND ("
+                . "(r.peakCenter=c.peakLeft AND r.peakRight=c.peakCenter) OR "
+                . "(r.peakLeft=c.peakLeft AND r.peakRight=c.peakRight) OR "
+                . "(r.peakCenter=c.peakRight AND r.peakLeft=c.peakCenter) "
+                . ")"
+            )
+            ->getResult();
 	}
 
 	public function findByPeaks(Peak $regionC, Peak $regionL, Peak $regionR) {

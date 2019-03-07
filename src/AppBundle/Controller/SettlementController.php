@@ -6,6 +6,7 @@ use AppBundle\Descriptor\Adapters;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity;
+use AppBundle\Repository\Planet\RegionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,7 +19,7 @@ class SettlementController extends Controller
 	/**
 	 * @Route("/dashboard/{settlement}", name="settlement_dashboard")
 	 */
-	public function buildAction(Entity\Planet\Settlement $settlement, Request $request)
+	public function dashboardAction(Entity\Planet\Settlement $settlement, Request $request)
 	{
         /** @var PlanetBuilder $builder */
         $builder = $this->get('planet_builder');
@@ -134,6 +135,54 @@ class SettlementController extends Controller
             'housingCapacity' => $housingCapacity,
             'houses' => $houses,
             'human' => $human,
+        ]);
+    }
+
+    /**
+     * @Route("/connectableRegions/{settlement}", name="settlement_connectable_regions")
+     */
+    public function connectableRegionsAction(Entity\Planet\Settlement $settlement, Request $request)
+    {
+        /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
+        $regions = [];
+        /** @var Entity\Planet\Region $settledRegion */
+        foreach ($settlement->getRegions() as $settledRegion) {
+            /** @var RegionRepository $repo */
+            $repo = $this->getDoctrine()->getManager()->getRepository(Entity\Planet\Region::class);
+            $nears = $repo->getRegionNeighbourhood($settledRegion);
+            /** @var Entity\Planet\Region $near */
+            foreach ($nears as $near) {
+                $regions[$near->getCoords()] = $near;
+            }
+        }
+
+        foreach ($settlement->getRegions() as $settledRegion) {
+            unset($regions[$settledRegion->getCoords()]);
+        }
+
+        return $this->render('Settlement/connect-regions.html.twig', [
+            'human' => $human,
+            'settlement' => $settlement,
+            'nearRegions' => $regions,
+        ]);
+    }
+
+    /**
+     * @Route("/connectRegions/{settlement}/{regionC}_{regionL}_{regionR}", name="settlement_connect_regions")
+     */
+    public function connectRegionsAction(Entity\Planet\Settlement $settlement, Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Request $request)
+    {
+        /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
+        $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $region->setSettlement($settlement);
+        $this->getDoctrine()->getManager()->persist($region);
+        $this->getDoctrine()->getManager()->persist($settlement);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->redirectToRoute('settlement_dashboard', [
+            'settlement' => $settlement->getId(),
         ]);
     }
 }

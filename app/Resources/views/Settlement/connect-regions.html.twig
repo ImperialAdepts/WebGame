@@ -1,0 +1,14 @@
+<div>
+	<strong>Available connections:</strong>
+	<ul>
+		{% for region in nearRegions %}
+			<a href="{{ path('settlement_connect_regions', {
+				'settlement': settlement.id,
+				'regionC': region.peakCenter.id,
+				'regionL': region.peakLeft.id,
+				'regionR': region.peakRight.id }) }}">
+				Connect with {{ region.coords }}
+			</a>,
+		{% endfor %}
+	</ul>
+</div>

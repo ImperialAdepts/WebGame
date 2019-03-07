@@ -73,7 +73,7 @@ class HumanController extends Controller
 	        break;
         }
 
-	    $regions = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getRegionNeighbarhood($centralRegion);
+	    $regions = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->getRegionNeighbourhood($centralRegion);
 
 		$blueprintsByRegions = [];
 	    /** @var PlanetBuilder $builder */
