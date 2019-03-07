@@ -96,12 +96,14 @@ class HumanController extends Controller
 	public function newColonyAction(Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR,Request $request)
 	{
         $human = $this->get('logged_user_settings')->getHuman();
+        /** @var Entity\Planet\Region $region */
         $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
 		$builder = new \AppBundle\Builder\PlanetBuilder($this->getDoctrine()->getManager(), $this->getParameter('default_colonization_packs'));
 		$builder->newColony($region, $human, 'simple');
         $this->getDoctrine()->getManager()->flush();
 
-		return $this->redirectToRoute('human_dashboard', [
+		return $this->redirectToRoute('settlement_dashboard', [
+		    'settlement' => $region->getSettlement()->getId(),
 		]);
 	}
 	
