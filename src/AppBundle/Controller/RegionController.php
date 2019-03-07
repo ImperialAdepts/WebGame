@@ -20,6 +20,7 @@ class RegionController extends Controller
 	{
         /** @var Entity\Human $human */
         $human = $this->get('logged_user_settings')->getHuman();
+        /** @var Entity\Planet\Region $region */
 		$region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
 		$blueprint = $this->getDoctrine()->getManager()->find(Entity\Blueprint::class, $blueprintId);
 
@@ -36,8 +37,8 @@ class RegionController extends Controller
 		$this->getDoctrine()->getManager()->persist($project);
 		$this->getDoctrine()->getManager()->persist($region);
 		$this->getDoctrine()->getManager()->flush();
-		return $this->redirectToRoute('human_dashboard', [
-			'human' => $human->getId(),
+		return $this->redirectToRoute('settlement_dashboard', [
+			'settlement' => $region->getSettlement()->getId(),
 		]);
 	}
 
