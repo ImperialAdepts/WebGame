@@ -165,7 +165,7 @@ class ResourceDeposit
 
     public function getUseCases() {
         if ($this->getBlueprint() != null) return $this->getBlueprint()->getUseCases();
-        return UseCaseEnum::RESOURCE_DEPOSIT;
+        return [UseCaseEnum::RESOURCE_DEPOSIT];
     }
 
     public function getSpace() {
@@ -183,6 +183,9 @@ class ResourceDeposit
      * @return AbstractResourceDepositAdapter|null
      */
     public function asUseCase($useCaseName) {
+        if (!in_array($useCaseName, $this->getUseCases())) {
+            return null;
+        }
         $adapterName = UseCaseEnum::getAdapter($useCaseName);
         if ($adapterName == null) {
             return null;

@@ -9,6 +9,8 @@
 namespace AppBundle\Descriptor\Adapters;
 
 
+use AppBundle\Descriptor\UseCaseEnum;
+use AppBundle\Entity;
 use AppBundle\Entity\ResourceDeposit;
 
 class AbstractResourceDepositAdapter
@@ -23,6 +25,27 @@ class AbstractResourceDepositAdapter
     public function __construct(ResourceDeposit $deposit)
     {
         $this->deposit = $deposit;
+    }
+
+    /**
+     * @param Entity\Planet\Settlement $settlement
+     * @param string $useCaseName
+     * @return AbstractResourceDepositAdapter[]
+     */
+    protected static function extractAdapterOfUseCase(Entity\Planet\Settlement $settlement, $useCaseName) {
+        /** @var AbstractResourceDepositAdapter[] $adapters */
+        $adapters = [];
+        /** @var ResourceDeposit[] $deposits */
+        foreach ($settlement->getResourceDeposits() as $deposits) {
+            /** @var ResourceDeposit $deposit */
+            foreach ($deposits as $deposit) {
+                $useCaseAdapter = $deposit->asUseCase($useCaseName);
+                if ($useCaseAdapter != null) {
+                    $adapters[] = $useCaseAdapter;
+                }
+            }
+        }
+        return $adapters;
     }
 
     /**

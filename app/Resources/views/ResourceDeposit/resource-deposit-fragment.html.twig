@@ -1,5 +1,9 @@
 <div class="resource-deposit">
-	<strong>{{ deposit.blueprint.description }}</strong>&times;{{ deposit.amount }}
+	{% if deposit.blueprint is not null %}
+		<strong>{{ deposit.blueprint.description }}</strong>
+	{% else %}
+		<strong>{{ deposit.resourceDescriptor }}</strong>
+	{% endif %}&times;{{ deposit.amount }}
 	<table border="1">
 		<tr>
 			{% for name, adapter in adapters %}

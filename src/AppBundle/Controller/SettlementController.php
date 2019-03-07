@@ -105,22 +105,8 @@ class SettlementController extends Controller
         }
 
         /** @var Adapters\LivingBuilding[] $houses */
-        $houses = [];
-        /** @var Entity\ResourceDeposit $deposit */
-        foreach ($settlement->getResourceDeposits() as $deposits) {
-            foreach ($deposits as $deposit) {
-                if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
-                    $houses[] = $deposit->asUseCase(UseCaseEnum::LIVING_BUILDINGS);
-                }
-            }
-        }
+        $houses = Adapters\LivingBuilding::in($settlement);
         $peopleCount = $settlement->getPeopleCount();
-
-        $housingCapacity = 0;
-        /** @var Adapters\LivingBuilding $house */
-        foreach ($houses as $house) {
-            $housingCapacity += $house->getLivingCapacity();
-        }
 
         $foodEnergy = 0;
         foreach ($settlement->getResourceDeposits(ResourceDescriptorEnum::SIMPLE_FOOD) as $deposits) {
@@ -132,7 +118,7 @@ class SettlementController extends Controller
         return $this->render('Settlement/housing.html.twig', [
             'people' => $peopleCount,
             'foodEnergy' => $foodEnergy,
-            'housingCapacity' => $housingCapacity,
+            'housingCapacity' => Adapters\LivingBuilding::countLivingCapacity($houses),
             'houses' => $houses,
             'human' => $human,
         ]);

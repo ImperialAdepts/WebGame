@@ -27,12 +27,26 @@ class UseCaseEnum
 	const TOOL = 'tool';
 	const BASIC_FOOD = 'basic_food';
 
+	public static $useCaseToAdapterMap = [
+	    self::LIVING_BUILDINGS => LivingBuilding::class,
+        self::LAND_BUILDING => LandBuilding::class,
+        self::ENERGY_SOURCE => EnergySource::class,
+    ];
+
 	public static function getAdapter($useCaseName) {
-	    switch ($useCaseName) {
-            case self::LIVING_BUILDINGS: return LivingBuilding::class;
-            case self::LAND_BUILDING: return LandBuilding::class;
-            case self::ENERGY_SOURCE: return EnergySource::class;
-            default: return null;
+	    if (isset(self::$useCaseToAdapterMap[$useCaseName])) {
+	        return self::$useCaseToAdapterMap[$useCaseName];
+        } else {
+	        return null;
+        }
+    }
+
+    public static function getAdapterUseCase($adapterClass) {
+	    $flippedArray = array_flip(self::$useCaseToAdapterMap);
+        if (isset($flippedArray[$adapterClass])) {
+            return $flippedArray[$adapterClass];
+        } else {
+            return null;
         }
     }
 }
