@@ -50,8 +50,12 @@
             </div>
             <div id="player-title">
                 <a href="{{ path('gamer_dashboard') }}">
-                    <strong>{{ sessionSettings.human.soul.name }}</strong> in
-                    <strong>{{ sessionSettings.human.name }}</strong>
+                    {% if sessionSettings.human is not null %}
+                        <strong>{{ sessionSettings.human.soul.name }}</strong> in
+                        <strong>{{ sessionSettings.human.name }}</strong>
+                    {% else %}
+                        <strong>Nobody is logged in</strong>
+                    {% endif %}
                 </a>
             </div>
         </div>
