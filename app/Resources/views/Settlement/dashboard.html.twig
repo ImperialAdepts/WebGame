@@ -20,35 +20,42 @@
 		'human': human.id
 	})) }}
 
-	{{ render(controller('AppBundle:Settlement:connectableRegions', {
-		'settlement': settlement.id
-	})) }}
+    <table>
+        <tr>
+	        {% for region in settlement.regions %}
+                <td>
+                    <h3>Region {{ region.coords }}</h3>
 
-	{% for region in settlement.regions %}
-		<h3>Region {{ region.coords }}</h3>
+                    {% if region.project is null %}
+                        {{ render(controller('AppBundle:Region:availableBuildings', {
+                            'regionC': region.peakCenter.id,
+                            'regionL': region.peakLeft.id,
+                            'regionR': region.peakRight.id
+                        })) }}
 
-		{% if region.project is null %}
-			{{ render(controller('AppBundle:Region:availableBuildings', {
-				'regionC': region.peakCenter.id,
-				'regionL': region.peakLeft.id,
-				'regionR': region.peakRight.id
-			})) }}
+                        {{ render(controller('AppBundle:Region:availableSettlements', {
+                            'regionC': region.peakCenter.id,
+                            'regionL': region.peakLeft.id,
+                            'regionR': region.peakRight.id
+                        })) }}
+                    {% else %}
+                        Project {{ region.project.buildingBlueprint.description }}...
+                        <br/> {{ dump(region.project.missingResources) }}
+                        <ul>
+                            {% for notification in region.project.notifications %}
+                                <li>{{ notification.description }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+    </table>
 
-			{{ render(controller('AppBundle:Region:availableSettlements', {
-				'regionC': region.peakCenter.id,
-				'regionL': region.peakLeft.id,
-				'regionR': region.peakRight.id
-			})) }}
-		{% else %}
-			Project {{ region.project.buildingBlueprint.description }}...
-			<br/> {{ dump(region.project.missingResources) }}
-			<ul>
-				{% for notification in region.project.notifications %}
-					<li>{{ notification.description }}</li>
-				{% endfor %}
-			</ul>
-		{% endif %}
-	{% endfor %}
+
+    {{ render(controller('AppBundle:Settlement:connectableRegions', {
+        'settlement': settlement.id
+    })) }}
 {% endblock %}
 
 
