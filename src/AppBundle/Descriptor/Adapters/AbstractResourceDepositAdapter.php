@@ -9,6 +9,7 @@
 namespace AppBundle\Descriptor\Adapters;
 
 
+use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity;
 use AppBundle\Entity\ResourceDeposit;
@@ -28,21 +29,19 @@ class AbstractResourceDepositAdapter
     }
 
     /**
-     * @param Entity\Planet\Settlement $settlement
+     * @param ResourcefullInterface $resourcefull
      * @param string $useCaseName
      * @return AbstractResourceDepositAdapter[]
      */
-    protected static function extractAdapterOfUseCase(Entity\Planet\Settlement $settlement, $useCaseName) {
+    protected static function extractAdapterOfUseCase(ResourcefullInterface $resourcefull, $useCaseName) {
         /** @var AbstractResourceDepositAdapter[] $adapters */
         $adapters = [];
         /** @var ResourceDeposit[] $deposits */
-        foreach ($settlement->getResourceDeposits() as $deposits) {
+        foreach ($resourcefull->getResourceDeposits() as $deposit) {
             /** @var ResourceDeposit $deposit */
-            foreach ($deposits as $deposit) {
-                $useCaseAdapter = $deposit->asUseCase($useCaseName);
-                if ($useCaseAdapter != null) {
-                    $adapters[] = $useCaseAdapter;
-                }
+            $useCaseAdapter = $deposit->asUseCase($useCaseName);
+            if ($useCaseAdapter != null) {
+                $adapters[] = $useCaseAdapter;
             }
         }
         return $adapters;

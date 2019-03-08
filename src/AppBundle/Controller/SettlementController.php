@@ -48,11 +48,9 @@ class SettlementController extends Controller
             $resourceDescriptors[$blueprint->getResourceDescriptor()] = null;
         }
         $warehouseContent = [];
-        foreach ($settlement->getResourceDeposits() as $deposits) {
-            foreach ($deposits as $deposit) {
-                if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
-                    $warehouseContent[] = $deposit;
-                }
+        foreach ($settlement->getResourceDeposits() as $deposit) {
+            if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
+                $warehouseContent[] = $deposit;
             }
         }
 
@@ -76,11 +74,9 @@ class SettlementController extends Controller
             $resourceDescriptors[$blueprint->getResourceDescriptor()] = null;
         }
         $buldings = [];
-        foreach ($settlement->getResourceDeposits() as $deposits) {
-            foreach ($deposits as $deposit) {
-                if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
-                    $buldings[] = $deposit;
-                }
+        foreach ($settlement->getResourceDeposits() as $deposit) {
+            if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
+                $buldings[] = $deposit;
             }
         }
 
@@ -109,10 +105,8 @@ class SettlementController extends Controller
         $peopleCount = $settlement->getPeopleCount();
 
         $foodEnergy = 0;
-        foreach ($settlement->getResourceDeposits(ResourceDescriptorEnum::SIMPLE_FOOD) as $deposits) {
-            foreach ($deposits as $deposit) {
-                $foodEnergy += $deposit->getAmount();
-            }
+        foreach ($settlement->getResourceDeposits(ResourceDescriptorEnum::SIMPLE_FOOD) as $deposit) {
+            $foodEnergy += $deposit->getAmount();
         }
 
         return $this->render('Settlement/housing.html.twig', [

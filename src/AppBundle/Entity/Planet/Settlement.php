@@ -3,6 +3,7 @@
 namespace AppBundle\Entity\Planet;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
+use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Entity\Blueprint;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="planet_settlements")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\Planet\SettlementRepository")
  */
-class Settlement
+class Settlement implements ResourcefullInterface
 {
 	/**
 	 * @var int
@@ -173,11 +174,11 @@ class Settlement
         foreach ($this->getRegions() as $region) {
             if ($resourceDescriptor != null) {
                 if (($localDeposit = $region->getResourceDeposit($resourceDescriptor)) != null) {
-                    $deposits[$region->getCoords()][] = $localDeposit;
+                    $deposits[] = $localDeposit;
                 }
             } else {
                 foreach ($region->getResourceDeposits() as $deposit) {
-                    $deposits[$region->getCoords()][] = $deposit;
+                    $deposits[] = $deposit;
                 }
             }
         }

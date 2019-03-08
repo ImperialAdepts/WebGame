@@ -1,6 +1,9 @@
 <?php
 
 namespace AppBundle\Entity\Planet;
+use AppBundle\Descriptor\Adapters\LandBuilding;
+use AppBundle\Descriptor\Adapters\LivingBuilding;
+use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Entity\Blueprint;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="planet_regions")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\Planet\RegionRepository")
  */
-class Region
+class Region implements ResourcefullInterface
 {
 	/**
 	 * @var Peak
@@ -277,5 +280,10 @@ class Region
 			return $this->getArea() / 2;
 		}
 	}
+
+    public function getUsedArea()
+    {
+        return LandBuilding::countUsedArea(LandBuilding::in($this));
+    }
 }
 
