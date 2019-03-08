@@ -40,6 +40,9 @@
                         })) }}
                     {% else %}
                         Project {{ region.project.buildingBlueprint.description }}...
+                        <a href="{{ path('settlement_fast_build', {
+                            'project': region.project.id
+                        }) }}">Supervised build</a>
                         <br/> {{ dump(region.project.missingResources) }}
                         <ul>
                             {% for notification in region.project.notifications %}

@@ -26,7 +26,7 @@ class CronController extends Controller
 	{
 
         $projects = $this->getDoctrine()->getRepository(Entity\Planet\CurrentBuildingProject::class)->getActiveSortedByPriority();
-        $builder = new PlanetBuilder($this->getDoctrine()->getManager(), []);
+        $builder = $this->get('planet_builder');
         /** @var Entity\Planet\BuildingProject $project */
         foreach ($projects as $project) {
             $builder->buildProjectStep($project);

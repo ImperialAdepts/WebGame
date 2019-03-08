@@ -171,4 +171,27 @@ class SettlementController extends Controller
             'settlement' => $settlement->getId(),
         ]);
     }
+
+    /**
+     * @Route("/fastBuild/{project}", name="settlement_fast_build")
+     */
+    public function supervisedFastBuildAction(Entity\Planet\CurrentBuildingProject $project, Request $request)
+    {
+        /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
+        $settlement = $project->getRegion()->getSettlement();
+        $builder = $this->get('planet_builder');
+        $builder->buildProjectStep($project);
+        if ($project->isDone()) {
+            $builder->buildProject($project);
+            $this->getDoctrine()->getManager()->remove($project);
+        } else {
+            $this->getDoctrine()->getManager()->persist($project);
+        }
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->redirectToRoute('settlement_dashboard', [
+            'settlement' => $settlement->getId(),
+        ]);
+    }
 }

@@ -145,7 +145,11 @@ class Blueprint
 	 */
 	public function getMandays()
 	{
-		return $this->requirements[ResourceDescriptorEnum::MANDAY];
+	    if (isset($this->requirements[ResourceDescriptorEnum::MANDAY])) {
+            return $this->requirements[ResourceDescriptorEnum::MANDAY];
+        } else {
+	        return 0;
+        }
 	}
 
 	/**
