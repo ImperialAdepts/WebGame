@@ -68,14 +68,30 @@ class RegionController extends Controller
     {
         /** @var Entity\Human $human */
         $human = $this->get('logged_user_settings')->getHuman();
-        $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
         $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::ADMINISTRATIVE_DISTRICT);
 
         // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
 
-        return $this->render('Region/available-settlements-fragment.html.twig', [
+        return $this->render('Region/available-settlement-types-fragment.html.twig', [
             'blueprints' => $blueprints,
-            'region' => $region,
+            'human' => $human,
+        ]);
+    }
+
+    /**
+     * @Route("/available-types/{settlement}", name="region_settlement_availability")
+     */
+    public function availableSettlementTypesAction(Entity\Planet\Settlement $settlement, Request $request)
+    {
+        /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
+        $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::ADMINISTRATIVE_DISTRICT);
+
+        // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
+
+        return $this->render('Region/available-settlement-types-fragment.html.twig', [
+            'blueprints' => $blueprints,
+            'settlement' => $settlement,
             'human' => $human,
         ]);
     }

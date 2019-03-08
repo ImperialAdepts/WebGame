@@ -188,4 +188,20 @@ class SettlementController extends Controller
             'settlement' => $settlement->getId(),
         ]);
     }
+
+    /**
+     * @Route("/changeType/{settlement}to{blueprint}", name="settlement_change_type")
+     */
+    public function changeTypeAction(Entity\Planet\Settlement $settlement, Entity\Blueprint $blueprint, Request $request)
+    {
+        /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
+        $settlement->setType($blueprint->getResourceDescriptor());
+        $this->getDoctrine()->getManager()->persist($settlement);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->redirectToRoute('settlement_dashboard', [
+            'settlement' => $settlement->getId(),
+        ]);
+    }
 }

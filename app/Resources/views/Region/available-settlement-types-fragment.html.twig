@@ -1,6 +1,6 @@
 <div>
 	{% if blueprints|length > 0 %}
-		{% if region.settlement is null %}
+		{% if settlement is null %}
 			<strong>Available settlements:</strong>
 			<ul>
 				{% for buildingBlueprint in blueprints %}
@@ -21,12 +21,10 @@
 			<ul>
 				{% for buildingBlueprint in blueprints %}
 					<li>
-						<a href="{{ path('region_build_settlement', {
-							'regionC': region.peakCenter.id,
-							'regionL': region.peakLeft.id,
-							'regionR': region.peakRight.id,
-							'blueprintId': buildingBlueprint.id
-						}) }}">
+						<a href="{{ path('settlement_change_type', {
+							'settlement': settlement.id,
+							'blueprint': buildingBlueprint.id
+						}) }}" >
 							Upgrade to {{ buildingBlueprint.description }}</a>
 						[{{ buildingBlueprint.id }}]
 					</li>

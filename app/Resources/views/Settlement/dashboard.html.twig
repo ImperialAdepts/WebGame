@@ -33,12 +33,6 @@
                             'regionL': region.peakLeft.id,
                             'regionR': region.peakRight.id
                         })) }}
-
-                        {{ render(controller('AppBundle:Region:availableSettlements', {
-                            'regionC': region.peakCenter.id,
-                            'regionL': region.peakLeft.id,
-                            'regionR': region.peakRight.id
-                        })) }}
                     {% else %}
                         Project {{ region.project.buildingBlueprint.description }}...
                         <a href="{{ path('settlement_fast_build', {
@@ -56,6 +50,9 @@
         </tr>
     </table>
 
+    {{ render(controller('AppBundle:Region:availableSettlementTypes', {
+        'settlement': settlement.id,
+    })) }}
 
     {{ render(controller('AppBundle:Settlement:connectableRegions', {
         'settlement': settlement.id
