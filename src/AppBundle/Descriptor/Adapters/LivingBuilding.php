@@ -1,7 +1,9 @@
 <?php
 namespace AppBundle\Descriptor\Adapters;
 
+use AppBundle\Descriptor\ResourceTraitEnum;
 use AppBundle\Descriptor\UseCaseEnum;
+use AppBundle\Descriptor\UseCaseTraitEnum;
 use AppBundle\Entity;
 use AppBundle\Entity\ResourceDeposit;
 
@@ -19,7 +21,14 @@ class LivingBuilding extends AbstractResourceDepositAdapter
      * @return int
      */
     public function getLivingCapacity() {
-        return $this->getDeposit()->getAmount()*10;
+        return $this->getDeposit()->getAmount()*$this->getLivingCapacityUnit();
+    }
+
+    /**
+     * @return int
+     */
+    public function getLivingCapacityUnit() {
+        return $this->getBlueprint()->getTraitValue(UseCaseTraitEnum::HUMAN_CAPACITY, 0);
     }
 
     /**

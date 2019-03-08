@@ -122,6 +122,7 @@
     <Blueprint id="basic_iron_mine">
         <Technology ref="hand_mine"/>
         <usedAs ref="land_building"/>
+        <traitValue ref="area_used" value="500"/>
         <build>
             <price>
                 <Resource ref="iron_ore_deposit" count="1"/>
@@ -131,7 +132,6 @@
         </build>
     </Blueprint>
     <Blueprint id="primitive_iron_mining" output="iron_ore">
-        <usedAs ref="land_building"/>
         <build>
             <price>
                 <Resource ref="iron_ore_deposit" count="10"/>
@@ -193,8 +193,12 @@
             </constraints>
         </build>
     </Blueprint>
-    <Blueprint id="warehouse">
+    <Blueprint id="container_warehouse">
         <usedAs ref="land_building"/>
+        <usedAs ref="warehouse"/>
+        <traitValue ref="weight_capacity" value="30000"/>
+        <traitValue ref="space_capacity" value="40"/>
+        <traitValue ref="area_used" value="25"/>
         <build>
             <price>
                 <Resource ref="manpower" count="30"/>
@@ -208,6 +212,8 @@
     <Blueprint id="container_house">
         <usedAs ref="land_building"/>
         <usedAs ref="living_buildings"/>
+        <traitValue ref="human_capacity" value="5" />
+        <traitValue ref="area_used" value="50"/>
         <build>
             <price>
                 <Resource ref="manpower" count="30"/>
@@ -219,12 +225,22 @@
         </build>
     </Blueprint>
 
-    <!-- every id MUST have line i UseCaseEnum-->
-    <!-- every trait MUST have line i UseCaseTraitEnum-->
+    <!-- every id MUST have line in UseCaseTraitEnum-->
+    <!-- don't use strings in code directly -->
+    <Trait id="human_capacity"/>
+    <Trait id="electro_capacity"/>
+    <Trait id="weight_capacity"/>
+    <Trait id="space_capacity"/>
+    <Trait id="area_used"/>
+    <Trait id="speed"/>
+
+    <!-- every id MUST have line in UseCaseEnum-->
+    <!-- every trait MUST have line in UseCaseTraitEnum-->
     <!-- don't use strings in code directly -->
     <UseCase id="administrative_district"/>
     <UseCase id="land_building">
         <inputResource ref="land_space"/>
+        <trait ref="area_used"/>
     </UseCase>
     <UseCase id="portables">
         <outputResource ref="weight"/>
@@ -240,12 +256,16 @@
     </UseCase>
     <UseCase id="energy_deposit">
         <inputResource ref="electricity"/>
-        <trait>capacity</trait>
+        <trait ref="electro_capacity" />
         <outputResource ref="electricity"/>
     </UseCase>
+    <UseCase id="warehouse">
+        <trait ref="weight_capacity" />
+        <trait ref="space_capacity" />
+    </UseCase>
     <UseCase id="transport_vehicle">
-        <trait>speed</trait>
-        <trait>weight_capacity</trait>
+        <parent ref="warehouse"/>
+        <trait ref="speed" />
     </UseCase>
     <UseCase id="control_unit">
         <inputResource ref="human"/>
@@ -253,6 +273,7 @@
     <UseCase id="living_buildings">
         <parent ref="land_building"/>
         <parent ref="energy_consumer"/>
+        <trait ref="human_capacity" />
     </UseCase>
     <UseCase id="electric_plant">
         <parent ref="land_building"/>
@@ -265,19 +286,17 @@
     <UseCase id="factory">
         <parent ref="land_building"/>
         <parent ref="energy_consumer"/>
-        <trait>human_capacity</trait>
+        <trait ref="human_capacity" />
     </UseCase>
     <UseCase id="deep_ground_mine">
         <parent ref="factory"/>
     </UseCase>
     <UseCase id="tool">
         <parent ref="portables"/>
-        <trait>maintenance</trait>
     </UseCase>
     <UseCase id="basic_food">
         <parent ref="resource_deposit"/>
         <parent ref="portables"/>
-        <trait>energy</trait>
     </UseCase>
 
     <ColonizationPack id="simple">

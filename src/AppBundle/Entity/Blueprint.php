@@ -73,6 +73,13 @@ class Blueprint
      */
     private $useCases;
 
+    /**
+     * @var int|float[] traitName => value
+     *
+     * @ORM\Column(name="trait_values", type="json_array")
+     */
+    private $traitValues = [];
+
 	/**
 	 * Get id
 	 *
@@ -223,6 +230,35 @@ class Blueprint
     public function getUseCases()
     {
         return $this->useCases;
+    }
+
+    /**
+     * @param $traitName
+     * @param null $defaultValue
+     * @return float|null
+     */
+    public function getTraitValue($traitName, $defaultValue = null)
+    {
+        if (!isset($this->traitValues[$traitName])) {
+            return $defaultValue;
+        }
+        return $this->traitValues[$traitName];
+    }
+
+    /**
+     * @return int[]|float[]
+     */
+    public function getTraitValues()
+    {
+        return $this->traitValues;
+    }
+
+    /**
+     * @param int[]|float[] $traitValues
+     */
+    public function setTraitValues(array $traitValues)
+    {
+        $this->traitValues = $traitValues;
     }
 
     /**

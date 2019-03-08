@@ -55,16 +55,25 @@ class AbstractResourceDepositAdapter
         return $this->deposit;
     }
 
+    /**
+     * @return int|float
+     */
     public function getAmount()
     {
         return $this->deposit->getAmount();
     }
 
+    /**
+     * @return Entity\Blueprint
+     */
     public function getBlueprint()
     {
         return $this->deposit->getBlueprint();
     }
 
+    /**
+     * @return string
+     */
     public function getResourceDescriptor()
     {
         return $this->deposit->getResourceDescriptor();

@@ -5,6 +5,7 @@
                 <xs:element name="Resource" type="ResourceType" maxOccurs="unbounded"/>
                 <xs:element name="Technology" type="TechnologyType" maxOccurs="unbounded"/>
                 <xs:element name="Blueprint" type="BlueprintType" maxOccurs="unbounded"/>
+                <xs:element name="Trait" type="TraitType" maxOccurs="unbounded"/>
                 <xs:element name="UseCase" type="UseCaseType" maxOccurs="unbounded"/>
                 <xs:element name="ColonizationPack" type="ColonizationPackType" maxOccurs="unbounded"/>
             </xs:sequence>
@@ -59,6 +60,7 @@
         <xs:sequence>
             <xs:element name="Technology" type="TechnologyRefType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="usedAs" type="UseCaseRefType" maxOccurs="unbounded"/>
+            <xs:element name="traitValue" type="TraitValueType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="build">
                 <xs:complexType>
                     <xs:sequence>
@@ -79,12 +81,23 @@
         <xs:attribute name="count" type="xs:positiveInteger"/>
     </xs:complexType>
 
+    <xs:complexType name="TraitType">
+        <xs:attribute name="id" type="xs:ID"/>
+    </xs:complexType>
+    <xs:complexType name="TraitRefType">
+        <xs:attribute name="ref" type="xs:IDREF"/>
+    </xs:complexType>
+    <xs:complexType name="TraitValueType">
+        <xs:attribute name="ref" type="xs:IDREF"/>
+        <xs:attribute name="value" type="xs:string"/>
+    </xs:complexType>
+
     <xs:complexType name="UseCaseType">
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
             <xs:element name="parent" type="UseCaseRefType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="inputResource" type="ResourceRefType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="inputProduct" type="BlueprintProductRefType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="trait" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="trait" type="TraitRefType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="outputResource" type="ResourceRefType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="outputProduct" type="BlueprintProductRefType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>

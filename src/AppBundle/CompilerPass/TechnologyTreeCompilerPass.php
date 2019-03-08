@@ -132,6 +132,7 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
                 'useCases' => [],
                 'output' => [],
                 'technologies' => [],
+                'trait_values' => [],
             ];
             if ($blueprintNode->attr('output') != null) {
                 $nodeInfo['output'][] = $blueprintNode->attr('output');
@@ -161,6 +162,9 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
             });
             $blueprintNode->filterXPath("//Technology")->each(function (Crawler $node, $i) use (&$nodeInfo) {
                 $nodeInfo['technologies'][] = $node->attr('ref');
+            });
+            $blueprintNode->filterXPath("//traitValue")->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                $nodeInfo['trait_values'][$node->attr('ref')] = $node->attr('value');
             });
             $blueprints[$blueprintNode->attr('id')] = $nodeInfo;
         });

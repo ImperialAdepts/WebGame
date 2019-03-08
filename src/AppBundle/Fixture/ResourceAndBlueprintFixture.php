@@ -24,7 +24,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 	public function load(\Doctrine\Common\Persistence\ObjectManager $manager)
 	{
 		foreach ($this->container->getParameter('default_blueprints') as $name => $blueprintData) {
-            $blueprint = $this->createBlueprint($name, $name, $blueprintData['building_requirements'], $blueprintData['constraints'], $blueprintData['useCases']);
+            $blueprint = $this->createBlueprint($name, $name, $blueprintData['building_requirements'], $blueprintData['constraints'], $blueprintData['useCases'], $blueprintData['trait_values']);
             $manager->persist($blueprint);
         }
         $manager->flush();
@@ -53,7 +53,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
         $this->container = $container;
     }
 
-	private function createBlueprint($name, $resource, array $requirements = [], array $constraints = [], array $useCases = [])
+	private function createBlueprint($name, $resource, array $requirements = [], array $constraints = [], array $useCases = [], array $traitValues = [])
 	{
 		$blueprint = new Entity\Blueprint();
 		$blueprint->setDescription($name);
@@ -63,6 +63,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 		$blueprint->setSpace(1);
 		$blueprint->setWeight(1);
 		$blueprint->setUseCases($useCases);
+		$blueprint->setTraitValues($traitValues);
 		return $blueprint;
 	}
 }
