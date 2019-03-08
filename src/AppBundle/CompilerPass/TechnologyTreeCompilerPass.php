@@ -122,10 +122,10 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
         return $useCases;
     }
 
-    private function compileBlueprints(Crawler $parser)
+    private function compileBlueprints(Crawler $parser, array $useCases = [])
     {
         $blueprints = [];
-        $parser->filterXPath('//Blueprint')->each(function (Crawler $blueprintNode, $i) use (&$blueprints) {
+        $parser->filterXPath('//Blueprint')->each(function (Crawler $blueprintNode, $i) use (&$blueprints, $useCases) {
             $nodeInfo = [
                 'building_requirements' => [],
                 'constraints' => [],
@@ -137,8 +137,13 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
             if ($blueprintNode->attr('output') != null) {
                 $nodeInfo['output'][] = $blueprintNode->attr('output');
             }
-            $blueprintNode->filterXPath('//usedAs')->each(function (Crawler $node, $i) use (&$nodeInfo) {
+            $blueprintNode->filterXPath('//usedAs')->each(function (Crawler $node, $i) use (&$nodeInfo, $useCases) {
                 $nodeInfo['useCases'][] = $node->attr('ref');
+                if (isset($useCases[$node->attr('ref')]['parents'])) {
+                    foreach ($useCases[$node->attr('ref')]['parents'] as $parentUseCase) {
+                        $nodeInfo['useCases'][] = $parentUseCase;
+                    }
+                }
             });
             $blueprintNode->filterXPath('//price/Resource')->each(function (Crawler $node, $i) use (&$nodeInfo) {
                 if (!empty($node->attr('ref')) && $node->attr('count') > 0) {

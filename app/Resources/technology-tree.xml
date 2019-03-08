@@ -181,6 +181,18 @@
             </constraints>
         </build>
     </Blueprint>
+    <Blueprint id="wheet_plantation">
+        <usedAs ref="plantation"/>
+        <traitValue ref="land_space" value="1000"/>
+        <build>
+            <price>
+                <Resource ref="manpower" count="30"/>
+            </price>
+            <constraints>
+                <Product blueprint="settlement_village"/>
+            </constraints>
+        </build>
+    </Blueprint>
     <Blueprint id="primitive_tool_planting_wheet" output="basic_food">
         <usedAs ref="portables"/>
         <build>
@@ -248,6 +260,9 @@
     <UseCase id="resource_deposit">
         <parent ref="portables"/>
     </UseCase>
+    <UseCase id="plantation">
+        <parent ref="land_building"/>
+    </UseCase>
     <UseCase id="energy_source">
         <outputResource ref="electricity"/>
     </UseCase>
@@ -302,6 +317,9 @@
     <ColonizationPack id="simple">
         <Resource ref="human" count="1000"/>
         <Blueprint ref="basic_iron_mine"/>
+        <Blueprint ref="wheet_plantation"/>
+        <Blueprint ref="container_house"/>
+        <Blueprint ref="container_warehouse"/>
         <Product blueprint="basic_iron_plate" count="10000"/>
         <Product blueprint="basic_food" count="10000"/>
         <Product blueprint="warehouse" count="10"/>
