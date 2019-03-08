@@ -37,20 +37,6 @@ class Blueprint
 	private $resourceDescriptor;
 
 	/**
-	 * @var float in kg
-	 *
-	 * @ORM\Column(name="weight", type="float")
-	 */
-	private $weight;
-
-	/**
-	 * @var float in m3
-	 *
-	 * @ORM\Column(name="space", type="float")
-	 */
-	private $space;
-
-	/**
      * Everythink will be consumed
 	 * @var string[] resource_descriptor => count
 	 *
@@ -150,42 +136,6 @@ class Blueprint
         } else {
 	        return 0;
         }
-	}
-
-	/**
-	 * @param float $weight
-	 *
-	 * @return Blueprint
-	 */
-	public function setWeight($weight)
-	{
-		$this->weight = $weight;
-
-		return $this;
-	}
-
-	/**
-	 * @return float
-	 */
-	public function getWeight()
-	{
-		return $this->weight;
-	}
-
-	/**
-	 * @return float
-	 */
-	public function getSpace()
-	{
-		return $this->space;
-	}
-
-	/**
-	 * @param float $space
-	 */
-	public function setSpace($space)
-	{
-		$this->space = $space;
 	}
 
 	/**

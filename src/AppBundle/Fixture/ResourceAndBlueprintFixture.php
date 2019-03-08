@@ -60,8 +60,6 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 		$blueprint->setResourceDescriptor($resource);
 		$blueprint->setRequirements($requirements);
 		$blueprint->setConstraints($constraints);
-		$blueprint->setSpace(1);
-		$blueprint->setWeight(1);
 		$blueprint->setUseCases($useCases);
 		$blueprint->setTraitValues($traitValues);
 		return $blueprint;

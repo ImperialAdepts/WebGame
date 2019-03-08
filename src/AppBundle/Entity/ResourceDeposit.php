@@ -168,16 +168,6 @@ class ResourceDeposit
         return [UseCaseEnum::RESOURCE_DEPOSIT];
     }
 
-    public function getSpace() {
-        if ($this->getBlueprint() == null) return 0;
-        return $this->amount * $this->getBlueprint()->getSpace();
-    }
-
-    public function getWeight() {
-        if ($this->getBlueprint() == null) return 0;
-        return $this->amount * $this->getBlueprint()->getWeight();
-    }
-
     /**
      * @param string $useCaseName useCase from UseCaseEnum
      * @return AbstractResourceDepositAdapter|null

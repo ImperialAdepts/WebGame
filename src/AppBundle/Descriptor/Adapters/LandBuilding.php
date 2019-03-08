@@ -3,6 +3,7 @@ namespace AppBundle\Descriptor\Adapters;
 
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Descriptor\UseCaseEnum;
+use AppBundle\Descriptor\UseCaseTraitEnum;
 use AppBundle\Entity;
 
 class LandBuilding extends AbstractResourceDepositAdapter
@@ -16,7 +17,7 @@ class LandBuilding extends AbstractResourceDepositAdapter
     }
 
     public function getUsedArea() {
-        return $this->getDeposit()->getAmount()*$this->getDeposit()->getSpace();
+        return $this->getDeposit()->getAmount()*$this->getBlueprint()->getTraitValue(UseCaseTraitEnum::SPACE, 0);
     }
 
     /**
@@ -35,6 +36,6 @@ class LandBuilding extends AbstractResourceDepositAdapter
     }
 
     public function getWeight() {
-        return $this->getDeposit()->getAmount()*$this->getDeposit()->getWeight();
+        return $this->getDeposit()->getAmount()*$this->getBlueprint()->getTraitValue(UseCaseTraitEnum::WEIGHT, 0);
     }
 }
