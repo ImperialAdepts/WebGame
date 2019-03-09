@@ -236,6 +236,73 @@
             </constraints>
         </build>
     </Blueprint>
+    <Blueprint id="team_simple_builders">
+        <usedAs ref="builder_team"/>
+        <build>
+            <price>
+                <Resource ref="human" count="10"/>
+            </price>
+        </build>
+    </Blueprint>
+    <Blueprint id="team_simple_farmers">
+        <usedAs ref="farm_team"/>
+        <build>
+            <price>
+                <Resource ref="human" count="100"/>
+                <Product blueprint="primitive_tool_planting_wheet" count="100"/>
+            </price>
+        </build>
+    </Blueprint>
+    <Blueprint id="team_simple_transporters">
+        <usedAs ref="transport_team"/>
+        <build>
+            <price>
+                <Resource ref="human" count="6"/>
+            </price>
+        </build>
+    </Blueprint>
+    <Blueprint id="team_simple_scientists">
+        <usedAs ref="science_team"/>
+        <build>
+            <price>
+                <Resource ref="human" count="5"/>
+            </price>
+        </build>
+    </Blueprint>
+    <Blueprint id="team_simple_workers">
+        <usedAs ref="worker_team"/>
+        <build>
+            <price>
+                <Resource ref="human" count="20"/>
+            </price>
+        </build>
+    </Blueprint>
+    <Blueprint id="team_simple_merchant">
+        <usedAs ref="merchant_team"/>
+        <build>
+            <price>
+                <Resource ref="human" count="5"/>
+            </price>
+        </build>
+    </Blueprint>
+    <Blueprint id="team_auto_transporters">
+        <usedAs ref="transport_team"/>
+        <build>
+            <price>
+                <Resource ref="human" count="4"/>
+                <Product blueprint="vehicle_transporter" count="1"/>
+            </price>
+        </build>
+    </Blueprint>
+    <Blueprint id="vehicle_transporter">
+        <usedAs ref="transport_vehicle"/>
+        <build>
+            <price>
+                <Resource ref="manpower" count="50"/>
+                <Product blueprint="basic_iron_plate" count="30"/>
+            </price>
+        </build>
+    </Blueprint>
 
     <!-- every id MUST have line in UseCaseTraitEnum-->
     <!-- don't use strings in code directly -->
@@ -312,6 +379,25 @@
     <UseCase id="basic_food">
         <parent ref="resource_deposit"/>
         <parent ref="portables"/>
+    </UseCase>
+    <UseCase id="team"/>
+    <UseCase id="builder_team">
+        <parent ref="team"/>
+    </UseCase>
+    <UseCase id="transport_team">
+        <parent ref="team"/>
+    </UseCase>
+    <UseCase id="farm_team">
+        <parent ref="team"/>
+    </UseCase>
+    <UseCase id="science_team">
+        <parent ref="team"/>
+    </UseCase>
+    <UseCase id="merchant_team">
+        <parent ref="team"/>
+    </UseCase>
+    <UseCase id="worker_team">
+        <parent ref="team"/>
     </UseCase>
 
     <ColonizationPack id="simple">

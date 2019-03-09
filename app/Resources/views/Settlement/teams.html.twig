@@ -1,0 +1,109 @@
+<div>
+	<strong>Teams:</strong>
+	<dt>People:</dt>
+	<dd>{{ people }}</dd>
+	<dt>Unemployees:</dt>
+	<dd>{{ unemployedPeople }}</dd>
+	<table>
+		<tr>
+			<th>Transporters</th>
+			<th>Builders</th>
+			<th>Merchants</th>
+			<th>Scientists</th>
+			<th>Workers</th>
+			<th>Farmers</th>
+		</tr>
+		<tr>
+			<td>
+				{% if transporters|length > 0 %}
+
+					<ul>
+						{% for team in transporters %}
+							<li>
+								{{ team.blueprint.description }}&times;{{ team.amount }}
+							</li>
+						{% endfor %}
+					</ul>
+
+				{% else %}
+					<small>There are no transporters</small>
+				{% endif %}
+			</td>
+			<td>
+				{% if builders|length > 0 %}
+
+					<ul>
+						{% for team in builders %}
+							<li>
+								{{ team.blueprint.description }}&times;{{ team.amount }}
+							</li>
+						{% endfor %}
+					</ul>
+
+				{% else %}
+					<small>There are no builders</small>
+				{% endif %}
+			</td>
+			<td>
+				{% if merchants|length > 0 %}
+
+					<ul>
+						{% for team in merchants %}
+							<li>
+								{{ team.blueprint.description }}&times;{{ team.amount }}
+							</li>
+						{% endfor %}
+					</ul>
+
+				{% else %}
+					<small>There are no merchants</small>
+				{% endif %}
+			</td>
+			<td>
+				{% if scientists|length > 0 %}
+
+					<ul>
+						{% for team in scientists %}
+							<li>
+								{{ team.blueprint.description }}&times;{{ team.amount }}
+							</li>
+						{% endfor %}
+					</ul>
+
+				{% else %}
+					<small>There are no scientists</small>
+				{% endif %}
+			</td>
+			<td>
+				{% if workers|length > 0 %}
+
+					<ul>
+						{% for team in workers %}
+							<li>
+								{{ team.blueprint.description }}&times;{{ team.amount }}
+							</li>
+						{% endfor %}
+					</ul>
+
+				{% else %}
+					<small>There are no workers</small>
+				{% endif %}
+			</td>
+			<td>
+				{% if farmers|length > 0 %}
+
+					<ul>
+						{% for team in farmers %}
+							<li>
+								{{ team.blueprint.description }}&times;{{ team.amount }}
+							</li>
+						{% endfor %}
+					</ul>
+
+				{% else %}
+					<small>There are no farmers</small>
+				{% endif %}
+			</td>
+		</tr>
+	</table>
+</div>

@@ -119,6 +119,37 @@ class SettlementController extends Controller
     }
 
     /**
+     * @Route("/teams/{settlement}", name="settlement_teams")
+     */
+    public function teamsAction(Entity\Planet\Settlement $settlement, Request $request)
+    {
+        /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
+        $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM);
+        $resourceDescriptors = [];
+        /** @var Entity\Blueprint $blueprint */
+        foreach ($blueprints as $blueprint) {
+            $resourceDescriptors[$blueprint->getResourceDescriptor()] = null;
+        }
+
+        /** @var Adapters\LivingBuilding[] $houses */
+        $houses = Adapters\LivingBuilding::in($settlement);
+        $peopleCount = $settlement->getPeopleCount();
+
+        return $this->render('Settlement/teams.html.twig', [
+            'people' => $peopleCount,
+            'unemployedPeople' => $peopleCount/2,
+            'transporters' => [],
+            'builders' => [],
+            'merchants' => [],
+            'scientists' => [],
+            'workers' => [],
+            'farmers' => [],
+            'human' => $human,
+        ]);
+    }
+
+    /**
      * @Route("/connectableRegions/{settlement}", name="settlement_connectable_regions")
      */
     public function connectableRegionsAction(Entity\Planet\Settlement $settlement, Request $request)

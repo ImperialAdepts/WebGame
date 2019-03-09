@@ -26,6 +26,13 @@ class UseCaseEnum
 	const DEEP_GROUND_MINE = 'deep_ground_mine';
 	const TOOL = 'tool';
 	const BASIC_FOOD = 'basic_food';
+	const TEAM = 'team';
+	const TEAM_TRANSPORTERS = 'transport_team';
+	const TEAM_BUILDERS = 'builder_team';
+	const TEAM_SCIENTISTS = 'science_team';
+	const TEAM_MERCHANTS = 'merchant_team';
+	const TEAM_WORKERS = 'work_team';
+	const TEAM_FARMERS = 'farm_team';
 
 	public static $useCaseToAdapterMap = [
 	    self::LIVING_BUILDINGS => LivingBuilding::class,
