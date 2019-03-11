@@ -24,7 +24,14 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 	public function load(\Doctrine\Common\Persistence\ObjectManager $manager)
 	{
 		foreach ($this->container->getParameter('default_blueprints') as $name => $blueprintData) {
-            $blueprint = $this->createBlueprint($name, $name, $blueprintData['building_requirements'], $blueprintData['constraints'], $blueprintData['useCases'], $blueprintData['trait_values']);
+            $blueprint = $this->createBlueprint(
+                $name,
+                $name,
+                $blueprintData['building_requirements'],
+                $blueprintData['constraints'],
+                $blueprintData['useCases'],
+                $blueprintData['trait_values']
+            );
             $manager->persist($blueprint);
         }
         $manager->flush();

@@ -10,6 +10,7 @@ use AppBundle\Repository\Planet\RegionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Tracy\Debugger;
 
 /**
  * @Route(path="settlement")
@@ -119,33 +120,56 @@ class SettlementController extends Controller
     }
 
     /**
-     * @Route("/teams/{settlement}", name="settlement_teams")
+     * @Route("/teams/{regionC}_{regionL}_{regionR}", name="settlement_teams")
      */
-    public function teamsAction(Entity\Planet\Settlement $settlement, Request $request)
+    public function teamsAction(Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Request $request)
     {
         /** @var Entity\Human $human */
         $human = $this->get('logged_user_settings')->getHuman();
-        $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM);
-        $resourceDescriptors = [];
-        /** @var Entity\Blueprint $blueprint */
-        foreach ($blueprints as $blueprint) {
-            $resourceDescriptors[$blueprint->getResourceDescriptor()] = null;
-        }
+        /** @var Entity\Planet\Region $region */
+        $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $transporterBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_TRANSPORTERS);
+        $builderBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_BUILDERS);
+        $merchantBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_MERCHANTS);
+        $scientistBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_SCIENTISTS);
+        $workerBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_WORKERS);
+        $farmerBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_FARMERS);
 
-        /** @var Adapters\LivingBuilding[] $houses */
-        $houses = Adapters\LivingBuilding::in($settlement);
-        $peopleCount = $settlement->getPeopleCount();
+        /** @var Adapters\LivingBuilding[] $teams */
+        $teams = Adapters\Team::in($region);
+        $peopleCount = Adapters\Team::countPeople($teams);
 
         return $this->render('Settlement/teams.html.twig', [
+            'region' => $region,
             'people' => $peopleCount,
             'unemployedPeople' => $peopleCount/2,
-            'transporters' => [],
-            'builders' => [],
-            'merchants' => [],
-            'scientists' => [],
-            'workers' => [],
-            'farmers' => [],
-            'human' => $human,
+            'transporters' => Adapters\TeamTransporter::in($region),
+            'builders' => Adapters\TeamBuilder::in($region),
+            'merchants' => Adapters\TeamMerchant::in($region),
+            'scientists' => Adapters\TeamScientist::in($region),
+            'workers' => Adapters\TeamWorker::in($region),
+            'farmers' => Adapters\TeamFarmer::in($region),
+            'transporterBlueprints' => $transporterBlueprints,
+            'builderBlueprints' => $builderBlueprints,
+            'merchantBlueprints' => $merchantBlueprints,
+            'scientistBlueprints' => $scientistBlueprints,
+            'workerBlueprints' => $workerBlueprints,
+            'farmerBlueprints' => $farmerBlueprints,
+        ]);
+    }
+
+    /**
+     * @Route("/create-team/{regionC}_{regionL}_{regionR}/{blueprint}", name="settlement_team_create")
+     */
+    public function createTeamAction(Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Entity\Blueprint $blueprint, Request $request)
+    {
+        /** @var Entity\Planet\Region $region */
+        $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $region->addResourceDeposit($blueprint, 1);
+        $this->getDoctrine()->getManager()->persist($region);
+        $this->getDoctrine()->getManager()->flush();
+        return $this->redirectToRoute('settlement_dashboard', [
+            'settlement' => $region->getSettlement()->getId(),
         ]);
     }
 

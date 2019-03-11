@@ -15,8 +15,22 @@
 		</tr>
 		<tr>
 			<td>
-				{% if transporters|length > 0 %}
+				{% if transporterBlueprints|length > 0 %}
+					<ul>
+						{% for blueprint in transporterBlueprints %}
+							<li>
+								<a href="{{ path('settlement_team_create', {
+									'regionC': region.peakCenter.id,
+									'regionL': region.peakLeft.id,
+									'regionR': region.peakRight.id,
+									'blueprint': blueprint.id
+								}) }}">Create {{ blueprint.description }} team</a>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
 
+				{% if transporters|length > 0 %}
 					<ul>
 						{% for team in transporters %}
 							<li>
@@ -24,12 +38,26 @@
 							</li>
 						{% endfor %}
 					</ul>
-
 				{% else %}
 					<small>There are no transporters</small>
 				{% endif %}
 			</td>
 			<td>
+				{% if builderBlueprints|length > 0 %}
+					<ul>
+						{% for blueprint in builderBlueprints %}
+							<li>
+								<a href="{{ path('settlement_team_create', {
+									'regionC': region.peakCenter.id,
+									'regionL': region.peakLeft.id,
+									'regionR': region.peakRight.id,
+									'blueprint': blueprint.id
+								}) }}">Create {{ blueprint.description }} team</a>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+
 				{% if builders|length > 0 %}
 
 					<ul>
@@ -45,8 +73,22 @@
 				{% endif %}
 			</td>
 			<td>
-				{% if merchants|length > 0 %}
+				{% if merchantBlueprints|length > 0 %}
+					<ul>
+						{% for blueprint in merchantBlueprints %}
+							<li>
+								<a href="{{ path('settlement_team_create', {
+									'regionC': region.peakCenter.id,
+									'regionL': region.peakLeft.id,
+									'regionR': region.peakRight.id,
+									'blueprint': blueprint.id
+								}) }}">Create {{ blueprint.description }} team</a>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
 
+				{% if merchants|length > 0 %}
 					<ul>
 						{% for team in merchants %}
 							<li>
@@ -54,14 +96,27 @@
 							</li>
 						{% endfor %}
 					</ul>
-
 				{% else %}
 					<small>There are no merchants</small>
 				{% endif %}
 			</td>
 			<td>
-				{% if scientists|length > 0 %}
+				{% if scientistBlueprints|length > 0 %}
+					<ul>
+						{% for blueprint in scientistBlueprints %}
+							<li>
+								<a href="{{ path('settlement_team_create', {
+									'regionC': region.peakCenter.id,
+									'regionL': region.peakLeft.id,
+									'regionR': region.peakRight.id,
+									'blueprint': blueprint.id
+								}) }}">Create {{ blueprint.description }} team</a>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
 
+				{% if scientists|length > 0 %}
 					<ul>
 						{% for team in scientists %}
 							<li>
@@ -69,14 +124,27 @@
 							</li>
 						{% endfor %}
 					</ul>
-
 				{% else %}
 					<small>There are no scientists</small>
 				{% endif %}
 			</td>
 			<td>
-				{% if workers|length > 0 %}
+				{% if workerBlueprints|length > 0 %}
+					<ul>
+						{% for blueprint in workerBlueprints %}
+							<li>
+								<a href="{{ path('settlement_team_create', {
+									'regionC': region.peakCenter.id,
+									'regionL': region.peakLeft.id,
+									'regionR': region.peakRight.id,
+									'blueprint': blueprint.id
+								}) }}">Create {{ blueprint.description }} team</a>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
 
+				{% if workers|length > 0 %}
 					<ul>
 						{% for team in workers %}
 							<li>
@@ -84,14 +152,27 @@
 							</li>
 						{% endfor %}
 					</ul>
-
 				{% else %}
 					<small>There are no workers</small>
 				{% endif %}
 			</td>
 			<td>
-				{% if farmers|length > 0 %}
+				{% if farmerBlueprints|length > 0 %}
+					<ul>
+						{% for blueprint in farmerBlueprints %}
+							<li>
+								<a href="{{ path('settlement_team_create', {
+									'regionC': region.peakCenter.id,
+									'regionL': region.peakLeft.id,
+									'regionR': region.peakRight.id,
+									'blueprint': blueprint.id
+								}) }}">Create {{ blueprint.description }} team</a>
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
 
+				{% if farmers|length > 0 %}
 					<ul>
 						{% for team in farmers %}
 							<li>
@@ -99,7 +180,6 @@
 							</li>
 						{% endfor %}
 					</ul>
-
 				{% else %}
 					<small>There are no farmers</small>
 				{% endif %}

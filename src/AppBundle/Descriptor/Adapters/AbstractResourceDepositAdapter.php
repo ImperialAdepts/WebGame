@@ -13,6 +13,7 @@ use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity;
 use AppBundle\Entity\ResourceDeposit;
+use Tracy\Debugger;
 
 class AbstractResourceDepositAdapter
 {

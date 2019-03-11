@@ -5,10 +5,6 @@
 {% block pagedescription %}ruled by {{ settlement.manager.name }}, owned by {{ settlement.owner.name }}{% endblock %}
 
 {% block body %}
-    {{ render(controller('AppBundle:Settlement:teams', {
-        'settlement': settlement.id
-    })) }}
-
 	{{ render(controller('AppBundle:Settlement:warehouseContent', {
 		'settlement': settlement.id,
 		'human': human.id
@@ -49,6 +45,12 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
+
+                    {{ render(controller('AppBundle:Settlement:teams', {
+                        'regionC': region.peakCenter.id,
+                        'regionL': region.peakLeft.id,
+                        'regionR': region.peakRight.id
+                    })) }}
                 </td>
             {% endfor %}
         </tr>

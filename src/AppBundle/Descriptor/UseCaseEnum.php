@@ -4,6 +4,13 @@ namespace AppBundle\Descriptor;
 use AppBundle\Descriptor\Adapters\EnergySource;
 use AppBundle\Descriptor\Adapters\LandBuilding;
 use AppBundle\Descriptor\Adapters\LivingBuilding;
+use AppBundle\Descriptor\Adapters\Team;
+use AppBundle\Descriptor\Adapters\TeamBuilder;
+use AppBundle\Descriptor\Adapters\TeamFarmer;
+use AppBundle\Descriptor\Adapters\TeamMerchant;
+use AppBundle\Descriptor\Adapters\TeamScientist;
+use AppBundle\Descriptor\Adapters\TeamTransporter;
+use AppBundle\Descriptor\Adapters\TeamWorker;
 
 /**
  * Odpovida ID UseCase v xml s technologiemi
@@ -38,6 +45,13 @@ class UseCaseEnum
 	    self::LIVING_BUILDINGS => LivingBuilding::class,
         self::LAND_BUILDING => LandBuilding::class,
         self::ENERGY_SOURCE => EnergySource::class,
+        self::TEAM_BUILDERS => TeamBuilder::class,
+        self::TEAM_TRANSPORTERS => TeamTransporter::class,
+        self::TEAM_WORKERS => TeamWorker::class,
+        self::TEAM_SCIENTISTS => TeamScientist::class,
+        self::TEAM_MERCHANTS => TeamMerchant::class,
+        self::TEAM_FARMERS => TeamFarmer::class,
+        self::TEAM => Team::class,
     ];
 
 	public static function getAdapter($useCaseName) {
