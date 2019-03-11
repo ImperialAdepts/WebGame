@@ -41,7 +41,7 @@ class UseCaseEnum
 	const TEAM_WORKERS = 'work_team';
 	const TEAM_FARMERS = 'farm_team';
 
-	public static $useCaseToAdapterMap = [
+    public static $useCaseToAdapterMap = [
 	    self::LIVING_BUILDINGS => LivingBuilding::class,
         self::LAND_BUILDING => LandBuilding::class,
         self::ENERGY_SOURCE => EnergySource::class,

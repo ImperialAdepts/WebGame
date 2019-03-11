@@ -189,12 +189,10 @@ class Settlement implements ResourcefullInterface
      * @return int
      */
 	public function getPeopleCount() {
-        $depositsByRegions = $this->getResourceDeposits(ResourceDescriptorEnum::PEOPLE);
-        $counter = 0;
-        foreach ($depositsByRegions as $deposits) {
-            foreach ($deposits as $deposit) {
-                $counter += $deposit->getAmount();
-            }
+	    $counter = 0;
+	    /** @var Region $region */
+        foreach ($this->getRegions() as $region) {
+            $counter += $region->getPeopleCount();
         }
         return $counter;
     }

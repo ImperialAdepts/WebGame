@@ -137,12 +137,13 @@ class SettlementController extends Controller
 
         /** @var Adapters\LivingBuilding[] $teams */
         $teams = Adapters\Team::in($region);
-        $peopleCount = Adapters\Team::countPeople($teams);
+        $peopleCount = $region->getPeopleCount();
+        $employees = Adapters\Team::countPeople($teams);
 
         return $this->render('Settlement/teams.html.twig', [
             'region' => $region,
             'people' => $peopleCount,
-            'unemployedPeople' => $peopleCount/2,
+            'unemployedPeople' => $peopleCount - $employees,
             'transporters' => Adapters\TeamTransporter::in($region),
             'builders' => Adapters\TeamBuilder::in($region),
             'merchants' => Adapters\TeamMerchant::in($region),

@@ -3,6 +3,7 @@
 namespace AppBundle\Entity\Planet;
 use AppBundle\Descriptor\Adapters\LandBuilding;
 use AppBundle\Descriptor\Adapters\LivingBuilding;
+use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Entity\Blueprint;
 use AppBundle\Entity\ResourceDeposit;
@@ -284,6 +285,15 @@ class Region implements ResourcefullInterface
     public function getUsedArea()
     {
         return LandBuilding::countUsedArea(LandBuilding::in($this));
+    }
+
+    /**
+     * @return int
+     */
+    public function getPeopleCount() {
+        $deposit = $this->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
+        if ($deposit == null) return 0;
+        return $deposit->getAmount();
     }
 }
 
