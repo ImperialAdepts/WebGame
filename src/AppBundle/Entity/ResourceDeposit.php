@@ -31,6 +31,13 @@ class ResourceDeposit
     private $amount;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="work_hours", type="integer")
+     */
+    private $workHours = 0;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
@@ -89,6 +96,22 @@ class ResourceDeposit
     public function getAmount()
     {
         return $this->amount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getWorkHours()
+    {
+        return $this->workHours;
+    }
+
+    /**
+     * @param int $workHours
+     */
+    public function setWorkHours($workHours)
+    {
+        $this->workHours = $workHours;
     }
 
     /**

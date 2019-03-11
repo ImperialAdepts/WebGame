@@ -34,7 +34,7 @@
 					<ul>
 						{% for team in transporters %}
 							<li>
-								{{ team.blueprint.description }}&times;{{ team.amount }}
+								{{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
 							</li>
 						{% endfor %}
 					</ul>
@@ -63,7 +63,7 @@
 					<ul>
 						{% for team in builders %}
 							<li>
-								{{ team.blueprint.description }}&times;{{ team.amount }}
+								{{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
 							</li>
 						{% endfor %}
 					</ul>
@@ -92,7 +92,7 @@
 					<ul>
 						{% for team in merchants %}
 							<li>
-								{{ team.blueprint.description }}&times;{{ team.amount }}
+								{{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
 							</li>
 						{% endfor %}
 					</ul>
@@ -120,7 +120,7 @@
 					<ul>
 						{% for team in scientists %}
 							<li>
-								{{ team.blueprint.description }}&times;{{ team.amount }}
+								{{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
 							</li>
 						{% endfor %}
 					</ul>
@@ -148,7 +148,7 @@
 					<ul>
 						{% for team in workers %}
 							<li>
-								{{ team.blueprint.description }}&times;{{ team.amount }}
+								{{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
 							</li>
 						{% endfor %}
 					</ul>
@@ -176,7 +176,7 @@
 					<ul>
 						{% for team in farmers %}
 							<li>
-								{{ team.blueprint.description }}&times;{{ team.amount }}
+								{{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
 							</li>
 						{% endfor %}
 					</ul>
