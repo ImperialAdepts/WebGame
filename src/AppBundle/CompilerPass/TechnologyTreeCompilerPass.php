@@ -12,6 +12,7 @@ namespace AppBundle\CompilerPass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DomCrawler\Crawler;
+use Tracy\Debugger;
 
 class TechnologyTreeCompilerPass implements CompilerPassInterface
 {
@@ -25,7 +26,7 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
         $parser = new Crawler(file_get_contents($techTreeFile));
 
         $useCases = $this->compileUseCases($parser);
-        $blueprints = $this->compileBlueprints($parser);
+        $blueprints = $this->compileBlueprints($parser, $useCases);
         $colonizationPacks = $this->compileColonies($parser);
 
         $container->setParameter('use_cases', $useCases);
@@ -122,7 +123,7 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
         return $useCases;
     }
 
-    private function compileBlueprints(Crawler $parser, array $useCases = [])
+    private function compileBlueprints(Crawler $parser, array $useCases)
     {
         $blueprints = [];
         $parser->filterXPath('//Blueprint')->each(function (Crawler $blueprintNode, $i) use (&$blueprints, $useCases) {
@@ -138,12 +139,14 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
                 $nodeInfo['output'][] = $blueprintNode->attr('output');
             }
             $blueprintNode->filterXPath('//usedAs')->each(function (Crawler $node, $i) use (&$nodeInfo, $useCases) {
-                $nodeInfo['useCases'][] = $node->attr('ref');
-                if (isset($useCases[$node->attr('ref')]['parents'])) {
+                $useAs = [];
+                $useAs[] = $node->attr('ref');
+                if (isset($useCases[$node->attr('ref')]) && isset($useCases[$node->attr('ref')]['parents'])) {
                     foreach ($useCases[$node->attr('ref')]['parents'] as $parentUseCase) {
-                        $nodeInfo['useCases'][] = $parentUseCase;
+                        $useAs[] = $parentUseCase;
                     }
                 }
+                $nodeInfo['useCases'] = $useAs;
             });
             $blueprintNode->filterXPath('//price/Resource')->each(function (Crawler $node, $i) use (&$nodeInfo) {
                 if (!empty($node->attr('ref')) && $node->attr('count') > 0) {

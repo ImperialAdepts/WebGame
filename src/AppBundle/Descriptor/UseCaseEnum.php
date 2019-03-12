@@ -5,6 +5,7 @@ use AppBundle\Descriptor\Adapters\BasicFood;
 use AppBundle\Descriptor\Adapters\EnergySource;
 use AppBundle\Descriptor\Adapters\LandBuilding;
 use AppBundle\Descriptor\Adapters\LivingBuilding;
+use AppBundle\Descriptor\Adapters\Portable;
 use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Descriptor\Adapters\TeamBuilder;
 use AppBundle\Descriptor\Adapters\TeamFarmer;
@@ -48,6 +49,7 @@ class UseCaseEnum
 
     public static $useCaseToAdapterMap = [
         self::BASIC_FOOD => BasicFood::class,
+        self::PORTABLES => Portable::class,
 	    self::LIVING_BUILDINGS => LivingBuilding::class,
         self::LAND_BUILDING => LandBuilding::class,
         self::ENERGY_SOURCE => EnergySource::class,

@@ -34,10 +34,10 @@ class Portable extends AbstractResourceDepositAdapter
     }
 
     public function getWeight() {
-        $price = $this->getBlueprint()->getRequirements();
-        if (!isset($price[ResourceDescriptorEnum::BASIC_FOOD])) return 1;
-        if (!isset($price[ResourceDescriptorEnum::IRON_ORE])) return 1;
-        if (!isset($price[ResourceDescriptorEnum::IRON_PLATE])) return 1;
-        return $this->getDeposit()->getAmount()*$price[ResourceDescriptorEnum::PEOPLE];
+        return $this->getDeposit()->getAmount()*$this->getWeightPerUnit();
+    }
+
+    public function getWeightPerUnit() {
+        return $this->getBlueprint()->getTraitValue(UseCaseTraitEnum::WEIGHT, 0);;
     }
 }
