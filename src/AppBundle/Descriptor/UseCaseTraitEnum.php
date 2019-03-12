@@ -7,7 +7,7 @@ namespace AppBundle\Descriptor;
 class UseCaseTraitEnum
 {
 	const WEIGHT = 'weight';
-	const SPACE = 'space';
+	const AREA_USED = 'area_used';
 	const CAPACITY = 'capacity';
 	const SPEED = 'speed';
 	const CAPACITY_WEIGHT = 'weight_capacity';

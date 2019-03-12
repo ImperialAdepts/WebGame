@@ -4,10 +4,10 @@
 	{% if resources|length > 0 %}
 		<strong>Warehouse content:</strong>
 		<ul>
-			{% for deposit in resources %}
+			{% for portableResource in resources %}
 				<li>
 					{{ render(controller('AppBundle:ResourceDeposit:depositDetail', {
-						'deposit': deposit.id,
+						'deposit': portableResource.deposit.id,
 					})) }}
 				</li>
 			{% endfor %}
@@ -20,10 +20,10 @@
 		<small>Space capacity: X/Ym3 </small>
 		<small>Weight capacity: X/Ykg </small>
 		<ul>
-			{% for deposit in resources %}
+			{% for warehouse in warehouses %}
 				<li>
 					{{ render(controller('AppBundle:ResourceDeposit:depositDetail', {
-						'deposit': deposit.id,
+						'deposit': warehouse.deposit.id,
 					})) }}
 				</li>
 			{% endfor %}

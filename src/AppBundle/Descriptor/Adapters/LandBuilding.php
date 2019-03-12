@@ -17,7 +17,7 @@ class LandBuilding extends AbstractResourceDepositAdapter
     }
 
     public function getUsedArea() {
-        return $this->getDeposit()->getAmount()*$this->getBlueprint()->getTraitValue(UseCaseTraitEnum::SPACE, 0);
+        return $this->getDeposit()->getAmount()*$this->getBlueprint()->getTraitValue(UseCaseTraitEnum::AREA_USED, 0);
     }
 
     /**

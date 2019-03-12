@@ -188,7 +188,7 @@ class ResourceDeposit
 
     public function getUseCases() {
         if ($this->getBlueprint() != null) return $this->getBlueprint()->getUseCases();
-        return [UseCaseEnum::RESOURCE_DEPOSIT, UseCaseEnum::PORTABLES];
+        return [UseCaseEnum::RESOURCE_DEPOSIT];
     }
 
     /**

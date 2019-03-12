@@ -45,23 +45,13 @@ class SettlementController extends Controller
     {
         /** @var Entity\Human $human */
         $human = $this->get('logged_user_settings')->getHuman();
-        $buildings = [];
-        foreach ($settlement->getResourceDeposits() as $deposit) {
-            if (($building = $deposit->asUseCase(UseCaseEnum::WAREHOUSE)) != null) {
-                $buildings[] = $building;
-            }
-        }
-        $portables = [];
-        foreach ($settlement->getResourceDeposits() as $deposit) {
-            if (($portable = $deposit->asUseCase(UseCaseEnum::PORTABLES)) != null) {
-                $portables[] = $portable;
-            }
-        }
+        $warehouses = Adapters\Warehouse::in($settlement);
+        $portables = Adapters\Portable::in($settlement);
 
         return $this->render('Settlement/warehouse-content-fragment.html.twig', [
             'settlement' => $settlement,
             'resources' => $portables,
-            'warehouses' => $buildings,
+            'warehouses' => $warehouses,
             'human' => $human,
         ]);
     }
@@ -100,7 +90,6 @@ class SettlementController extends Controller
         $peopleCount = $settlement->getPeopleCount();
 
         $foods = Adapters\BasicFood::in($settlement);
-//        Debugger::dump($settlement->getResourceDeposits()); die;
 
         return $this->render('Settlement/housing.html.twig', [
             'settlement' => $settlement,
