@@ -304,6 +304,23 @@
             </price>
         </build>
     </Blueprint>
+    <Blueprint id="team_simple_infantry">
+        <usedAs ref="army_team"/>
+        <build>
+            <price>
+                <Resource ref="human" count="200"/>
+            </price>
+        </build>
+    </Blueprint>
+    <Blueprint id="team_motorized_infantry">
+        <usedAs ref="army_team"/>
+        <build>
+            <price>
+                <Resource ref="human" count="20"/>
+                <Product blueprint="vehicle_transporter" count="1"/>
+            </price>
+        </build>
+    </Blueprint>
     <Blueprint id="vehicle_transporter">
         <usedAs ref="transport_vehicle"/>
         <build>
@@ -411,6 +428,9 @@
         <parent ref="team"/>
     </UseCase>
     <UseCase id="worker_team">
+        <parent ref="team"/>
+    </UseCase>
+    <UseCase id="army_team">
         <parent ref="team"/>
     </UseCase>
 

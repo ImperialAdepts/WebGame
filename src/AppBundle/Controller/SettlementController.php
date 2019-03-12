@@ -117,6 +117,7 @@ class SettlementController extends Controller
         $scientistBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_SCIENTISTS);
         $workerBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_WORKERS);
         $farmerBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_FARMERS);
+        $armyBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_SOLDIERS);
 
         /** @var Adapters\LivingBuilding[] $teams */
         $teams = Adapters\Team::in($region);
@@ -134,12 +135,14 @@ class SettlementController extends Controller
             'scientists' => Adapters\TeamScientist::in($region),
             'workers' => Adapters\TeamWorker::in($region),
             'farmers' => Adapters\TeamFarmer::in($region),
+            'army' => Adapters\TeamArmy::in($region),
             'transporterBlueprints' => $transporterBlueprints,
             'builderBlueprints' => $builderBlueprints,
             'merchantBlueprints' => $merchantBlueprints,
             'scientistBlueprints' => $scientistBlueprints,
             'workerBlueprints' => $workerBlueprints,
             'farmerBlueprints' => $farmerBlueprints,
+            'armyBlueprints' => $armyBlueprints,
         ]);
     }
 
@@ -153,7 +156,7 @@ class SettlementController extends Controller
         $region->addResourceDeposit($blueprint, 1);
         $this->getDoctrine()->getManager()->persist($region);
         $this->getDoctrine()->getManager()->flush();
-        return $this->redirectToRoute('settlement_dashboard', [
+        return $this->redirectToRoute('settlement_jobs', [
             'settlement' => $region->getSettlement()->getId(),
         ]);
     }

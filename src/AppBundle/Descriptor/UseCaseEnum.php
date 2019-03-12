@@ -45,6 +45,7 @@ class UseCaseEnum
 	const TEAM_MERCHANTS = 'merchant_team';
 	const TEAM_WORKERS = 'worker_team';
 	const TEAM_FARMERS = 'farm_team';
+	const TEAM_SOLDIERS = 'army_team';
     const WAREHOUSE = 'storage';
 
     public static $useCaseToAdapterMap = [
@@ -59,6 +60,7 @@ class UseCaseEnum
         self::TEAM_SCIENTISTS => TeamScientist::class,
         self::TEAM_MERCHANTS => TeamMerchant::class,
         self::TEAM_FARMERS => TeamFarmer::class,
+        self::TEAM_SOLDIERS => TeamFarmer::class,
         self::TEAM => Team::class,
         self::WAREHOUSE => Warehouse::class,
     ];

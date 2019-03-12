@@ -174,3 +174,31 @@
         <small>There are no farmers</small>
     {% endif %}
 </td>
+<td>
+    {% if armyBlueprints|length > 0 %}
+        <ul>
+            {% for blueprint in armyBlueprints %}
+                <li>
+                    <a href="{{ path('settlement_team_create', {
+                        'regionC': region.peakCenter.id,
+                        'regionL': region.peakLeft.id,
+                        'regionR': region.peakRight.id,
+                        'blueprint': blueprint.id
+                    }) }}">Create {{ blueprint.description }} team</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if army|length > 0 %}
+        <ul>
+            {% for team in army %}
+                <li>
+                    {{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <small>There are no farmers</small>
+    {% endif %}
+</td>
