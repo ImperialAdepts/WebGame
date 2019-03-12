@@ -18,6 +18,8 @@ use AppBundle\Descriptor\Adapters\TeamWorker;
 class UseCaseEnum
 {
 	const ADMINISTRATIVE_DISTRICT = 'administrative_district';
+	const TYPE_FARMING = 'type_farming';
+	const TYPE_PRODUCTION = 'type_production';
 	const LAND_BUILDING = 'land_building';
 	const PORTABLES = 'portables';
 	const RESOURCE_DEPOSIT = 'resource_deposit';

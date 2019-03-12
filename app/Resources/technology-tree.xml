@@ -7,6 +7,7 @@
     <Resource id="food_energy" unit="MJ"/>
     <Resource id="weight" unit="kg"/>
     <Resource id="stone_block" unit="block"/>
+    <Resource id="basic_iron_plate" unit="ks"/>
     <Resource id="iron_ore_deposit" unit="kg"/>
     <Resource id="iron_ore" unit="kg"/>
     <Resource id="wood" unit="kg"/>
@@ -132,6 +133,7 @@
         </build>
     </Blueprint>
     <Blueprint id="primitive_iron_mining" output="iron_ore">
+        <usedAs ref="portables"/>
         <build>
             <price>
                 <Resource ref="iron_ore_deposit" count="10"/>
@@ -157,8 +159,8 @@
             </constraints>
         </build>
     </Blueprint>
-    <Blueprint id="basic_iron_plate">
-        <usedAs ref="portables"/>
+    <Blueprint id="basic_iron_plate_from_ore" output="basic_iron_plate">
+        <usedAs ref="type_production"/>
         <build>
             <price>
                 <Resource ref="iron_ore" count="10"/>
@@ -171,7 +173,7 @@
         </build>
     </Blueprint>
     <Blueprint id="handmade_planting_wheet" output="basic_food">
-        <usedAs ref="portables"/>
+        <usedAs ref="type_farming"/>
         <build>
             <price>
                 <Resource ref="manpower" count="30"/>
@@ -317,6 +319,8 @@
     <!-- every trait MUST have line in UseCaseTraitEnum-->
     <!-- don't use strings in code directly -->
     <UseCase id="administrative_district"/>
+    <UseCase id="type_production"/>
+    <UseCase id="type_farming"/>
     <UseCase id="land_building">
         <inputResource ref="land_space"/>
         <trait ref="area_used"/>

@@ -11,8 +11,6 @@ use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="planet_region_jobs")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\JobRepository")
  * @ORM\MappedSuperclass
  */
 abstract class Job
@@ -29,7 +27,7 @@ abstract class Job
     /**
      * @var Region
      *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Planet\Region", inversedBy="project")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Planet\Region")
      * @ORM\JoinColumns(
      *  @ORM\JoinColumn(name="region_peak_center_id", referencedColumnName="peak_center_id", nullable=false),
      *  @ORM\JoinColumn(name="region_peak_left_id", referencedColumnName="peak_left_id", nullable=false),
@@ -53,7 +51,7 @@ abstract class Job
 	 *
 	 * @ORM\Column(name="priority", type="integer")
 	 */
-	private $priority;
+	private $priority = 0;
 
     /**
      * @var int|null

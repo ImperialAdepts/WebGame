@@ -23,15 +23,15 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
     public function getBuildBySettlement(Settlement $settlement)
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
-            ->select('job.id')
+            ->select('job')
             ->from('AppBundle:Job\BuildJob', 'job')
-//            ->innerJoin('job.region', 'r')
-//            ->where('r.settlement=?1')
+            ->innerJoin('job.region', 'r')
+            ->where('r.settlement=?1')
+            ->setParameter(1, $settlement)
             ->orderBy('job.priority', 'DESC')
-//            ->setParameter(1, $settlement)
         ;
 
-        return $qb->getQuery()->getArrayResult();
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -41,12 +41,15 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
     public function getTransportBySettlement(Settlement $settlement)
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
-            ->select('job.id')
+            ->select('job')
             ->from('AppBundle:Job\TransportJob', 'job')
+            ->innerJoin('job.region', 'r')
+            ->where('r.settlement=?1')
+            ->setParameter(1, $settlement)
             ->orderBy('job.priority', 'DESC')
         ;
 
-        return $qb->getQuery()->getArrayResult();
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -56,12 +59,15 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
     public function getProduceBySettlement(Settlement $settlement)
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
-            ->select('job.id')
+            ->select('job')
             ->from('AppBundle:Job\ProduceJob', 'job')
+            ->innerJoin('job.region', 'r')
+            ->where('r.settlement=?1')
+            ->setParameter(1, $settlement)
             ->orderBy('job.priority', 'DESC')
         ;
 
-        return $qb->getQuery()->getArrayResult();
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -71,12 +77,15 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
     public function getBuyBySettlement(Settlement $settlement)
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
-            ->select('job.id')
+            ->select('job')
             ->from('AppBundle:Job\BuyJob', 'job')
+            ->innerJoin('job.region', 'r')
+            ->where('r.settlement=?1')
+            ->setParameter(1, $settlement)
             ->orderBy('job.priority', 'DESC')
         ;
 
-        return $qb->getQuery()->getArrayResult();
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -86,12 +95,15 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
     public function getSellBySettlement(Settlement $settlement)
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
-            ->select('job.id')
+            ->select('job')
             ->from('AppBundle:Job\SellJob', 'job')
+            ->innerJoin('job.region', 'r')
+            ->where('r.settlement=?1')
+            ->setParameter(1, $settlement)
             ->orderBy('job.priority', 'DESC')
         ;
 
-        return $qb->getQuery()->getArrayResult();
+        return $qb->getQuery()->getResult();
     }
 
     /**

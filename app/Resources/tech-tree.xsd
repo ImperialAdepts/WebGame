@@ -28,6 +28,7 @@
         <xs:sequence minOccurs="1">
             <xs:element name="Resource" type="ResourcePriceRefType" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="Product" type="BlueprintProductRefType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="UseCase" type="UseCaseRefType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="InputRefsType">

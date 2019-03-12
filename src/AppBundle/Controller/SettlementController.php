@@ -6,6 +6,7 @@ use AppBundle\Descriptor\Adapters;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity;
+use AppBundle\Repository\JobRepository;
 use AppBundle\Repository\Planet\RegionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -211,7 +212,8 @@ class SettlementController extends Controller
     {
         /** @var Entity\Human $human */
         $human = $this->get('logged_user_settings')->getHuman();
-        $jobRepo = $this->getDoctrine()->getManager()->getRepository(Entity\Job\Job::class);
+        /** @var JobRepository $jobRepo */
+        $jobRepo = $this->getDoctrine()->getManager()->getRepository(Entity\Job\ProduceJob::class);
 
         return $this->render('Settlement/jobs.html.twig', [
             'human' => $human,
