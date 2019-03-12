@@ -43,7 +43,7 @@ class UseCaseEnum
 	const TEAM_BUILDERS = 'builder_team';
 	const TEAM_SCIENTISTS = 'science_team';
 	const TEAM_MERCHANTS = 'merchant_team';
-	const TEAM_WORKERS = 'work_team';
+	const TEAM_WORKERS = 'worker_team';
 	const TEAM_FARMERS = 'farm_team';
     const WAREHOUSE = 'storage';
 
