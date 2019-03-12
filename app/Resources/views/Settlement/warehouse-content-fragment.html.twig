@@ -1,4 +1,6 @@
-<div>
+{% extends 'Settlement/base.html.twig' %}
+
+{% block subbody %}
 	{% if resources|length > 0 %}
 		<strong>Warehouse content:</strong>
 		<small>Space capacity: X/Ym3 </small>
@@ -15,4 +17,4 @@
 	{% else %}
 		<small>There is nothing in warehouse.</small>
 	{% endif %}
-</div>
+{% endblock %}

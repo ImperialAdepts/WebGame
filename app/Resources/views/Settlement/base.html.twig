@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Settlement {{ settlement.type }} {{ settlement.id }}{% endblock %}
+{% block pagedescription %}ruled by {{ settlement.manager.name }}, owned by {{ settlement.owner.name }}{% endblock %}
+
+{% block body %}
+    <style type="text/css">
+        #submenu {
+            width: 100%;
+        }
+        #submenu li {
+            position: relative;
+            float: left;
+        }
+        #submenu li a {
+            padding: 15px;
+        }
+        #subbody {
+            position: relative;
+            float: left;
+            width: 100%;
+        }
+    </style>
+    <ul id="submenu">
+        <li><a href="{{ path('settlement_dashboard', { 'settlement': settlement.id }) }}">Dashboard</a></li>
+        <li><a href="{{ path('settlement_jobs', { 'settlement': settlement.id }) }}">Jobs</a></li>
+        <li><a href="{{ path('settlement_buildings', { 'settlement': settlement.id }) }}">Buildings</a></li>
+        <li><a href="{{ path('settlement_housing', { 'settlement': settlement.id }) }}">Housing</a></li>
+        <li><a href="{{ path('settlement_warehouses', { 'settlement': settlement.id }) }}">Storage</a></li>
+    </ul>
+    <div id="subbody">{% block subbody %}{% endblock %}</div>
+{% endblock %}
+
+

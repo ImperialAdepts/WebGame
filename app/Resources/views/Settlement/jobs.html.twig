@@ -1,10 +1,6 @@
-{#{% extends 'base.html.twig' %}#}
+{% extends 'Settlement/base.html.twig' %}
 
-{#{% block pagetitle %}Planned job preview{% endblock %}#}
-
-{#{% block body %}#}
-
-{#{% endblock %}#}
+{% block subbody %}
 <strong>Jobs</strong>
 <ol>
     {% for job in buildJobs %}
@@ -31,3 +27,30 @@
         <li>[{{ job.region.coords }}] <strong>{{ job.resourceDeposit.resourceDescriptor }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
     {% endfor %}
 </ol>
+
+
+    <table>
+        <tr>
+            <th>Region name</th>
+            <th>desc</th>
+            <th>Transporters</th>
+            <th>Builders</th>
+            <th>Merchants</th>
+            <th>Scientists</th>
+            <th>Workers</th>
+            <th>Farmers</th>
+        </tr>
+        {% for region in settlement.regions %}
+        <tr>
+            <th>
+                Region {{ region.coords }}
+            </th>
+            {{ render(controller('AppBundle:Settlement:teams', {
+                'regionC': region.peakCenter.id,
+                'regionL': region.peakLeft.id,
+                'regionR': region.peakRight.id
+            })) }}
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

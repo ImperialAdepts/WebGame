@@ -1,4 +1,6 @@
-<div>
+{% extends 'Settlement/base.html.twig' %}
+
+{% block subbody %}
 	<strong>Housing:</strong>
 	<dt>People:</dt>
 	<dd>{{ people }}</dd>
@@ -20,4 +22,4 @@
 	{% else %}
 		<small>There is nothing to live.</small>
 	{% endif %}
-</div>
+{% endblock %}

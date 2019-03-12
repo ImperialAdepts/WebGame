@@ -1,29 +1,8 @@
-{% extends 'base.html.twig' %}
-{% import 'Planet/region-fragment.html.twig' as regioMacro %}
+{% extends 'Settlement/base.html.twig' %}
 
-{% block pagetitle %}Settlement {{ settlement.type }} {{ settlement.id }}{% endblock %}
 {% block pagedescription %}ruled by {{ settlement.manager.name }}, owned by {{ settlement.owner.name }}{% endblock %}
 
-{% block body %}
-    {{ render(controller('AppBundle:Settlement:jobs', {
-        'settlement': settlement.id
-    })) }}
-
-	{{ render(controller('AppBundle:Settlement:warehouseContent', {
-		'settlement': settlement.id,
-		'human': human.id
-	})) }}
-
-	{{ render(controller('AppBundle:Settlement:buildings', {
-		'settlement': settlement.id,
-		'human': human.id
-	})) }}
-
-	{{ render(controller('AppBundle:Settlement:housing', {
-		'settlement': settlement.id,
-		'human': human.id
-	})) }}
-
+{% block subbody %}
     <table>
         <tr>
 	        {% for region in settlement.regions %}
@@ -49,12 +28,6 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
-
-                    {{ render(controller('AppBundle:Settlement:teams', {
-                        'regionC': region.peakCenter.id,
-                        'regionL': region.peakLeft.id,
-                        'regionR': region.peakRight.id
-                    })) }}
                 </td>
             {% endfor %}
         </tr>

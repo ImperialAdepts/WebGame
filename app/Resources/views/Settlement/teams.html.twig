@@ -1,189 +1,176 @@
-<div>
-	<strong>Teams:</strong>
-	<dt>People:</dt>
-	<dd>{{ people }}</dd>
-	<dt>Unemployees:</dt>
-	<dd>{{ unemployedPeople }}</dd>
-	<table>
-		<tr>
-			<th>Transporters</th>
-			<th>Builders</th>
-			<th>Merchants</th>
-			<th>Scientists</th>
-			<th>Workers</th>
-			<th>Farmers</th>
-		</tr>
-		<tr>
-			<td>
-				{% if transporterBlueprints|length > 0 %}
-					<ul>
-						{% for blueprint in transporterBlueprints %}
-							<li>
-								<a href="{{ path('settlement_team_create', {
-									'regionC': region.peakCenter.id,
-									'regionL': region.peakLeft.id,
-									'regionR': region.peakRight.id,
-									'blueprint': blueprint.id
-								}) }}">Create {{ blueprint.description }} team</a>
-							</li>
-						{% endfor %}
-					</ul>
-				{% endif %}
+<td>
+    <dt>People:</dt>
+    <dd>{{ people }}</dd>
+    <dt>Unemployees:</dt>
+    <dd>{{ unemployedPeople }}</dd>
+</td>
+<td>
+    {% if transporterBlueprints|length > 0 %}
+        <ul>
+            {% for blueprint in transporterBlueprints %}
+                <li>
+                    <a href="{{ path('settlement_team_create', {
+                        'regionC': region.peakCenter.id,
+                        'regionL': region.peakLeft.id,
+                        'regionR': region.peakRight.id,
+                        'blueprint': blueprint.id
+                    }) }}">Create {{ blueprint.description }} team</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-				{% if transporters|length > 0 %}
-					<ul>
-						{% for team in transporters %}
-							<li>
-								{{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
-							</li>
-						{% endfor %}
-					</ul>
-				{% else %}
-					<small>There are no transporters</small>
-				{% endif %}
-			</td>
-			<td>
-				{% if builderBlueprints|length > 0 %}
-					<ul>
-						{% for blueprint in builderBlueprints %}
-							<li>
-								<a href="{{ path('settlement_team_create', {
-									'regionC': region.peakCenter.id,
-									'regionL': region.peakLeft.id,
-									'regionR': region.peakRight.id,
-									'blueprint': blueprint.id
-								}) }}">Create {{ blueprint.description }} team</a>
-							</li>
-						{% endfor %}
-					</ul>
-				{% endif %}
+    {% if transporters|length > 0 %}
+        <ul>
+            {% for team in transporters %}
+                <li>
+                    {{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <small>There are no transporters</small>
+    {% endif %}
+</td>
+<td>
+    {% if builderBlueprints|length > 0 %}
+        <ul>
+            {% for blueprint in builderBlueprints %}
+                <li>
+                    <a href="{{ path('settlement_team_create', {
+                        'regionC': region.peakCenter.id,
+                        'regionL': region.peakLeft.id,
+                        'regionR': region.peakRight.id,
+                        'blueprint': blueprint.id
+                    }) }}">Create {{ blueprint.description }} team</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-				{% if builders|length > 0 %}
+    {% if builders|length > 0 %}
 
-					<ul>
-						{% for team in builders %}
-							<li>
-								{{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
-							</li>
-						{% endfor %}
-					</ul>
+        <ul>
+            {% for team in builders %}
+                <li>
+                    {{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
+                </li>
+            {% endfor %}
+        </ul>
 
-				{% else %}
-					<small>There are no builders</small>
-				{% endif %}
-			</td>
-			<td>
-				{% if merchantBlueprints|length > 0 %}
-					<ul>
-						{% for blueprint in merchantBlueprints %}
-							<li>
-								<a href="{{ path('settlement_team_create', {
-									'regionC': region.peakCenter.id,
-									'regionL': region.peakLeft.id,
-									'regionR': region.peakRight.id,
-									'blueprint': blueprint.id
-								}) }}">Create {{ blueprint.description }} team</a>
-							</li>
-						{% endfor %}
-					</ul>
-				{% endif %}
+    {% else %}
+        <small>There are no builders</small>
+    {% endif %}
+</td>
+<td>
+    {% if merchantBlueprints|length > 0 %}
+        <ul>
+            {% for blueprint in merchantBlueprints %}
+                <li>
+                    <a href="{{ path('settlement_team_create', {
+                        'regionC': region.peakCenter.id,
+                        'regionL': region.peakLeft.id,
+                        'regionR': region.peakRight.id,
+                        'blueprint': blueprint.id
+                    }) }}">Create {{ blueprint.description }} team</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-				{% if merchants|length > 0 %}
-					<ul>
-						{% for team in merchants %}
-							<li>
-								{{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
-							</li>
-						{% endfor %}
-					</ul>
-				{% else %}
-					<small>There are no merchants</small>
-				{% endif %}
-			</td>
-			<td>
-				{% if scientistBlueprints|length > 0 %}
-					<ul>
-						{% for blueprint in scientistBlueprints %}
-							<li>
-								<a href="{{ path('settlement_team_create', {
-									'regionC': region.peakCenter.id,
-									'regionL': region.peakLeft.id,
-									'regionR': region.peakRight.id,
-									'blueprint': blueprint.id
-								}) }}">Create {{ blueprint.description }} team</a>
-							</li>
-						{% endfor %}
-					</ul>
-				{% endif %}
+    {% if merchants|length > 0 %}
+        <ul>
+            {% for team in merchants %}
+                <li>
+                    {{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <small>There are no merchants</small>
+    {% endif %}
+</td>
+<td>
+    {% if scientistBlueprints|length > 0 %}
+        <ul>
+            {% for blueprint in scientistBlueprints %}
+                <li>
+                    <a href="{{ path('settlement_team_create', {
+                        'regionC': region.peakCenter.id,
+                        'regionL': region.peakLeft.id,
+                        'regionR': region.peakRight.id,
+                        'blueprint': blueprint.id
+                    }) }}">Create {{ blueprint.description }} team</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-				{% if scientists|length > 0 %}
-					<ul>
-						{% for team in scientists %}
-							<li>
-								{{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
-							</li>
-						{% endfor %}
-					</ul>
-				{% else %}
-					<small>There are no scientists</small>
-				{% endif %}
-			</td>
-			<td>
-				{% if workerBlueprints|length > 0 %}
-					<ul>
-						{% for blueprint in workerBlueprints %}
-							<li>
-								<a href="{{ path('settlement_team_create', {
-									'regionC': region.peakCenter.id,
-									'regionL': region.peakLeft.id,
-									'regionR': region.peakRight.id,
-									'blueprint': blueprint.id
-								}) }}">Create {{ blueprint.description }} team</a>
-							</li>
-						{% endfor %}
-					</ul>
-				{% endif %}
+    {% if scientists|length > 0 %}
+        <ul>
+            {% for team in scientists %}
+                <li>
+                    {{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <small>There are no scientists</small>
+    {% endif %}
+</td>
+<td>
+    {% if workerBlueprints|length > 0 %}
+        <ul>
+            {% for blueprint in workerBlueprints %}
+                <li>
+                    <a href="{{ path('settlement_team_create', {
+                        'regionC': region.peakCenter.id,
+                        'regionL': region.peakLeft.id,
+                        'regionR': region.peakRight.id,
+                        'blueprint': blueprint.id
+                    }) }}">Create {{ blueprint.description }} team</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-				{% if workers|length > 0 %}
-					<ul>
-						{% for team in workers %}
-							<li>
-								{{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
-							</li>
-						{% endfor %}
-					</ul>
-				{% else %}
-					<small>There are no workers</small>
-				{% endif %}
-			</td>
-			<td>
-				{% if farmerBlueprints|length > 0 %}
-					<ul>
-						{% for blueprint in farmerBlueprints %}
-							<li>
-								<a href="{{ path('settlement_team_create', {
-									'regionC': region.peakCenter.id,
-									'regionL': region.peakLeft.id,
-									'regionR': region.peakRight.id,
-									'blueprint': blueprint.id
-								}) }}">Create {{ blueprint.description }} team</a>
-							</li>
-						{% endfor %}
-					</ul>
-				{% endif %}
+    {% if workers|length > 0 %}
+        <ul>
+            {% for team in workers %}
+                <li>
+                    {{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <small>There are no workers</small>
+    {% endif %}
+</td>
+<td>
+    {% if farmerBlueprints|length > 0 %}
+        <ul>
+            {% for blueprint in farmerBlueprints %}
+                <li>
+                    <a href="{{ path('settlement_team_create', {
+                        'regionC': region.peakCenter.id,
+                        'regionL': region.peakLeft.id,
+                        'regionR': region.peakRight.id,
+                        'blueprint': blueprint.id
+                    }) }}">Create {{ blueprint.description }} team</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-				{% if farmers|length > 0 %}
-					<ul>
-						{% for team in farmers %}
-							<li>
-								{{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
-							</li>
-						{% endfor %}
-					</ul>
-				{% else %}
-					<small>There are no farmers</small>
-				{% endif %}
-			</td>
-		</tr>
-	</table>
-</div>
+    {% if farmers|length > 0 %}
+        <ul>
+            {% for team in farmers %}
+                <li>
+                    {{ team.blueprint.description }}&times;{{ team.amount }}, {{ team.deposit.workHours }}h left
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <small>There are no farmers</small>
+    {% endif %}
+</td>

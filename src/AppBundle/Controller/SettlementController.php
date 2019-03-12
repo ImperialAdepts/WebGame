@@ -19,7 +19,7 @@ use Tracy\Debugger;
 class SettlementController extends Controller
 {
 	/**
-	 * @Route("/dashboard/{settlement}", name="settlement_dashboard")
+	 * @Route("/{settlement}/dashboard", name="settlement_dashboard")
 	 */
 	public function dashboardAction(Entity\Planet\Settlement $settlement, Request $request)
 	{
@@ -39,10 +39,12 @@ class SettlementController extends Controller
 	}
 
     /**
-     * @Route("/settlement_warehouses/{settlement}/{human}", name="settlement_warehouses")
+     * @Route("/{settlement}/warehouses", name="settlement_warehouses")
      */
-    public function warehouseContentAction(Entity\Planet\Settlement $settlement, Entity\Human $human, Request $request)
+    public function warehouseContentAction(Entity\Planet\Settlement $settlement, Request $request)
     {
+        /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
         $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getWarehouseable();
         $resourceDescriptors = [];
         /** @var Entity\Blueprint $blueprint */
@@ -57,13 +59,14 @@ class SettlementController extends Controller
         }
 
         return $this->render('Settlement/warehouse-content-fragment.html.twig', [
+            'settlement' => $settlement,
             'resources' => $warehouseContent,
             'human' => $human,
         ]);
     }
 
     /**
-     * @Route("/settlement_buildings/{settlement}", name="settlement_buildings")
+     * @Route("/{settlement}/buildings", name="settlement_buildings")
      */
     public function buildingsAction(Entity\Planet\Settlement $settlement, Request $request)
     {
@@ -83,13 +86,14 @@ class SettlementController extends Controller
         }
 
         return $this->render('Settlement/buildings-fragment.html.twig', [
+            'settlement' => $settlement,
             'buildings' => $buldings,
             'human' => $human,
         ]);
     }
 
     /**
-     * @Route("/settlement_housing/{settlement}", name="settlement_housing")
+     * @Route("/{settlement}/housing", name="settlement_housing")
      */
     public function housingAction(Entity\Planet\Settlement $settlement, Request $request)
     {
@@ -112,6 +116,7 @@ class SettlementController extends Controller
         }
 
         return $this->render('Settlement/housing.html.twig', [
+            'settlement' => $settlement,
             'people' => $peopleCount,
             'foodEnergy' => $foodEnergy,
             'housingCapacity' => Adapters\LivingBuilding::countLivingCapacity($houses),
@@ -142,6 +147,7 @@ class SettlementController extends Controller
         $employees = Adapters\Team::countPeople($teams);
 
         return $this->render('Settlement/teams.html.twig', [
+            'settlement' => $region->getSettlement(),
             'region' => $region,
             'people' => $peopleCount,
             'unemployedPeople' => $peopleCount - $employees,
@@ -206,7 +212,7 @@ class SettlementController extends Controller
     }
 
     /**
-     * @Route("/jobs/{settlement}", name="settlement_jobs")
+     * @Route("/{settlement}/jobs", name="settlement_jobs")
      */
     public function jobsAction(Entity\Planet\Settlement $settlement, Request $request)
     {
