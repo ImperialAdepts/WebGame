@@ -11,6 +11,7 @@ use AppBundle\Descriptor\Adapters\TeamMerchant;
 use AppBundle\Descriptor\Adapters\TeamScientist;
 use AppBundle\Descriptor\Adapters\TeamTransporter;
 use AppBundle\Descriptor\Adapters\TeamWorker;
+use AppBundle\Descriptor\Adapters\Warehouse;
 
 /**
  * Odpovida ID UseCase v xml s technologiemi
@@ -55,6 +56,7 @@ class UseCaseEnum
         self::TEAM_MERCHANTS => TeamMerchant::class,
         self::TEAM_FARMERS => TeamFarmer::class,
         self::TEAM => Team::class,
+        self::WAREHOUSE => Warehouse::class,
     ];
 
 	public static function getAdapter($useCaseName) {
