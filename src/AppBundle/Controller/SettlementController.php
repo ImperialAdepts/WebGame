@@ -94,26 +94,19 @@ class SettlementController extends Controller
     {
         /** @var Entity\Human $human */
         $human = $this->get('logged_user_settings')->getHuman();
-        $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LIVING_BUILDINGS);
-        $resourceDescriptors = [];
-        /** @var Entity\Blueprint $blueprint */
-        foreach ($blueprints as $blueprint) {
-            $resourceDescriptors[$blueprint->getResourceDescriptor()] = null;
-        }
 
         /** @var Adapters\LivingBuilding[] $houses */
         $houses = Adapters\LivingBuilding::in($settlement);
         $peopleCount = $settlement->getPeopleCount();
 
-        $foodEnergy = 0;
-        foreach ($settlement->getResourceDeposits(ResourceDescriptorEnum::SIMPLE_FOOD) as $deposit) {
-            $foodEnergy += $deposit->getAmount();
-        }
+        $foods = Adapters\BasicFood::in($settlement);
+//        Debugger::dump($settlement->getResourceDeposits()); die;
 
         return $this->render('Settlement/housing.html.twig', [
             'settlement' => $settlement,
             'people' => $peopleCount,
-            'foodEnergy' => $foodEnergy,
+            'foods' => $foods,
+            'foodEnergy' => Adapters\BasicFood::countEnergy($foods),
             'housingCapacity' => Adapters\LivingBuilding::countLivingCapacity($houses),
             'houses' => $houses,
             'human' => $human,

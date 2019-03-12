@@ -7,7 +7,6 @@
     <Resource id="food_energy_resource" unit="MJ"/>
     <Resource id="weight" unit="kg"/>
     <Resource id="stone_block" unit="block"/>
-    <Resource id="basic_iron_plate" unit="ks"/>
     <Resource id="iron_ore_deposit" unit="kg"/>
     <Resource id="iron_ore" unit="kg"/>
     <Resource id="wood" unit="kg"/>
@@ -17,7 +16,7 @@
     <Technology id="wood_mining_tools">
         <inputs>
             <Resource ref="wood"/>
-            <Resource ref="basic_iron_plate"/>
+            <Product ref="basic_iron_plate"/>
         </inputs>
         <usage>
             <use ref="tool"/>
@@ -120,6 +119,10 @@
             </price>
         </build>
     </Blueprint>
+    <Blueprint id="basic_iron_plate">
+        <usedAs ref="portables"/>
+        <traitValue ref="weight" value="10"/>
+    </Blueprint>
     <Blueprint id="basic_iron_mine">
         <Technology ref="hand_mine"/>
         <usedAs ref="land_building"/>
@@ -174,7 +177,8 @@
     </Blueprint>
     <Blueprint id="wheet">
         <usedAs ref="basic_food"/>
-        <traitValue ref="food_energy" value="100"/>
+        <traitValue ref="food_energy" value="2000"/>
+        <traitValue ref="weight" value="1"/>
     </Blueprint>
     <Blueprint id="handmade_planting_wheet" output="wheet">
         <usedAs ref="type_farming"/>
@@ -388,6 +392,7 @@
     <UseCase id="basic_food">
         <parent ref="resource_deposit"/>
         <parent ref="portables"/>
+        <trait ref="food_energy"/>
     </UseCase>
     <UseCase id="team"/>
     <UseCase id="builder_team">

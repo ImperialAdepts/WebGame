@@ -15,4 +15,5 @@ class UseCaseTraitEnum
 	const MAINTENANCE = 'maintenance';
 	const ENERGY = 'energy';
     const CAPACITY_SPACE = 'space_capacity';
+    const FOOD_ENERGY = 'food_energy';
 }

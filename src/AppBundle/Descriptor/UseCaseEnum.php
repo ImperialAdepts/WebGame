@@ -1,6 +1,7 @@
 <?php
 namespace AppBundle\Descriptor;
 
+use AppBundle\Descriptor\Adapters\BasicFood;
 use AppBundle\Descriptor\Adapters\EnergySource;
 use AppBundle\Descriptor\Adapters\LandBuilding;
 use AppBundle\Descriptor\Adapters\LivingBuilding;
@@ -46,6 +47,7 @@ class UseCaseEnum
     const WAREHOUSE = 'storage';
 
     public static $useCaseToAdapterMap = [
+        self::BASIC_FOOD => BasicFood::class,
 	    self::LIVING_BUILDINGS => LivingBuilding::class,
         self::LAND_BUILDING => LandBuilding::class,
         self::ENERGY_SOURCE => EnergySource::class,

@@ -66,7 +66,7 @@ class CronController extends Controller
         foreach ($settlements as $settlement) {
             /** @var Entity\Planet\Region $region */
             foreach ($settlement->getRegions() as $region) {
-                $foodDeposit = $region->getResourceDeposit(ResourceDescriptorEnum::SIMPLE_FOOD);
+                $foodDeposit = $region->getResourceDeposit(ResourceDescriptorEnum::BASIC_FOOD);
                 $peopleDeposit = $region->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
                 if (!$peopleDeposit) continue;
 

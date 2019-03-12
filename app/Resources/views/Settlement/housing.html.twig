@@ -4,8 +4,22 @@
 	<strong>Housing:</strong>
 	<dt>People:</dt>
 	<dd>{{ people }}</dd>
-	<dt>Food:</dt>
-	<dd>{{ foodEnergy }}</dd>
+	{% if foods|length > 0 %}
+		<dt>Food:</dt>
+		<dd>{{ foodEnergy }}</dd>
+		<ul>
+			{% for food in foods %}
+				<li>
+					{{ render(controller('AppBundle:ResourceDeposit:depositDetail', {
+						'deposit': food.deposit.id,
+					})) }}
+				</li>
+			{% endfor %}
+		</ul>
+
+	{% else %}
+		<small>There is no food to eat.</small>
+	{% endif %}
 	{% if houses|length > 0 %}
 		<dt>Housing capacity:</dt>
 		<dd>{{ housingCapacity }}</dd>
@@ -20,6 +34,6 @@
 		</ul>
 
 	{% else %}
-		<small>There is nothing to live.</small>
+		<small>There is no place to live.</small>
 	{% endif %}
 {% endblock %}

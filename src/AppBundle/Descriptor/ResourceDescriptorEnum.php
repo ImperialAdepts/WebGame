@@ -7,7 +7,7 @@ final class ResourceDescriptorEnum
 	const TIME = 'time';
 	const PEOPLE = 'human';
 	const BLUEPRINT_COPY = 'blueprint';
-	const SIMPLE_FOOD = 'basic_food';
+	const BASIC_FOOD = 'basic_food';
 	const IRON_ORE = 'iron_ore';
 	const IRON_PLATE = 'basic_iron_plate';
 	const OIL_BARREL = 'oilBarrel';
