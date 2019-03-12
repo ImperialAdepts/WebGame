@@ -45,22 +45,23 @@ class SettlementController extends Controller
     {
         /** @var Entity\Human $human */
         $human = $this->get('logged_user_settings')->getHuman();
-        $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getWarehouseable();
-        $resourceDescriptors = [];
-        /** @var Entity\Blueprint $blueprint */
-        foreach ($blueprints as $blueprint) {
-            $resourceDescriptors[$blueprint->getResourceDescriptor()] = null;
-        }
-        $warehouseContent = [];
+        $buildings = [];
         foreach ($settlement->getResourceDeposits() as $deposit) {
-            if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
-                $warehouseContent[] = $deposit;
+            if (($building = $deposit->asUseCase(UseCaseEnum::WAREHOUSE)) != null) {
+                $buildings[] = $building;
+            }
+        }
+        $portables = [];
+        foreach ($settlement->getResourceDeposits() as $deposit) {
+            if (($portable = $deposit->asUseCase(UseCaseEnum::PORTABLES)) != null) {
+                $portables[] = $portable;
             }
         }
 
         return $this->render('Settlement/warehouse-content-fragment.html.twig', [
             'settlement' => $settlement,
-            'resources' => $warehouseContent,
+            'resources' => $portables,
+            'warehouses' => $buildings,
             'human' => $human,
         ]);
     }
@@ -72,22 +73,16 @@ class SettlementController extends Controller
     {
         /** @var Entity\Human $human */
         $human = $this->get('logged_user_settings')->getHuman();
-        $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LAND_BUILDING);
-        $resourceDescriptors = [];
-        /** @var Entity\Blueprint $blueprint */
-        foreach ($blueprints as $blueprint) {
-            $resourceDescriptors[$blueprint->getResourceDescriptor()] = null;
-        }
-        $buldings = [];
+        $buildings = [];
         foreach ($settlement->getResourceDeposits() as $deposit) {
-            if (array_key_exists($deposit->getResourceDescriptor(), $resourceDescriptors)) {
-                $buldings[] = $deposit;
+            if (($building = $deposit->asUseCase(UseCaseEnum::LAND_BUILDING)) != null) {
+                $buildings[] = $building;
             }
         }
 
         return $this->render('Settlement/buildings-fragment.html.twig', [
             'settlement' => $settlement,
-            'buildings' => $buldings,
+            'buildings' => $buildings,
             'human' => $human,
         ]);
     }

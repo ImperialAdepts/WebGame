@@ -3,6 +3,20 @@
 {% block subbody %}
 	{% if resources|length > 0 %}
 		<strong>Warehouse content:</strong>
+		<ul>
+			{% for deposit in resources %}
+				<li>
+					{{ render(controller('AppBundle:ResourceDeposit:depositDetail', {
+						'deposit': deposit.id,
+					})) }}
+				</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<small>There is nothing in warehouse.</small>
+	{% endif %}
+	{% if warehouses|length > 0 %}
+		<strong>Warehouses</strong>
 		<small>Space capacity: X/Ym3 </small>
 		<small>Weight capacity: X/Ykg </small>
 		<ul>
@@ -15,6 +29,6 @@
 			{% endfor %}
 		</ul>
 	{% else %}
-		<small>There is nothing in warehouse.</small>
+		<small>There is no warehouses.</small>
 	{% endif %}
 {% endblock %}

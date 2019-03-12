@@ -119,10 +119,7 @@ class PlanetBuilder
 		$colonyPack = $this->colonyPacks[$colonizationPack];
 
 		foreach ($this->colonyPacks as $colonyPackName => $colonyPack) {
-//		    echo "\n<br>Colony pack $colonyPackName";
-//		    var_dump($colonyPack);
             foreach ($colonyPack['deposits'] as $resource => $data) {
-//                echo "\n<br>\t resource $resource";
                 $resourceDeposit = new Entity\ResourceDeposit();
                 $resourceDeposit->setAmount($data['amount']);
                 $resourceDeposit->setResourceDescriptor($resource);

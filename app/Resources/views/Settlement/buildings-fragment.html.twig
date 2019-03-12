@@ -6,10 +6,10 @@
 		<small>Space capacity: X/Ym3 </small>
 		<small>Weight capacity: X/Ykg </small>
 		<ul>
-			{% for deposit in buildings %}
+			{% for building in buildings %}
 				<li>
 					{{ render(controller('AppBundle:ResourceDeposit:depositDetail', {
-						'deposit': deposit.id,
+						'deposit': building.deposit.id,
 					})) }}
 				</li>
 			{% endfor %}

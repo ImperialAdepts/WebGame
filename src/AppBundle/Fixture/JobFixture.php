@@ -28,8 +28,6 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
         $farmingBlueprints = $manager->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TYPE_FARMING);
         $productionBlueprints = $manager->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TYPE_PRODUCTION);
 
-        Debugger::dump($farmingBlueprints);
-        Debugger::dump($productionBlueprints);
 		$regions = $manager->getRepository(Entity\Planet\Region::class)->findAll();
         foreach ($regions as $region) {
             if ($region->getSettlement() != null) {
@@ -39,7 +37,6 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
                     $farmingJob->setAmount(4);
                     $farmingJob->setRepetition(null);
                     $farmingJob->setBlueprint($blueprint);
-                    Debugger::dump($farmingJob);
                     $manager->persist($farmingJob);
                 }
                 foreach ($productionBlueprints as $blueprint) {
@@ -48,7 +45,6 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
                     $productionJob->setAmount(4);
                     $productionJob->setRepetition(null);
                     $productionJob->setBlueprint($blueprint);
-                    Debugger::dump($productionJob);
                     $manager->persist($productionJob);
                 }
             }

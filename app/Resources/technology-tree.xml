@@ -4,7 +4,7 @@
        xsi:noNamespaceSchemaLocation="tech-tree.xsd">
     <Resource id="human" unit="human"/>
     <Resource id="manpower" unit="manday"/>
-    <Resource id="food_energy" unit="MJ"/>
+    <Resource id="food_energy_resource" unit="MJ"/>
     <Resource id="weight" unit="kg"/>
     <Resource id="stone_block" unit="block"/>
     <Resource id="basic_iron_plate" unit="ks"/>
@@ -172,7 +172,11 @@
             </constraints>
         </build>
     </Blueprint>
-    <Blueprint id="handmade_planting_wheet" output="basic_food">
+    <Blueprint id="wheet">
+        <usedAs ref="basic_food"/>
+        <traitValue ref="food_energy" value="100"/>
+    </Blueprint>
+    <Blueprint id="handmade_planting_wheet" output="wheet">
         <usedAs ref="type_farming"/>
         <build>
             <price>
@@ -195,7 +199,7 @@
             </constraints>
         </build>
     </Blueprint>
-    <Blueprint id="primitive_tool_planting_wheet" output="basic_food">
+    <Blueprint id="primitive_tool_planting_wheet" output="wheet">
         <usedAs ref="portables"/>
         <build>
             <price>
@@ -209,7 +213,7 @@
     </Blueprint>
     <Blueprint id="container_warehouse">
         <usedAs ref="land_building"/>
-        <usedAs ref="warehouse"/>
+        <usedAs ref="storage"/>
         <traitValue ref="weight_capacity" value="30000"/>
         <traitValue ref="space_capacity" value="40"/>
         <traitValue ref="area_used" value="25"/>
@@ -314,6 +318,7 @@
     <Trait id="space_capacity"/>
     <Trait id="area_used"/>
     <Trait id="speed"/>
+    <Trait id="food_energy"/>
 
     <!-- every id MUST have line in UseCaseEnum-->
     <!-- every trait MUST have line in UseCaseTraitEnum-->
@@ -345,12 +350,12 @@
         <trait ref="electro_capacity" />
         <outputResource ref="electricity"/>
     </UseCase>
-    <UseCase id="warehouse">
+    <UseCase id="storage">
         <trait ref="weight_capacity" />
         <trait ref="space_capacity" />
     </UseCase>
     <UseCase id="transport_vehicle">
-        <parent ref="warehouse"/>
+        <parent ref="storage"/>
         <trait ref="speed" />
     </UseCase>
     <UseCase id="control_unit">
@@ -411,7 +416,8 @@
         <Blueprint ref="container_house"/>
         <Blueprint ref="container_warehouse"/>
         <Product blueprint="basic_iron_plate" count="10000"/>
-        <Product blueprint="basic_food" count="10000"/>
-        <Product blueprint="warehouse" count="10"/>
+        <Product blueprint="wheet" count="10000"/>
+        <Product blueprint="container_warehouse" count="10"/>
+        <Product blueprint="container_house" count="10"/>
     </ColonizationPack>
 </root>

@@ -28,7 +28,7 @@ class LivingBuilding extends AbstractResourceDepositAdapter
      * @return int
      */
     public function getLivingCapacityUnit() {
-        return $this->getBlueprint()->getTraitValue(UseCaseTraitEnum::HUMAN_CAPACITY, 0);
+        return $this->getBlueprint()->getTraitValue(UseCaseTraitEnum::CAPACITY_HUMAN, 0);
     }
 
     /**

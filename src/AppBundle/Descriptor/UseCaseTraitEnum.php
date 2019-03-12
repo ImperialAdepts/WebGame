@@ -10,8 +10,9 @@ class UseCaseTraitEnum
 	const SPACE = 'space';
 	const CAPACITY = 'capacity';
 	const SPEED = 'speed';
-	const WEIGHT_CAPACITY = 'weight_capacity';
-	const HUMAN_CAPACITY = 'human_capacity';
+	const CAPACITY_WEIGHT = 'weight_capacity';
+	const CAPACITY_HUMAN = 'human_capacity';
 	const MAINTENANCE = 'maintenance';
 	const ENERGY = 'energy';
+    const CAPACITY_SPACE = 'space_capacity';
 }
