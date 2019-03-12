@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Builder\PlanetBuilder;
+use AppBundle\Descriptor\Adapters\Team;
+use AppBundle\Descriptor\Adapters\Workable;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -66,6 +68,12 @@ class CronController extends Controller
         foreach ($settlements as $settlement) {
             /** @var Entity\Planet\Region $region */
             foreach ($settlement->getRegions() as $region) {
+                /** @var Team $team */
+                foreach (Team::in($region) as $team) {
+                    $team->getDeposit()->setWorkHours(24*365);
+                    $this->getDoctrine()->getManager()->persist($team->getDeposit());
+                }
+
                 $foodDeposit = $region->getResourceDeposit(ResourceDescriptorEnum::BASIC_FOOD);
                 $peopleDeposit = $region->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
                 if (!$peopleDeposit) continue;

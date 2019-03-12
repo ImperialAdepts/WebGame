@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\ResourceDeposit;
+
 /**
  * ResourceDepositRepository
  *
@@ -10,4 +12,15 @@ namespace AppBundle\Repository;
  */
 class ResourceDepositRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @return ResourceDeposit[]
+     */
+    public function getAll()
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                "SELECT rd FROM AppBundle:ResourceDeposit rd"
+            )
+            ->getResult();
+    }
 }
