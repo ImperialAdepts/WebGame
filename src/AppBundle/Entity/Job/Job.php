@@ -65,6 +65,23 @@ abstract class Job
     private $amount;
 
     /**
+     * @var int|null
+     *
+     * null => unlimited
+     *
+     * @ORM\Column(name="repetition", type="integer", nullable=true)
+     */
+    private $repetition;
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * @return Region
      */
     public function getRegion()
@@ -128,5 +145,20 @@ abstract class Job
         $this->amount = $amount;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getRepetition()
+    {
+        return $this->repetition;
+    }
+
+    /**
+     * @param int|null $repetition
+     */
+    public function setRepetition($repetition)
+    {
+        $this->repetition = $repetition;
+    }
 }
 

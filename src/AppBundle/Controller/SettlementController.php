@@ -205,6 +205,26 @@ class SettlementController extends Controller
     }
 
     /**
+     * @Route("/jobs/{settlement}", name="settlement_jobs")
+     */
+    public function jobsAction(Entity\Planet\Settlement $settlement, Request $request)
+    {
+        /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
+        $jobRepo = $this->getDoctrine()->getManager()->getRepository(Entity\Job\Job::class);
+
+        return $this->render('Settlement/jobs.html.twig', [
+            'human' => $human,
+            'settlement' => $settlement,
+            'buildJobs' => $jobRepo->getBuildBySettlement($settlement),
+            'transportJobs' => $jobRepo->getTransportBySettlement($settlement),
+            'produceJobs' => $jobRepo->getProduceBySettlement($settlement),
+            'buyJobs' => $jobRepo->getBuyBySettlement($settlement),
+            'sellJobs' => $jobRepo->getSellBySettlement($settlement),
+        ]);
+    }
+
+    /**
      * @Route("/connectRegions/{settlement}/{regionC}_{regionL}_{regionR}", name="settlement_connect_regions")
      */
     public function connectRegionsAction(Entity\Planet\Settlement $settlement, Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Request $request)

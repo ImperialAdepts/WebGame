@@ -5,6 +5,10 @@
 {% block pagedescription %}ruled by {{ settlement.manager.name }}, owned by {{ settlement.owner.name }}{% endblock %}
 
 {% block body %}
+    {{ render(controller('AppBundle:Settlement:jobs', {
+        'settlement': settlement.id
+    })) }}
+
 	{{ render(controller('AppBundle:Settlement:warehouseContent', {
 		'settlement': settlement.id,
 		'human': human.id
