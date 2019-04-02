@@ -69,12 +69,14 @@ class RegionController extends Controller
         /** @var Entity\Human $human */
         $human = $this->get('logged_user_settings')->getHuman();
         $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::ADMINISTRATIVE_DISTRICT);
+        $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
 
         // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
 
         return $this->render('Region/available-settlement-types-fragment.html.twig', [
             'blueprints' => $blueprints,
             'human' => $human,
+            'region' => $region,
         ]);
     }
 

@@ -45,11 +45,11 @@
 						</td>
 					{% else %}
 						<td>
-							{{ render(controller('AppBundle:Region:availableSettlements', {
-								'regionC': region.peakCenter.id,
-								'regionL': region.peakLeft.id,
-								'regionR': region.peakRight.id
-							})) }}
+{#							{{ render(controller('AppBundle:Region:availableSettlements', {#}
+{#								'regionC': region.peakCenter.id,#}
+{#								'regionL': region.peakLeft.id,#}
+{#								'regionR': region.peakRight.id#}
+{#							})) }}#}
 						</td>
 					{% endif %}
 					<td>
@@ -66,11 +66,15 @@
 							</ul>
 						{% endfor %}
 					</td>
-					<td><a href="{{ path('human_newcolony', {
+					<td>
+						{% if region.settlement is null %}
+						<a href="{{ path('human_newcolony', {
 							'regionC': region.peakCenter.id,
 							'regionL': region.peakLeft.id,
 							'regionR': region.peakRight.id
-						}) }}">New colony</a> </td>
+						}) }}">New colony</a>
+						{% endif %}
+					</td>
 				</tr>
 			{% endif %}
 		{% endfor %}
