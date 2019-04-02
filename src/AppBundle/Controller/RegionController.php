@@ -14,15 +14,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegionController extends Controller
 {
 	/**
-	 * @Route("/build/{blueprintId}/{regionC}_{regionL}_{regionR}", name="region_build_settlement")
+	 * @Route("/build-plan/{blueprint}/{regionC}_{regionL}_{regionR}", name="region_build_plan_settlement")
 	 */
-	public function buildAction($blueprintId, Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Request $request)
+	public function buildPlanAction(Entity\Blueprint $blueprint, Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Request $request)
 	{
         /** @var Entity\Human $human */
         $human = $this->get('logged_user_settings')->getHuman();
         /** @var Entity\Planet\Region $region */
 		$region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
-		$blueprint = $this->getDoctrine()->getManager()->find(Entity\Blueprint::class, $blueprintId);
 
 		// TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
 
@@ -43,6 +42,29 @@ class RegionController extends Controller
 	}
 
     /**
+     * @Route("/build/{blueprint}/{regionC}_{regionL}_{regionR}/{count}", name="region_build_settlement")
+     */
+    public function buildAction(Entity\Blueprint $blueprint, Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, $count = 1, Request $request)
+    {
+        /** @var Entity\Human $human */
+        $human = $this->get('logged_user_settings')->getHuman();
+        /** @var Entity\Planet\Region $region */
+        $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+
+        // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
+
+        $builder = $this->get('builder_factory')->createRegionBuilder($blueprint);
+        $builder->setRegion($region);
+        $builder->setSupervisor($human);
+        $builder->setAllRegionTeams();
+        $builder->setCount($count);
+        $builder->build();
+        return $this->redirectToRoute('settlement_dashboard', [
+            'settlement' => $region->getSettlement()->getId(),
+        ]);
+    }
+
+    /**
      * @Route("/available-buildings/{regionC}_{regionL}_{regionR}", name="region_build_availability")
      */
     public function availableBuildingsAction(Entity\Planet\Peak $regionC, Entity\Planet\Peak $regionL, Entity\Planet\Peak $regionR, Request $request)
@@ -52,10 +74,21 @@ class RegionController extends Controller
         $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
         $blueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LAND_BUILDING);
 
-        // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
+        $blueprintAnalyzes = [];
+        foreach ($blueprints as $blueprint) {
+            $builder = $this->get('builder_factory')->createRegionBuilder($blueprint);
+            $builder->setRegion($region);
+            $builder->setSupervisor($human);
+            $builder->setAllRegionTeams();
+            $blueprintAnalyzes[$blueprint->getId()]['count'] = $builder->getPosibilityCount();
+            if (!$builder->isValidate()) {
+                $blueprintAnalyzes[$blueprint->getId()]['validationErrors'] = $builder->getValidationErrors();
+            }
+        }
 
         return $this->render('Region/available-buildings-fragment.html.twig', [
             'blueprints' => $blueprints,
+            'blueprintAnalyzes' => $blueprintAnalyzes,
             'region' => $region,
             'human' => $human,
         ]);

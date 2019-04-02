@@ -4,14 +4,34 @@
 		<ul>
 			{% for buildingBlueprint in blueprints %}
 				<li>
+					{% if blueprintAnalyzes[buildingBlueprint.id].count > 0 %}
 					<a href="{{ path('region_build_settlement', {
 						'regionC': region.peakCenter.id,
 						'regionL': region.peakLeft.id,
 						'regionR': region.peakRight.id,
-						'blueprintId': buildingBlueprint.id
+						'blueprint': buildingBlueprint.id
 					}) }}">
-						Build {{ buildingBlueprint.description }}</a>
-					[{{ buildingBlueprint.id }}]
+						Build {{ buildingBlueprint.description }} ASAP</a>
+					<a href="{{ path('region_build_settlement', {
+						'regionC': region.peakCenter.id,
+						'regionL': region.peakLeft.id,
+						'regionR': region.peakRight.id,
+						'blueprint': buildingBlueprint.id,
+						'count': blueprintAnalyzes[buildingBlueprint.id].count
+					}) }}">
+						[&times;blueprintAnalyzes[buildingBlueprint.id].count]</a>
+					{% else %}
+						Build {{ buildingBlueprint.description }} cant be build immediately because {{ dump(blueprintAnalyzes[buildingBlueprint.id].validationErrors) }}
+					{% endif %}
+				</li>
+				<li>
+					<a href="{{ path('region_build_plan_settlement', {
+						'regionC': region.peakCenter.id,
+						'regionL': region.peakLeft.id,
+						'regionR': region.peakRight.id,
+						'blueprint': buildingBlueprint.id
+					}) }}">
+						Build {{ buildingBlueprint.description }} later</a>
 				</li>
 			{% endfor %}
 		</ul>

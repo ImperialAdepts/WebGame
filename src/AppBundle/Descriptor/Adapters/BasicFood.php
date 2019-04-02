@@ -43,4 +43,8 @@ class BasicFood extends AbstractResourceDepositAdapter
     public function getEnergy() {
         return $this->getDeposit()->getAmount()*$this->getEnergyPerUnit();
     }
+
+    public static function eatEnergy(array $foods, $energyAmount) {
+
+    }
 }
