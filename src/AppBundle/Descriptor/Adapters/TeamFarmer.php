@@ -34,7 +34,7 @@ class TeamFarmer extends AbstractResourceDepositAdapter
     }
 
     public function getPeopleCount() {
-        $price = $this->getBlueprint()->getRequirements();
+        $price = $this->getBlueprint()->getResourceRequirements();
         if (!isset($price[ResourceDescriptorEnum::PEOPLE])) return 0;
         return $this->getDeposit()->getAmount()*$price[ResourceDescriptorEnum::PEOPLE];
     }

@@ -29,7 +29,7 @@ class RegionController extends Controller
 		$project->setRegion($region);
 		$project->setBuildingBlueprint($blueprint);
 		$project->setMandaysLeft($blueprint->getMandays());
-		$project->setMissingResources($blueprint->getRequirements());
+		$project->setMissingResources($blueprint->getResourceRequirements());
 		$project->setSupervisor($human);
 		$project->setPriority(3);
 
@@ -81,6 +81,7 @@ class RegionController extends Controller
             $builder->setSupervisor($human);
             $builder->setAllRegionTeams();
             $blueprintAnalyzes[$blueprint->getId()]['count'] = $builder->getPosibilityCount();
+            $blueprintAnalyzes[$blueprint->getId()]['validationErrors'] = [];
             if (!$builder->isValidate()) {
                 $blueprintAnalyzes[$blueprint->getId()]['validationErrors'] = $builder->getValidationErrors();
             }

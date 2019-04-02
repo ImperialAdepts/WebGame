@@ -1,9 +1,11 @@
 <div>
 	{% if blueprints|length > 0 %}
 		<strong>Buildings to build:</strong>
+		{{ dump(blueprintAnalyzes) }}
 		<ul>
 			{% for buildingBlueprint in blueprints %}
 				<li>
+					<strong>[{{ buildingBlueprint.id }}]</strong>
 					{% if blueprintAnalyzes[buildingBlueprint.id].count > 0 %}
 					<a href="{{ path('region_build_settlement', {
 						'regionC': region.peakCenter.id,

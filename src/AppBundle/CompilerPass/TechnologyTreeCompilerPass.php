@@ -128,7 +128,8 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
         $blueprints = [];
         $parser->filterXPath('//Blueprint')->each(function (Crawler $blueprintNode, $i) use (&$blueprints, $useCases) {
             $nodeInfo = [
-                'building_requirements' => [],
+                'building_resource_requirements' => [],
+                'building_usecase_requirements' => [],
                 'constraints' => [],
                 'useCases' => [],
                 'output' => [],
@@ -150,21 +151,20 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
             });
             $blueprintNode->filterXPath('//price/Resource')->each(function (Crawler $node, $i) use (&$nodeInfo) {
                 if (!empty($node->attr('ref')) && $node->attr('count') > 0) {
-                    $nodeInfo['building_requirements'][$node->attr('ref')] = $node->attr('count');
+                    $nodeInfo['building_resource_requirements'][$node->attr('ref')] = $node->attr('count');
                 }
             });
             $blueprintNode->filterXPath("//price/Product")->each(function (Crawler $node, $i) use (&$nodeInfo) {
                 if (!empty($node->attr('ref')) && $node->attr('count') > 0) {
-                    $nodeInfo['building_requirements'][$node->attr('ref')] = $node->attr('count');
+                    $nodeInfo['building_resource_requirements'][$node->attr('ref')] = $node->attr('count');
                 }
             });
             $blueprintNode->filterXPath("//price/UseCase")->each(function (Crawler $node, $i) use (&$nodeInfo) {
                 if (!empty($node->attr('ref'))) {
                     $useCaseName = $node->attr('ref');
-//                    $nodeInfo['building_requirements'][$useCaseName] = [];
                     $node->filter('trait')->each(function (Crawler $traitNode, $i) use ($useCaseName, &$nodeInfo) {
 //                        if (!empty($traitNode->attr('ref')) && !empty($traitNode->attr('value')) && $traitNode->attr('value') > 0) {
-                            $nodeInfo['building_requirements'][$useCaseName][$traitNode->attr('ref')] = $traitNode->attr('value');
+                            $nodeInfo['building_usecase_requirements'][$useCaseName][$traitNode->attr('ref')] = $traitNode->attr('value');
 //                        }
                     });
                 }

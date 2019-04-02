@@ -40,7 +40,7 @@ class RegionBuilder
      * @return boolean
      */
     public function isValidate() {
-        foreach ($this->blueprint->getRequirements() as $resourceDescriptor => $count) {
+        foreach ($this->blueprint->getResourceRequirements() as $resourceDescriptor => $count) {
             if ($this->region->getResourceDeposit($resourceDescriptor) === null) {
                 return false;
             }
@@ -53,7 +53,7 @@ class RegionBuilder
 
     public function getValidationErrors() {
         $missingResources = [];
-        foreach ($this->blueprint->getRequirements() as $resourceDescriptor => $count) {
+        foreach ($this->blueprint->getResourceRequirements() as $resourceDescriptor => $count) {
             if ($this->region->getResourceDeposit($resourceDescriptor) === null) {
                 $missingResources[$resourceDescriptor] = $count;
                 continue;
@@ -62,8 +62,13 @@ class RegionBuilder
                 $missingResources[$resourceDescriptor] = $this->region->getResourceDeposit($resourceDescriptor)->getAmount() - $count;
             }
         }
+        $missingUseCases = [];
+        foreach ($this->blueprint->getUseCaseRequirements() as $useCaseName => $traits) {
+
+        }
         return [
             'missingResources' => $missingResources,
+            'missingUseCases' => $missingUseCases,
         ];
     }
 
@@ -73,7 +78,7 @@ class RegionBuilder
     public function getPosibilityCount() {
         if (!$this->isValidate()) return 0;
         $count = null;
-        foreach ($this->blueprint->getRequirements() as $resourceDescriptor => $count) {
+        foreach ($this->blueprint->getResourceRequirements() as $resourceDescriptor => $count) {
             $resourcePosibility = $this->region->getResourceDeposit($resourceDescriptor)->getAmount() / $count;
             if ($count === null) {
                 $count = $resourcePosibility;
@@ -109,7 +114,7 @@ class RegionBuilder
             return false;
         }
 
-        foreach ($this->blueprint->getRequirements() as $resourceDescriptor => $requirementCount) {
+        foreach ($this->blueprint->getResourceRequirements() as $resourceDescriptor => $requirementCount) {
             $currentAmount = $this->region->getResourceDeposit($resourceDescriptor)->getAmount();
             $this->region->getResourceDeposit($resourceDescriptor)->setAmount($currentAmount - $requirementCount);
         }

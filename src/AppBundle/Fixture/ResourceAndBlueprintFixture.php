@@ -28,7 +28,8 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
             $blueprint = $this->createBlueprint(
                 $name,
                 $name,
-                $blueprintData['building_requirements'],
+                $blueprintData['building_resource_requirements'],
+                $blueprintData['building_usecase_requirements'],
                 $blueprintData['constraints'],
                 $blueprintData['useCases'],
                 $blueprintData['trait_values']
@@ -61,12 +62,13 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
         $this->container = $container;
     }
 
-	private function createBlueprint($name, $resource, array $requirements = [], array $constraints = [], array $useCases = [], array $traitValues = [])
+	private function createBlueprint($name, $resource, array $resourceRequirements = [], array $useCaseRequirements = [], array $constraints = [], array $useCases = [], array $traitValues = [])
 	{
 		$blueprint = new Entity\Blueprint();
 		$blueprint->setDescription($name);
 		$blueprint->setResourceDescriptor($resource);
-		$blueprint->setRequirements($requirements);
+		$blueprint->setResourceRequirements($resourceRequirements);
+		$blueprint->setUseCaseRequirements($useCaseRequirements);
 		$blueprint->setConstraints($constraints);
 		$blueprint->setUseCases($useCases);
 		$blueprint->setTraitValues($traitValues);

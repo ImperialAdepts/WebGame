@@ -37,12 +37,20 @@ class Blueprint
 	private $resourceDescriptor;
 
 	/**
-     * Everythink will be consumed
+     * Every resource will be consumed
 	 * @var string[] resource_descriptor => count
 	 *
-	 * @ORM\Column(name="requirements", type="json_array")
+	 * @ORM\Column(name="resource_requirements", type="json_array")
 	 */
-	private $requirements;
+	private $resourceRequirements;
+
+    /**
+     * Every resource by usecase will be consumed
+     * @var string[] usecase_name => [trait_name => value]
+     *
+     * @ORM\Column(name="use_case_requirements", type="json_array")
+     */
+    private $useCaseRequirements;
 
     /**
      * Must be at place
@@ -131,8 +139,8 @@ class Blueprint
 	 */
 	public function getMandays()
 	{
-	    if (isset($this->requirements[ResourceDescriptorEnum::MANDAY])) {
-            return $this->requirements[ResourceDescriptorEnum::MANDAY];
+	    if (isset($this->resourceRequirements[ResourceDescriptorEnum::MANDAY])) {
+            return $this->resourceRequirements[ResourceDescriptorEnum::MANDAY];
         } else {
 	        return 0;
         }
@@ -141,13 +149,13 @@ class Blueprint
 	/**
 	 * Set requirements
 	 *
-	 * @param array $requirements
+	 * @param array $resourceRequirements
 	 *
 	 * @return Blueprint
 	 */
-	public function setRequirements($requirements)
+	public function setResourceRequirements($resourceRequirements)
 	{
-		$this->requirements = $requirements;
+		$this->resourceRequirements = $resourceRequirements;
 
 		return $this;
 	}
@@ -157,10 +165,26 @@ class Blueprint
 	 *
 	 * @return array
 	 */
-	public function getRequirements()
+	public function getResourceRequirements()
 	{
-		return $this->requirements;
+		return $this->resourceRequirements;
 	}
+
+    /**
+     * @return string[]
+     */
+    public function getUseCaseRequirements()
+    {
+        return $this->useCaseRequirements;
+    }
+
+    /**
+     * @param string[] $useCaseRequirements
+     */
+    public function setUseCaseRequirements($useCaseRequirements)
+    {
+        $this->useCaseRequirements = $useCaseRequirements;
+    }
 
     /**
      * @return string[]
@@ -226,8 +250,8 @@ class Blueprint
 	public function getResourcesPerManday()
 	{
 		$requirementsPerManday = [];
-		$mandays = $this->requirements[ResourceDescriptorEnum::MANDAY];
-		foreach ($this->requirements as $resource => $count) {
+		$mandays = $this->resourceRequirements[ResourceDescriptorEnum::MANDAY];
+		foreach ($this->resourceRequirements as $resource => $count) {
 			$requirementsPerManday[$resource] = $count / $mandays;
 		}
 		return $requirementsPerManday;
