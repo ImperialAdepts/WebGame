@@ -105,6 +105,9 @@
         <xs:attribute name="id" type="xs:ID"/>
     </xs:complexType>
     <xs:complexType name="UseCaseRefType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="trait" type="TraitValueType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
         <xs:attribute name="ref" type="xs:IDREF"/>
     </xs:complexType>
 

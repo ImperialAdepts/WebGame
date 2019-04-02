@@ -59,7 +59,9 @@
         <usedAs ref="administrative_district"/>
         <build>
             <price>
-                <Resource ref="manpower" count="20"/>
+                <UseCase ref="builder_team">
+                    <trait ref="manpower" value="30"/>
+                </UseCase>
             </price>
         </build>
     </Blueprint>
@@ -67,7 +69,9 @@
         <usedAs ref="administrative_district"/>
         <build>
             <price>
-                <Resource ref="manpower" count="20"/>
+                <UseCase ref="builder_team">
+                    <trait ref="manpower" value="20"/>
+                </UseCase>
             </price>
             <constraints>
                 <Product blueprint="settlement_village"/>
@@ -78,7 +82,9 @@
         <usedAs ref="administrative_district"/>
         <build>
             <price>
-                <Resource ref="manpower" count="20"/>
+                <UseCase ref="builder_team">
+                    <trait ref="manpower" value="20"/>
+                </UseCase>
             </price>
             <constraints>
                 <Product blueprint="settlement_village"/>
@@ -89,7 +95,9 @@
         <usedAs ref="administrative_district"/>
         <build>
             <price>
-                <Resource ref="manpower" count="20"/>
+                <UseCase ref="builder_team">
+                    <trait ref="manpower" value="20"/>
+                </UseCase>
             </price>
             <constraints>
                 <Product blueprint="settlement_village"/>
@@ -102,9 +110,11 @@
         <usedAs ref="tool"/>
         <build>
             <price>
-                <Resource ref="manpower" count="2"/>
                 <Resource ref="wood" count="1"/>
                 <Resource ref="basic_iron_plate" count="1"/>
+                <UseCase ref="worker_team">
+                    <trait ref="manpower" value="2"/>
+                </UseCase>
             </price>
         </build>
     </Blueprint>
@@ -112,10 +122,12 @@
         <usedAs ref="tool"/>
         <build>
             <price>
-                <Resource ref="manpower" count="2"/>
                 <Resource ref="wood" count="1"/>
                 <Resource ref="basic_iron_plate" count="1"/>
                 <Product blueprint="basic_iron_plate" count="1"/>
+                <UseCase ref="worker_team">
+                    <trait ref="manpower" value="2"/>
+                </UseCase>
             </price>
         </build>
     </Blueprint>
@@ -131,7 +143,9 @@
             <price>
                 <Resource ref="iron_ore_deposit" count="1"/>
                 <Resource ref="electricity" count="100"/>
-                <Resource ref="manpower" count="300"/>
+                <UseCase ref="worker_team">
+                    <trait ref="manpower" value="300"/>
+                </UseCase>
             </price>
         </build>
     </Blueprint>
@@ -141,7 +155,9 @@
             <price>
                 <Resource ref="iron_ore_deposit" count="10"/>
                 <Resource ref="electricity" count="1"/>
-                <Resource ref="manpower" count="2"/>
+                <UseCase ref="worker_team">
+                    <trait ref="manpower" value="2"/>
+                </UseCase>
             </price>
             <constraints>
                 <Product blueprint="basic_iron_mine"/>
@@ -167,8 +183,10 @@
         <build>
             <price>
                 <Resource ref="iron_ore" count="10"/>
-                <Resource ref="manpower" count="2"/>
                 <Resource ref="electricity" count="200"/>
+                <UseCase ref="worker_team">
+                    <trait ref="manpower" value="2"/>
+                </UseCase>
             </price>
             <constraints>
                 <Product blueprint="basic_iron_furnace"/>
@@ -184,7 +202,9 @@
         <usedAs ref="type_farming"/>
         <build>
             <price>
-                <Resource ref="manpower" count="30"/>
+                <UseCase ref="farm_team">
+                    <trait ref="manpower" value="30"/>
+                </UseCase>
             </price>
             <constraints>
                 <Product blueprint="settlement_village"/>
@@ -196,7 +216,9 @@
         <traitValue ref="land_space" value="1000"/>
         <build>
             <price>
-                <Resource ref="manpower" count="30"/>
+                <UseCase ref="farm_team">
+                    <trait ref="manpower" value="30"/>
+                </UseCase>
             </price>
             <constraints>
                 <Product blueprint="settlement_village"/>
@@ -207,7 +229,9 @@
         <usedAs ref="portables"/>
         <build>
             <price>
-                <Resource ref="manpower" count="1"/>
+                <UseCase ref="worker_team">
+                    <trait ref="manpower" value="1"/>
+                </UseCase>
             </price>
             <constraints>
                 <Product blueprint="primitive_harvest_tool" count="1"/>
@@ -223,8 +247,10 @@
         <traitValue ref="area_used" value="25"/>
         <build>
             <price>
-                <Resource ref="manpower" count="30"/>
                 <Product blueprint="basic_iron_plate" count="50"/>
+                <UseCase ref="builder_team">
+                    <trait ref="manpower" value="30"/>
+                </UseCase>
             </price>
             <constraints>
                 <Product blueprint="settlement_village"/>
@@ -238,8 +264,10 @@
         <traitValue ref="area_used" value="50"/>
         <build>
             <price>
-                <Resource ref="manpower" count="30"/>
                 <Product blueprint="basic_iron_plate" count="50"/>
+                <UseCase ref="builder_team">
+                    <trait ref="manpower" value="30"/>
+                </UseCase>
             </price>
             <constraints>
                 <Product blueprint="settlement_village"/>
@@ -325,8 +353,10 @@
         <usedAs ref="transport_vehicle"/>
         <build>
             <price>
-                <Resource ref="manpower" count="50"/>
                 <Product blueprint="basic_iron_plate" count="30"/>
+                <UseCase ref="worker_team">
+                    <trait ref="manpower" value="50"/>
+                </UseCase>
             </price>
         </build>
     </Blueprint>

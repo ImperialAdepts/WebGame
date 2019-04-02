@@ -158,6 +158,17 @@ class TechnologyTreeCompilerPass implements CompilerPassInterface
                     $nodeInfo['building_requirements'][$node->attr('ref')] = $node->attr('count');
                 }
             });
+            $blueprintNode->filterXPath("//price/UseCase")->each(function (Crawler $node, $i) use (&$nodeInfo) {
+                if (!empty($node->attr('ref'))) {
+                    $useCaseName = $node->attr('ref');
+//                    $nodeInfo['building_requirements'][$useCaseName] = [];
+                    $node->filter('trait')->each(function (Crawler $traitNode, $i) use ($useCaseName, &$nodeInfo) {
+//                        if (!empty($traitNode->attr('ref')) && !empty($traitNode->attr('value')) && $traitNode->attr('value') > 0) {
+                            $nodeInfo['building_requirements'][$useCaseName][$traitNode->attr('ref')] = $traitNode->attr('value');
+//                        }
+                    });
+                }
+            });
             $blueprintNode->filterXPath("//constraints/Resource")->each(function (Crawler $node, $i) use (&$nodeInfo) {
                 if (!empty($node->attr('ref')) && $node->attr('count') > 0) {
                     $nodeInfo['constraints'][$node->attr('ref')] = $node->attr('count');
