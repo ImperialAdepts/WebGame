@@ -21,9 +21,9 @@
 						'blueprint': buildingBlueprint.id,
 						'count': blueprintAnalyzes[buildingBlueprint.id].count
 					}) }}">
-						[&times;blueprintAnalyzes[buildingBlueprint.id].count]</a>
+						[&times;{{ blueprintAnalyzes[buildingBlueprint.id].count}}]</a>
 					{% else %}
-						Build {{ buildingBlueprint.description }} cant be build immediately because {{ dump(blueprintAnalyzes[buildingBlueprint.id].validationErrors) }}
+						Build {{ buildingBlueprint.description }} cant be build immediately because {{ dump(blueprintAnalyzes[buildingBlueprint.id]) }}
 					{% endif %}
 				</li>
 				<li>

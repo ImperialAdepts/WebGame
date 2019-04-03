@@ -34,7 +34,7 @@ class AbstractResourceDepositAdapter
      * @param string $useCaseName
      * @return AbstractResourceDepositAdapter[]
      */
-    protected static function extractAdapterOfUseCase(ResourcefullInterface $resourcefull, $useCaseName) {
+    public static function extractAdapterOfUseCase(ResourcefullInterface $resourcefull, $useCaseName) {
         /** @var AbstractResourceDepositAdapter[] $adapters */
         $adapters = [];
         /** @var ResourceDeposit[] $deposits */

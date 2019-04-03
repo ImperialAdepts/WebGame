@@ -2,6 +2,7 @@
 
 namespace AppBundle\Builder;
 
+use AppBundle\Descriptor\Adapters\AbstractResourceDepositAdapter;
 use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Entity\Blueprint;
 use AppBundle\Entity\Human;
@@ -39,7 +40,7 @@ class RegionBuilder
     /**
      * @return boolean
      */
-    public function isValidate() {
+    public function isValidBuildable() {
         foreach ($this->blueprint->getResourceRequirements() as $resourceDescriptor => $count) {
             if ($this->region->getResourceDeposit($resourceDescriptor) === null) {
                 return false;
@@ -47,6 +48,31 @@ class RegionBuilder
             if ($this->region->getResourceDeposit($resourceDescriptor)->getAmount() < $count) {
                 return false;
             }
+        }
+        foreach ($this->blueprint->getUseCaseRequirements() as $useCaseName => $traits) {
+            /** @var AbstractResourceDepositAdapter[] $adapters */
+            $adapters = AbstractResourceDepositAdapter::extractAdapterOfUseCase($this->region, $useCaseName);
+            $isAnyGoodAdapter = false;
+            /** @var AbstractResourceDepositAdapter $adapter */
+            foreach ($adapters as $adapter) {
+                $isAdapterGood = true;
+                foreach ($traits as $traitName => $requiredTraitValue) {
+                    $adapterTraitValue = $adapter->getBlueprint()->getTraitValue($traitName, 0  );
+                    if (/*!is_numeric($traitValue) ||*/ $adapterTraitValue == null) {
+                        $isAdapterGood = false;
+                        continue;
+                    }
+                    if (/*is_numeric($adapterTraitValue) &&*/ $adapterTraitValue < $requiredTraitValue) {
+                        $isAdapterGood = false;
+                        continue;
+                    }
+                }
+                if ($isAdapterGood) {
+                    $isAnyGoodAdapter = true;
+                    break;
+                }
+            }
+            if (!$isAnyGoodAdapter) return false;
         }
         return true;
     }
@@ -63,12 +89,40 @@ class RegionBuilder
             }
         }
         $missingUseCases = [];
+        $wrongTraits = [];
         foreach ($this->blueprint->getUseCaseRequirements() as $useCaseName => $traits) {
-
+            /** @var AbstractResourceDepositAdapter[] $adapters */
+            $adapters = AbstractResourceDepositAdapter::extractAdapterOfUseCase($this->region, $useCaseName);
+            if (count($adapters) == 0) {
+                $missingUseCases[] = $useCaseName;
+                continue;
+            }
+            $hasAnySuitableAdapter = false;
+            /** @var AbstractResourceDepositAdapter $adapter */
+            foreach ($adapters as $adapter) {
+                foreach ($traits as $traitName => $traitValue) {
+                    $wrongTraits['neededValue'][$useCaseName.'|'.$traitName] = $traitValue;
+                    $adapterTraitValue = $adapter->getBlueprint()->getTraitValue($traitName);
+                    if (!is_numeric($traitValue)) {
+                        $wrongTraits['candidates'][$adapter->getBlueprint()->getId()][$useCaseName.'|'.$traitName] = "NOT_NUMBER:".$traitValue;
+                        continue;
+                    }
+                    if (is_numeric($adapterTraitValue) && $adapterTraitValue < $traitValue) {
+                        $wrongTraits['candidates'][$adapter->getBlueprint()->getId()][$useCaseName.'|'.$traitName] = $adapterTraitValue;
+                        continue;
+                    }
+                    $wrongTraits['candidates'][$adapter->getBlueprint()->getId()][$useCaseName.'|'.$traitName] = "OK";
+                }
+                $hasAnySuitableAdapter = true;
+            }
+            if (!$hasAnySuitableAdapter) {
+                $missingUseCases[] = $useCaseName;
+            }
         }
         return [
             'missingResources' => $missingResources,
             'missingUseCases' => $missingUseCases,
+            'wrongTraits' => $wrongTraits,
         ];
     }
 
@@ -76,7 +130,8 @@ class RegionBuilder
      * @return int
      */
     public function getPosibilityCount() {
-        if (!$this->isValidate()) return 0;
+        if (!$this->isValidBuildable()) return 0;
+        return 1;
         $count = null;
         foreach ($this->blueprint->getResourceRequirements() as $resourceDescriptor => $count) {
             $resourcePosibility = $this->region->getResourceDeposit($resourceDescriptor)->getAmount() / $count;
@@ -110,7 +165,7 @@ class RegionBuilder
     }
 
     private function buildOne() {
-        if (!$this->isValidate()) {
+        if (!$this->isValidBuildable()) {
             return false;
         }
 

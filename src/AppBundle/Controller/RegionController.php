@@ -80,9 +80,10 @@ class RegionController extends Controller
             $builder->setRegion($region);
             $builder->setSupervisor($human);
             $builder->setAllRegionTeams();
+            $blueprintAnalyzes[$blueprint->getId()]['valid'] = $builder->isValidBuildable();
             $blueprintAnalyzes[$blueprint->getId()]['count'] = $builder->getPosibilityCount();
             $blueprintAnalyzes[$blueprint->getId()]['validationErrors'] = [];
-            if (!$builder->isValidate()) {
+            if (!$builder->isValidBuildable()) {
                 $blueprintAnalyzes[$blueprint->getId()]['validationErrors'] = $builder->getValidationErrors();
             }
         }
