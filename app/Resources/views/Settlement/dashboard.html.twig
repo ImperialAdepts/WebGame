@@ -3,6 +3,8 @@
 {% block pagedescription %}ruled by {{ settlement.manager.name }}, owned by {{ settlement.owner.name }}{% endblock %}
 
 {% block subbody %}
+    <strong>Food consumption</strong>
+    {{ dump(foodConsumption) }}
     <table>
         <tr>
 	        {% for region in settlement.regions %}

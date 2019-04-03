@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Builder\Maintainer;
 use AppBundle\Builder\PlanetBuilder;
 use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Descriptor\Adapters\Workable;
@@ -17,8 +18,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CronController extends Controller
 {
-	const PEOPLE_CONSUMPTION = 1.1;
-	const PEOPLE_STARVATION_RATIO = 0.3;
 	const PEOPLE_BASE_FERTILITY_RATE = 2;
 
 	/**
@@ -62,6 +61,7 @@ class CronController extends Controller
 	 */
 	public function maintananceAction()
 	{
+	    $maintainer = $this->get('maintainer');
 		$settlements = $this->getDoctrine()->getRepository(Entity\Planet\Settlement::class)->getAll();
 
         /** @var Entity\Planet\Settlement $settlement */
@@ -74,36 +74,12 @@ class CronController extends Controller
                     $this->getDoctrine()->getManager()->persist($team->getDeposit());
                 }
 
-                $foodDeposit = $region->getResourceDeposit(ResourceDescriptorEnum::BASIC_FOOD);
-                $peopleDeposit = $region->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
-                if (!$peopleDeposit) continue;
+                $maintainer->eatFood($region);
 
-                $foodNedded = $peopleDeposit ? $peopleDeposit->getAmount() * self::PEOPLE_CONSUMPTION : 0;
-                $foodHave = $foodDeposit ? $foodDeposit->getAmount() : 0;
-
-                if ($foodDeposit) {
-                    if ($foodHave > $foodNedded) {
-                        $foodDeposit->setAmount($foodHave - $foodNedded);
-                    } else {
-                        $foodDeposit->setAmount(0);
-                        $this->getDoctrine()->getManager()->remove($foodDeposit);
-                    }
-                    $this->getDoctrine()->getManager()->persist($foodDeposit);
-                }
-
-                if ($foodHave < $foodNedded) {
-                    $hungryPeople = ($foodNedded - $foodHave) / self::PEOPLE_CONSUMPTION;
-                    $diedPeople = round($hungryPeople * self::PEOPLE_STARVATION_RATIO) + 1;
-                    $newPeopleCount = $peopleDeposit->getAmount() - $diedPeople;
-                    $peopleDeposit->setAmount($newPeopleCount);
-                    if ($newPeopleCount < 1) {
-                        $this->getDoctrine()->getManager()->remove($peopleDeposit);
-                    }
-                }
-
-                $this->getDoctrine()->getManager()->persist($peopleDeposit);
+                $this->getDoctrine()->getManager()->flush($region);
             }
         }
+        $maintainer->clearEmptyDeposits();
 		$this->getDoctrine()->getManager()->flush();
 
 		$response = "";

@@ -35,6 +35,7 @@ class SettlementController extends Controller
             'settlement' => $settlement,
             'buildingBlueprints' => $blueprintsByRegions,
             'human' => $settlement->getManager(),
+            'foodConsumption' => $this->get('maintainer')->getFoodConsumptionEstimation($settlement),
         ]);
 	}
 

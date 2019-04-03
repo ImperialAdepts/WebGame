@@ -17,6 +17,16 @@ class BasicFood extends AbstractResourceDepositAdapter
         return parent::extractAdapterOfUseCase($resourcefull, UseCaseEnum::BASIC_FOOD);
     }
 
+    /**
+     * @param Entity\Planet\Region $region
+     * @param string $resourceDescriptor
+     * @return BasicFood
+     */
+    public static function findByDescriptor(Entity\Planet\Region $region, $resourceDescriptor) {
+        $descriptor = $region->getResourceDeposit($resourceDescriptor);
+        return $descriptor->asUseCase(UseCaseEnum::BASIC_FOOD);
+    }
+
 
     /**
      * @param BasicFood[] $foods
@@ -40,8 +50,15 @@ class BasicFood extends AbstractResourceDepositAdapter
         return $this->getBlueprint()->getTraitValue(UseCaseTraitEnum::FOOD_ENERGY, 0);
     }
 
-    public function getEnergy() {
+    public function getEnergy($unitCount = null) {
+        if ($unitCount != null) {
+            $unitCount*$this->getEnergyPerUnit();
+        }
         return $this->getDeposit()->getAmount()*$this->getEnergyPerUnit();
+    }
+
+    public function getUnitsByEnergy($energy) {
+        return ceil($energy / $this->getEnergyPerUnit());
     }
 
     public static function eatEnergy(array $foods, $energyAmount) {

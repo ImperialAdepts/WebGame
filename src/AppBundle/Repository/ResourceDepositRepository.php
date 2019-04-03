@@ -23,4 +23,16 @@ class ResourceDepositRepository extends \Doctrine\ORM\EntityRepository
             )
             ->getResult();
     }
+
+    /**
+     * @return ResourceDeposit[]
+     */
+    public function getEmpty()
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                "SELECT rd FROM AppBundle:ResourceDeposit rd where rd.amount = 0"
+            )
+            ->getResult();
+    }
 }
