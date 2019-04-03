@@ -153,9 +153,15 @@ class RegionBuilder
     }
 
     public function build() {
-        foreach (range(1, $this->count?: 100000000000000000000000) as $index) {
-            if (!$this->buildOne()) {
-                break;
+        if ($this->count === null) {
+            while (true) {
+                if (!$this->buildOne()) {
+                    return true;
+                }
+            }
+        } else {
+            for ($i = 1; $i < $this->count; $i++) {
+                $this->buildOne();
             }
         }
     }
