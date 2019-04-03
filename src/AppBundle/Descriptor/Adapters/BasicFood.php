@@ -43,6 +43,22 @@ class BasicFood extends AbstractResourceDepositAdapter
         return $energy;
     }
 
+    public static function countVariety(array $foodChanges) {
+        $average = 0;
+        foreach ($foodChanges as $resourceDescriptor => $count) {
+        }
+        $average = $average / count($foodChanges);
+        $varietyFactor = 0;
+        foreach ($foodChanges as $resourceDescriptor => $count) {
+            if ($count > $average) {
+                $varietyFactor += 1;
+            } else {
+                $varietyFactor += ($average / $count);
+            }
+        }
+        return $varietyFactor;
+    }
+
     /**
      * @return int Joule
      */

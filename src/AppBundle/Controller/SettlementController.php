@@ -104,6 +104,7 @@ class SettlementController extends Controller
             'peopleBirths' => $peopleBirths,
             'foods' => $foods,
             'foodEnergy' => Adapters\BasicFood::countEnergy($foods),
+            'foodVariety' => Adapters\BasicFood::countVariety($this->get('maintainer_food')->getFoodConsumptionEstimation($settlement)),
             'housingCapacity' => Adapters\LivingBuilding::countLivingCapacity($houses),
             'houses' => $houses,
             'human' => $human,
