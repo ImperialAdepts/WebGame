@@ -7,6 +7,7 @@ use AppBundle\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Tracy\Debugger;
 
 /**
  * @Route(path="region")
@@ -52,13 +53,15 @@ class RegionController extends Controller
         $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
 
         // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
+        $this->get('doctrine.orm.entity_manager')->transactional(function ($em) use ($blueprint, $region, $human, $count) {
+            $builder = $this->get('builder_factory')->createRegionBuilder($blueprint);
+            $builder->setResourceHolder($region);
+            $builder->setSupervisor($human);
+            $builder->setAllRegionTeams();
+            $builder->setCount($count);
+            $builder->build();
+        });
 
-        $builder = $this->get('builder_factory')->createRegionBuilder($blueprint);
-        $builder->setRegion($region);
-        $builder->setSupervisor($human);
-        $builder->setAllRegionTeams();
-        $builder->setCount($count);
-        $builder->build();
         return $this->redirectToRoute('settlement_dashboard', [
             'settlement' => $region->getSettlement()->getId(),
         ]);
@@ -77,7 +80,7 @@ class RegionController extends Controller
         $blueprintAnalyzes = [];
         foreach ($blueprints as $blueprint) {
             $builder = $this->get('builder_factory')->createRegionBuilder($blueprint);
-            $builder->setRegion($region);
+            $builder->setResourceHolder($region);
             $builder->setSupervisor($human);
             $builder->setAllRegionTeams();
             $blueprintAnalyzes[$blueprint->getId()]['valid'] = $builder->isValidBuildable();

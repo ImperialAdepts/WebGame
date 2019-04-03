@@ -4,60 +4,66 @@ namespace AppBundle\Builder;
 
 use AppBundle\Descriptor\Adapters\AbstractResourceDepositAdapter;
 use AppBundle\Descriptor\Adapters\Team;
+use AppBundle\Descriptor\ResourcefullInterface;
+use AppBundle\Descriptor\UseCaseTraitEnum;
 use AppBundle\Entity\Blueprint;
 use AppBundle\Entity\Human;
 use AppBundle\Entity\Planet\Region;
 use Doctrine\ORM\EntityManager;
+use Tracy\Debugger;
 
 class RegionBuilder
 {
-    /** @var EntityManager */
-    private $entityManager;
-
     /** @var Blueprint */
     private $blueprint;
+    /** @var string[] resource_descriptor => amount */
+    private $resourceRequirements;
+    /** @var string[] use_case_name => [resource_descriptor => amount] */
+    private $useCaseRequirements;
     /** @var Human */
     private $supervisor;
     /** @var Team|Team[]|null null => all available */
     private $workingTeams = [];
-    /** @var Region */
-    private $region;
+    /** @var ResourcefullInterface */
+    private $resourceHolder;
     /** @var int|null null => max possible */
     private $count = 1;
 
     /**
      * RegionBuilder constructor.
-     * @param EntityManager $entityManager
      * @param Blueprint $blueprint
+     * @param string[] $resourceRequirements
+     * @param string[] $useCaseRequirements
      */
-    public function __construct(EntityManager $entityManager, Blueprint $blueprint)
+    public function __construct(Blueprint $blueprint, array $resourceRequirements, array $useCaseRequirements)
     {
-        $this->entityManager = $entityManager;
         $this->blueprint = $blueprint;
+        $this->resourceRequirements = $resourceRequirements;
+        $this->useCaseRequirements = $useCaseRequirements;
     }
-
 
     /**
      * @return boolean
      */
     public function isValidBuildable() {
-        foreach ($this->blueprint->getResourceRequirements() as $resourceDescriptor => $count) {
-            if ($this->region->getResourceDeposit($resourceDescriptor) === null) {
-                return false;
-            }
-            if ($this->region->getResourceDeposit($resourceDescriptor)->getAmount() < $count) {
+        foreach ($this->resourceRequirements as $resourceDescriptor => $count) {
+            if ($this->resourceHolder->getResourceDepositAmount($resourceDescriptor) < $count) {
                 return false;
             }
         }
-        foreach ($this->blueprint->getUseCaseRequirements() as $useCaseName => $traits) {
+        foreach ($this->useCaseRequirements as $useCaseName => $traits) {
             /** @var AbstractResourceDepositAdapter[] $adapters */
-            $adapters = AbstractResourceDepositAdapter::extractAdapterOfUseCase($this->region, $useCaseName);
+            $adapters = AbstractResourceDepositAdapter::extractAdapterOfUseCase($this->resourceHolder, $useCaseName);
             $isAnyGoodAdapter = false;
             /** @var AbstractResourceDepositAdapter $adapter */
             foreach ($adapters as $adapter) {
                 $isAdapterGood = true;
                 foreach ($traits as $traitName => $requiredTraitValue) {
-                    $adapterTraitValue = $adapter->getBlueprint()->getTraitValue($traitName, 0  );
+                    echo " - trait: $traitName ";
+                    if ($traitName == 'manpower') {
+                        continue;
+                    }
+                    $adapterTraitValue = $adapter->getBlueprint()->getTraitValue($traitName, 0);
                     if (/*!is_numeric($traitValue) ||*/ $adapterTraitValue == null) {
                         $isAdapterGood = false;
                         continue;
@@ -79,20 +85,17 @@ class RegionBuilder
 
     public function getValidationErrors() {
         $missingResources = [];
-        foreach ($this->blueprint->getResourceRequirements() as $resourceDescriptor => $count) {
-            if ($this->region->getResourceDeposit($resourceDescriptor) === null) {
-                $missingResources[$resourceDescriptor] = $count;
-                continue;
-            }
-            if ($this->region->getResourceDeposit($resourceDescriptor)->getAmount() < $count) {
-                $missingResources[$resourceDescriptor] = $this->region->getResourceDeposit($resourceDescriptor)->getAmount() - $count;
+        foreach ($this->resourceRequirements as $resourceDescriptor => $requirementCount) {
+            $currentCount = $this->resourceHolder->getResourceDepositAmount($resourceDescriptor);
+            if ($currentCount < $requirementCount) {
+                $missingResources[$resourceDescriptor] = $currentCount - $requirementCount;
             }
         }
         $missingUseCases = [];
         $wrongTraits = [];
-        foreach ($this->blueprint->getUseCaseRequirements() as $useCaseName => $traits) {
+        foreach ($this->useCaseRequirements as $useCaseName => $traits) {
             /** @var AbstractResourceDepositAdapter[] $adapters */
-            $adapters = AbstractResourceDepositAdapter::extractAdapterOfUseCase($this->region, $useCaseName);
+            $adapters = AbstractResourceDepositAdapter::extractAdapterOfUseCase($this->resourceHolder, $useCaseName);
             if (count($adapters) == 0) {
                 $missingUseCases[] = $useCaseName;
                 continue;
@@ -101,6 +104,7 @@ class RegionBuilder
             /** @var AbstractResourceDepositAdapter $adapter */
             foreach ($adapters as $adapter) {
                 foreach ($traits as $traitName => $traitValue) {
+                    if ($traitName == 'manpower') continue;
                     $wrongTraits['neededValue'][$useCaseName.'|'.$traitName] = $traitValue;
                     $adapterTraitValue = $adapter->getBlueprint()->getTraitValue($traitName);
                     if (!is_numeric($traitValue)) {
@@ -132,36 +136,28 @@ class RegionBuilder
     public function getPosibilityCount() {
         if (!$this->isValidBuildable()) return 0;
         return 1;
-        $count = null;
-        foreach ($this->blueprint->getResourceRequirements() as $resourceDescriptor => $count) {
-            $resourcePosibility = $this->region->getResourceDeposit($resourceDescriptor)->getAmount() / $count;
-            if ($count === null) {
-                $count = $resourcePosibility;
+        $possibleCount = null;
+        foreach ($this->resourceRequirements as $resourceDescriptor => $count) {
+            $resourcePosibility = $this->resourceHolder->getResourceDepositAmount($resourceDescriptor) / $count;
+            if ($possibleCount === null) {
+                $possibleCount = $resourcePosibility;
             } elseif ($count > $resourcePosibility) {
-                $count = $resourcePosibility;
+                $possibleCount = $resourcePosibility;
             }
         }
-        if ($count == null || $count < 1) {
+        if ($possibleCount == null || $possibleCount < 1) {
             return 0;
         } else {
-            return floor($count);
+            return floor($possibleCount);
         }
     }
 
     public function build() {
-        $this->entityManager->beginTransaction();
-        $this->entityManager->refresh($this->region);
-        $this->entityManager->refresh($this->blueprint);
-
         foreach (range(1, $this->count?: 100000000000000000000000) as $index) {
             if (!$this->buildOne()) {
                 break;
             }
         }
-
-        $this->entityManager->flush($this->region);
-        $this->entityManager->flush($this->blueprint);
-        $this->entityManager->commit();
     }
 
     private function buildOne() {
@@ -169,13 +165,12 @@ class RegionBuilder
             return false;
         }
 
-        foreach ($this->blueprint->getResourceRequirements() as $resourceDescriptor => $requirementCount) {
-            $currentAmount = $this->region->getResourceDeposit($resourceDescriptor)->getAmount();
-            $this->region->getResourceDeposit($resourceDescriptor)->setAmount($currentAmount - $requirementCount);
+        foreach ($this->resourceRequirements as $resourceDescriptor => $requirementCount) {
+            $currentAmount = $this->resourceHolder->getResourceDepositAmount($resourceDescriptor);
+            $this->resourceHolder->getResourceDeposit($resourceDescriptor)->setAmount($currentAmount - $requirementCount);
         }
 
-        $this->region->addResourceDeposit($this->blueprint);
-        return true;
+        $this->resourceHolder->addResourceDeposit($this->blueprint, 1);
     }
 
     /**
@@ -208,11 +203,11 @@ class RegionBuilder
     }
 
     /**
-     * @param Region $region
+     * @param Region $resourceHolder
      */
-    public function setRegion(Region $region)
+    public function setResourceHolder(Region $resourceHolder)
     {
-        $this->region = $region;
+        $this->resourceHolder = $resourceHolder;
     }
 
     /**

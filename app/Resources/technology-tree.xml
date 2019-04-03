@@ -276,6 +276,7 @@
     </Blueprint>
     <Blueprint id="team_simple_builders">
         <usedAs ref="builder_team"/>
+        <traitValue ref="manpower" value="3000"/>
         <build>
             <price>
                 <Resource ref="human" count="10"/>
@@ -284,6 +285,7 @@
     </Blueprint>
     <Blueprint id="team_simple_farmers">
         <usedAs ref="farm_team"/>
+        <traitValue ref="manpower" value="3000"/>
         <build>
             <price>
                 <Resource ref="human" count="100"/>
@@ -293,6 +295,7 @@
     </Blueprint>
     <Blueprint id="team_simple_transporters">
         <usedAs ref="transport_team"/>
+        <traitValue ref="manpower" value="3000"/>
         <build>
             <price>
                 <Resource ref="human" count="6"/>
@@ -301,6 +304,7 @@
     </Blueprint>
     <Blueprint id="team_simple_scientists">
         <usedAs ref="science_team"/>
+        <traitValue ref="manpower" value="3000"/>
         <build>
             <price>
                 <Resource ref="human" count="5"/>
@@ -309,6 +313,7 @@
     </Blueprint>
     <Blueprint id="team_simple_workers">
         <usedAs ref="worker_team"/>
+        <traitValue ref="manpower" value="3000"/>
         <build>
             <price>
                 <Resource ref="human" count="20"/>
@@ -317,6 +322,7 @@
     </Blueprint>
     <Blueprint id="team_simple_merchant">
         <usedAs ref="merchant_team"/>
+        <traitValue ref="manpower" value="3000"/>
         <build>
             <price>
                 <Resource ref="human" count="5"/>
@@ -325,6 +331,7 @@
     </Blueprint>
     <Blueprint id="team_auto_transporters">
         <usedAs ref="transport_team"/>
+        <traitValue ref="manpower" value="3000"/>
         <build>
             <price>
                 <Resource ref="human" count="4"/>
@@ -334,6 +341,7 @@
     </Blueprint>
     <Blueprint id="team_simple_infantry">
         <usedAs ref="army_team"/>
+        <traitValue ref="manpower" value="3000"/>
         <build>
             <price>
                 <Resource ref="human" count="200"/>
@@ -342,6 +350,7 @@
     </Blueprint>
     <Blueprint id="team_motorized_infantry">
         <usedAs ref="army_team"/>
+        <traitValue ref="manpower" value="3000"/>
         <build>
             <price>
                 <Resource ref="human" count="20"/>
@@ -441,7 +450,9 @@
         <parent ref="portables"/>
         <trait ref="food_energy"/>
     </UseCase>
-    <UseCase id="team"/>
+    <UseCase id="team">
+        <trait ref="manpower"/>
+    </UseCase>
     <UseCase id="builder_team">
         <parent ref="team"/>
     </UseCase>

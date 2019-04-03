@@ -24,6 +24,6 @@ class BuilderFactory
      * @return RegionBuilder
      */
     public function createRegionBuilder(Blueprint $what) {
-        return new RegionBuilder($this->entityManager, $what);
+        return new RegionBuilder($what, $what->getResourceRequirements(), $what->getUseCaseRequirements());
     }
 }

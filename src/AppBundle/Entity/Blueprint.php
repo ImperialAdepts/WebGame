@@ -217,10 +217,11 @@ class Blueprint
      */
     public function getTraitValue($traitName, $defaultValue = null)
     {
-        if (!isset($this->traitValues[$traitName])) {
+        $values = $this->getTraitValues();
+        if (!isset($values[$traitName])) {
             return $defaultValue;
         }
-        return $this->traitValues[$traitName];
+        return $values[$traitName];
     }
 
     /**

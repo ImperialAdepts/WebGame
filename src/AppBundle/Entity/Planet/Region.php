@@ -295,5 +295,18 @@ class Region implements ResourcefullInterface
         if ($deposit == null) return 0;
         return $deposit->getAmount();
     }
+
+
+    /**
+     * @param string $resourceDescriptor
+     * @return int
+     */
+    public function getResourceDepositAmount($resourceDescriptor)
+    {
+        if ($this->getResourceDeposit($resourceDescriptor) != null) {
+            return $this->getResourceDeposit($resourceDescriptor)->getAmount();
+        }
+        return 0;
+    }
 }
 

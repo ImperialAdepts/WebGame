@@ -196,5 +196,27 @@ class Settlement implements ResourcefullInterface
         }
         return $counter;
     }
+
+    /**
+     * @param string $resourceDescriptor
+     * @return int
+     */
+    public function getResourceDepositAmount($resourceDescriptor)
+    {
+        $count = 0;
+        foreach ($this->getResourceDeposits($resourceDescriptor) as $deposit) {
+            $count += $deposit->getAmount();
+        }
+        return $count;
+    }
+
+    /**
+     * @param Blueprint $blueprint
+     * @param int $count
+     */
+    public function addResourceDeposit(Blueprint $blueprint, $count = 1)
+    {
+        $this->getMainRegion()->addResourceDeposit($blueprint, $count);
+    }
 }
 
