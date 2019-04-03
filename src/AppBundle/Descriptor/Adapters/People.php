@@ -61,6 +61,7 @@ class People extends AbstractResourceDepositAdapter
     }
 
     /**
+     * @param People[] $peoples
      * @return int Joule
      */
     public static function countFoodEnergyConsumption(array $peoples) {

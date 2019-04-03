@@ -52,7 +52,7 @@ class BasicFood extends AbstractResourceDepositAdapter
 
     public function getEnergy($unitCount = null) {
         if ($unitCount != null) {
-            $unitCount*$this->getEnergyPerUnit();
+            return $unitCount*$this->getEnergyPerUnit();
         }
         return $this->getDeposit()->getAmount()*$this->getEnergyPerUnit();
     }

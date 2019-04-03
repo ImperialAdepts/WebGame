@@ -35,6 +35,9 @@ class FoodMaintainer
         $foodEnergyNeeded = People::countFoodEnergyConsumption(People::in($resourceHandler));
         $foods = BasicFood::in($resourceHandler);
         $allEnergy = BasicFood::countEnergy($foods);
+        if ($allEnergy <= 0) {
+            return [];
+        }
         $consumptionPercentace = $foodEnergyNeeded / $allEnergy;
         $foodConsumption = [];
         foreach ($foods as $food) {
