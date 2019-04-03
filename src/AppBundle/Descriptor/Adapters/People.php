@@ -11,10 +11,20 @@ class People extends AbstractResourceDepositAdapter
 {
     /**
      * @param ResourcefullInterface $resourcefull
-     * @return Team[]
+     * @return People[]
      */
     public static function in(ResourcefullInterface $resourcefull) {
         return parent::extractAdapterOfUseCase($resourcefull, UseCaseEnum::PEOPLE);
+    }
+
+    /**
+     * @param Entity\Planet\Region $region
+     * @param string $resourceDescriptor
+     * @return People
+     */
+    public static function findByDescriptor(Entity\Planet\Region $region, $resourceDescriptor) {
+        $descriptor = $region->getResourceDeposit($resourceDescriptor);
+        return $descriptor->asUseCase(UseCaseEnum::PEOPLE);
     }
 
 
@@ -69,6 +79,14 @@ class People extends AbstractResourceDepositAdapter
      */
     public function getFoodEnergyConsumption() {
         return $this->getPeopleCount()*$this->getFoodEnergyConsumptionPerHuman();
+    }
+
+    /**
+     * @return float
+     */
+    public function getFertilityRate()
+    {
+        return 2;
     }
 
 }

@@ -18,8 +18,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CronController extends Controller
 {
-	const PEOPLE_BASE_FERTILITY_RATE = 2;
-
 	/**
 	 * @Route("/build-projects", name="cron_build_projects")
 	 */
@@ -97,14 +95,9 @@ class CronController extends Controller
         foreach ($settlements as $settlement) {
             /** @var Entity\Planet\Region $region */
             foreach ($settlement->getRegions() as $region) {
-                $peopleDeposit = $region->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
-                if (!$peopleDeposit) continue;
+                $this->get('maintainer_population')->doBirths($region);
 
-                $newborn = round($peopleDeposit->getAmount() * self::PEOPLE_BASE_FERTILITY_RATE / 20) + 1;
-                $newPeopleCount = $peopleDeposit->getAmount() + $newborn;
-                $peopleDeposit->setAmount($newPeopleCount);
-
-                $this->getDoctrine()->getManager()->persist($peopleDeposit);
+                $this->getDoctrine()->getManager()->persist($region);
             }
 		}
 		$this->getDoctrine()->getManager()->flush();
