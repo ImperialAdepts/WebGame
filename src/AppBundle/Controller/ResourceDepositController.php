@@ -30,8 +30,13 @@ class ResourceDepositController extends Controller
 //                }
             }
         }
+        $consumption = $this->get('maintainer')->getConsumption($deposit->getRegion(), $deposit->getResourceDescriptor());
+        $production = $this->get('maintainer')->getProduction($deposit->getRegion(), $deposit->getResourceDescriptor());
         return $this->render('ResourceDeposit/resource-deposit-fragment.html.twig', [
             'deposit' => $deposit,
+            'consumption' => $consumption,
+            'production' => $production,
+            'amountChange' => $production - $consumption,
             'adapters' => $adapters,
         ]);
     }

@@ -62,6 +62,8 @@ services:
         public: true
         arguments:
             - '@doctrine.orm.entity_manager'
+            - '@maintainer_food'
+            - '@maintainer_population'
 
     maintainer_food:
         class: AppBundle\Maintainer\FoodMaintainer

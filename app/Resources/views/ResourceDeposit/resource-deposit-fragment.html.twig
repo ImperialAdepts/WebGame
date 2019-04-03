@@ -4,6 +4,9 @@
 	{% else %}
 		<strong>{{ deposit.resourceDescriptor }}</strong>
 	{% endif %}&times;{{ deposit.amount }}
+	{% if amountChange != 0 %}
+		<small>{{ amountChange }} (+{{ production }}/-{{ consumption }})</small>
+	{% endif %}
 	<table border="1">
 		<tr>
 			{% for name, adapter in adapters %}

@@ -89,13 +89,19 @@ class SettlementController extends Controller
 
         /** @var Adapters\LivingBuilding[] $houses */
         $houses = Adapters\LivingBuilding::in($settlement);
-        $peopleCount = $settlement->getPeopleCount();
+        $peopleCount = 0;
+        $peopleBirths = 0;
+        foreach (Adapters\People::in($settlement) as $people) {
+            $peopleCount += $people->getPeopleCount();
+            $peopleBirths += $this->get('maintainer')->getProduction($settlement, $people->getResourceDescriptor());
+        }
 
         $foods = Adapters\BasicFood::in($settlement);
 
         return $this->render('Settlement/housing.html.twig', [
             'settlement' => $settlement,
             'people' => $peopleCount,
+            'peopleBirths' => $peopleBirths,
             'foods' => $foods,
             'foodEnergy' => Adapters\BasicFood::countEnergy($foods),
             'housingCapacity' => Adapters\LivingBuilding::countLivingCapacity($houses),

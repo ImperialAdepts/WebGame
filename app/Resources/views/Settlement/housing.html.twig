@@ -3,9 +3,13 @@
 {% block subbody %}
 	<strong>Housing:</strong>
 	<dt>People:</dt>
-	<dd>{{ people }}</dd>
+	<dd>{{ people }}
+	{% if peopleBirths != 0 %}
+		<small>+{{ peopleBirths }}</small>
+	{% endif %}
+	</dd>
 	{% if foods|length > 0 %}
-		<dt>Food:</dt>
+		<dt>Food energy:</dt>
 		<dd>{{ foodEnergy }}</dd>
 		<ul>
 			{% for food in foods %}
