@@ -44,7 +44,7 @@ class BasicFood extends AbstractResourceDepositAdapter
     }
 
     /**
-     * @return int
+     * @return int Joule
      */
     public function getEnergyPerUnit() {
         return $this->getBlueprint()->getTraitValue(UseCaseTraitEnum::FOOD_ENERGY, 0);

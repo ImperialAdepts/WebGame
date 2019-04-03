@@ -3,7 +3,9 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Descriptor\Adapters\AbstractResourceDepositAdapter;
+use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\UseCaseEnum;
+use AppBundle\Descriptor\UseCaseTraitEnum;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -188,7 +190,11 @@ class ResourceDeposit
 
     public function getUseCases() {
         if ($this->getBlueprint() != null) return $this->getBlueprint()->getUseCases();
-        return [UseCaseEnum::RESOURCE_DEPOSIT];
+        $resourceUseCases = [];
+        if ($this->getResourceDescriptor() == ResourceDescriptorEnum::PEOPLE) {
+            $resourceUseCases[] = UseCaseEnum::PEOPLE;
+        }
+        return $resourceUseCases;
     }
 
     /**

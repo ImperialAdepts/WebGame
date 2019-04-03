@@ -450,7 +450,9 @@
         <parent ref="portables"/>
         <trait ref="food_energy"/>
     </UseCase>
+    <UseCase id="population"/>
     <UseCase id="team">
+        <parent ref="population"/>
         <trait ref="manpower"/>
     </UseCase>
     <UseCase id="builder_team">

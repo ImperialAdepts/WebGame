@@ -5,6 +5,7 @@ use AppBundle\Descriptor\Adapters\BasicFood;
 use AppBundle\Descriptor\Adapters\EnergySource;
 use AppBundle\Descriptor\Adapters\LandBuilding;
 use AppBundle\Descriptor\Adapters\LivingBuilding;
+use AppBundle\Descriptor\Adapters\People;
 use AppBundle\Descriptor\Adapters\Portable;
 use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Descriptor\Adapters\TeamBuilder;
@@ -47,6 +48,7 @@ class UseCaseEnum
 	const TEAM_FARMERS = 'farm_team';
 	const TEAM_SOLDIERS = 'army_team';
     const WAREHOUSE = 'storage';
+    const PEOPLE = 'population';
 
     public static $useCaseToAdapterMap = [
         self::BASIC_FOOD => BasicFood::class,
@@ -63,6 +65,7 @@ class UseCaseEnum
         self::TEAM_SOLDIERS => TeamFarmer::class,
         self::TEAM => Team::class,
         self::WAREHOUSE => Warehouse::class,
+        self::PEOPLE => People::class,
     ];
 
 	public static function getAdapter($useCaseName) {

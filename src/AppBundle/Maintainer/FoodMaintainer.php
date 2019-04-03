@@ -3,6 +3,7 @@
 namespace AppBundle\Maintainer;
 
 use AppBundle\Descriptor\Adapters\BasicFood;
+use AppBundle\Descriptor\Adapters\People;
 use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
@@ -12,7 +13,6 @@ use Doctrine\ORM\EntityManager;
 
 class FoodMaintainer
 {
-    const PEOPLE_CONSUMPTION = 1100;
     const PEOPLE_STARVATION_RATIO = 0.3;
 
     /** @var EntityManager */
@@ -29,20 +29,10 @@ class FoodMaintainer
 
     /**
      * @param ResourcefullInterface $resourceHandler
-     * @return float|int MJ
-     */
-    public function getFoodEnergyConsumptionEstimation(ResourcefullInterface $resourceHandler) {
-        $peoples = Team::in($resourceHandler);
-        $peopleCount = Team::countPeople($peoples);
-        return $peopleCount * self::PEOPLE_CONSUMPTION;
-    }
-
-    /**
-     * @param ResourcefullInterface $resourceHandler
      * @return int[] resource_descriptor => unit amount consumption
      */
     public function getFoodConsumptionEstimation(ResourcefullInterface $resourceHandler) {
-        $foodEnergyNeeded = $this->getFoodEnergyConsumptionEstimation($resourceHandler);
+        $foodEnergyNeeded = People::countFoodEnergyConsumption(People::in($resourceHandler));
         $foods = BasicFood::in($resourceHandler);
         $allEnergy = BasicFood::countEnergy($foods);
         $consumptionPercentace = $foodEnergyNeeded / $allEnergy;
@@ -77,7 +67,7 @@ class FoodMaintainer
         }
 
         if ($missingEnergy > 0) {
-            $hungryPeople = floor($missingEnergy / self::PEOPLE_CONSUMPTION);
+            $hungryPeople = floor($missingEnergy / 3000);
             $diedPeople = round($hungryPeople * self::PEOPLE_STARVATION_RATIO) + 1;
             // TODO: Kill people
         }
