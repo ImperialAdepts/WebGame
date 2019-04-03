@@ -61,7 +61,6 @@ class CronController extends Controller
 	 */
 	public function maintananceAction()
 	{
-	    $maintainer = $this->get('maintainer');
 		$settlements = $this->getDoctrine()->getRepository(Entity\Planet\Settlement::class)->getAll();
 
         /** @var Entity\Planet\Settlement $settlement */
@@ -74,12 +73,12 @@ class CronController extends Controller
                     $this->getDoctrine()->getManager()->persist($team->getDeposit());
                 }
 
-                $maintainer->eatFood($region);
+                $this->get('maintainer_food')->eatFood($region);
 
                 $this->getDoctrine()->getManager()->flush($region);
             }
         }
-        $maintainer->clearEmptyDeposits();
+        $this->get('maintainer')->clearEmptyDeposits();
 		$this->getDoctrine()->getManager()->flush();
 
 		$response = "";
