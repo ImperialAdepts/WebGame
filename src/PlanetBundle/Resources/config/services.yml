@@ -1,0 +1,21 @@
+services:
+
+  maintainer:
+    class: PlanetBundle\Maintainer\Maintainer
+    public: true
+    arguments:
+      - '@doctrine.orm.entity_manager'
+      - '@maintainer_food'
+      - '@maintainer_population'
+
+  maintainer_food:
+    class: PlanetBundle\Maintainer\FoodMaintainer
+    public: true
+    arguments:
+      - '@doctrine.orm.entity_manager'
+
+  maintainer_population:
+    class: PlanetBundle\Maintainer\PopulationMaintainer
+    public: true
+    arguments:
+      - '@doctrine.orm.entity_manager'

@@ -4,7 +4,7 @@ namespace AppBundle\Descriptor\Adapters;
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Descriptor\UseCaseTraitEnum;
-use AppBundle\Entity;
+use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
 
 class LandBuilding extends AbstractResourceDepositAdapter
 {

@@ -5,7 +5,7 @@ use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Descriptor\UseCaseTraitEnum;
-use AppBundle\Entity;
+use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
 
 class People extends AbstractResourceDepositAdapter
 {
@@ -18,11 +18,11 @@ class People extends AbstractResourceDepositAdapter
     }
 
     /**
-     * @param Entity\Planet\Region $region
+     * @param PlanetEntity\Region $region
      * @param string $resourceDescriptor
      * @return People
      */
-    public static function findByDescriptor(Entity\Planet\Region $region, $resourceDescriptor) {
+    public static function findByDescriptor(PlanetEntity\Region $region, $resourceDescriptor) {
         $descriptor = $region->getResourceDeposit($resourceDescriptor);
         return $descriptor->asUseCase(UseCaseEnum::PEOPLE);
     }

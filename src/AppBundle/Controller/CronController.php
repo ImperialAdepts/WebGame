@@ -7,7 +7,7 @@ use AppBundle\Builder\PlanetBuilder;
 use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Descriptor\Adapters\Workable;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
-use AppBundle\Entity;
+use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,9 +24,9 @@ class CronController extends Controller
 	public function buildAction(Request $request)
 	{
 
-        $projects = $this->getDoctrine()->getRepository(Entity\Planet\CurrentBuildingProject::class)->getActiveSortedByPriority();
+        $projects = $this->getDoctrine()->getRepository(PlanetEntity\CurrentBuildingProject::class)->getActiveSortedByPriority();
         $builder = $this->get('planet_builder');
-        /** @var Entity\Planet\BuildingProject $project */
+        /** @var PlanetEntity\BuildingProject $project */
         foreach ($projects as $project) {
             $builder->buildProjectStep($project);
             if ($project->isDone()) {
@@ -40,7 +40,7 @@ class CronController extends Controller
 
 		$response = "";
 //		echo "Count=".count($projects)."<br>\n";
-//		/** @var Entity\Planet\CurrentBuildingProject $projectA */
+//		/** @var PlanetEntity\CurrentBuildingProject $projectA */
 //        foreach ($projects as $projectA) {
 //            echo "{$projectA->getRegion()->getCoords()} :";
 //            echo "{$projectA->getBuildingBlueprint()->getDescription()}<br>\n";
@@ -59,11 +59,11 @@ class CronController extends Controller
 	 */
 	public function maintananceAction()
 	{
-		$settlements = $this->getDoctrine()->getRepository(Entity\Planet\Settlement::class)->getAll();
+		$settlements = $this->getDoctrine()->getRepository(PlanetEntity\Settlement::class)->getAll();
 
-        /** @var Entity\Planet\Settlement $settlement */
+        /** @var PlanetEntity\Settlement $settlement */
         foreach ($settlements as $settlement) {
-            /** @var Entity\Planet\Region $region */
+            /** @var PlanetEntity\Region $region */
             foreach ($settlement->getRegions() as $region) {
                 /** @var Team $team */
                 foreach (Team::in($region) as $team) {
@@ -89,11 +89,11 @@ class CronController extends Controller
 	 */
 	public function birthsAction()
 	{
-		$settlements = $this->getDoctrine()->getRepository(Entity\Planet\Settlement::class)->getAll();
+		$settlements = $this->getDoctrine()->getRepository(PlanetEntity\Settlement::class)->getAll();
 
-        /** @var Entity\Planet\Settlement $settlement */
+        /** @var PlanetEntity\Settlement $settlement */
         foreach ($settlements as $settlement) {
-            /** @var Entity\Planet\Region $region */
+            /** @var PlanetEntity\Region $region */
             foreach ($settlement->getRegions() as $region) {
                 $this->get('maintainer_population')->doBirths($region);
 

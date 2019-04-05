@@ -1,6 +1,8 @@
 <?php
 namespace AppBundle\Fixture;
 
+use PlanetBundle\Entity\Human;
+
 class PersonFixture extends \Doctrine\Bundle\FixturesBundle\Fixture
 {
 
@@ -22,14 +24,14 @@ class PersonFixture extends \Doctrine\Bundle\FixturesBundle\Fixture
             $soul->setName('Odin');
             $manager->persist($soul);
             {
-                $human = new \AppBundle\Entity\Human();
+                $human = new Human();
                 $human->setName('Erik krvava sekera');
                 $human->setBornIn(0);
                 $human->setSoul($soul);
                 $manager->persist($human);
             }
             {
-                $human = new \AppBundle\Entity\Human();
+                $human = new Human();
                 $human->setName('Rudovous');
                 $human->setBornIn(0);
                 $human->setSoul($soul);
@@ -42,14 +44,14 @@ class PersonFixture extends \Doctrine\Bundle\FixturesBundle\Fixture
             $soul->setName('Zeus');
             $manager->persist($soul);
             {
-                $human = new \AppBundle\Entity\Human();
+                $human = new Human();
                 $human->setName('Herakles');
                 $human->setBornIn(0);
                 $human->setSoul($soul);
                 $manager->persist($human);
             }
             {
-                $human = new \AppBundle\Entity\Human();
+                $human = new Human();
                 $human->setName('Oidipus');
                 $human->setBornIn(0);
                 $human->setSoul($soul);

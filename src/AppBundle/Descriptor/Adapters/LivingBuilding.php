@@ -4,16 +4,16 @@ namespace AppBundle\Descriptor\Adapters;
 use AppBundle\Descriptor\ResourceTraitEnum;
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Descriptor\UseCaseTraitEnum;
-use AppBundle\Entity;
+use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Entity\ResourceDeposit;
 
 class LivingBuilding extends AbstractResourceDepositAdapter
 {
     /**
-     * @param Entity\Planet\Settlement $settlement
+     * @param PlanetEntity\Settlement $settlement
      * @return LivingBuilding[]
      */
-    public static function in(Entity\Planet\Settlement $settlement) {
+    public static function in(PlanetEntity\Settlement $settlement) {
         return parent::extractAdapterOfUseCase($settlement, UseCaseEnum::LIVING_BUILDINGS);
     }
 

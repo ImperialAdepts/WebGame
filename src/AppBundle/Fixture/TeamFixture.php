@@ -3,7 +3,7 @@ namespace AppBundle\Fixture;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\UseCaseEnum;
-use AppBundle\Entity;
+use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -32,7 +32,7 @@ class TeamFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Con
             $workerBlueprints = $manager->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_WORKERS),
             $farmerBlueprints = $manager->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_FARMERS)
         );
-		$regions = $manager->getRepository(Entity\Planet\Region::class)->findAll();
+		$regions = $manager->getRepository(PlanetEntity\Region::class)->findAll();
         foreach ($regions as $region) {
             if ($region->getSettlement() != null) {
                 foreach ($blueprints as $blueprint) {

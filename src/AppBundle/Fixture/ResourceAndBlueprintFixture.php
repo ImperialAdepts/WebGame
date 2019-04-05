@@ -3,7 +3,7 @@ namespace AppBundle\Fixture;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\UseCaseEnum;
-use AppBundle\Entity;
+use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -39,12 +39,12 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
         $manager->flush();
 
 		$builder = new \AppBundle\Builder\PlanetBuilder($manager, $this->container->getParameter('default_colonization_packs'));
-		$humans = $manager->getRepository(Entity\Human::class)->findAllIncarnated();
-		$regions = $manager->getRepository(Entity\Planet\Region::class)->findAll();
+		$humans = $manager->getRepository(PlanetEntity\Human::class)->findAllIncarnated();
+		$regions = $manager->getRepository(PlanetEntity\Region::class)->findAll();
 		$regionCounter = 1;
-		/** @var Entity\Human $human */
+		/** @var PlanetEntity\Human $human */
         foreach ($humans as $human) {
-            /** @var Entity\Planet\Region $centralRegion */
+            /** @var PlanetEntity\Region $centralRegion */
             $centralRegion = $regions[$regionCounter];
             $regionCounter += 4;
 			$builder->newColony($centralRegion, $human, 'simple');

@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\Repository;
 
-use AppBundle\Entity;
+use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
 
 class SoulRepository extends \Doctrine\ORM\EntityRepository
 {

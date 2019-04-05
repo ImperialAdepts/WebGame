@@ -4,10 +4,10 @@
 version: "3.1"
 services:
 
-    mysql:
+    mysql-space:
       image: mysql:5.7
-      container_name: imperiumsandbox-mysql
-      working_dir: /application
+      container_name: imperiumsandbox-mysql-space
+      working_dir: /application-mysql-space
       volumes:
         - .:/application
       environment:
@@ -15,9 +15,24 @@ services:
         - MYSQL_DATABASE=imperium
         - MYSQL_USER=imperator
         - MYSQL_PASSWORD=muaddib
-        - DATABASE_URL=mysql://imperator:muaddib@mysql:3306/imperium
+        - DATABASE_URL=mysql://imperator:muaddib@mysql-space:3306/imperium
       ports:
         - "2002:3306"
+
+    mysql-planet:
+      image: mysql:5.7
+      container_name: imperiumsandbox-mysql-planet
+      working_dir: /application-mysql-planet
+      volumes:
+        - .:/application
+      environment:
+        - MYSQL_ROOT_PASSWORD=toor
+        - MYSQL_DATABASE=imperium_planet_test
+        - MYSQL_USER=imperator
+        - MYSQL_PASSWORD=muaddib
+        - DATABASE_URL=mysql://imperator:muaddib@mysql-planet:3306/imperium_planet_test
+      ports:
+        - "2003:3306"
 
     webserver:
       image: nginx:alpine

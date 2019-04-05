@@ -11,7 +11,7 @@ namespace AppBundle\Descriptor\Adapters;
 
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Descriptor\UseCaseEnum;
-use AppBundle\Entity;
+use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Entity\ResourceDeposit;
 use Tracy\Debugger;
 

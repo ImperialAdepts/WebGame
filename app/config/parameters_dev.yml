@@ -1,10 +1,15 @@
 # devel accesses to docker dev database
 parameters:
-    database_host: mysql
+    database_host: mysql-space
     database_port: 3306
     database_name: imperium
     database_user: imperator
     database_password: muaddib
+    planet_database_host: mysql-planet
+    planet_database_port: 3306
+    planet_database_name: imperium_planet_test
+    planet_database_user: imperator
+    planet_database_password: muaddib
     mailer_transport: smtp
     mailer_host: 127.0.0.1
     mailer_user: null

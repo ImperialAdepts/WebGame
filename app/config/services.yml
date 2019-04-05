@@ -57,25 +57,6 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
 
-    maintainer:
-        class: AppBundle\Maintainer\Maintainer
-        public: true
-        arguments:
-            - '@doctrine.orm.entity_manager'
-            - '@maintainer_food'
-            - '@maintainer_population'
-
-    maintainer_food:
-        class: AppBundle\Maintainer\FoodMaintainer
-        public: true
-        arguments:
-            - '@doctrine.orm.entity_manager'
-
-    maintainer_population:
-        class: AppBundle\Maintainer\PopulationMaintainer
-        public: true
-        arguments:
-            - '@doctrine.orm.entity_manager'
 
     # add more services, or override services that need manual wiring
     # AppBundle\Service\ExampleService:

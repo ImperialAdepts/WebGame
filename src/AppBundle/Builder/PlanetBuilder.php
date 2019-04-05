@@ -3,6 +3,7 @@ namespace AppBundle\Builder;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Entity;
+use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
 use Doctrine\ORM\EntityManager;
 
@@ -26,24 +27,24 @@ class PlanetBuilder
 		$this->colonyPacks = $colonyPacks;
 	}
 
-	public function buildProject(Entity\Planet\BuildingProject $project)
+	public function buildProject(PlanetEntity\BuildingProject $project)
 	{
         $project->getRegion()->addResourceDeposit($project->getBuildingBlueprint(), 1);
 		$this->entityManager->persist($project->getRegion());
 	}
 
-	public function buildProjectStep(Entity\Planet\CurrentBuildingProject $project)
+	public function buildProjectStep(PlanetEntity\CurrentBuildingProject $project)
 	{
-		$resourceSettlements = $this->entityManager->getRepository(Entity\Planet\Settlement::class)->getByHumanSupervisor($project->getSupervisor());
+		$resourceSettlements = $this->entityManager->getRepository(PlanetEntity\Settlement::class)->getByHumanSupervisor($project->getSupervisor());
         $regions = [];
-        /** @var Entity\Planet\Settlement $settlement */
+        /** @var PlanetEntity\Settlement $settlement */
         foreach ($resourceSettlements as $settlement) {
             foreach ($settlement->getRegions() as $region) {
                 $regions[] = $region;
             }
         }
 		$mandays = [];
-		/** @var Entity\Planet\Region $region */
+		/** @var PlanetEntity\Region $region */
 		foreach ($regions as $region) {
 			$people = $region->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
 			if ($people) {
@@ -59,7 +60,7 @@ class PlanetBuilder
 		}
 
 		$missingResources = array_keys($project->getMissingResources());
-        /** @var Entity\Planet\Region $region */
+        /** @var PlanetEntity\Region $region */
         foreach ($regions as $region) {
 		    foreach ($missingResources as $resource) {
 			    $project->addNotification("Finding $resource...");
@@ -105,9 +106,9 @@ class PlanetBuilder
 		}
 	}
 
-	public function newColony(Entity\Planet\Region $region, Entity\Human $human, $colonizationPack)
+	public function newColony(PlanetEntity\Region $region, PlanetEntity\Human $human, $colonizationPack)
 	{
-		$settlement = new Entity\Planet\Settlement();
+		$settlement = new PlanetEntity\Settlement();
 		$settlement->setType(ResourceDescriptorEnum::VILLAGE);
 		$settlement->setRegions([$region]);
 		$settlement->setOwner($human);
@@ -120,7 +121,7 @@ class PlanetBuilder
 
 		foreach ($this->colonyPacks as $colonyPackName => $colonyPack) {
             foreach ($colonyPack['deposits'] as $resource => $data) {
-                $resourceDeposit = new Entity\ResourceDeposit();
+                $resourceDeposit = new PlanetEntity\ResourceDeposit();
                 $resourceDeposit->setAmount($data['amount']);
                 $resourceDeposit->setResourceDescriptor($resource);
                 if (isset($data['blueprint']) && ($blueprint = $this->getBlueprint($data['blueprint'])) != null) {
@@ -132,7 +133,7 @@ class PlanetBuilder
         }
 	}
 
-	public function getAvailableBlueprints(Entity\Planet\Region $region, Entity\Human $human) {
+	public function getAvailableBlueprints(PlanetEntity\Region $region, PlanetEntity\Human $human) {
 	    // TODO: overit ze dotycny vlastni blueprinty
         $availables = [];
         $blueprints = $this->entityManager->getRepository(Entity\Blueprint::class)->getAll();

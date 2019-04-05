@@ -1,8 +1,8 @@
 <?php
 namespace AppBundle\Fixture;
 
-use AppBundle\Entity\Planet\Peak;
-use AppBundle\Entity\Planet\Region;
+use PlanetBundle\Entity\Peak;
+use PlanetBundle\Entity\Region;
 
 /**
  * vygeneruje malou testovaci mapu
