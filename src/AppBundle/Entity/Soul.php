@@ -3,7 +3,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use PlanetBundle\Entity\Human;
 
 /**
  * Soul
@@ -41,7 +40,7 @@ class Soul
 
     /**
      * @var Human
-     * @ ORM\OneToMany(targetEntity="PlanetBundle\Entity\Human", mappedBy="soul")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Human", mappedBy="soul")
      */
     private $incarnations;
 

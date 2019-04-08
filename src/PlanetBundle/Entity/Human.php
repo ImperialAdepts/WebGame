@@ -2,14 +2,12 @@
 
 namespace PlanetBundle\Entity;
 
-use AppBundle\Entity\Soul;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Human
  *
- * @ ORM\Table(name="humans", indexes={@ORM\Index(name="humans_souls_FK", columns={"soul_id"}), @ORM\Index(name="humans_humans_FK", columns={"father_human_id"}), @ORM\Index(name="humans_humans_mother_FK", columns={"mother_human_id"})})
- * @ORM\Table(name="humans", indexes={@ORM\Index(name="humans_humans_FK", columns={"father_human_id"}), @ORM\Index(name="humans_humans_mother_FK", columns={"mother_human_id"})})
+ * @ORM\Table(name="humans")
  * @ORM\Entity(repositoryClass="PlanetBundle\Repository\HumanRepository")
  */
 class Human
@@ -22,6 +20,13 @@ class Human
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="global_human_id", type="bigint", nullable=true)
+     */
+    private $globalHumanId;
 
     /**
      * @var string
@@ -81,13 +86,6 @@ class Human
      */
     private $motherHuman;
 
-    /**
-     * @var Soul
-     *
-     * @ ORM\ManyToOne(targetEntity="AppBundle\Entity\Soul", inversedBy="incarnations")
-     * @ ORM\JoinColumn(name="soul_id", referencedColumnName="id", nullable=true)
-     */
-    private $soul;
 
     /**
      * @ORM\Get("id")
@@ -104,6 +102,22 @@ class Human
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGlobalHumanId()
+    {
+        return $this->globalHumanId;
+    }
+
+    /**
+     * @param string $globalHumanId
+     */
+    public function setGlobalHumanId($globalHumanId)
+    {
+        $this->globalHumanId = $globalHumanId;
     }
 
     /**
@@ -217,24 +231,6 @@ class Human
     {
         $this->motherHuman = $motherHuman;
     }
-
-    /**
-     * @return Soul
-     */
-    public function getSoul()
-    {
-        return $this->soul;
-    }
-
-    /**
-     * @param Soul $soul
-     */
-    public function setSoul($soul)
-    {
-        $this->soul = $soul;
-    }
-
-
 
 }
 

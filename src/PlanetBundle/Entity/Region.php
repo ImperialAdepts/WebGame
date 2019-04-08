@@ -5,8 +5,8 @@ use AppBundle\Descriptor\Adapters\LandBuilding;
 use AppBundle\Descriptor\Adapters\LivingBuilding;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
-use AppBundle\Entity\Blueprint;
-use AppBundle\Entity\ResourceDeposit;
+use AppBundle\Entity as GeneralEntity;
+use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\ORM\Mapping as ORM;
 /**
  * Region - map unit
@@ -148,7 +148,7 @@ class Region implements ResourcefullInterface
 	}
 
     /**
-     * @return \AppBundle\Entity\ResourceDeposit[]
+     * @return ResourceDeposit[]
      */
     public function getResourceDeposits()
     {
@@ -175,7 +175,7 @@ class Region implements ResourcefullInterface
         $this->resourceDeposits = $resourceDeposits;
     }
 
-    public function addResourceDeposit(Blueprint $blueprint, $amount = 1)
+    public function addResourceDeposit(GeneralEntity\Blueprint $blueprint, $amount = 1)
     {
         if (($deposit = $this->getResourceDeposit($blueprint->getResourceDescriptor())) != null) {
             $deposit->setAmount($deposit->getAmount() + $amount);

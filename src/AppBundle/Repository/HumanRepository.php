@@ -1,5 +1,5 @@
 <?php
-namespace PlanetBundle\Repository;
+namespace AppBundle\Repository;
 
 use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
 
@@ -10,7 +10,7 @@ class HumanRepository extends \Doctrine\ORM\EntityRepository
 	{
 		return $this->getEntityManager()
 			->createQuery(
-				'SELECT h FROM PlanetBundle:Human h WHERE h.globalHumanId IS NULL ORDER BY h.name ASC'
+				'SELECT h FROM AppBundle:Human h WHERE h.soul IS NULL ORDER BY h.name ASC'
 			)
 			->getResult();
 	}
@@ -19,7 +19,7 @@ class HumanRepository extends \Doctrine\ORM\EntityRepository
 	{
 		return $this->getEntityManager()
 			->createQuery(
-				'SELECT h FROM PlanetBundle:Human h WHERE h.globalHumanId IS NOT NULL ORDER BY h.name ASC'
+				'SELECT h FROM AppBundle:Human h WHERE h.soul IS NOT NULL ORDER BY h.name ASC'
 			)
 			->getResult();
 	}

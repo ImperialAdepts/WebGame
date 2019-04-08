@@ -15,11 +15,11 @@ class Planet
 	/**
 	 * @var int
 	 *
-	 * @ORM\Column(name="uuid", type="string", length=20)
+	 * @ORM\Column(name="id", type="integer")
 	 * @ORM\Id
-	 * @ORM\GeneratedValue(strategy="NONE")
+	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-	private $uuid;
+	private $id;
 
 	/** @var integer */
 	private $orbitUuid;
@@ -32,20 +32,20 @@ class Planet
 
 	/**
 	 * Planet constructor.
-	 * @param integer|null $uuid
+	 * @param integer|null $id
 	 */
-	public function __construct($uuid = null)
+	public function __construct($id = null)
 	{
-		$this->uuid = $uuid;
+		$this->id = $id;
 		// generovani
-		$generator = new UuidSerializer\Planet($uuid);
+		$generator = new UuidSerializer\Planet($id);
 		$this->gravity = $generator->getGravity();
 		$this->diameter = $generator->getDiameter();
 	}
 
 	public function getName()
 	{
-		return UuidSerializer\UuidName::getPlanetName($this->uuid);
+		return UuidSerializer\UuidName::getPlanetName($this->id);
 	}
 
 	/**
@@ -55,17 +55,7 @@ class Planet
 	 */
 	public function getId()
 	{
-		return $this->uuid;
-	}
-
-	/**
-	 * Get id
-	 *
-	 * @return int
-	 */
-	public function getUuid()
-	{
-		return $this->uuid;
+		return $this->id;
 	}
 
 	/**

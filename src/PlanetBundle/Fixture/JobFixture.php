@@ -1,9 +1,10 @@
 <?php
-namespace AppBundle\Fixture;
+namespace PlanetBundle\Fixture;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\UseCaseEnum;
-use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
+use AppBundle\Entity as GeneralEntity;
+use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -25,14 +26,15 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
 	 */
 	public function load(\Doctrine\Common\Persistence\ObjectManager $manager)
 	{
-        $farmingBlueprints = $manager->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TYPE_FARMING);
-        $productionBlueprints = $manager->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TYPE_PRODUCTION);
+	    $generalManager = $this->container->get('doctrine.orm.entity_manager');
+        $farmingBlueprints = $generalManager->getRepository(GeneralEntity\Blueprint::class, 'default')->getByUseCase(UseCaseEnum::TYPE_FARMING);
+        $productionBlueprints = $generalManager->getRepository(GeneralEntity\Blueprint::class, 'default')->getByUseCase(UseCaseEnum::TYPE_PRODUCTION);
 
-		$regions = $manager->getRepository(PlanetEntity\Region::class)->findAll();
+		$regions = $manager->getRepository(PlanetEntity\Region::class, 'planet')->findAll();
         foreach ($regions as $region) {
             if ($region->getSettlement() != null) {
                 foreach ($farmingBlueprints as $blueprint) {
-                    $farmingJob = new Entity\Job\ProduceJob();
+                    $farmingJob = new PlanetEntity\Job\ProduceJob();
                     $farmingJob->setRegion($region);
                     $farmingJob->setAmount(4);
                     $farmingJob->setRepetition(null);
@@ -40,7 +42,7 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
                     $manager->persist($farmingJob);
                 }
                 foreach ($productionBlueprints as $blueprint) {
-                    $productionJob = new Entity\Job\ProduceJob();
+                    $productionJob = new PlanetEntity\Job\ProduceJob();
                     $productionJob->setRegion($region);
                     $productionJob->setAmount(4);
                     $productionJob->setRepetition(null);

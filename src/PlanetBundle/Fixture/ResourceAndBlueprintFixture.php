@@ -1,9 +1,8 @@
 <?php
-namespace AppBundle\Fixture;
+namespace PlanetBundle\Fixture;
 
-use AppBundle\Descriptor\ResourceDescriptorEnum;
-use AppBundle\Descriptor\UseCaseEnum;
-use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
+use AppBundle\Entity;
+use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -17,13 +16,9 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
      */
     protected $container;
 
-    /**
-	 * Load data fixtures with the passed EntityManager
-	 *
-	 * @param \Doctrine\Common\Persistence\ObjectManager $manager
-	 */
 	public function load(\Doctrine\Common\Persistence\ObjectManager $manager)
 	{
+        $generalManager = $this->container->get('doctrine.orm.entity_manager');
 		foreach ($this->container->getParameter('default_blueprints') as $name => $blueprintData) {
             $blueprint = $this->createBlueprint(
                 $name,
@@ -34,9 +29,9 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
                 $blueprintData['useCases'],
                 $blueprintData['trait_values']
             );
-            $manager->persist($blueprint);
+            $generalManager->persist($blueprint);
         }
-        $manager->flush();
+        $generalManager->flush();
 
 		$builder = new \AppBundle\Builder\PlanetBuilder($manager, $this->container->getParameter('default_colonization_packs'));
 		$humans = $manager->getRepository(PlanetEntity\Human::class)->findAllIncarnated();

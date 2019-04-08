@@ -7,8 +7,8 @@
  */
 
 namespace AppBundle;
-use PlanetBundle\Repository\HumanRepository;
-use PlanetBundle\Entity;
+use AppBundle\Repository\HumanRepository;
+use AppBundle\Entity;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class LoggedUserSettings

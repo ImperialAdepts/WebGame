@@ -1,8 +1,8 @@
 <?php
-namespace AppBundle\Fixture;
+namespace PlanetBundle\Fixture;
 
-use PlanetBundle\Entity\Peak;
-use PlanetBundle\Entity\Region;
+use AppBundle\Entity as GeneralEntity;
+use PlanetBundle\Entity as PlanetEntity;
 
 /**
  * vygeneruje malou testovaci mapu
@@ -39,7 +39,7 @@ class PlanetMapFixture extends \Doctrine\Bundle\FixturesBundle\Fixture
         ];
 		$p = [];
 		foreach ($pcoords as $id => $peakIndex) {
-		    $peak = new Peak($id);
+		    $peak = new PlanetEntity\Peak($id);
 		    $peak->setXcoord($peakIndex[0]);
 		    $peak->setYcoord($peakIndex[1]);
 		    $p[$id] = $peak;
@@ -73,7 +73,7 @@ class PlanetMapFixture extends \Doctrine\Bundle\FixturesBundle\Fixture
 		    $centralPeak = $p[$regionPeaks[0]];
 		    $leftPeak = $p[$regionPeaks[1]];
 		    $rightPeak = $p[$regionPeaks[2]];
-            $region = new Region($centralPeak, $leftPeak, $rightPeak);
+            $region = new PlanetEntity\Region($centralPeak, $leftPeak, $rightPeak);
             $region->setFertility(($centralPeak->getId() % 4) * 10);
             $manager->persist($region);
         }

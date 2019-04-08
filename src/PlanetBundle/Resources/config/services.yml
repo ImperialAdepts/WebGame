@@ -19,3 +19,7 @@ services:
     public: true
     arguments:
       - '@doctrine.orm.entity_manager'
+
+  PlanetBundle\Fixture\:
+    resource: '../../../PlanetBundle/Fixture/'
+    tags: ['doctrine.fixture.orm']
