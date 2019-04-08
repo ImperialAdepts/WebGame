@@ -24,4 +24,17 @@ class HumanRepository extends \Doctrine\ORM\EntityRepository
 			->getResult();
 	}
 
+    /**
+     * @param Entity\Human $globalHuman
+     * @return PlanetEntity\Human|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getByGlobalHuman(Entity\Human $globalHuman)
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                "SELECT h FROM PlanetBundle:Human h WHERE h.globalHumanId = {$globalHuman->getId()} ORDER BY h.name ASC"
+            )
+            ->getOneOrNullResult();
+    }
 }

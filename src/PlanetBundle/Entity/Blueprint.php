@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Entity;
+namespace PlanetBundle\Entity;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use Doctrine\ORM\Mapping as ORM;
@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Blueprint
  *
  * @ORM\Table(name="blueprints")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\BlueprintRepository")
+ * @ORM\Entity(repositoryClass="PlanetBundle\Repository\BlueprintRepository")
  */
 class Blueprint
 {

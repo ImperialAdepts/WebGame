@@ -7,8 +7,11 @@ use AppBundle\Entity;
 use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Tracy\Debugger;
 
 /**
  * @Route(path="human")
@@ -67,24 +70,32 @@ class HumanController extends Controller
 	 */
 	public function dashboardAction(Request $request)
 	{
-        $human = $this->get('logged_user_settings')->getHuman();
-	    $regions = $human->getCurrentPosition()->getRegions();
+        $globalHuman = $this->get('logged_user_settings')->getHuman();
+        $localHuman = $this->getDoctrine()->getManager('planet')
+            ->getRepository(PlanetEntity\Human::class)->getByGlobalHuman($globalHuman);
+
+        if ($localHuman === null) {
+            Debugger::dump($globalHuman);
+            throw new NotFoundHttpException("Human was not found on this planet");
+        }
+
+	    $regions = $localHuman->getCurrentPosition()->getRegions();
 	    foreach ($regions as $region) {
 	        $centralRegion = $region;
 	        break;
         }
 
-	    $regions = $this->getDoctrine()->getRepository(PlanetEntity\Region::class)->getRegionNeighbourhood($centralRegion);
+	    $regions = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class)->getRegionNeighbourhood($centralRegion);
 
 		$blueprintsByRegions = [];
 	    /** @var PlanetBuilder $builder */
 	    $builder = $this->get('planet_builder');
 	    /** @var PlanetEntity\Region $region */
         foreach ($regions as $region) {
-	        $blueprintsByRegions[$region->getCoords()] = $builder->getAvailableBlueprints($region, $human);
+	        $blueprintsByRegions[$region->getCoords()] = $builder->getAvailableBlueprints($region, $localHuman);
         }
 		return $this->render('Human/dashboard.html.twig', [
-			'human' => $human,
+			'human' => $globalHuman,
 			'centralRegion' => $centralRegion,
 			'nextRegions' => $regions,
 			'buildingBlueprints' => $blueprintsByRegions,

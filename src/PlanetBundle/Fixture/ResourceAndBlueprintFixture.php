@@ -6,6 +6,7 @@ use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Tracy\Debugger;
 
 class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements ContainerAwareInterface, DependentFixtureInterface
 {
@@ -18,7 +19,6 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 
 	public function load(\Doctrine\Common\Persistence\ObjectManager $manager)
 	{
-        $generalManager = $this->container->get('doctrine.orm.entity_manager');
 		foreach ($this->container->getParameter('default_blueprints') as $name => $blueprintData) {
             $blueprint = $this->createBlueprint(
                 $name,
@@ -29,13 +29,14 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
                 $blueprintData['useCases'],
                 $blueprintData['trait_values']
             );
-            $generalManager->persist($blueprint);
+            $manager->persist($blueprint);
         }
-        $generalManager->flush();
+        $manager->flush();
 
 		$builder = new \AppBundle\Builder\PlanetBuilder($manager, $this->container->getParameter('default_colonization_packs'));
 		$humans = $manager->getRepository(PlanetEntity\Human::class)->findAllIncarnated();
 		$regions = $manager->getRepository(PlanetEntity\Region::class)->findAll();
+
 		$regionCounter = 1;
 		/** @var PlanetEntity\Human $human */
         foreach ($humans as $human) {
@@ -59,7 +60,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 
 	private function createBlueprint($name, $resource, array $resourceRequirements = [], array $useCaseRequirements = [], array $constraints = [], array $useCases = [], array $traitValues = [])
 	{
-		$blueprint = new Entity\Blueprint();
+		$blueprint = new PlanetEntity\Blueprint();
 		$blueprint->setDescription($name);
 		$blueprint->setResourceDescriptor($resource);
 		$blueprint->setResourceRequirements($resourceRequirements);

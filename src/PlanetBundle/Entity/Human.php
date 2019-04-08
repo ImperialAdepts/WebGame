@@ -177,9 +177,9 @@ class Human
     }
 
     /**
-     * @param Planet\Settlement $currentPosition
+     * @param Settlement $currentPosition
      */
-    public function setCurrentPosition(Planet\Settlement $currentPosition)
+    public function setCurrentPosition(Settlement $currentPosition)
     {
         $this->currentPosition = $currentPosition;
     }

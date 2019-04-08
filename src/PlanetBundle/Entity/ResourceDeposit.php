@@ -49,7 +49,7 @@ class ResourceDeposit
     /**
      * @var Blueprint
      *
-     * @ ORM\ManyToOne(targetEntity="AppBundle\Entity\Blueprint")
+     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Blueprint")
      * @ORM\JoinColumn(fieldName="blueprint_id", referencedColumnName="id", nullable=true)
      */
     private $blueprint;
@@ -167,11 +167,11 @@ class ResourceDeposit
     /**
      * Set settlement
      *
-     * @param Planet\Region $region
+     * @param Region $region
      *
      * @return ResourceDeposit
      */
-    public function setRegion(Planet\Region $region)
+    public function setRegion(Region $region)
     {
         $this->region = $region;
 
@@ -181,7 +181,7 @@ class ResourceDeposit
     /**
      * Get settlement
      *
-     * @return Planet\Region
+     * @return Region
      */
     public function getRegion()
     {

@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: troi
- * Date: 3.3.19
- * Time: 13:57
- */
-
 namespace AppBundle;
+
 use AppBundle\Repository\HumanRepository;
 use AppBundle\Entity;
 use Symfony\Component\HttpFoundation\Session\Session;

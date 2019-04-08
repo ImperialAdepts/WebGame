@@ -24,14 +24,13 @@ class TeamFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Con
 	 */
 	public function load(\Doctrine\Common\Persistence\ObjectManager $manager)
 	{
-        $generalManager = $this->container->get('doctrine.orm.entity_manager');
         $blueprints = array_merge(
-            $transporterBlueprints = $generalManager->getRepository(GeneralEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_TRANSPORTERS),
-            $builderBlueprints = $generalManager->getRepository(GeneralEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_BUILDERS),
-            $merchantBlueprints = $generalManager->getRepository(GeneralEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_MERCHANTS),
-            $scientistBlueprints = $generalManager->getRepository(GeneralEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_SCIENTISTS),
-            $workerBlueprints = $generalManager->getRepository(GeneralEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_WORKERS),
-            $farmerBlueprints = $generalManager->getRepository(GeneralEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_FARMERS)
+            $transporterBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_TRANSPORTERS),
+            $builderBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_BUILDERS),
+            $merchantBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_MERCHANTS),
+            $scientistBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_SCIENTISTS),
+            $workerBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_WORKERS),
+            $farmerBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_FARMERS)
         );
 		$regions = $manager->getRepository(PlanetEntity\Region::class)->findAll();
         foreach ($regions as $region) {

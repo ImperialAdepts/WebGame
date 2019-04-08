@@ -8,8 +8,8 @@
 
 namespace AppBundle\Descriptor;
 
-use AppBundle\Entity\Blueprint;
 use AppBundle\Entity\ResourceDeposit;
+use PlanetBundle\Entity\Blueprint;
 
 interface ResourcefullInterface
 {

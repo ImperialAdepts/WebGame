@@ -2,7 +2,6 @@
 namespace AppBundle\Builder;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
-use AppBundle\Entity;
 use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
 use Doctrine\ORM\EntityManager;
@@ -136,7 +135,7 @@ class PlanetBuilder
 	public function getAvailableBlueprints(PlanetEntity\Region $region, PlanetEntity\Human $human) {
 	    // TODO: overit ze dotycny vlastni blueprinty
         $availables = [];
-        $blueprints = $this->entityManager->getRepository(Entity\Blueprint::class)->getAll();
+        $blueprints = $this->entityManager->getRepository(PlanetEntity\Blueprint::class)->getAll();
         /** @var Entity\Blueprint $blueprint */
         foreach ($blueprints as $blueprint) {
             foreach ($blueprint->getConstraints() as $resourceType => $amount) {
@@ -168,7 +167,7 @@ class PlanetBuilder
 
 	private function getBlueprint($name)
 	{
-		return $this->entityManager->getRepository(Entity\Blueprint::class)->getByName($name);
+		return $this->entityManager->getRepository(PlanetEntity\Blueprint::class)->getByName($name);
 	}
 
 }

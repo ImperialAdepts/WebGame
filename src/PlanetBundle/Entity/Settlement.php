@@ -2,10 +2,7 @@
 
 namespace PlanetBundle\Entity;
 
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
-use AppBundle\Entity\Blueprint;
-use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
 /**
  * Settlement - management unit

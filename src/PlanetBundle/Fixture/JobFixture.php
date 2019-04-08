@@ -26,9 +26,8 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
 	 */
 	public function load(\Doctrine\Common\Persistence\ObjectManager $manager)
 	{
-	    $generalManager = $this->container->get('doctrine.orm.entity_manager');
-        $farmingBlueprints = $generalManager->getRepository(GeneralEntity\Blueprint::class, 'default')->getByUseCase(UseCaseEnum::TYPE_FARMING);
-        $productionBlueprints = $generalManager->getRepository(GeneralEntity\Blueprint::class, 'default')->getByUseCase(UseCaseEnum::TYPE_PRODUCTION);
+        $farmingBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class, 'default')->getByUseCase(UseCaseEnum::TYPE_FARMING);
+        $productionBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class, 'default')->getByUseCase(UseCaseEnum::TYPE_PRODUCTION);
 
 		$regions = $manager->getRepository(PlanetEntity\Region::class, 'planet')->findAll();
         foreach ($regions as $region) {

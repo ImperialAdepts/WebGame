@@ -43,12 +43,11 @@ services:
             - '@session'
             - '@repo_human'
 
-
     planet_builder:
         class: AppBundle\Builder\PlanetBuilder
         public: true
         arguments:
-            - '@doctrine.orm.entity_manager'
+            - '@doctrine.orm.planet_entity_manager'
             - '%default_colonization_packs%'
 
     builder_factory:

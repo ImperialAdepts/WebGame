@@ -175,7 +175,7 @@ class Region implements ResourcefullInterface
         $this->resourceDeposits = $resourceDeposits;
     }
 
-    public function addResourceDeposit(GeneralEntity\Blueprint $blueprint, $amount = 1)
+    public function addResourceDeposit(Blueprint $blueprint, $amount = 1)
     {
         if (($deposit = $this->getResourceDeposit($blueprint->getResourceDescriptor())) != null) {
             $deposit->setAmount($deposit->getAmount() + $amount);
