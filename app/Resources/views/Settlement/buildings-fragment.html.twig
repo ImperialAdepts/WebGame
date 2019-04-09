@@ -8,7 +8,7 @@
 		<ul>
 			{% for building in buildings %}
 				<li>
-					{{ render(controller('AppBundle:ResourceDeposit:depositDetail', {
+					{{ render(controller('PlanetBundle:ResourceDeposit:depositDetail', {
 						'deposit': building.deposit.id,
 					})) }}
 				</li>
@@ -25,7 +25,7 @@
 					<small>Used area: {{ region.usedArea }}/{{ region_area }}m2 ({{ 100*region.usedArea/ region_area}} %)</small><br>
 
 					{% if region.project is null %}
-						{{ render(controller('AppBundle:Region:availableBuildings', {
+						{{ render(controller('PlanetBundle:Region:availableBuildings', {
 							'regionC': region.peakCenter.id,
 							'regionL': region.peakLeft.id,
 							'regionR': region.peakRight.id

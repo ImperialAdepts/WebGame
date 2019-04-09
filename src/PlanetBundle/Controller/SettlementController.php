@@ -2,10 +2,10 @@
 
 namespace PlanetBundle\Controller;
 
+use AppBundle\Builder\PlanetBuilder;
 use AppBundle\Descriptor\Adapters;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\UseCaseEnum;
-use AppBundle\Entity\Blueprint;
 use PlanetBundle\Entity;
 use AppBundle\Repository\JobRepository;
 use PlanetBundle\Repository\RegionRepository;
@@ -17,16 +17,17 @@ use Tracy\Debugger;
 /**
  * @Route(path="settlement")
  */
-class SettlementController extends Controller
+class SettlementController extends BasePlanetController
 {
 	/**
 	 * @Route("/{settlement}/dashboard", name="settlement_dashboard")
 	 */
-	public function dashboardAction(Entity\Planet\Settlement $settlement, Request $request)
+	public function dashboardAction(Entity\Settlement $settlement, Request $request)
 	{
         /** @var PlanetBuilder $builder */
         $builder = $this->get('planet_builder');
-        /** @var Entity\Planet\Region $region */
+        $blueprintsByRegions = [];
+        /** @var Entity\Region $region */
         foreach ($settlement->getRegions() as $region) {
             // TODO: zmenit na aktualne prihlaseneho cloveka
             $blueprintsByRegions[$region->getCoords()] = $builder->getAvailableBlueprints($region, $settlement->getManager());
@@ -46,8 +47,6 @@ class SettlementController extends Controller
      */
     public function warehouseContentAction(Entity\Settlement $settlement, Request $request)
     {
-        /** @var Entity\Human $human */
-        $human = $this->get('logged_user_settings')->getHuman();
         $warehouses = Adapters\Warehouse::in($settlement);
         $portables = Adapters\Portable::in($settlement);
 
@@ -55,7 +54,7 @@ class SettlementController extends Controller
             'settlement' => $settlement,
             'resources' => $portables,
             'warehouses' => $warehouses,
-            'human' => $human,
+            'human' => $this->getHuman(),
         ]);
     }
 
@@ -64,8 +63,6 @@ class SettlementController extends Controller
      */
     public function buildingsAction(Entity\Settlement $settlement, Request $request)
     {
-        /** @var Entity\Human $human */
-        $human = $this->get('logged_user_settings')->getHuman();
         $buildings = [];
         foreach ($settlement->getResourceDeposits() as $deposit) {
             if (($building = $deposit->asUseCase(UseCaseEnum::LAND_BUILDING)) != null) {
@@ -76,7 +73,7 @@ class SettlementController extends Controller
         return $this->render('Settlement/buildings-fragment.html.twig', [
             'settlement' => $settlement,
             'buildings' => $buildings,
-            'human' => $human,
+            'human' => $this->getHuman(),
         ]);
     }
 
@@ -85,9 +82,6 @@ class SettlementController extends Controller
      */
     public function housingAction(Entity\Settlement $settlement, Request $request)
     {
-        /** @var Entity\Human $human */
-        $human = $this->get('logged_user_settings')->getHuman();
-
         /** @var Adapters\LivingBuilding[] $houses */
         $houses = Adapters\LivingBuilding::in($settlement);
         $peopleCount = 0;
@@ -108,7 +102,7 @@ class SettlementController extends Controller
             'foodVariety' => Adapters\BasicFood::countVariety($this->get('maintainer_food')->getFoodConsumptionEstimation($settlement)),
             'housingCapacity' => Adapters\LivingBuilding::countLivingCapacity($houses),
             'houses' => $houses,
-            'human' => $human,
+            'human' => $this->getHuman(),
         ]);
     }
 
@@ -117,17 +111,15 @@ class SettlementController extends Controller
      */
     public function teamsAction(Entity\Peak $regionC, Entity\Peak $regionL, Entity\Peak $regionR, Request $request)
     {
-        /** @var Entity\Human $human */
-        $human = $this->get('logged_user_settings')->getHuman();
-        /** @var Entity\Planet\Region $region */
-        $region = $this->getDoctrine()->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
-        $transporterBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_TRANSPORTERS);
-        $builderBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_BUILDERS);
-        $merchantBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_MERCHANTS);
-        $scientistBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_SCIENTISTS);
-        $workerBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_WORKERS);
-        $farmerBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_FARMERS);
-        $armyBlueprints = $this->getDoctrine()->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_SOLDIERS);
+        /** @var Entity\Region $region */
+        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $transporterBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_TRANSPORTERS);
+        $builderBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_BUILDERS);
+        $merchantBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_MERCHANTS);
+        $scientistBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_SCIENTISTS);
+        $workerBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_WORKERS);
+        $farmerBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_FARMERS);
+        $armyBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_SOLDIERS);
 
         /** @var Adapters\LivingBuilding[] $teams */
         $teams = Adapters\Team::in($region);
@@ -159,10 +151,10 @@ class SettlementController extends Controller
     /**
      * @Route("/create-team/{regionC}_{regionL}_{regionR}/{blueprint}", name="settlement_team_create")
      */
-    public function createTeamAction(Entity\Peak $regionC, Entity\Peak $regionL, Entity\Peak $regionR, Blueprint $blueprint, Request $request)
+    public function createTeamAction(Entity\Peak $regionC, Entity\Peak $regionL, Entity\Peak $regionR, Entity\Blueprint $blueprint, Request $request)
     {
-        /** @var Entity\Planet\Region $region */
-        $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        /** @var Entity\Region $region */
+        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
         $region->addResourceDeposit($blueprint, 1);
         $this->getDoctrine()->getManager()->persist($region);
         $this->getDoctrine()->getManager()->flush();
@@ -176,15 +168,13 @@ class SettlementController extends Controller
      */
     public function connectableRegionsAction(Entity\Settlement $settlement, Request $request)
     {
-        /** @var Entity\Human $human */
-        $human = $this->get('logged_user_settings')->getHuman();
         $regions = [];
-        /** @var Entity\Planet\Region $settledRegion */
+        /** @var Entity\Region $settledRegion */
         foreach ($settlement->getRegions() as $settledRegion) {
             /** @var RegionRepository $repo */
-            $repo = $this->getDoctrine()->getManager()->getRepository(Entity\Region::class);
+            $repo = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class);
             $nears = $repo->getRegionNeighbourhood($settledRegion);
-            /** @var Entity\Planet\Region $near */
+            /** @var Entity\Region $near */
             foreach ($nears as $near) {
                 $regions[$near->getCoords()] = $near;
             }
@@ -195,7 +185,7 @@ class SettlementController extends Controller
         }
 
         return $this->render('Settlement/connect-regions.html.twig', [
-            'human' => $human,
+            'human' => $this->getHuman(),
             'settlement' => $settlement,
             'nearRegions' => $regions,
         ]);
@@ -206,13 +196,11 @@ class SettlementController extends Controller
      */
     public function jobsAction(Entity\Settlement $settlement, Request $request)
     {
-        /** @var Entity\Human $human */
-        $human = $this->get('logged_user_settings')->getHuman();
-        /** @var JobRepository $jobRepo */
-        $jobRepo = $this->getDoctrine()->getManager()->getRepository(Entity\Job\ProduceJob::class);
+        /** @var \PlanetBundle\Repository\JobRepository $jobRepo */
+        $jobRepo = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Job\ProduceJob::class);
 
         return $this->render('Settlement/jobs.html.twig', [
-            'human' => $human,
+            'human' => $this->getHuman(),
             'settlement' => $settlement,
             'buildJobs' => $jobRepo->getBuildBySettlement($settlement),
             'transportJobs' => $jobRepo->getTransportBySettlement($settlement),
@@ -227,9 +215,7 @@ class SettlementController extends Controller
      */
     public function connectRegionsAction(Entity\Settlement $settlement, Entity\Peak $regionC, Entity\Peak $regionL, Entity\Peak $regionR, Request $request)
     {
-        /** @var Entity\Human $human */
-        $human = $this->get('logged_user_settings')->getHuman();
-        $region = $this->getDoctrine()->getRepository(Entity\Planet\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
         $region->setSettlement($settlement);
         $this->getDoctrine()->getManager()->persist($region);
         $this->getDoctrine()->getManager()->persist($settlement);
@@ -245,8 +231,6 @@ class SettlementController extends Controller
      */
     public function supervisedFastBuildAction(Entity\CurrentBuildingProject $project, Request $request)
     {
-        /** @var Entity\Human $human */
-        $human = $this->get('logged_user_settings')->getHuman();
         $settlement = $project->getRegion()->getSettlement();
         $builder = $this->get('planet_builder');
         $builder->buildProjectStep($project);
@@ -268,8 +252,6 @@ class SettlementController extends Controller
      */
     public function changeTypeAction(Entity\Settlement $settlement, Blueprint $blueprint, Request $request)
     {
-        /** @var Entity\Human $human */
-        $human = $this->get('logged_user_settings')->getHuman();
         $settlement->setType($blueprint->getResourceDescriptor());
         $this->getDoctrine()->getManager()->persist($settlement);
         $this->getDoctrine()->getManager()->flush();

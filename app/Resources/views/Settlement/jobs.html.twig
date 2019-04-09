@@ -46,7 +46,7 @@
             <th>
                 Region {{ region.coords }}
             </th>
-            {{ render(controller('AppBundle:Settlement:teams', {
+            {{ render(controller('PlanetBundle:Settlement:teams', {
                 'regionC': region.peakCenter.id,
                 'regionL': region.peakLeft.id,
                 'regionR': region.peakRight.id

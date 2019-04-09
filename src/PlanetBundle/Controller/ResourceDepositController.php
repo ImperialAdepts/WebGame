@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route(path="deposit")
  */
-class ResourceDepositController extends Controller
+class ResourceDepositController extends BasePlanetController
 {
     /**
      * @Route("/detail/{deposit}", name="settlement_deposit_detail")

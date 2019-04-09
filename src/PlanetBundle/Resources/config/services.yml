@@ -23,3 +23,7 @@ services:
   PlanetBundle\Fixture\:
     resource: '../../../PlanetBundle/Fixture/'
     tags: ['doctrine.fixture.orm']
+
+  PlanetBundle\EventListener\BeforeControllerListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }

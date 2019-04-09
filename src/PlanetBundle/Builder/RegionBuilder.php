@@ -6,21 +6,19 @@ use AppBundle\Descriptor\Adapters\AbstractResourceDepositAdapter;
 use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Descriptor\UseCaseTraitEnum;
-use AppBundle\Entity\Blueprint;
-use PlanetBundle\Entity\Human;
-use PlanetBundle\Entity\Region;
+use PlanetBundle\Entity;
 use Doctrine\ORM\EntityManager;
 use Tracy\Debugger;
 
 class RegionBuilder
 {
-    /** @var Blueprint */
+    /** @var Entity\Blueprint */
     private $blueprint;
     /** @var string[] resource_descriptor => amount */
     private $resourceRequirements;
     /** @var string[] use_case_name => [resource_descriptor => amount] */
     private $useCaseRequirements;
-    /** @var Human */
+    /** @var Entity\Human */
     private $supervisor;
     /** @var Team|Team[]|null null => all available */
     private $workingTeams = [];
@@ -35,7 +33,7 @@ class RegionBuilder
      * @param string[] $resourceRequirements
      * @param string[] $useCaseRequirements
      */
-    public function __construct(Blueprint $blueprint, array $resourceRequirements, array $useCaseRequirements)
+    public function __construct(Entity\Blueprint $blueprint, array $resourceRequirements, array $useCaseRequirements)
     {
         $this->blueprint = $blueprint;
         $this->resourceRequirements = $resourceRequirements;
@@ -180,9 +178,9 @@ class RegionBuilder
     }
 
     /**
-     * @param Human $supervisor
+     * @param Entity\Human $supervisor
      */
-    public function setSupervisor(Human $supervisor)
+    public function setSupervisor(Entity\Human $supervisor)
     {
         $this->supervisor = $supervisor;
     }
@@ -209,9 +207,9 @@ class RegionBuilder
     }
 
     /**
-     * @param Region $resourceHolder
+     * @param Entity\Region $resourceHolder
      */
-    public function setResourceHolder(Region $resourceHolder)
+    public function setResourceHolder(Entity\Region $resourceHolder)
     {
         $this->resourceHolder = $resourceHolder;
     }

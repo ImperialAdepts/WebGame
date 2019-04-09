@@ -1,18 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: troi
- * Date: 3.3.19
- * Time: 17:11
- */
-
 namespace AppBundle\Descriptor\Adapters;
-
 
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
-use AppBundle\Entity\ResourceDeposit;
+use PlanetBundle\Entity\ResourceDeposit;
 use Tracy\Debugger;
 
 class AbstractResourceDepositAdapter

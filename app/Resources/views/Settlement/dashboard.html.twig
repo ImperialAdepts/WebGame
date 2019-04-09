@@ -14,7 +14,7 @@
                     <small>Used area: {{ region.usedArea }}/{{ region_area }}m2 ({{ 100*region.usedArea/ region_area}} %)</small><br>
 
                     {% if region.project is null %}
-                        {{ render(controller('AppBundle:Region:availableBuildings', {
+                        {{ render(controller('PlanetBundle:Region:availableBuildings', {
                             'regionC': region.peakCenter.id,
                             'regionL': region.peakLeft.id,
                             'regionR': region.peakRight.id
@@ -36,11 +36,11 @@
         </tr>
     </table>
 
-    {{ render(controller('AppBundle:Region:availableSettlementTypes', {
+    {{ render(controller('PlanetBundle:Region:availableSettlementTypes', {
         'settlement': settlement.id,
     })) }}
 
-    {{ render(controller('AppBundle:Settlement:connectableRegions', {
+    {{ render(controller('PlanetBundle:Settlement:connectableRegions', {
         'settlement': settlement.id
     })) }}
 {% endblock %}

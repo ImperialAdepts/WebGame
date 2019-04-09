@@ -16,7 +16,7 @@ use Tracy\Debugger;
 /**
  * @Route(path="human")
  */
-class HumanController extends Controller
+class HumanController extends BasePlanetController
 {
     /**
 	 * @Route("/incarnation-list/{soul}", name="human_incarnation_list")
@@ -70,16 +70,7 @@ class HumanController extends Controller
 	 */
 	public function dashboardAction(Request $request)
 	{
-        $globalHuman = $this->get('logged_user_settings')->getHuman();
-        $localHuman = $this->getDoctrine()->getManager('planet')
-            ->getRepository(PlanetEntity\Human::class)->getByGlobalHuman($globalHuman);
-
-        if ($localHuman === null) {
-            Debugger::dump($globalHuman);
-            throw new NotFoundHttpException("Human was not found on this planet");
-        }
-
-	    $regions = $localHuman->getCurrentPosition()->getRegions();
+	    $regions = $this->getHuman()->getCurrentPosition()->getRegions();
 	    foreach ($regions as $region) {
 	        $centralRegion = $region;
 	        break;
@@ -92,10 +83,10 @@ class HumanController extends Controller
 	    $builder = $this->get('planet_builder');
 	    /** @var PlanetEntity\Region $region */
         foreach ($regions as $region) {
-	        $blueprintsByRegions[$region->getCoords()] = $builder->getAvailableBlueprints($region, $localHuman);
+	        $blueprintsByRegions[$region->getCoords()] = $builder->getAvailableBlueprints($region, $this->getHuman());
         }
 		return $this->render('Human/dashboard.html.twig', [
-			'human' => $globalHuman,
+			'human' => $this->getHuman(),
 			'centralRegion' => $centralRegion,
 			'nextRegions' => $regions,
 			'buildingBlueprints' => $blueprintsByRegions,
@@ -107,11 +98,10 @@ class HumanController extends Controller
 	 */
 	public function newColonyAction(PlanetEntity\Peak $regionC, PlanetEntity\Peak $regionL, PlanetEntity\Peak $regionR, Request $request)
 	{
-        $human = $this->get('logged_user_settings')->getHuman();
         /** @var PlanetEntity\Region $region */
         $region = $this->getDoctrine()->getRepository(PlanetEntity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
 		$builder = new \AppBundle\Builder\PlanetBuilder($this->getDoctrine()->getManager(), $this->getParameter('default_colonization_packs'));
-		$builder->newColony($region, $human, 'simple');
+		$builder->newColony($region, $this->getHuman(), 'simple');
         $this->getDoctrine()->getManager()->flush();
 
 		return $this->redirectToRoute('settlement_dashboard', [

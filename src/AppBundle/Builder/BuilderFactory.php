@@ -2,7 +2,8 @@
 
 namespace AppBundle\Builder;
 
-use AppBundle\Entity\Blueprint;
+use PlanetBundle\Builder\RegionBuilder;
+use PlanetBundle\Entity\Blueprint;
 use Doctrine\ORM\EntityManager;
 
 class BuilderFactory
