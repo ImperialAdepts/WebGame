@@ -2,11 +2,11 @@
 
 namespace PlanetBundle\Repository;
 
-use AppBundle\Entity\Job\BuildJob;
-use AppBundle\Entity\Job\BuyJob;
-use AppBundle\Entity\Job\ProduceJob;
-use AppBundle\Entity\Job\SellJob;
-use AppBundle\Entity\Job\TransportJob;
+use PlanetBundle\Entity\Job\BuildJob;
+use PlanetBundle\Entity\Job\BuyJob;
+use PlanetBundle\Entity\Job\ProduceJob;
+use PlanetBundle\Entity\Job\SellJob;
+use PlanetBundle\Entity\Job\TransportJob;
 use PlanetBundle\Entity\Region;
 use PlanetBundle\Entity\Settlement;
 
@@ -24,7 +24,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('job')
-            ->from('AppBundle:Job\BuildJob', 'job')
+            ->from('PlanetBundle:Job\BuildJob', 'job')
             ->innerJoin('job.region', 'r')
             ->where('r.settlement=?1')
             ->setParameter(1, $settlement)
@@ -42,7 +42,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('job')
-            ->from('AppBundle:Job\TransportJob', 'job')
+            ->from('PlanetBundle:Job\TransportJob', 'job')
             ->innerJoin('job.region', 'r')
             ->where('r.settlement=?1')
             ->setParameter(1, $settlement)
@@ -60,7 +60,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('job')
-            ->from('AppBundle:Job\ProduceJob', 'job')
+            ->from('PlanetBundle:Job\ProduceJob', 'job')
             ->innerJoin('job.region', 'r')
             ->where('r.settlement=?1')
             ->setParameter(1, $settlement)
@@ -78,7 +78,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('job')
-            ->from('AppBundle:Job\BuyJob', 'job')
+            ->from('PlanetBundle:Job\BuyJob', 'job')
             ->innerJoin('job.region', 'r')
             ->where('r.settlement=?1')
             ->setParameter(1, $settlement)
@@ -96,7 +96,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('job')
-            ->from('AppBundle:Job\SellJob', 'job')
+            ->from('PlanetBundle:Job\SellJob', 'job')
             ->innerJoin('job.region', 'r')
             ->where('r.settlement=?1')
             ->setParameter(1, $settlement)
@@ -114,7 +114,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
 	{
 		return $this->getEntityManager()
 			->createQuery(
-				"SELECT b FROM AppBundle:Planet\BuildJob b WHERE b.region=$region ORDER BY b.priority DESC"
+				"SELECT b FROM PlanetBundle:Planet\BuildJob b WHERE b.region=$region ORDER BY b.priority DESC"
 			)
 			->getResult();
 	}

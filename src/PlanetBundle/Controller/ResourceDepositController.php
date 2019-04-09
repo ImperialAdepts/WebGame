@@ -2,11 +2,7 @@
 
 namespace PlanetBundle\Controller;
 
-use AppBundle\Descriptor\Adapters;
-use AppBundle\Descriptor\ResourceDescriptorEnum;
-use AppBundle\Descriptor\UseCaseEnum;
-use AppBundle\Entity;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use PlanetBundle\Entity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 

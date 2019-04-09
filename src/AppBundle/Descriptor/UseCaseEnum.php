@@ -49,6 +49,9 @@ class UseCaseEnum
 	const TEAM_SOLDIERS = 'army_team';
     const WAREHOUSE = 'storage';
     const PEOPLE = 'population';
+    const LINE_BUILDING = 'line_building';
+    const ROAD = 'road';
+    const DEFENSE_WALL = 'defence_wall';
 
     public static $useCaseToAdapterMap = [
         self::BASIC_FOOD => BasicFood::class,

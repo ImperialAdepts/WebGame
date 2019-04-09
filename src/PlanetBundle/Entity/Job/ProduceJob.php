@@ -18,7 +18,7 @@ class ProduceJob extends Job
     /**
      * @var Blueprint
      *
-     * @ ORM\ManyToOne(targetEntity="AppBundle\Entity\Blueprint")
+     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Blueprint")
      * @ORM\JoinColumn(name="blueprint_id", referencedColumnName="id", nullable=true)
      */
     private $blueprint;

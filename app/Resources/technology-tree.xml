@@ -370,12 +370,84 @@
         </build>
     </Blueprint>
 
+    <Blueprint id="simple_road">
+        <usedAs ref="road"/>
+        <traitValue ref="road_capacity" value="300"/>
+        <traitValue ref="waiting_time" value="16"/>
+        <build>
+            <price>
+                <Resource ref="stone_block" count="400"/>
+            </price>
+            <constraints>
+                <UseCase ref="builder_team"/>
+            </constraints>
+        </build>
+    </Blueprint>
+    <Blueprint id="highway">
+        <usedAs ref="road"/>
+        <traitValue ref="road_capacity" value="500"/>
+        <traitValue ref="waiting_time" value="5"/>
+        <build>
+            <price>
+                <Resource ref="stone_block" count="4000"/>
+            </price>
+            <constraints>
+                <UseCase ref="builder_team"/>
+            </constraints>
+        </build>
+    </Blueprint>
+    <Blueprint id="railway">
+        <usedAs ref="road"/>
+        <traitValue ref="road_capacity" value="400"/>
+        <traitValue ref="waiting_time" value="5"/>
+        <build>
+            <price>
+                <Resource ref="stone_block" count="4000"/>
+            </price>
+            <constraints>
+                <UseCase ref="builder_team"/>
+            </constraints>
+        </build>
+    </Blueprint>
+    <Blueprint id="maglev">
+        <usedAs ref="road"/>
+        <traitValue ref="road_capacity" value="400"/>
+        <traitValue ref="waiting_time" value="1"/>
+        <build>
+            <price>
+                <Resource ref="stone_block" count="4000"/>
+            </price>
+            <constraints>
+                <UseCase ref="builder_team"/>
+            </constraints>
+        </build>
+    </Blueprint>
+    <Blueprint id="stargate_like_teleport">
+        <usedAs ref="road"/>
+        <traitValue ref="road_capacity" value="600"/>
+        <traitValue ref="waiting_time" value="0.001"/>
+        <build>
+            <price>
+                <Resource ref="stone_block" count="200"/>
+                <Resource ref="basic_iron_plate" count="500"/>
+            </price>
+            <constraints>
+                <UseCase ref="builder_team"/>
+            </constraints>
+        </build>
+    </Blueprint>
+
     <!-- every id MUST have line in UseCaseTraitEnum-->
     <!-- don't use strings in code directly -->
     <Trait id="human_capacity"/>
     <Trait id="electro_capacity"/>
     <Trait id="weight_capacity"/>
     <Trait id="space_capacity"/>
+    <Trait id="road_capacity"/>
+    <Trait id="wall_endurance"/>
+    <Trait id="defence_bonus"/>
+    <Trait id="height"/>
+    <Trait id="waiting_time"/>
     <Trait id="area_used"/>
     <Trait id="speed"/>
     <Trait id="food_energy"/>
@@ -460,6 +532,7 @@
     </UseCase>
     <UseCase id="transport_team">
         <parent ref="team"/>
+        <trait ref="speed"/>
     </UseCase>
     <UseCase id="farm_team">
         <parent ref="team"/>
@@ -475,6 +548,17 @@
     </UseCase>
     <UseCase id="army_team">
         <parent ref="team"/>
+    </UseCase>
+    <UseCase id="line_building"/>
+    <UseCase id="road">
+        <parent ref="line_building"/>
+        <trait ref="road_capacity"/>
+        <trait ref="waiting_time"/>
+    </UseCase>
+    <UseCase id="defence_wall">
+        <parent ref="line_building"/>
+        <trait ref="defence_bonus"/>
+        <trait ref="wall_endurance"/>
     </UseCase>
 
     <ColonizationPack id="simple">
