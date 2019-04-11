@@ -66,43 +66,6 @@ class HumanController extends BasePlanetController
 	 */
 	public function dashboardAction(Request $request)
 	{
-	    $regions = $this->getHuman()->getCurrentPosition()->getRegions();
-	    foreach ($regions as $region) {
-	        $centralRegion = $region;
-	        break;
-        }
-
-	    $regions = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class)->getRegionNeighbourhood($centralRegion);
-
-		$blueprintsByRegions = [];
-	    /** @var PlanetBuilder $builder */
-	    $builder = $this->get('planet_builder');
-	    /** @var PlanetEntity\Region $region */
-        foreach ($regions as $region) {
-	        $blueprintsByRegions[$region->getCoords()] = $builder->getAvailableBlueprints($region, $this->getHuman());
-        }
-		return $this->render('Human/dashboard.html.twig', [
-			'human' => $this->getHuman(),
-			'centralRegion' => $centralRegion,
-			'nextRegions' => $regions,
-			'buildingBlueprints' => $blueprintsByRegions,
-		]);
+		return $this->redirectToRoute('map_dashboard');
 	}
-
-	/**
-	 * @Route("/newcolony/{regionC}_{regionL}_{regionR}", name="human_newcolony")
-	 */
-	public function newColonyAction(PlanetEntity\Peak $regionC, PlanetEntity\Peak $regionL, PlanetEntity\Peak $regionR, Request $request)
-	{
-        /** @var PlanetEntity\Region $region */
-        $region = $this->getDoctrine()->getRepository(PlanetEntity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
-		$builder = new \AppBundle\Builder\PlanetBuilder($this->getDoctrine()->getManager(), $this->getParameter('default_colonization_packs'));
-		$builder->newColony($region, $this->getHuman(), 'simple');
-        $this->getDoctrine()->getManager()->flush();
-
-		return $this->redirectToRoute('settlement_dashboard', [
-		    'settlement' => $region->getSettlement()->getId(),
-		]);
-	}
-	
 }
