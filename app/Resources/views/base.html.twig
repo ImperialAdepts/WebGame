@@ -49,7 +49,7 @@
                 <small>{% block pagedescription %}{% endblock %}</small>
             </div>
             <div id="player-title">
-                <a href="{{ path('gamer_dashboard') }}">
+                <a href="{{ path('gamer_human_selection') }}">
                     {% if sessionSettings.human is not null %}
                         <strong>{{ sessionSettings.human.soul.name }}</strong> in
                         <strong>{{ sessionSettings.human.name }}</strong>

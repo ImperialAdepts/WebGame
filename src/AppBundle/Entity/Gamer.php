@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Gamer
  *
  * @ORM\Table(name="gamers", uniqueConstraints={@ORM\UniqueConstraint(name="users_UN", columns={"login"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\GamerRepository")
  */
 class Gamer
 {
@@ -34,6 +34,22 @@ class Gamer
      * @ORM\Column(name="password", type="string", length=100, nullable=true)
      */
     private $password;
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
     /**
      * @return string

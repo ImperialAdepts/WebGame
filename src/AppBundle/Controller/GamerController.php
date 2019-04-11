@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\EnumAlignmentType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,26 +13,33 @@ use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
 class GamerController extends Controller
 {
 	/**
-	 * @Route("/login/{username}", name="gamer_login")
+	 * @Route("/login/{login}", name="gamer_login")
 	 */
-	public function loginAction($username, Request $request)
+	public function loginAction($login, Request $request)
 	{
-		$this->get('session')->set('current-gamer', $username);
+	    $gamer = $this->getDoctrine()->getManager()->getRepository(Entity\Gamer::class)->findByLogin($login);
+	    $this->get('logged_user_settings')->setGamer($gamer);
 		return $this->forward('AppBundle:Gamer:dashboard');
 	}
 
 	/**
-	 * @Route("/", name="gamer_dashboard")
+	 * @Route("/human-selection", name="gamer_human_selection")
 	 */
 	public function dashboardAction()
 	{
-		$gamer = [];
-		$souls = $this->getDoctrine()
-			->getRepository(Entity\Soul::class)
-			->findAllOrderedByName();
+		$gamer = $this->get('logged_user_settings')->getGamer();
+		$soulRepository = $this->getDoctrine()->getRepository(Entity\Soul::class);
 		return $this->render('Gamer/dashboard.html.twig', [
 			'gamer' => $gamer,
-			'souls' => $souls,
+			EnumAlignmentType::CHAOTIC_NEUTRAL.'_souls' => $soulRepository->getByGamerAlignment($gamer, EnumAlignmentType::CHAOTIC_NEUTRAL),
+			EnumAlignmentType::CHAOTIC_GOOD.'_souls' => $soulRepository->getByGamerAlignment($gamer, EnumAlignmentType::CHAOTIC_GOOD),
+			EnumAlignmentType::CHAOTIC_EVIL.'_souls' => $soulRepository->getByGamerAlignment($gamer, EnumAlignmentType::CHAOTIC_EVIL),
+			EnumAlignmentType::NEUTRAL_NEUTRAL.'_souls' => $soulRepository->getByGamerAlignment($gamer, EnumAlignmentType::NEUTRAL_NEUTRAL),
+			EnumAlignmentType::NEUTRAL_GOOD.'_souls' => $soulRepository->getByGamerAlignment($gamer, EnumAlignmentType::NEUTRAL_GOOD),
+			EnumAlignmentType::NEUTRAL_EVIL.'_souls' => $soulRepository->getByGamerAlignment($gamer, EnumAlignmentType::NEUTRAL_EVIL),
+			EnumAlignmentType::LAWFUL_GOOD.'_souls' => $soulRepository->getByGamerAlignment($gamer, EnumAlignmentType::LAWFUL_GOOD),
+			EnumAlignmentType::LAWFUL_NEUTRAL.'_souls' => $soulRepository->getByGamerAlignment($gamer, EnumAlignmentType::LAWFUL_NEUTRAL),
+			EnumAlignmentType::LAWFUL_EVIL.'_souls' => $soulRepository->getByGamerAlignment($gamer, EnumAlignmentType::LAWFUL_EVIL),
 		]);
 	}
 }

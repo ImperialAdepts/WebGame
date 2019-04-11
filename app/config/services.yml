@@ -36,12 +36,20 @@ services:
         arguments:
             - "AppBundle\\Entity\\Human"
 
+    repo_gamer:
+        class: AppBundle\Repository\GamerRepository
+        public: true
+        factory: ["@doctrine.orm.entity_manager", "getRepository"]
+        arguments:
+            - "AppBundle\\Entity\\Gamer"
+
     logged_user_settings:
         class: AppBundle\LoggedUserSettings
         public: true
         arguments:
             - '@session'
             - '@repo_human'
+            - '@repo_gamer'
 
     planet_builder:
         class: AppBundle\Builder\PlanetBuilder

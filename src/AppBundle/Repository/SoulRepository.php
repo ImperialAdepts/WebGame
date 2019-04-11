@@ -10,7 +10,7 @@ class SoulRepository extends \Doctrine\ORM\EntityRepository
 	{
 		return $this->getEntityManager()
 			->createQuery(
-				'SELECT p FROM AppBundle:Soul p ORDER BY p.name ASC'
+				'SELECT s FROM AppBundle:Soul s ORDER BY s.name ASC'
 			)
 			->getResult();
 	}
@@ -19,8 +19,20 @@ class SoulRepository extends \Doctrine\ORM\EntityRepository
 	{
 		return $this->getEntityManager()
 			->createQuery(
-				'SELECT p FROM AppBundle:Soul p WHERE p.gamer_id = %s ORDER BY p.name ASC', $gamer.getId()
+				'SELECT s FROM AppBundle:Soul s WHERE s.gamer = :gamerId ORDER BY s.name ASC'
 			)
+            ->setParameter('gamerId', $gamer->getId())
 			->getResult();
 	}
+
+    public function getByGamerAlignment(Entity\Gamer $gamer, $alignment)
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT s FROM AppBundle:Soul s WHERE s.gamer = :gamerId AND s.alignment = :alignment ORDER BY s.name ASC'
+            )
+            ->setParameter('gamerId', $gamer->getId())
+            ->setParameter('alignment', $alignment)
+            ->getResult();
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Gamer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,14 +14,11 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-//        $gamers = $this->get('repository.gamer')->getAll();
+        $gamers = $this->getDoctrine()->getRepository(Gamer::class)->getAll();
         // replace this example code with whatever you need
         return $this->render('default/index.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
-            'gamers' => [
-                ['name'=>'troi'],
-                ['name'=>'asdasf'],
-            ],
+            'gamers' => $gamers,
         ]);
     }
 }

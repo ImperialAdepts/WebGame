@@ -1,22 +1,100 @@
 {% extends 'base.html.twig' %}
 
 {% block pagetitle %}Souls{% endblock %}
-{% block pagedescription %}{% endblock %}
+{% block pagedescription %}Select human to play or take new one{% endblock %}
 
 {% block body %}
-	<ul>
+	{% import _self as this_macros %}
+	<table border="1" id="souls">
+		<tbody>
+		<tr>
+			<th>Alignment</th>
+			<th>Lawful</th>
+			<th>Neutral</th>
+			<th>Chaotic</th>
+		</tr>
+		<tr>
+			<th>Good</th>
+			<td>{{ this_macros.aligment_souls(lawful_good_souls, 'lawful_good') }}</td>
+			<td>{{ this_macros.aligment_souls(neutral_good_souls, 'neutral_good') }}</td>
+			<td>{{ this_macros.aligment_souls(chaotic_good_souls, 'chaotic_good') }}</td>
+		</tr>
+		<tr>
+			<th>Neutral</th>
+			<td>{{ this_macros.aligment_souls(lawful_neutral_souls, 'lawful_neutral') }}</td>
+			<td>{{ this_macros.aligment_souls(neutral_neutral_souls, 'neutral_neutral') }}</td>
+			<td>{{ this_macros.aligment_souls(chaotic_neutral_souls, 'chaotic_neutral') }}</td>
+		</tr>
+		<tr>
+			<th>Evil</th>
+			<td>{{ this_macros.aligment_souls(lawful_evil_souls, 'lawful_evil') }}</td>
+			<td>{{ this_macros.aligment_souls(neutral_evil_souls, 'neutral_evil') }}</td>
+			<td>{{ this_macros.aligment_souls(chaotic_evil_souls, 'chaotic_evil') }}</td>
+		</tr>
+		</tbody>
+	</table>
+
+	<style type="text/css">
+		#souls {
+			width: 100%;
+			margin: 30px;
+		}
+		#souls ul,
+		#souls li {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+		#souls div {
+			width: 100%;
+			padding: 10px;
+			box-sizing: border-box;
+		}
+
+		#souls .souls li.human {
+			list-style: square;
+			margin-left: 20px;
+			padding-left: 25px;
+		}
+
+		#souls .header {
+			background-color: #6b9311;
+		}
+
+		#souls .footer {
+			background-color: #7DA0B1;
+			text-align: right;
+		}
+	</style>
+{% endblock %}
+
+{% macro aligment_souls(souls, alignment) %}
+	{% if souls is empty %}
+		<small>There are no souls nor humans</small>
+	{% else %}
+	<ul class="souls">
 		{% for soul in souls %}
-			<li>
-				{{ soul.name }}
-				{{ dump(soul) }}
-				{% if soul.incarnations is empty %}
-					<a href="{{ path('human_incarnation_list', {'soul': soul.id }) }}">connect human</a>
-				{% else %}
+			<li class="soul">
+				<div class="header">
+					<strong>{{ soul.name }}</strong>
+					<a href="{{ path('human_incarnation_list', {'soul': soul.id }) }}">
+						{% if soul.incarnations is empty %}take first human{% else %}take another human{% endif %}
+					</a>
+				</div>
+
+				{% if soul.incarnations is not empty %}
+					<ul class="people">
 					{% for human in soul.incarnations %}
-						<a href="{{ path('human_play_as', {'human': human.id }) }}">Play as {{ human.name }}</a>
+						<li class="human"><a href="{{ path('human_play_as', {'human': human.id }) }}">Play as {{ human.name }}</a></li>
 					{% endfor %}
+					</ul>
 				{% endif %}
 			</li>
 		{% endfor %}
 	</ul>
-{% endblock %}
+	{% endif %}
+
+	<div class="footer">
+		<a href="{{ path('soul_create_new', {'alignment': alignment}) }}">Create new soul</a>
+	</div>
+{% endmacro %}

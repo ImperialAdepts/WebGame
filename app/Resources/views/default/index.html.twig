@@ -4,7 +4,7 @@
 	<div id="wrapper">
 		<ul>
 			{% for gamer in gamers %}
-				<li><a href="{{ path('gamer_login', {'username': gamer.name }) }}">{{ gamer.name }}</a></li>
+				<li><a href="{{ path('gamer_login', {'login': gamer.login }) }}">{{ gamer.login }}</a></li>
 			{% endfor %}
 		</ul>
 	</div>

@@ -45,6 +45,8 @@ twig:
 doctrine:
     dbal:
         default_connection: default_connection
+        types:
+            alignment_enum: AppBundle\EnumAlignmentType
         connections:
             default_connection:
                 driver: pdo_mysql
@@ -54,6 +56,8 @@ doctrine:
                 user: '%database_user%'
                 password: '%database_password%'
                 charset: UTF8
+                mapping_types:
+                    enum: string
             planet_connection:
                 driver: pdo_mysql
                 host: '%planet_database_host%'
@@ -62,6 +66,8 @@ doctrine:
                 user: '%planet_database_user%'
                 password: '%planet_database_password%'
                 charset: UTF8
+                mapping_types:
+                    enum: string
     # if using pdo_sqlite as your database driver:
     #   1. add the path in parameters.yml
     #     e.g. database_path: '%kernel.project_dir%/var/data/data.sqlite'

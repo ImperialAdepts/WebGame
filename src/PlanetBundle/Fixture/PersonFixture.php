@@ -1,6 +1,7 @@
 <?php
 namespace PlanetBundle\Fixture;
 
+use AppBundle\EnumAlignmentType;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use PlanetBundle\Entity as PlanetEntity;
@@ -33,6 +34,7 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $soul = new GlobalEntity\Soul();
         $soul->setGamer($troi);
         $soul->setName('Odin');
+        $soul->setAlignment(EnumAlignmentType::LAWFUL_EVIL);
         $generalManager->persist($soul);
 
         $globalHuman1 = new GlobalEntity\Human();
@@ -48,6 +50,7 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $soul = new GlobalEntity\Soul();
         $soul->setGamer($troi);
         $soul->setName('Zeus');
+        $soul->setAlignment(EnumAlignmentType::LAWFUL_NEUTRAL);
         $generalManager->persist($soul);
 
         $globalHuman3 = new GlobalEntity\Human();

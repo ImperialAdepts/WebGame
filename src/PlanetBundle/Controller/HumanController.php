@@ -23,10 +23,6 @@ class HumanController extends BasePlanetController
 	 */
 	public function incarnationListAction(Entity\Soul $soul, Request $request)
 	{
-		if ($soul->getIncarnations() != null) {
-			throw new \InvalidArgumentException("This soul already have human incarnation");
-		}
-
 		$humans = $this->getDoctrine()
 			->getRepository(Entity\Human::class)
 			->findByAvailableChildren();
