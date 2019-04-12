@@ -217,9 +217,9 @@ class SettlementController extends BasePlanetController
     {
         $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
         $region->setSettlement($settlement);
-        $this->getDoctrine()->getManager()->persist($region);
-        $this->getDoctrine()->getManager()->persist($settlement);
-        $this->getDoctrine()->getManager()->flush();
+        $this->getDoctrine()->getManager('planet')->persist($region);
+        $this->getDoctrine()->getManager('planet')->persist($settlement);
+        $this->getDoctrine()->getManager('planet')->flush();
 
         return $this->redirectToRoute('settlement_dashboard', [
             'settlement' => $settlement->getId(),
