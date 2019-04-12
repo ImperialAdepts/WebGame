@@ -38,6 +38,7 @@ class MapController extends BasePlanetController
 	        $blueprintsByRegions[$region->getCoords()] = $builder->getAvailableBlueprints($region, $this->getHuman());
         }
 		return $this->render('Map/overview.html.twig', [
+		    'settlement' => $this->getHuman()->getCurrentPosition(),
 			'human' => $this->getHuman(),
 			'centralRegion' => $centralRegion,
 			'nextRegions' => $regions,

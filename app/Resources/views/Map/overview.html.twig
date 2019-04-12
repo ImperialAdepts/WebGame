@@ -1,11 +1,6 @@
-{% extends 'base.html.twig' %}
-{% import 'Planet/region-fragment.html.twig' as regioMacro %}
-{% import 'Planet/maintanance.html.twig' as cron %}
+{% extends 'Settlement/base.html.twig' %}
 
-{% block pagetitle %}Surface map{% endblock %}
-{% block pagedescription %}{% endblock %}
-
-{% block body %}
+{% block subbody %}
 	{% import _self as thistemplate %}
 
 	<div class="left-half">

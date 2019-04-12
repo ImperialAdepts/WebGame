@@ -22,6 +22,7 @@
         }
     </style>
     <ul id="submenu">
+        <li><a href="{{ path('map_dashboard') }}">Map</a></li>
         <li><a href="{{ path('settlement_dashboard', { 'settlement': settlement.id }) }}">Dashboard</a></li>
         <li><a href="{{ path('settlement_jobs', { 'settlement': settlement.id }) }}">Jobs</a></li>
         <li><a href="{{ path('settlement_buildings', { 'settlement': settlement.id }) }}">Buildings</a></li>
