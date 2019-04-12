@@ -32,7 +32,7 @@ class RegionRepository extends \Doctrine\ORM\EntityRepository
 //                . "(r.peakCenter!=$c AND r.peakLeft=$l AND r.peakRight=$r)"
 //            )
             ->createQuery(
-                "SELECT r FROM AppBundle:Planet\Region r, AppBundle:Planet\Region c WHERE "
+                "SELECT r FROM AppBundle:Region r, AppBundle:Planet\Region c WHERE "
                 . "c.peakCenter=$c AND c.peakLeft=$l AND c.peakRight=$r AND ("
                 . "(r.peakCenter=c.peakLeft AND r.peakRight=c.peakCenter) OR "
                 . "(r.peakLeft=c.peakLeft AND r.peakRight=c.peakRight) OR "
@@ -43,10 +43,71 @@ class RegionRepository extends \Doctrine\ORM\EntityRepository
 	}
 
 	public function findByPeaks(Peak $regionC, Peak $regionL, Peak $regionR) {
-        return $this->findOneBy([
+	    $r = $this->findOneBy([
             'peakCenter' => $regionC,
             'peakLeft' => $regionL,
             'peakRight' => $regionR]);
+	    if ($r) {
+	        return $r;
+        }
+        $r = $this->findOneBy([
+            'peakCenter' => $regionC,
+            'peakLeft' => $regionR,
+            'peakRight' => $regionL]);
+        if ($r) {
+            return $r;
+        }
+        $r = $this->findOneBy([
+            'peakCenter' => $regionL,
+            'peakLeft' => $regionC,
+            'peakRight' => $regionR]);
+        if ($r) {
+            return $r;
+        }
+        $r = $this->findOneBy([
+            'peakCenter' => $regionL,
+            'peakLeft' => $regionR,
+            'peakRight' => $regionC]);
+        if ($r) {
+            return $r;
+        }
+        $r = $this->findOneBy([
+            'peakCenter' => $regionR,
+            'peakLeft' => $regionC,
+            'peakRight' => $regionL]);
+        if ($r) {
+            return $r;
+        }
+        return $this->findOneBy([
+            'peakCenter' => $regionR,
+            'peakLeft' => $regionL,
+            'peakRight' => $regionC]);
+    }
+
+    public function getPeaksLeftOf(Peak $peak, $count = 1) {
+        return $this->getEntityManager()
+            ->createQuery(
+                "SELECT p FROM PlanetBundle:Peak p WHERE "
+                . "p.xcoord > :xmin AND p.xcoord < :xmax AND p.ycoord > :ymin AND p.ycoord < :ymax"
+            )
+            ->setParameter('xmin', $peak->getXcoord()-$count)
+            ->setParameter('xmax', $peak->getXcoord())
+            ->setParameter('ymin', $peak->getYcoord()-$count)
+            ->setParameter('ymax', $peak->getYcoord()+$count)
+            ->getResult();
+    }
+
+    public function getPeaksRightOf(Peak $peak, $count = 1) {
+        return $this->getEntityManager()
+            ->createQuery(
+                "SELECT p FROM PlanetBundle:Peak p WHERE "
+                . "p.xcoord > :xmin AND p.xcoord < :xmax AND p.ycoord > :ymin AND p.ycoord < :ymax"
+            )
+            ->setParameter('xmin', $peak->getXcoord())
+            ->setParameter('xmax', $peak->getXcoord()+$count)
+            ->setParameter('ymin', $peak->getYcoord()-$count)
+            ->setParameter('ymax', $peak->getYcoord()+$count)
+            ->getResult();
     }
 
 }

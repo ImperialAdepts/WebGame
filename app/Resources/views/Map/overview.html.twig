@@ -7,27 +7,93 @@
 
 {% block body %}
 	{% import _self as thistemplate %}
-	<table border="1">
-		{% for region in nextRegions %}
-			{% set classes = "" %}
-			{% if region.settlement == human.currentPosition %}
-				{% set classes = classes ~ "current_human_position" %}
-			{% endif %}
-			<tr class="region {{ classes }}">
-				<td>{{ thistemplate.region_map(region) }}</td>
-			</tr>
-		{% endfor %}
-	</table>
+	{% for x, regionLine in rights %}
+		<div class="right-line">
+			{% for region in regionLine %}
+				{{ thistemplate.region(region) }}
+			{% endfor %}
+		</div>
+	{% endfor %}
+	{% for x, regionLine in lefts %}
+		<div class="left-line">
+			{% for region in regionLine %}
+				{{ thistemplate.region(region) }}
+			{% endfor %}
+		</div>
+	{% endfor %}
+
+
+{#	{% import _self as thistemplate %}#}
+{#	<table border="1">#}
+{#		{% for region in nextRegions %}#}
+{#			{% set classes = "" %}#}
+{#			{% if region.settlement == human.currentPosition %}#}
+{#				{% set classes = classes ~ "current_human_position" %}#}
+{#			{% endif %}#}
+{#			<tr class="region {{ classes }}">#}
+{#				<td>{{ thistemplate.region_map(region) }}</td>#}
+{#			</tr>#}
+{#		{% endfor %}#}
+{#	</table>#}
 
 <style type="text/css">
 	.region {
 		border-style: dashed;
+		width: 100px;
+		height: 100px;
+		display: block;
+		color: #333333;
+	}
+
+	.right-line {
+		float: left;
+	}
+	.left-line {
+		float: right;
 	}
 	.current_human_position {
 		background-color: #7DA0B1;
 	}
+	.fertility-dead {
+		background-color: #636363;
+	}
+	.fertility-tundra {
+		background-color: #496310;
+	}
+	.fertility-fertile {
+		background-color: #6b9311;
+	}
+	.settlement {
+		border-style: solid;
+		border-color: #0088CC;
+	}
 </style>
 {% endblock %}
+
+{% macro region(region) %}
+	{% set classes = '' %}
+	{% if region.fertility < 10 %}
+		{% set classes = classes ~ ' fertility-dead' %}
+	{% endif %}
+	{% if region.fertility >= 10 and region.fertility < 30 %}
+		{% set classes = classes ~ ' fertility-tundra' %}
+	{% endif %}
+	{% if region.fertility >= 30 and region.fertility < 60 %}
+		{% set classes = classes ~ ' fertility-fertile' %}
+	{% endif %}
+
+	{% if region.settlement is not null %}
+		{% set classes = classes ~ ' settlement' %}
+		<a class="region {{ classes }}" href="{{ path('settlement_dashboard', {'settlement': region.settlement.id}) }}">
+			{{ region.settlement.owner.name }}
+		</a>
+	{% else %}
+		<div class="region {{ classes }}">
+			{{ region.coords }}
+		</div>
+	{% endif %}
+{% endmacro %}
+
 
 {% macro region_map(region) %}
 	<table>

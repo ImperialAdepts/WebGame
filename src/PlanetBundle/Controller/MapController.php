@@ -6,7 +6,9 @@ use AppBundle\Builder\PlanetBuilder;
 use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Tracy\Debugger;
 
 /**
  * @Route(path="map")
@@ -19,8 +21,14 @@ class MapController extends BasePlanetController
 	public function dashboardAction(Request $request)
 	{
         $centralRegion = $this->getHuman()->getCurrentPosition()->getMainRegion();
+        $mapRepo = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class);
+	    $regions = $mapRepo->getRegionNeighbourhood($centralRegion);
 
-	    $regions = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class)->getRegionNeighbourhood($centralRegion);
+	    $leftPeaks = $mapRepo->getPeaksLeftOf($centralRegion->getPeakCenter(), 20);
+	    $rightPeaks = $mapRepo->getPeaksRightOf($centralRegion->getPeakCenter(), 20);
+
+        $leftRegions = $this->completeLines($leftPeaks);
+        $rightRegions = $this->completeLines($rightPeaks);
 
 		$blueprintsByRegions = [];
 	    /** @var PlanetBuilder $builder */
@@ -34,8 +42,90 @@ class MapController extends BasePlanetController
 			'centralRegion' => $centralRegion,
 			'nextRegions' => $regions,
 			'buildingBlueprints' => $blueprintsByRegions,
+            'rights' => $rightRegions,
+            'lefts' => $leftRegions,
 		]);
 	}
+
+    /**
+     * @param PlanetEntity\Peak[] $peaks
+     * @return PlanetEntity\Region[]
+     */
+	private function completeLines($peaks) {
+        $mapRepo = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class);
+	    $lines = [];
+        /** @var PlanetEntity\Peak $peak */
+        foreach ($peaks as $peak) {
+            $lines[$peak->getXcoord()][] = $peak;
+        }
+        $regionLines = [];
+	    foreach ($lines as $xcoord => $line) {
+
+	        $touples = $this->getTouples($line);
+
+            if (isset($lines[$xcoord - 1])) {
+                $topRegions = [];
+                /** @var PlanetEntity\Peak $p */
+                foreach ($touples as $touple) {
+                    list($leftPeak, $rightPeak) = $touple;
+
+                    foreach ($lines[$xcoord - 1] as $topPeak) {
+                        $region = $mapRepo->findByPeaks($topPeak, $leftPeak, $rightPeak);
+                        if ($region !== null) {
+                            $topRegions[] = $region;
+                        }
+                    }
+                    $regionLines['t' . $xcoord] = $topRegions;
+                }
+            }
+
+            if (isset($lines[$xcoord + 1])) {
+                $bottomRegions = [];
+                /** @var PlanetEntity\Peak $p */
+                foreach ($touples as $touple) {
+                    list($leftPeak, $rightPeak) = $touple;
+
+                    foreach ($lines[$xcoord + 1] as $bottomPeak) {
+                        $region = $mapRepo->findByPeaks($bottomPeak, $leftPeak, $rightPeak);
+                        if ($region !== null) {
+                            $bottomRegions[] = $region;
+                        }
+                    }
+                    $regionLines['b' . $xcoord] = $bottomRegions;
+                }
+            }
+        }
+        return $regionLines;
+    }
+
+    private function getTouples($peakLine) {
+        $touples = [];
+        $previousPeak = null;
+        foreach ($peakLine as $peak) {
+            if ($previousPeak == null) {
+                $previousPeak = $peak;
+            }
+            $touples[] = [$previousPeak, $peak];
+            $previousPeak = $peak;
+        }
+	    return $touples;
+    }
+
+    /**
+     * @Route("/region/{regionC}_{regionL}_{regionR}", name="map_single_region")
+     */
+    public function singleRegionAction(PlanetEntity\Peak $regionC, PlanetEntity\Peak $regionL, PlanetEntity\Peak $regionR, Request $request)
+    {
+        /** @var PlanetEntity\Region $region */
+        $region = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        if ($region === null) {
+            return new Response("");
+        }
+
+        return $this->render('Map/single_region_fragment.html.twig', [
+            'region' => $region,
+        ]);
+    }
 
 	/**
 	 * @Route("/newcolony/{regionC}_{regionL}_{regionR}", name="map_newcolony")
