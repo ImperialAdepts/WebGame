@@ -29,7 +29,7 @@ class MapController extends BasePlanetController
         foreach ($regions as $region) {
 	        $blueprintsByRegions[$region->getCoords()] = $builder->getAvailableBlueprints($region, $this->getHuman());
         }
-		return $this->render('Human/dashboard.html.twig', [
+		return $this->render('Map/overview.html.twig', [
 			'human' => $this->getHuman(),
 			'centralRegion' => $centralRegion,
 			'nextRegions' => $regions,
