@@ -3,6 +3,7 @@ namespace PlanetBundle\Fixture;
 
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity as GeneralEntity;
+use AppBundle\Fixture\PlanetsFixture;
 use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -61,6 +62,8 @@ class TeamFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Con
     public function getDependencies()
     {
         return [
+            PlanetMapFixture::class,
+            PlanetsFixture::class,
             ResourceAndBlueprintFixture::class,
         ];
     }

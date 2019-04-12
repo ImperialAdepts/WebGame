@@ -2,12 +2,14 @@
 namespace PlanetBundle\Fixture;
 
 use AppBundle\Entity as GeneralEntity;
+use AppBundle\Fixture\PlanetsFixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use PlanetBundle\Entity as PlanetEntity;
 
 /**
  * vygeneruje malou testovaci mapu
  */
-class PlanetMapFixture extends \Doctrine\Bundle\FixturesBundle\Fixture
+class PlanetMapFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements DependentFixtureInterface
 {
 
 	/**
@@ -82,4 +84,17 @@ class PlanetMapFixture extends \Doctrine\Bundle\FixturesBundle\Fixture
 
 		echo "DONE";
 	}
+
+    /**
+     * This method must return an array of fixtures classes
+     * on which the implementing class depends on
+     *
+     * @return array
+     */
+    public function getDependencies()
+    {
+        return [
+            PlanetsFixture::class,
+        ];
+    }
 }

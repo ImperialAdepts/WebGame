@@ -81,6 +81,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
     {
         return [
             PersonFixture::class,
+            PlanetMapFixture::class,
         ];
     }
 }

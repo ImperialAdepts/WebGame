@@ -64,6 +64,14 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
 
+    AppBundle\Fixture\:
+        resource: '%kernel.project_dir%/src/AppBundle/Fixture/'
+        tags: ['doctrine.fixture.orm']
+
+#        fixture_planets:
+#            class: AppBundle\Fixture\PlanetsFixture
+#            tags: ['doctrine.fixture.orm']
+
     # add more services, or override services that need manual wiring
     # AppBundle\Service\ExampleService:
     #     arguments:
