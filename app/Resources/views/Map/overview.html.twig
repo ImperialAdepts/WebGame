@@ -7,52 +7,65 @@
 
 {% block body %}
 	{% import _self as thistemplate %}
-	{% for x, regionLine in rights %}
-		<div class="right-line">
-			{% for region in regionLine %}
-				{{ thistemplate.region(region) }}
-			{% endfor %}
-		</div>
-	{% endfor %}
+
+	<div class="left-half">
 	{% for x, regionLine in lefts %}
-		<div class="left-line">
+		<div class="left-line {% if (loop.index is even) %}even-line{% endif %}">
 			{% for region in regionLine %}
-				{{ thistemplate.region(region) }}
+				{{ thistemplate.region(region, human) }}
 			{% endfor %}
 		</div>
 	{% endfor %}
+	</div>
 
-
-{#	{% import _self as thistemplate %}#}
-{#	<table border="1">#}
-{#		{% for region in nextRegions %}#}
-{#			{% set classes = "" %}#}
-{#			{% if region.settlement == human.currentPosition %}#}
-{#				{% set classes = classes ~ "current_human_position" %}#}
-{#			{% endif %}#}
-{#			<tr class="region {{ classes }}">#}
-{#				<td>{{ thistemplate.region_map(region) }}</td>#}
-{#			</tr>#}
-{#		{% endfor %}#}
-{#	</table>#}
+	<div class="right-half">
+		{% for x, regionLine in rights %}
+			<div class="right-line {% if (loop.index is even) %}even-line{% endif %}">
+				{% for region in regionLine %}
+					{{ thistemplate.region(region, human) }}
+				{% endfor %}
+			</div>
+		{% endfor %}
+	</div>
 
 <style type="text/css">
+	.right-line, .left-line {
+		width: 100%;
+		height: 110px;
+	}
 	.region {
 		border-style: dashed;
+		border-color: #563b15;
 		width: 100px;
 		height: 100px;
+		margin-top: 0;
+		margin-bottom: 0;
+		/*margin-left: 20px;*/
 		display: block;
 		color: #333333;
 	}
+	.right-half {
+		width: 45%;
+		float: left;
+		min-width: 500px;
+	}
+	.left-half {
+		width: 45%;
+		float: left;
+		min-width: 500px;
+	}
 
-	.right-line {
+	.right-line .region {
 		float: left;
 	}
-	.left-line {
+	.left-line .region {
 		float: right;
 	}
-	.current_human_position {
-		background-color: #7DA0B1;
+	.region.settlement.current-position {
+		border-style: solid;
+		border-color: darkorange;
+		border-width: 3px;
+		color: darkorange;
 	}
 	.fertility-dead {
 		background-color: #636363;
@@ -65,12 +78,12 @@
 	}
 	.settlement {
 		border-style: solid;
-		border-color: #0088CC;
+		border-color: #000000;
 	}
 </style>
 {% endblock %}
 
-{% macro region(region) %}
+{% macro region(region, currentHuman) %}
 	{% set classes = '' %}
 	{% if region.fertility < 10 %}
 		{% set classes = classes ~ ' fertility-dead' %}
@@ -83,8 +96,10 @@
 	{% endif %}
 
 	{% if region.settlement is not null %}
-		{% set classes = classes ~ ' settlement' %}
-		<a class="region {{ classes }}" href="{{ path('settlement_dashboard', {'settlement': region.settlement.id}) }}">
+		{% if region.settlement.owner == currentHuman %}
+			{% set classes = classes ~ ' current-position' %}
+		{% endif %}
+		<a class="region settlement {{ classes }}" href="{{ path('settlement_dashboard', {'settlement': region.settlement.id}) }}">
 			{{ region.settlement.owner.name }}
 		</a>
 	{% else %}

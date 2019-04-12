@@ -88,12 +88,12 @@ class RegionRepository extends \Doctrine\ORM\EntityRepository
         return $this->getEntityManager()
             ->createQuery(
                 "SELECT p FROM PlanetBundle:Peak p WHERE "
-                . "p.xcoord > :xmin AND p.xcoord < :xmax AND p.ycoord > :ymin AND p.ycoord < :ymax"
+                . "p.xcoord >= :xmin AND p.xcoord <= :xmax AND p.ycoord >= :ymin AND p.ycoord <= :ymax"
             )
             ->setParameter('xmin', $peak->getXcoord()-$count)
-            ->setParameter('xmax', $peak->getXcoord())
+            ->setParameter('xmax', $peak->getXcoord()+$count)
             ->setParameter('ymin', $peak->getYcoord()-$count)
-            ->setParameter('ymax', $peak->getYcoord()+$count)
+            ->setParameter('ymax', $peak->getYcoord())
             ->getResult();
     }
 
@@ -101,11 +101,11 @@ class RegionRepository extends \Doctrine\ORM\EntityRepository
         return $this->getEntityManager()
             ->createQuery(
                 "SELECT p FROM PlanetBundle:Peak p WHERE "
-                . "p.xcoord > :xmin AND p.xcoord < :xmax AND p.ycoord > :ymin AND p.ycoord < :ymax"
+                . "p.xcoord >= :xmin AND p.xcoord <= :xmax AND p.ycoord >= :ymin AND p.ycoord <= :ymax"
             )
-            ->setParameter('xmin', $peak->getXcoord())
+            ->setParameter('xmin', $peak->getXcoord()-$count)
             ->setParameter('xmax', $peak->getXcoord()+$count)
-            ->setParameter('ymin', $peak->getYcoord()-$count)
+            ->setParameter('ymin', $peak->getYcoord())
             ->setParameter('ymax', $peak->getYcoord()+$count)
             ->getResult();
     }
