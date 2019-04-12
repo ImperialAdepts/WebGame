@@ -5,7 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Peak - map unit
  *
- * @ORM\Table(name="planet_peaks")
+ * @ORM\Table(name="peaks")
  * @ORM\Entity(repositoryClass="PlanetBundle\Repository\PeakRepository")
  */
 class Peak

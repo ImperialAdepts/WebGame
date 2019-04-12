@@ -7,7 +7,7 @@ use AppBundle\Entity\Notification\ProjectNotification;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="planet_region_build_jobs")
+ * @ORM\Table(name="region_build_jobs")
  * @ORM\Entity(repositoryClass="PlanetBundle\Repository\JobRepository")
  */
 class BuildJob extends Job

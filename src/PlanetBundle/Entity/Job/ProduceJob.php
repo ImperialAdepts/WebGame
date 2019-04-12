@@ -10,7 +10,7 @@ use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="planet_region_produce_jobs")
+ * @ORM\Table(name="region_produce_jobs")
  * @ORM\Entity(repositoryClass="PlanetBundle\Repository\JobRepository")
  */
 class ProduceJob extends Job

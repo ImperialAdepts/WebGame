@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Region - map unit
  *
- * @ORM\Table(name="planet_regions")
+ * @ORM\Table(name="regions")
  * @ORM\Entity(repositoryClass="PlanetBundle\Repository\RegionRepository")
  */
 class Region implements ResourcefullInterface

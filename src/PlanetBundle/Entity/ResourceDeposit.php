@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ResourceDeposit
  *
- * @ORM\Table(name="planet_resource_deposits")
+ * @ORM\Table(name="resource_deposits")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ResourceDepositRepository")
  */
 class ResourceDeposit

@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * CurrentBuildingProject
  *
- * @ORM\Table(name="planet_building_project")
+ * @ORM\Table(name="building_project")
  * @ORM\Entity(repositoryClass="PlanetBundle\Repository\BuildingProjectRepository")
  */
 class CurrentBuildingProject extends BuildingProject

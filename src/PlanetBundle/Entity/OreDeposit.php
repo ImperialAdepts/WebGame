@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * OreDeposit
  *
- * @ORM\Table(name="planet_ore_deposits")
+ * @ORM\Table(name="ore_deposits")
  * @ORM\Entity(repositoryClass="PlanetBundle\Repository\OreDepositRepository")
  */
 class OreDeposit

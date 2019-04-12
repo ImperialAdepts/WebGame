@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Settlement - management unit
  *
- * @ORM\Table(name="planet_settlements")
+ * @ORM\Table(name="settlements")
  * @ORM\Entity(repositoryClass="PlanetBundle\Repository\SettlementRepository")
  */
 class Settlement implements ResourcefullInterface
