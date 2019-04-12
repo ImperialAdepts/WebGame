@@ -4,16 +4,16 @@ namespace AppBundle\UuidSerializer;
 
 class UuidName
 {
-	public static function getPlanetName($planetUuid)
+	public static function getPlanetName($data)
 	{
-		$planetUniqueUuid = substr($planetUuid, Galaxy::UNIQUE_UUID_LENGTH + System::UNIQUE_UUID_LENGTH, Planet::UNIQUE_UUID_LENGTH);
+		$planetUniqueUuid = implode('', $data);
 		$nameCombinations = count(self::$colorNames) * count(self::$planetNames);
 		$combination = 0;
 		foreach (str_split($planetUniqueUuid) as $letter) {
-			$combination = ($combination * ord($letter)) % $nameCombinations;
+			$combination = ($combination + 101*ord($letter)) % $nameCombinations;
 		}
 		$nameIndex = $combination % count(self::$planetNames);
-		$colorIndex = floor($combination / $nameIndex);
+		$colorIndex = $combination % count(self::$colorNames);
 		return self::$colorNames[$colorIndex] . ' ' .self::$planetNames[$nameIndex];
 	}
 

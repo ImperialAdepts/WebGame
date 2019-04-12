@@ -89,7 +89,9 @@ class Planet
 	{
 		return UuidSerializer\UuidName::getPlanetName([
 		    $this->id,
-            $this->diameter,
+            $this->type,
+            $this->weight,
+            $this->orbitDiameter,
         ]);
 	}
 

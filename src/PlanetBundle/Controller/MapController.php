@@ -113,18 +113,12 @@ class MapController extends BasePlanetController
     }
 
     /**
-     * @Route("/region/{regionC}_{regionL}_{regionR}", name="map_single_region")
+     * @Route("/planet_info", name="map_current_planet")
      */
-    public function singleRegionAction(PlanetEntity\Peak $regionC, PlanetEntity\Peak $regionL, PlanetEntity\Peak $regionR, Request $request)
+    public function currentPlanetInfoAction(Request $request)
     {
-        /** @var PlanetEntity\Region $region */
-        $region = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
-        if ($region === null) {
-            return new Response("");
-        }
-
-        return $this->render('Map/single_region_fragment.html.twig', [
-            'region' => $region,
+        return $this->render('Map/planet_info.html.twig', [
+            'planet' => $this->getPlanet(),
         ]);
     }
 

@@ -32,4 +32,6 @@
     <div id="subbody">{% block subbody %}{% endblock %}</div>
 {% endblock %}
 
-
+{% block planetinfo %}
+    {{ render(controller('PlanetBundle:Map:currentPlanetInfo')) }}
+{% endblock %}
