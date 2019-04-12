@@ -26,11 +26,12 @@ class BasePlanetController extends Controller
 	protected $globalHuman;
 
     public function init() {
+//        Debugger::dump($this->get('session'));
         $this->globalHuman = $this->get('logged_user_settings')->getHuman();
-        $this->planet = $this->globalHuman->getPlanet();
+//        Debugger::dump($this->globalHuman);
+//        $this->planet = $this->globalHuman->getPlanet();
         $this->human = $this->getDoctrine()->getManager('planet')
             ->getRepository(PlanetEntity\Human::class)->getByGlobalHuman($this->globalHuman);
-
         if ($this->human === null) {
             throw new NotFoundHttpException("Human was not found on this planet");
         }

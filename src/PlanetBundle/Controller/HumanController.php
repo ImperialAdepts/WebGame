@@ -2,16 +2,11 @@
 
 namespace PlanetBundle\Controller;
 
-use AppBundle\Builder\PlanetBuilder;
-use AppBundle\Entity;
-use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Tracy\Debugger;
+use PlanetBundle\Entity as PlanetEntity;
+use AppBundle\Entity as GlobalEntity;
 
 /**
  * @Route(path="human")
@@ -21,10 +16,10 @@ class HumanController extends BasePlanetController
     /**
 	 * @Route("/incarnation-list/{soul}", name="human_incarnation_list")
 	 */
-	public function incarnationListAction(Entity\Soul $soul, Request $request)
+	public function incarnationListAction(GlobalEntity\Soul $soul, Request $request)
 	{
 		$humans = $this->getDoctrine()
-			->getRepository(Entity\Human::class)
+			->getRepository(PlanetEntity\Human::class)
 			->findByAvailableChildren();
 		return $this->render('Human/incarnation-list.html.twig', [
 			'soul' => $soul,
@@ -35,7 +30,7 @@ class HumanController extends BasePlanetController
 	/**
 	 * @Route("/connect/{soul}/{human}", name="human_connect")
 	 */
-	public function connectAction(Entity\Soul $soul, Entity\Human $human, Request $request)
+	public function connectAction(GlobalEntity\Soul $soul, PlanetEntity\Human $human, Request $request)
 	{
 		// TODO: zkontrolovat jestli to zkousi spravny gamer
 		if ($soul->getIncarnations() != null || $human->getSoul() != null) {
@@ -49,17 +44,6 @@ class HumanController extends BasePlanetController
 
 		return $this->forward('AppBundle:Gamer:dashboard');
 	}
-
-    /**
-     * @Route("/play-as-{human}", name="human_play_as")
-     */
-    public function playAsHumanAction(Entity\Human $human, Request $request)
-    {
-        $this->get('logged_user_settings')->setHuman($human);
-        return $this->redirectToRoute('human_dashboard', [
-            'human' => $human->getId(),
-        ]);
-    }
 
 	/**
 	 * @Route("/", name="human_dashboard")

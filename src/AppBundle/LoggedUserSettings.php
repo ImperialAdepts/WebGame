@@ -5,6 +5,7 @@ use AppBundle\Repository\GamerRepository;
 use AppBundle\Repository\HumanRepository;
 use AppBundle\Entity;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Tracy\Debugger;
 
 class LoggedUserSettings
 {

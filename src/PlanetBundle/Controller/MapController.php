@@ -18,11 +18,7 @@ class MapController extends BasePlanetController
 	 */
 	public function dashboardAction(Request $request)
 	{
-	    $regions = $this->getHuman()->getCurrentPosition()->getRegions();
-	    foreach ($regions as $region) {
-	        $centralRegion = $region;
-	        break;
-        }
+        $centralRegion = $this->getHuman()->getCurrentPosition()->getMainRegion();
 
 	    $regions = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class)->getRegionNeighbourhood($centralRegion);
 

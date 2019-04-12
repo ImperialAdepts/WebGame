@@ -6,7 +6,8 @@ use AppBundle\EnumAlignmentType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
+use AppBundle\Entity;
+use PlanetBundle\Entity as PlanetEntity;
 
 /**
  */
@@ -19,7 +20,7 @@ class GamerController extends Controller
 	{
 	    $gamer = $this->getDoctrine()->getManager()->getRepository(Entity\Gamer::class)->findByLogin($login);
 	    $this->get('logged_user_settings')->setGamer($gamer);
-		return $this->forward('AppBundle:Gamer:dashboard');
+		return $this->redirectToRoute('gamer_human_selection');
 	}
 
 	/**
@@ -42,4 +43,13 @@ class GamerController extends Controller
 			EnumAlignmentType::LAWFUL_EVIL.'_souls' => $soulRepository->getByGamerAlignment($gamer, EnumAlignmentType::LAWFUL_EVIL),
 		]);
 	}
+
+    /**
+     * @Route("/play-as-{human}", name="gamer_play_as_human")
+     */
+    public function playAsHumanAction(Entity\Human $human, Request $request)
+    {
+        $this->get('logged_user_settings')->setHuman($human);
+        return $this->redirectToRoute('human_dashboard');
+    }
 }

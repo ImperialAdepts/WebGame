@@ -1,7 +1,8 @@
 <?php
 namespace PlanetBundle\Repository;
 
-use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
+use AppBundle\Entity;
+use PlanetBundle\Entity as PlanetEntity;
 
 class HumanRepository extends \Doctrine\ORM\EntityRepository
 {
@@ -33,8 +34,9 @@ class HumanRepository extends \Doctrine\ORM\EntityRepository
     {
         return $this->getEntityManager()
             ->createQuery(
-                "SELECT h FROM PlanetBundle:Human h WHERE h.globalHumanId = {$globalHuman->getId()} ORDER BY h.name ASC"
+                "SELECT h FROM PlanetBundle:Human h WHERE h.globalHumanId = :globalHuman ORDER BY h.name ASC"
             )
+            ->setParameter('globalHuman', $globalHuman->getId())
             ->getOneOrNullResult();
     }
 }
