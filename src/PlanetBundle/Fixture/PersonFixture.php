@@ -26,6 +26,8 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
 	public function load(ObjectManager $manager)
 	{
         $generalManager = $this->container->get('doctrine.orm.entity_manager');
+        $testPlanet = $generalManager->getRepository(GlobalEntity\SolarSystem\Planet::class, 'default')->findOneBy(['type'=>'test']);
+
 		$troi = new GlobalEntity\Gamer();
 		$troi->setLogin('troi');
 		$troi->setPassword('troi');
@@ -40,11 +42,13 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $globalHuman1 = new GlobalEntity\Human();
         $globalHuman1->setName('Erik krvava sekera');
         $globalHuman1->setSoul($soul);
+        $globalHuman1->setPlanet($testPlanet);
         $generalManager->persist($globalHuman1);
 
         $globalHuman2 = new GlobalEntity\Human();
         $globalHuman2->setName('Rudovous');
         $globalHuman2->setSoul($soul);
+        $globalHuman2->setPlanet($testPlanet);
         $generalManager->persist($globalHuman2);
 
         $soul = new GlobalEntity\Soul();
@@ -56,11 +60,13 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $globalHuman3 = new GlobalEntity\Human();
         $globalHuman3->setName('Herakles');
         $globalHuman3->setSoul($soul);
+        $globalHuman3->setPlanet($testPlanet);
         $generalManager->persist($globalHuman3);
 
         $globalHuman4 = new GlobalEntity\Human();
         $globalHuman4->setName('Oidipus');
         $globalHuman4->setSoul($soul);
+        $globalHuman4->setPlanet($testPlanet);
         $generalManager->persist($globalHuman4);
 
         $generalManager->flush();

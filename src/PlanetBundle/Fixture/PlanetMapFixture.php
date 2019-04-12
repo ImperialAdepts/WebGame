@@ -81,8 +81,6 @@ class PlanetMapFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implement
         }
 
 		$manager->flush();
-
-		echo "DONE";
 	}
 
     /**

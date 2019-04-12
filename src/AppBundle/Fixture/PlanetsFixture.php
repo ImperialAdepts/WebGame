@@ -42,6 +42,7 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
         $solarSystemModel->setCentralSun($sun);
 
         $earth = new GeneralEntity\SolarSystem\Planet();
+        $earth->setType('earth');
         $earth->setSystem($solarSystemModel);
         $earth->setGravity(1);
         $earth->setWeight(597237*10^8);
@@ -63,6 +64,7 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
         $testSystem->setCentralSun($testStar);
 
         $testPlanet = new GeneralEntity\SolarSystem\Planet();
+        $testPlanet->setType('test');
         $testPlanet->setSystem($testSystem);
         $testPlanet->setGravity(1);
         $testPlanet->setWeight(597237*10^8);
