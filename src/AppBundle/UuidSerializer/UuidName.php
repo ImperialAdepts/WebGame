@@ -14,7 +14,7 @@ class UuidName
 		}
 		$nameIndex = $combination % count(self::$planetNames);
 		$colorIndex = $combination % count(self::$colorNames);
-		return self::$colorNames[$colorIndex] . ' ' .self::$planetNames[$nameIndex];
+		return ucfirst(self::$colorNames[$colorIndex]) . ' ' .self::$planetNames[$nameIndex];
 	}
 
 	private static $planetNames = [
