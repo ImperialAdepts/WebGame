@@ -12,12 +12,73 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use AppBundle\Descriptor\TimeTransformator;
 
 /**
  * @Route(path="cron")
  */
 class CronController extends Controller
 {
+    /**
+     * @Route("/time-jump", name="cron_time_jump")
+     */
+    public function timeJumpAction()
+    {
+        /** @var Entity\SolarSystem\Planet[] $planets */
+        $planets = $this->getDoctrine()->getManager()->getRepository(Entity\SolarSystem\Planet::class)->getUnrefreshed();
+
+        $response = "<table>";
+
+        foreach ($planets as $planet) {
+            $response .= "<tr><th>Planet name: {$planet->getName()} [{$planet->getType()}]</th></tr>";
+            $response .= "<tr><th>Phase updated: {$planet->getLastPhaseUpdate()} [".date('d. m. Y H:i', $planet->getNextUpdateTime())."]</th></tr>";
+
+            $response .= "<tr><td>epoche:</td>".$this->printPhaseInfo($planet, 0);
+            $response .= "</tr>";
+            $response .= "<tr><td>now:</td>".$this->printPhaseInfo($planet, time());
+            $response .= "</tr>";
+            $response .= "<tr><td>in hour:</td>".$this->printPhaseInfo($planet, time()+60*60);
+            $response .= "</tr>";;
+            $response .= "<tr><td>tomorow:</td>".$this->printPhaseInfo($planet, time()+24*60*60);
+            $response .= "</tr>";
+            $response .= "<tr><td>week:</td>".$this->printPhaseInfo($planet, time()+7*24*60*60);
+            $response .= "</tr>";
+        }
+        $response .= "</table>";
+
+
+        foreach ($planets as $planet) {
+            if ($planet->getLastPhaseUpdate() === null) {
+                $planet->setLastPhaseUpdate(TimeTransformator::timestampToPhase($planet, time()));
+            } else {
+                $planet->setLastPhaseUpdate($planet->getLastPhaseUpdate()+1);
+            }
+            $this->update($planet);
+            $planet->setNextUpdateTime(TimeTransformator::phaseToTimestamp($planet, $planet->getLastPhaseUpdate()+1));
+
+            $this->getDoctrine()->getManager()->persist($planet);
+        }
+        $this->getDoctrine()->getManager()->flush();
+
+        return new Response($response);
+    }
+
+    public function printPhaseInfo(Entity\SolarSystem\Planet $planet, $currentTimestamp) {
+        $currentPhase = TimeTransformator::timestampToPhase($planet, $currentTimestamp);
+        $info = "<td>";
+        $info .= "#".$currentPhase;
+        $info .= "</td><td>";
+        $info .= "[";
+        $info .= date('d. m. Y H:i', TimeTransformator::phaseToTimestamp($planet, $currentPhase));
+        $info .= "</td><td> - ";
+        $info .= "</td><td>";
+        $info .= date('d. m. Y H:i', TimeTransformator::phaseToTimestamp($planet, $currentPhase+1));
+        $info .= "]";
+        $info .= "</td>";
+        $info .= "<td>".($planet->getOrbitPhaseLengthInSec()/(3600*$planet->getTimeCoefficient()))."h</td>";
+        return $info;
+    }
+
 	/**
 	 * @Route("/build-projects", name="cron_build_projects")
 	 */
@@ -106,4 +167,8 @@ class CronController extends Controller
 
 		return new Response($response);
 	}
+
+    private function update(Entity\SolarSystem\Planet $planet)
+    {
+    }
 }

@@ -10,4 +10,13 @@ namespace AppBundle\Repository\SolarSystem;
  */
 class PlanetRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getUnrefreshed() {
+        return $this->getEntityManager()
+            ->createQuery(
+//                'SELECT p FROM AppBundle:SolarSystem\Planet p WHERE p.orbitPeriod IS NOT NULL ORDER BY p.nextUpdateTime ASC'
+                'SELECT p FROM AppBundle:SolarSystem\Planet p WHERE p.nextUpdateTime <= :now AND p.orbitPeriod IS NOT NULL ORDER BY p.nextUpdateTime ASC'
+            )
+            ->setParameter('now', time())
+            ->getResult();
+    }
 }

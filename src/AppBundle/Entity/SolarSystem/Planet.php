@@ -58,6 +58,13 @@ class Planet
     private $orbitOffset = 0;
 
     /**
+     * @var float time of one orbit, in days
+     *
+     * @ORM\Column(name="orbit_period", type="float", nullable=true)
+     */
+    private $orbitPeriod;
+
+    /**
      * @var float in kilometers
      *
      * @ORM\Column(name="diameter", type="float", nullable=false)
@@ -84,6 +91,27 @@ class Planet
      * @ORM\Column(name="database_credentials", type="json_array", nullable=true)
      */
     private $databaseCredentials;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="time_coeficient", type="integer", nullable=false)
+     */
+    private $timeCoefficient = 60;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="last_phase_counted", type="integer", nullable=true)
+     */
+    private $lastPhaseUpdate;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="next_update_time", type="integer", nullable=false)
+     */
+    private $nextUpdateTime = 0;
 
 	public function getName()
 	{
@@ -194,6 +222,23 @@ class Planet
     /**
      * @return float
      */
+    public function getOrbitPeriod()
+    {
+        return $this->orbitPeriod;
+    }
+
+    /**
+     * @param float $orbitPeriod
+     */
+    public function setOrbitPeriod($orbitPeriod)
+    {
+        $this->orbitPeriod = $orbitPeriod;
+    }
+
+
+    /**
+     * @return float
+     */
     public function getDiameter()
     {
         return $this->diameter;
@@ -253,6 +298,68 @@ class Planet
     public function setDatabaseCredentials($databaseCredentials)
     {
         $this->databaseCredentials = $databaseCredentials;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getTimeCoefficient()
+    {
+        return $this->timeCoefficient;
+    }
+
+    /**
+     * @param integer $timeCoefficient
+     */
+    public function setTimeCoefficient($timeCoefficient)
+    {
+        $this->timeCoefficient = $timeCoefficient;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastPhaseUpdate()
+    {
+        return $this->lastPhaseUpdate;
+    }
+
+    /**
+     * @param int $lastPhaseUpdate
+     */
+    public function setLastPhaseUpdate($lastPhaseUpdate)
+    {
+        $this->lastPhaseUpdate = $lastPhaseUpdate;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNextUpdateTime()
+    {
+        return $this->nextUpdateTime;
+    }
+
+    /**
+     * @param int $nextUpdateTime
+     */
+    public function setNextUpdateTime($nextUpdateTime)
+    {
+        $this->nextUpdateTime = $nextUpdateTime;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrbitPhaseCount() {
+        if ($this->getOrbitPeriod() < $this->getTimeCoefficient()*6) {
+            return 6;
+        }
+        return 5+ceil(sqrt($this->getOrbitPeriod() / ($this->getTimeCoefficient()*6)));
+    }
+
+    public function getOrbitPhaseLengthInSec() {
+        return floor(24*60*60*$this->getOrbitPeriod() / $this->getOrbitPhaseCount());
     }
 
 }

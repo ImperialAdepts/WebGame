@@ -3,6 +3,7 @@
 namespace PlanetBundle\Controller;
 
 use AppBundle\Builder\PlanetBuilder;
+use AppBundle\Descriptor\TimeTransformator;
 use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
 use Symfony\Component\HttpFoundation\Request;
@@ -117,8 +118,10 @@ class MapController extends BasePlanetController
      */
     public function currentPlanetInfoAction(Request $request)
     {
+        $currentPhase = TimeTransformator::timestampToPhase($this->getPlanet(), time());
         return $this->render('Map/planet_info.html.twig', [
             'planet' => $this->getPlanet(),
+            'endphase' => TimeTransformator::phaseToTimestamp($this->getPlanet(), $currentPhase+1),
         ]);
     }
 
