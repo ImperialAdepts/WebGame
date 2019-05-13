@@ -47,6 +47,9 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $globalHuman1->setName('Erik krvava sekera');
         $globalHuman1->setSoul($soul);
         $globalHuman1->setPlanet($testPlanet);
+        $globalHuman1->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FAMILY_OPINION, 'STRONG', $globalHuman1));
+        $globalHuman1->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::KNOWLEDGE_VALUE, 'NONE', $globalHuman1));
+        $globalHuman1->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FORTUNE_SENSE, 'WEAK', $globalHuman1));
         $generalManager->persist($globalHuman1);
 
         $globalHuman2 = new GlobalEntity\Human();
@@ -69,12 +72,18 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $globalHuman3->setName('Herakles');
         $globalHuman3->setSoul($soul);
         $globalHuman3->setPlanet($testPlanet);
+        $globalHuman3->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FAMILY_OPINION, 'WEAK', $globalHuman3));
+        $globalHuman3->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::KNOWLEDGE_VALUE, 'WEAK', $globalHuman3));
+        $globalHuman3->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FORTUNE_SENSE, 'STRONG', $globalHuman3));
         $generalManager->persist($globalHuman3);
 
         $globalHuman4 = new GlobalEntity\Human();
         $globalHuman4->setName('Oidipus');
         $globalHuman4->setSoul($soul);
         $globalHuman4->setPlanet($testPlanet);
+        $globalHuman4->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FAMILY_OWN_CHILDREN, 'STRONG', $globalHuman4));
+        $globalHuman4->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::KNOWLEDGE_VALUE, 'STRONG', $globalHuman4));
+        $globalHuman4->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::VIOLENCE, 'STRONG', $globalHuman4));
         $generalManager->persist($globalHuman4);
 
         $generalManager->flush();

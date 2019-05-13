@@ -2,7 +2,10 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\rpg\HumanPreference;
+use AppBundle\Entity\rpg\SoulPreference;
 use AppBundle\Entity\SolarSystem\Planet;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -44,6 +47,18 @@ class Human
      * @ORM\JoinColumn(name="planet_id", referencedColumnName="id", nullable=true)
      */
     private $planet;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\rpg\HumanPreference", mappedBy="human", cascade={"all"})
+     */
+    private $preferences;
+
+    public function __construct($id = null)
+    {
+        $this->id = $id;
+        $this->preferences = new ArrayCollection();
+    }
 
     /**
      * @ORM\Get("id")
@@ -108,6 +123,30 @@ class Human
     public function setPlanet($planet)
     {
         $this->planet = $planet;
+    }
+
+    /**
+     * @return HumanPreference[]
+     */
+    public function getPreferences()
+    {
+        return $this->preferences;
+    }
+
+    /**
+     * @param HumanPreference[] $preferences
+     */
+    public function setPreferences($preferences)
+    {
+        $this->preferences[] = $preferences;
+    }
+
+    /**
+     * @param HumanPreference $preference
+     */
+    public function addPreference(HumanPreference $preference)
+    {
+        $this->preferences->add($preference);
     }
 
 }
