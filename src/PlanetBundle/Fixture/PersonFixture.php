@@ -37,6 +37,10 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $soul->setGamer($troi);
         $soul->setName('Odin');
         $soul->setAlignment(EnumAlignmentType::LAWFUL_EVIL);
+        $soul->addPreference(GlobalEntity\rpg\SoulPreference::create(GlobalEntity\rpg\SoulPreferenceTypeEnum::EVIL_BEST, $soul));
+        $soul->addPreference(GlobalEntity\rpg\SoulPreference::create(GlobalEntity\rpg\SoulPreferenceTypeEnum::EVERYBODY_ONLY_FRIENDS, $soul));
+        $soul->addPreference(GlobalEntity\rpg\SoulPreference::create(GlobalEntity\rpg\SoulPreferenceTypeEnum::EVIL_LIFE_NOT_MATTER, $soul));
+        $soul->addPreference(GlobalEntity\rpg\SoulPreference::create(GlobalEntity\rpg\SoulPreferenceTypeEnum::EVIL_ODINIST, $soul));
         $generalManager->persist($soul);
 
         $globalHuman1 = new GlobalEntity\Human();
@@ -55,6 +59,10 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $soul->setGamer($troi);
         $soul->setName('Zeus');
         $soul->setAlignment(EnumAlignmentType::LAWFUL_NEUTRAL);
+        $soul->addPreference(GlobalEntity\rpg\SoulPreference::create(GlobalEntity\rpg\SoulPreferenceTypeEnum::EVIL_BEST, $soul));
+        $soul->addPreference(GlobalEntity\rpg\SoulPreference::create(GlobalEntity\rpg\SoulPreferenceTypeEnum::EVERYBODY_ONLY_FRIENDS, $soul));
+        $soul->addPreference(GlobalEntity\rpg\SoulPreference::create(GlobalEntity\rpg\SoulPreferenceTypeEnum::MORAL_NEUTRAL_SIZE_EQUILIBRIUM, $soul));
+        $soul->addPreference(GlobalEntity\rpg\SoulPreference::create(GlobalEntity\rpg\SoulPreferenceTypeEnum::MORAL_NEUTRAL_POWER_EQUILIBRIUM, $soul));
         $generalManager->persist($soul);
 
         $globalHuman3 = new GlobalEntity\Human();
