@@ -50,12 +50,21 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $globalHuman1->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FAMILY_OPINION, 'STRONG', $globalHuman1));
         $globalHuman1->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::KNOWLEDGE_VALUE, 'NONE', $globalHuman1));
         $globalHuman1->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FORTUNE_SENSE, 'WEAK', $globalHuman1));
+        $globalHuman1->addKnowledge(GlobalEntity\rpg\Knowledge::create(GlobalEntity\rpg\KnowledgeTypeEnum::BUILDING_SIMPLE, 80, $globalHuman1));
+        $globalHuman1->addKnowledge(GlobalEntity\rpg\Knowledge::create(GlobalEntity\rpg\KnowledgeTypeEnum::MANAGEMENT_SETTLEMENT, 10, $globalHuman1));
+        $globalHuman1->addKnowledge(GlobalEntity\rpg\Knowledge::create(GlobalEntity\rpg\KnowledgeTypeEnum::BUILDING_INFRASTRUCTURE, 300, $globalHuman1));
         $generalManager->persist($globalHuman1);
 
         $globalHuman2 = new GlobalEntity\Human();
         $globalHuman2->setName('Rudovous');
         $globalHuman2->setSoul($soul);
         $globalHuman2->setPlanet($testPlanet);
+        $globalHuman2->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FAMILY_OPINION, 'STRONG', $globalHuman2));
+        $globalHuman2->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::KNOWLEDGE_VALUE, 'NONE', $globalHuman2));
+        $globalHuman2->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FORTUNE_SENSE, 'WEAK', $globalHuman2));
+        $globalHuman2->addKnowledge(GlobalEntity\rpg\Knowledge::create(GlobalEntity\rpg\KnowledgeTypeEnum::BUILDING_SIMPLE, 80, $globalHuman2));
+        $globalHuman2->addKnowledge(GlobalEntity\rpg\Knowledge::create(GlobalEntity\rpg\KnowledgeTypeEnum::MANAGEMENT_SETTLEMENT, 10, $globalHuman2));
+        $globalHuman2->addKnowledge(GlobalEntity\rpg\Knowledge::create(GlobalEntity\rpg\KnowledgeTypeEnum::BUILDING_INFRASTRUCTURE, 300, $globalHuman2));
         $generalManager->persist($globalHuman2);
 
         $soul = new GlobalEntity\Soul();
@@ -75,6 +84,8 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $globalHuman3->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FAMILY_OPINION, 'WEAK', $globalHuman3));
         $globalHuman3->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::KNOWLEDGE_VALUE, 'WEAK', $globalHuman3));
         $globalHuman3->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FORTUNE_SENSE, 'STRONG', $globalHuman3));
+        $globalHuman3->addKnowledge(GlobalEntity\rpg\Knowledge::create(GlobalEntity\rpg\KnowledgeTypeEnum::BUILDING_INFRASTRUCTURE, 10, $globalHuman3));
+        $globalHuman3->addKnowledge(GlobalEntity\rpg\Knowledge::create(GlobalEntity\rpg\KnowledgeTypeEnum::BUILDING_SIMPLE, 150, $globalHuman3));
         $generalManager->persist($globalHuman3);
 
         $globalHuman4 = new GlobalEntity\Human();
@@ -84,6 +95,8 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $globalHuman4->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FAMILY_OWN_CHILDREN, 'STRONG', $globalHuman4));
         $globalHuman4->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::KNOWLEDGE_VALUE, 'STRONG', $globalHuman4));
         $globalHuman4->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::VIOLENCE, 'STRONG', $globalHuman4));
+        $globalHuman4->addKnowledge(GlobalEntity\rpg\Knowledge::create(GlobalEntity\rpg\KnowledgeTypeEnum::BUILDING_INFRASTRUCTURE, 20, $globalHuman4));
+        $globalHuman4->addKnowledge(GlobalEntity\rpg\Knowledge::create(GlobalEntity\rpg\KnowledgeTypeEnum::BUILDING_TRANSPORT_VEHICLES, 90, $globalHuman4));
         $generalManager->persist($globalHuman4);
 
         $generalManager->flush();

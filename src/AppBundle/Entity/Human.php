@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\rpg\HumanPreference;
+use AppBundle\Entity\rpg\Knowledge;
 use AppBundle\Entity\rpg\SoulPreference;
 use AppBundle\Entity\SolarSystem\Planet;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -54,10 +55,17 @@ class Human
      */
     private $preferences;
 
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\rpg\Knowledge", mappedBy="human", cascade={"all"})
+     */
+    private $knowledge;
+
     public function __construct($id = null)
     {
         $this->id = $id;
         $this->preferences = new ArrayCollection();
+        $this->knowledge = new ArrayCollection();
     }
 
     /**
@@ -149,5 +157,24 @@ class Human
         $this->preferences->add($preference);
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getKnowledge()
+    {
+        return $this->knowledge;
+    }
+
+    /**
+     * @param ArrayCollection $knowledge
+     */
+    public function setKnowledge($knowledge)
+    {
+        $this->knowledge = $knowledge;
+    }
+
+    public function addKnowledge(Knowledge $knowledge) {
+        $this->knowledge->add($knowledge);
+    }
 }
 
