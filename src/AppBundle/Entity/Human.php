@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Human\Feelings;
 use AppBundle\Entity\rpg\HumanPreference;
 use AppBundle\Entity\rpg\Knowledge;
 use AppBundle\Entity\rpg\SoulPreference;
@@ -61,11 +62,18 @@ class Human
      */
     private $knowledge;
 
+    /**
+     * @var Feelings
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Human\Feelings", mappedBy="human", cascade={"all"})
+     */
+    private $feelings;
+
     public function __construct($id = null)
     {
         $this->id = $id;
         $this->preferences = new ArrayCollection();
         $this->knowledge = new ArrayCollection();
+        $this->feelings = new Feelings($this);
     }
 
     /**
@@ -176,5 +184,22 @@ class Human
     public function addKnowledge(Knowledge $knowledge) {
         $this->knowledge->add($knowledge);
     }
+
+    /**
+     * @return Feelings
+     */
+    public function getFeelings()
+    {
+        return $this->feelings;
+    }
+
+    /**
+     * @param Feelings $feelings
+     */
+    public function setFeelings(Feelings $feelings)
+    {
+        $this->feelings = $feelings;
+    }
+
 }
 

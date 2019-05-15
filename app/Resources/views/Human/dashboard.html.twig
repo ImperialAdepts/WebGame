@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}{{ human.name }}{% endblock %}
+{% block pagedescription %}Person journal{% endblock %}
+
+{% block body %}
+	{% import _self as this_macros %}
+
+	<dt>Alltime feelings</dt>
+	<dd>{{ human.feelings.allLife }}</dd>
+	<dt>Last period feelings</dt>
+	<dd>{{ human.feelings.lastPeriod }}</dd>
+	<dt>This time</dt>
+	<dd>{{ human.feelings.thisTime }}</dd>
+
+	<a href="{{ path('human_happy', {'change': 1}) }}">Happy +1</a><br />
+	<a href="{{ path('human_happy', {'change': 10}) }}">Happy +10</a><br />
+	<a href="{{ path('human_happy', {'change': 50}) }}">Happy +50</a><br />
+	<a href="{{ path('human_happy', {'change': 100}) }}">Happy +100</a><br />
+	<a href="{{ path('human_sad', {'change': 1}) }}">Sad +1</a><br />
+	<a href="{{ path('human_sad', {'change': 10}) }}">Sad +10</a><br />
+	<a href="{{ path('human_sad', {'change': 50}) }}">Sad +50</a><br />
+	<a href="{{ path('human_sad', {'change': 100}) }}">Sad +100</a><br />
+
+	<ul>
+		{% for feelingChange in human.feelings.history %}
+			<li>{{ feelingChange.time }}# {{ feelingChange.change }}, {{ feelingChange.description }}</li>
+		{% endfor %}
+	</ul>
+
+	<style type="text/css">
+		#souls {
+			width: 100%;
+			margin: 30px;
+		}
+		#souls ul,
+		#souls li {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+		#souls div {
+			width: 100%;
+			padding: 10px;
+			box-sizing: border-box;
+		}
+
+		#souls .souls li.human {
+			list-style: square;
+			margin-left: 20px;
+			padding-left: 25px;
+		}
+
+		#souls .header {
+			background-color: #6b9311;
+		}
+
+		#souls .footer {
+			background-color: #7DA0B1;
+			text-align: right;
+		}
+	</style>
+{% endblock %}
+
+{% macro aligment_souls(souls, alignment) %}
+	{% if souls is empty %}
+		<small>There are no souls nor humans</small>
+	{% else %}
+	<ul class="souls">
+		{% for soul in souls %}
+			<li class="soul">
+				<div class="header">
+					<strong>{{ soul.name }}</strong>
+					<a href="{{ path('human_incarnation_list', {'soul': soul.id }) }}">
+						{% if soul.incarnations is empty %}take first human{% else %}take another human{% endif %}
+					</a>
+				</div>
+
+				{% if soul.incarnations is not empty %}
+					<ul class="people">
+					{% for human in soul.incarnations %}
+						<li class="human"><a href="{{ path('gamer_play_as_human', {'human': human.id }) }}">Play as {{ human.name }}</a></li>
+					{% endfor %}
+					</ul>
+				{% endif %}
+			</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+
+	<div class="footer">
+		<a href="{{ path('soul_create_new', {'alignment': alignment}) }}">Create new soul</a>
+	</div>
+{% endmacro %}

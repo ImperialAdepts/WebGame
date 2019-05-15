@@ -53,6 +53,7 @@
                     {% if sessionSettings.human is not null %}
                         <strong>{{ sessionSettings.human.soul.name }}</strong> in
                         <strong>{{ sessionSettings.human.name }}</strong>
+                        <span><a href="{{ path('human_dashboard') }}">Journal</a></span>
                     {% else %}
                         <strong>Nobody is logged in</strong>
                     {% endif %}
