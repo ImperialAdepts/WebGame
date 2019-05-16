@@ -11,6 +11,7 @@ use PlanetBundle\Entity as PlanetEntity;
  */
 class PlanetMapFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements DependentFixtureInterface
 {
+    const PLANET_HEMISPHERE_SIZE = 10;
 
 	/**
 	 * Load data fixtures with the passed EntityManager
@@ -19,69 +20,84 @@ class PlanetMapFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implement
 	 */
 	public function load(\Doctrine\Common\Persistence\ObjectManager $manager)
 	{
-		$pcoords = [
-		    1 => [0,0],
-		    2 => [0,1],
-		    3 => [0,2],
-		    4 => [1,0],
-		    5 => [1,1],
-		    6 => [1,2],
-		    7 => [1,3],
-		    8 => [2,0],
-		    9 => [2,1],
-		    10 => [2,2],
-		    11 => [2,3],
-		    12 => [2,4],
-		    13 => [3,0],
-		    14 => [3,1],
-		    15 => [3,2],
-		    16 => [3,3],
-		    17 => [3,4],
-		    18 => [3,5],
-        ];
-		$p = [];
-		foreach ($pcoords as $id => $peakIndex) {
-		    $peak = new PlanetEntity\Peak($id);
-		    $peak->setXcoord($peakIndex[0]);
-		    $peak->setYcoord($peakIndex[1]);
-		    $p[$id] = $peak;
-		    $manager->persist($peak);
-        }
-		$regions = [
-		    [1,4,5],
-		    [5,1,2],
-		    [2,5,6],
-		    [6,2,3],
-		    [3,6,7],
-		    [4,8,9],
-		    [9,4,5],
-		    [5,9,10],
-		    [10,5,6],
-		    [6,10,11],
-		    [11,6,7],
-		    [7,11,2],
-		    [8,13,14],
-		    [14,8,9],
-		    [9,14,15],
-		    [15,9,10],
-		    [10,15,16],
-		    [16,10,11],
-		    [11,16,17],
-		    [17,11,12],
-		    [12,17,18],
-        ];
-		foreach ($regions as $regionPeaks) {
-		    /** @var Peak $centralPeak */
-		    $centralPeak = $p[$regionPeaks[0]];
-		    $leftPeak = $p[$regionPeaks[1]];
-		    $rightPeak = $p[$regionPeaks[2]];
+	    $index = 0;
+        foreach ($this->getRegions() as $regionPeaks) {
+            $centralPeak = $manager->getRepository(PlanetEntity\Peak::class)->findOrCreateByCoords(
+                $regionPeaks['center']['w'],
+                $regionPeaks['center']['h'],
+                $regionPeaks['center']['h']+abs($regionPeaks['center']['w']*$regionPeaks['center']['h']) % 30
+            );
+            $leftPeak = $manager->getRepository(PlanetEntity\Peak::class)->findOrCreateByCoords(
+                $regionPeaks['left']['w'],
+                $regionPeaks['left']['h'],
+                $regionPeaks['left']['h']+abs($regionPeaks['left']['w']*$regionPeaks['left']['h']) % 30
+            );
+            $rightPeak = $manager->getRepository(PlanetEntity\Peak::class)->findOrCreateByCoords(
+                $regionPeaks['right']['w'],
+                $regionPeaks['right']['h'],
+                $regionPeaks['right']['h']+abs($regionPeaks['right']['w']*$regionPeaks['right']['h']) % 30
+            );
+
             $region = new PlanetEntity\Region($centralPeak, $leftPeak, $rightPeak);
-            $region->setFertility(($centralPeak->getId() % 4) * 10);
+            $region->setFertility(abs(($centralPeak->getXcoord()*$leftPeak->getYcoord() % 6)) * 10);
             $manager->persist($region);
+            $manager->persist($centralPeak);
+            $manager->persist($leftPeak);
+            $manager->persist($rightPeak);
+            $manager->flush();
+            if (($index++ % 100) == 0) {
+                echo "region count generated: $index\n";
+            }
         }
 
 		$manager->flush();
 	}
+
+    private function getPeaks() {
+        foreach (range(0, self::PLANET_HEMISPHERE_SIZE-1) as $height) {
+            foreach (range(0, $this->getWidthLength($height)-1) as $width) {
+                yield ['w' => $width, 'h' => $height];
+            }
+        }
+        yield ['w' => 0, 'h' => self::PLANET_HEMISPHERE_SIZE];
+        foreach (range(-1, -(self::PLANET_HEMISPHERE_SIZE-1), -1) as $height) {
+            foreach (range(0, $this->getWidthLength($height)-1) as $width) {
+                yield ['w' => $width, 'h' => $height];
+            }
+        }
+        yield ['w' => 0, 'h' => -self::PLANET_HEMISPHERE_SIZE];
+    }
+
+    /**
+     * @param $height
+     * @return int
+     */
+    private function getWidthLength($height) {
+        if (abs($height) == self::PLANET_HEMISPHERE_SIZE) {
+            return 1;
+        }
+        return 4*(self::PLANET_HEMISPHERE_SIZE-abs($height));
+    }
+
+	private function getRegions() {
+        foreach ($this->getPeaks() as $pcoord) {
+            $HLen = $this->getWidthLength($pcoord['h']);
+            if (abs($pcoord['h']) === self::PLANET_HEMISPHERE_SIZE) {
+                continue;
+            }
+
+            $left = $pcoord;
+            $right = ['w' => ($pcoord['w']+1) % $HLen, 'h' => $pcoord['h']];
+
+            $centerWidthDiff = floor(4*$pcoord['w']/$HLen);
+
+            $highCenter = ['w' => ($pcoord['w'] - $centerWidthDiff) % $this->getWidthLength($pcoord['h']+1), 'h' => $pcoord['h']+1];
+            $bottomCenter = ['w' => ($pcoord['w'] + $centerWidthDiff) % $this->getWidthLength($pcoord['h']-1), 'h' => $pcoord['h']-1];
+
+            yield ['left' => $left, 'right' => $right, 'center' => $highCenter];
+            yield ['left' => $left, 'right' => $right, 'center' => $bottomCenter];
+        }
+    }
 
     /**
      * This method must return an array of fixtures classes
