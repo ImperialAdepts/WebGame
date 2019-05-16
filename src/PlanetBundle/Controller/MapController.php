@@ -28,8 +28,8 @@ class MapController extends BasePlanetController
 	    $leftPeaks = $mapRepo->getPeaksLeftOf($centralRegion->getPeakCenter(), 20);
 	    $rightPeaks = $mapRepo->getPeaksRightOf($centralRegion->getPeakCenter(), 20);
 
-        $leftRegions = $this->completeLines($leftPeaks);
-        $rightRegions = $this->completeLines($rightPeaks);
+//        $leftRegions = $this->completeLines($leftPeaks);
+//        $rightRegions = $this->completeLines($rightPeaks);
 
 		$blueprintsByRegions = [];
 	    /** @var PlanetBuilder $builder */
@@ -44,8 +44,8 @@ class MapController extends BasePlanetController
 			'centralRegion' => $centralRegion,
 			'nextRegions' => $regions,
 			'buildingBlueprints' => $blueprintsByRegions,
-            'rights' => $rightRegions,
-            'lefts' => $leftRegions,
+            'rights' => [],//$rightRegions,
+            'lefts' => [],//$leftRegions,
 		]);
 	}
 

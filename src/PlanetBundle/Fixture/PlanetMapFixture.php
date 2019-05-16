@@ -45,7 +45,7 @@ class PlanetMapFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implement
             $manager->persist($leftPeak);
             $manager->persist($rightPeak);
             $manager->flush();
-            if (($index++ % 100) == 0) {
+            if ((++$index % 100) == 0) {
                 echo "region count generated: $index\n";
             }
         }
@@ -91,9 +91,16 @@ class PlanetMapFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implement
 
             $centerWidthDiff = floor(4*$pcoord['w']/$HLen);
 
-            $highCenter = ['w' => ($pcoord['w'] - $centerWidthDiff) % $this->getWidthLength($pcoord['h']+1), 'h' => $pcoord['h']+1];
-            $bottomCenter = ['w' => ($pcoord['w'] + $centerWidthDiff) % $this->getWidthLength($pcoord['h']-1), 'h' => $pcoord['h']-1];
-
+            if ($pcoord['h'] > 0) {
+                $highCenter = ['w' => ($pcoord['w'] - $centerWidthDiff) % $this->getWidthLength($pcoord['h']+1), 'h' => $pcoord['h']+1];
+                $bottomCenter = ['w' => ($pcoord['w'] + $centerWidthDiff + 1) % $this->getWidthLength($pcoord['h']-1), 'h' => $pcoord['h']-1];
+            } elseif($pcoord['h'] == 0) {
+                $highCenter = ['w' => ($pcoord['w'] - $centerWidthDiff) % $this->getWidthLength($pcoord['h']+1), 'h' => $pcoord['h']+1];
+                $bottomCenter = ['w' => ($pcoord['w'] - $centerWidthDiff) % $this->getWidthLength($pcoord['h']-1), 'h' => $pcoord['h']-1];
+            } else {
+                $highCenter = ['w' => ($pcoord['w'] + $centerWidthDiff + 1) % $this->getWidthLength($pcoord['h']+1), 'h' => $pcoord['h']+1];
+                $bottomCenter = ['w' => ($pcoord['w'] - $centerWidthDiff) % $this->getWidthLength($pcoord['h']-1), 'h' => $pcoord['h']-1];
+            }
             yield ['left' => $left, 'right' => $right, 'center' => $highCenter];
             yield ['left' => $left, 'right' => $right, 'center' => $bottomCenter];
         }
