@@ -23,7 +23,7 @@ class MapController extends BasePlanetController
 	{
         $centralRegion = $this->getHuman()->getCurrentPosition()->getMainRegion();
         $mapRepo = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class);
-	    $regions = $mapRepo->getRegionNeighbourhood($centralRegion);
+	    $regions = [];//$mapRepo->getRegionNeighbourhood($centralRegion);
 
 	    $leftPeaks = $mapRepo->getPeaksLeftOf($centralRegion->getPeakCenter(), 20);
 	    $rightPeaks = $mapRepo->getPeaksRightOf($centralRegion->getPeakCenter(), 20);
