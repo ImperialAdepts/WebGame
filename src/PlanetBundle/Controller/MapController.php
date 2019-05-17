@@ -6,6 +6,7 @@ use AppBundle\Builder\PlanetBuilder;
 use AppBundle\Descriptor\TimeTransformator;
 use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -48,6 +49,57 @@ class MapController extends BasePlanetController
             'lefts' => [],//$leftRegions,
 		]);
 	}
+
+    /**
+     * @Route("/ajax", name="map_ajax_data")
+     */
+    public function mapAjaxAction(Request $request)
+    {
+        $centralRegion = $this->getHuman()->getCurrentPosition()->getMainRegion();
+        $peakRepo = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Peak::class);
+        $mapRepo = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class);
+        $regions = [];
+        $peaks = [];
+
+        /** @var PlanetEntity\Peak $peak */
+        foreach($peakRepo->findAll() as $peak) {
+            $heightDegrees = 360 + 90*$peak->getYcoord()/($this->getPlanet()->getSurfaceGranularity());
+            $widthDegrees = 360*$peak->getXcoord()/$this->getPlanet()->getCoordsWidthLength($peak->getYcoord());
+
+            $p = new \stdClass();
+            $p->x = $peak->getXcoord();
+            $p->y = $peak->getYcoord();
+            $p->h = $heightDegrees;
+            $p->w = $widthDegrees;
+            $p->height = $peak->getHeight();
+
+            $peakRadius = $this->getPlanet()->getDiameter()/2 + $peak->getHeight()/1000;
+            $peakRadius *= 10;
+            $p->projection = new \stdClass();
+            $p->projection->x = $peakRadius * cos(deg2rad($heightDegrees)) * cos(deg2rad($widthDegrees));
+            $p->projection->z = $peakRadius * cos(deg2rad($heightDegrees)) * sin(deg2rad($widthDegrees));
+            $p->projection->y = $peakRadius * sin(deg2rad($heightDegrees));
+            $peaks[$peak->getId()] = $p;
+        }
+        /** @var PlanetEntity\Region $region */
+        foreach($mapRepo->findAll() as $region) {
+            $r = new \stdClass();
+            $r->peaks = [
+                $region->getPeakLeft()->getId(),
+                $region->getPeakRight()->getId(),
+                $region->getPeakCenter()->getId(),
+            ];
+            $r->type = $region->getTerrainType();
+            $regions[] = $r;
+        }
+
+        $json = [
+            'planetDiameter' => $this->getPlanet()->getDiameter(),
+            'peaks' => $peaks,
+            'regions' => $regions,
+        ];
+        return new JsonResponse($json);
+    }
 
     /**
      * @param PlanetEntity\Peak[] $peaks

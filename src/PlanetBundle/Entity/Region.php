@@ -6,6 +6,7 @@ use AppBundle\Descriptor\Adapters\LivingBuilding;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Entity as GeneralEntity;
+use PlanetBundle\Builder\RegionTerrainTypeEnumBuilder;
 use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\ORM\Mapping as ORM;
 /**
@@ -245,6 +246,12 @@ class Region implements ResourcefullInterface
 	{
 		return $this->fertility;
 	}
+
+    public function getTerrainType() {
+	    $terrainBuilder = new RegionTerrainTypeEnumBuilder();
+	    $terrainBuilder->setFertility($this->getFertility());
+        return $terrainBuilder->getTerrainType();
+    }
 
 	/**
 	 * Get ores

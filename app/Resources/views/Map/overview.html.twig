@@ -17,20 +17,37 @@
 		var camera, scene, renderer;
 		var scene2, renderer2;
 		var controls;
-		var peaks = {
-		    1: [20, 300],
-		    2: [30, 40],
-		    3: [40, 100],
-		    5: [0, 0],
-		    200: [300, 400],
+		var peaks;
+		var regionTriangles;
+		var planetDiameter;
+		var colorsByTerrainTypes = {
+		    'dead': 0x999966,
+            'plain': 0xffff99,
+            'fertile': 0x669900,
+            'rock': 0x6b6b47,
+            'tundra': 0x26734d,
+            'swamp': 0x264d00,
+            'frozen': 0xe6fffa,
+            'water': 0x0000b3
         };
-		var regionTriangles = [
-            {'peaks': [1, 2, 200]},
-            {'peaks': [1, 3, 5]},
-            {'peaks': [1, 2, 3]},
-        ];
-		init();
-		animate();
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:2000/map/ajax', false);
+        xhr.setRequestHeader("Content-Type", "text/xml");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    var data=xhr.responseText;
+                    var jsonResponse = JSON.parse(data);
+                    peaks = jsonResponse["peaks"];
+                    regionTriangles = jsonResponse["regions"];
+                    planetDiameter = jsonResponse["planetDiameter"];
+                    init();
+                    animate();
+                }
+            }
+        };
+        xhr.send(null);
 		function init() {
 			camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
 			camera.position.set( 200, 200, 200 );
@@ -38,28 +55,35 @@
 			scene = new THREE.Scene();
 			scene.background = new THREE.Color( 0xf0f0f0 );
 			scene2 = new THREE.Scene();
-			var material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, wireframeLinewidth: 1, side: THREE.DoubleSide } );
-			//
+
 			var region;
+            var peakA;
+            var peakB;
+            var peakC;
 			for(var i=0; i<regionTriangles.length; i++) {
                 region = regionTriangles[i];
+
+				var color = colorsByTerrainTypes[region["type"]];
+				var material = new THREE.MeshBasicMaterial( { color: color, wireframe: false, wireframeLinewidth: 1, side: THREE.DoubleSide } );
+				var wireframe = new THREE.MeshBasicMaterial( { color: 0x000, wireframe: true, wireframeLinewidth: 1, side: THREE.DoubleSide } );
                 var geometry = new THREE.Geometry();
-                console.debug(region);
 
-                for (var y=0; y<region["peaks"].length; y++) {
-                    var peakID = region["peaks"][y];
-                    var peak = peaks[peakID];
-                    console.debug(peak);
-                    console.debug(peak[0]);
-                    console.debug(peak[1]);
-                    geometry.vertices.push(new THREE.Vector3(peak[0],peak[1],0));
-                }
+				peakA = peaks[region["peaks"][0]];
+				peakB = peaks[region["peaks"][1]];
+				peakC = peaks[region["peaks"][2]];
+				geometry.vertices.push(
+						new THREE.Vector3(peakA["projection"]["x"], peakA["projection"]["y"], peakA["projection"]["z"]),
+						new THREE.Vector3(peakB["projection"]["x"], peakB["projection"]["y"], peakB["projection"]["z"]),
+						new THREE.Vector3(peakC["projection"]["x"], peakC["projection"]["y"], peakC["projection"]["z"])
+				);
 
-                geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
+				geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
                 geometry.computeFaceNormals();
 
 				var mesh = new THREE.Mesh( geometry, material );
+				var meshBorder = new THREE.Mesh( geometry, wireframe );
 				scene.add( mesh );
+				scene.add( meshBorder );
 			}
 			//
 			renderer = new THREE.WebGLRenderer( { antialias: true } );
