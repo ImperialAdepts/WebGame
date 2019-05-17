@@ -22,31 +22,9 @@ class MapController extends BasePlanetController
 	 */
 	public function dashboardAction(Request $request)
 	{
-        $centralRegion = $this->getHuman()->getCurrentPosition()->getMainRegion();
-        $mapRepo = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class);
-	    $regions = [];//$mapRepo->getRegionNeighbourhood($centralRegion);
-
-	    $leftPeaks = $mapRepo->getPeaksLeftOf($centralRegion->getPeakCenter(), 20);
-	    $rightPeaks = $mapRepo->getPeaksRightOf($centralRegion->getPeakCenter(), 20);
-
-//        $leftRegions = $this->completeLines($leftPeaks);
-//        $rightRegions = $this->completeLines($rightPeaks);
-
-		$blueprintsByRegions = [];
-	    /** @var PlanetBuilder $builder */
-	    $builder = $this->get('planet_builder');
-	    /** @var PlanetEntity\Region $region */
-        foreach ($regions as $region) {
-	        $blueprintsByRegions[$region->getCoords()] = $builder->getAvailableBlueprints($region, $this->getHuman());
-        }
 		return $this->render('Map/overview.html.twig', [
 		    'settlement' => $this->getHuman()->getCurrentPosition(),
 			'human' => $this->getHuman(),
-			'centralRegion' => $centralRegion,
-			'nextRegions' => $regions,
-			'buildingBlueprints' => $blueprintsByRegions,
-            'rights' => [],//$rightRegions,
-            'lefts' => [],//$leftRegions,
 		]);
 	}
 
