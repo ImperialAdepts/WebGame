@@ -51,12 +51,7 @@ class MapController extends BasePlanetController
             $p->w = $widthDegrees;
             $p->height = $peak->getHeight();
 
-            $peakRadius = $this->getPlanet()->getDiameter()/2 + $peak->getHeight()/1000;
-            $peakRadius *= 10;
-            $p->projection = new \stdClass();
-            $p->projection->x = $peakRadius * cos(deg2rad($heightDegrees)) * cos(deg2rad($widthDegrees));
-            $p->projection->z = $peakRadius * cos(deg2rad($heightDegrees)) * sin(deg2rad($widthDegrees));
-            $p->projection->y = $peakRadius * sin(deg2rad($heightDegrees));
+            $p->projection = $this->computeProjection($peak->getXcoord(), $peak->getYcoord(), $peak->getHeight()/10);
             $peaks[$peak->getId()] = $p;
         }
         /** @var PlanetEntity\Region $region */
@@ -68,6 +63,17 @@ class MapController extends BasePlanetController
                 $region->getPeakCenter()->getId(),
             ];
             $r->type = $region->getTerrainType();
+
+            if ($region->getSettlement() !== null) {
+                $r->settlement = new \stdClass();
+                $r->settlement->owner = $region->getSettlement()->getOwner()->getId();
+                $r->settlement->isMine = $region->getSettlement()->getOwner() == $this->getHuman()
+                    || $region->getSettlement()->getManager() == $this->getHuman();
+
+                $r->settlement->borderPeaks[] = $this->computeProjection($region->getPeakCenter()->getXcoord(), $region->getPeakCenter()->getYcoord(), $region->getPeakCenter()->getHeight()/10 + 0.3);
+                $r->settlement->borderPeaks[] = $this->computeProjection($region->getPeakLeft()->getXcoord(), $region->getPeakLeft()->getYcoord(), $region->getPeakLeft()->getHeight()/10 + 0.3);
+                $r->settlement->borderPeaks[] = $this->computeProjection($region->getPeakRight()->getXcoord(), $region->getPeakRight()->getYcoord(), $region->getPeakRight()->getHeight()/10 + 0.3);
+            }
             $regions[] = $r;
         }
 
@@ -77,6 +83,19 @@ class MapController extends BasePlanetController
             'regions' => $regions,
         ];
         return new JsonResponse($json);
+    }
+
+    private function computeProjection($xcoord, $ycoord, $surfaceHeight = 0) {
+        $heightDegrees = 360 + 90*$ycoord/($this->getPlanet()->getSurfaceGranularity());
+        $widthDegrees = 360*$xcoord/$this->getPlanet()->getCoordsWidthLength($ycoord);
+
+        $peakRadius = $this->getPlanet()->getDiameter()/2 + $surfaceHeight;
+        $peakRadius *= 10;
+        $projection = new \stdClass();
+        $projection->x = $peakRadius * cos(deg2rad($heightDegrees)) * cos(deg2rad($widthDegrees));
+        $projection->z = $peakRadius * cos(deg2rad($heightDegrees)) * sin(deg2rad($widthDegrees));
+        $projection->y = $peakRadius * sin(deg2rad($heightDegrees));
+        return $projection;
     }
 
     /**

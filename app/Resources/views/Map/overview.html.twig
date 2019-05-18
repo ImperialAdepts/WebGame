@@ -22,6 +22,9 @@
             'frozen': 0xe6fffa,
             'water': 0x0000b3
         };
+		var peakA;
+		var peakB;
+		var peakC;
 
         var xhr = new XMLHttpRequest();
         xhr.open('GET', 'http://localhost:2000/map/ajax', false);
@@ -49,33 +52,11 @@
 			scene2 = new THREE.Scene();
 
 			var region;
-            var peakA;
-            var peakB;
-            var peakC;
 			for(var i=0; i<regionTriangles.length; i++) {
                 region = regionTriangles[i];
 
-				var color = colorsByTerrainTypes[region["type"]];
-				var material = new THREE.MeshBasicMaterial( { color: color, wireframe: false, wireframeLinewidth: 1, side: THREE.DoubleSide } );
-				var wireframe = new THREE.MeshBasicMaterial( { color: 0x000, wireframe: true, wireframeLinewidth: 1, side: THREE.DoubleSide } );
-                var geometry = new THREE.Geometry();
-
-				peakA = peaks[region["peaks"][0]];
-				peakB = peaks[region["peaks"][1]];
-				peakC = peaks[region["peaks"][2]];
-				geometry.vertices.push(
-						new THREE.Vector3(peakA["projection"]["x"], peakA["projection"]["y"], peakA["projection"]["z"]),
-						new THREE.Vector3(peakB["projection"]["x"], peakB["projection"]["y"], peakB["projection"]["z"]),
-						new THREE.Vector3(peakC["projection"]["x"], peakC["projection"]["y"], peakC["projection"]["z"])
-				);
-
-				geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
-                geometry.computeFaceNormals();
-
-				var mesh = new THREE.Mesh( geometry, material );
-				var meshBorder = new THREE.Mesh( geometry, wireframe );
-				scene.add( mesh );
-				scene.add( meshBorder );
+				renderRegion(scene, region);
+				renderRegionBorders(scene, region);
 			}
 			//
 			renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -89,6 +70,98 @@
 			renderer2.domElement.style.top = 0;
 			document.body.appendChild( renderer2.domElement );
 		}
+
+		function renderRegion(scene, region) {
+			var color = colorsByTerrainTypes[region["type"]];
+			// if (region["settlement"] == null) {
+				var material = new THREE.MeshBasicMaterial({
+					color: color,
+					wireframe: false,
+					wireframeLinewidth: 1,
+					side: THREE.DoubleSide
+				});
+			// } else {
+			// 	var material = new THREE.MeshBasicMaterial({
+			// 		color: 0x000,
+			// 		wireframe: false,
+			// 		wireframeLinewidth: 1,
+			// 		side: THREE.DoubleSide
+			// 	});
+			// }
+			var geometry = new THREE.Geometry();
+
+			peakA = peaks[region["peaks"][0]];
+			peakB = peaks[region["peaks"][1]];
+			peakC = peaks[region["peaks"][2]];
+			geometry.vertices.push(
+					new THREE.Vector3(peakA["projection"]["x"], peakA["projection"]["y"], peakA["projection"]["z"]),
+					new THREE.Vector3(peakB["projection"]["x"], peakB["projection"]["y"], peakB["projection"]["z"]),
+					new THREE.Vector3(peakC["projection"]["x"], peakC["projection"]["y"], peakC["projection"]["z"])
+			);
+
+			geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
+			geometry.computeFaceNormals();
+
+			var mesh = new THREE.Mesh( geometry, material );
+			scene.add( mesh );
+		}
+
+		function renderRegionBorders(scene, region) {
+			var wireframe = new THREE.MeshBasicMaterial( { color: 0x000, wireframe: true, wireframeLinewidth: 1, side: THREE.DoubleSide } );
+			var geometry = new THREE.Geometry();
+
+			peakA = peaks[region["peaks"][0]];
+			peakB = peaks[region["peaks"][1]];
+			peakC = peaks[region["peaks"][2]];
+			geometry.vertices.push(
+					new THREE.Vector3(peakA["projection"]["x"], peakA["projection"]["y"], peakA["projection"]["z"]),
+					new THREE.Vector3(peakB["projection"]["x"], peakB["projection"]["y"], peakB["projection"]["z"]),
+					new THREE.Vector3(peakC["projection"]["x"], peakC["projection"]["y"], peakC["projection"]["z"])
+			);
+
+			geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
+			geometry.computeFaceNormals();
+
+			var meshBorder = new THREE.Mesh( geometry, wireframe );
+			scene.add( meshBorder );
+
+			if (region["settlement"] != null) {
+				console.log(region["settlement"]);
+				var myTerritory = new THREE.MeshBasicMaterial({
+					color: 0xffa31a,
+					wireframe: true,
+					wireframeLinewidth: 3,
+					side: THREE.DoubleSide
+				});
+				var foreignTerritory = new THREE.MeshBasicMaterial({
+					color: 0xff0000,
+					wireframe: true,
+					wireframeLinewidth: 3,
+					side: THREE.DoubleSide
+				});
+				var geometry = new THREE.Geometry();
+
+				var peakProjectionA = region["settlement"]["borderPeaks"][0];
+				var peakProjectionB = region["settlement"]["borderPeaks"][1];
+				var peakProjectionC = region["settlement"]["borderPeaks"][2];
+				geometry.vertices.push(
+						new THREE.Vector3(peakProjectionA["x"], peakProjectionA["y"], peakProjectionA["z"]),
+						new THREE.Vector3(peakProjectionB["x"], peakProjectionB["y"], peakProjectionB["z"]),
+						new THREE.Vector3(peakProjectionC["x"], peakProjectionC["y"], peakProjectionC["z"])
+				);
+
+				geometry.faces.push(new THREE.Face3(0, 1, 2));
+				geometry.computeFaceNormals();
+
+				if (region["settlement"]["isMine"]) {
+					var meshBorder = new THREE.Mesh(geometry, myTerritory);
+				} else {
+					var meshBorder = new THREE.Mesh(geometry, foreignTerritory);
+				}
+				scene.add(meshBorder);
+			}
+		}
+
 		function animate() {
 			requestAnimationFrame( animate );
 			controls.update();
