@@ -6,6 +6,7 @@ use AppBundle\Builder\PlanetBuilder;
 use AppBundle\Descriptor\TimeTransformator;
 use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,33 +22,81 @@ class MapController extends BasePlanetController
 	 */
 	public function dashboardAction(Request $request)
 	{
-        $centralRegion = $this->getHuman()->getCurrentPosition()->getMainRegion();
-        $mapRepo = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class);
-	    $regions = $mapRepo->getRegionNeighbourhood($centralRegion);
-
-	    $leftPeaks = $mapRepo->getPeaksLeftOf($centralRegion->getPeakCenter(), 20);
-	    $rightPeaks = $mapRepo->getPeaksRightOf($centralRegion->getPeakCenter(), 20);
-
-        $leftRegions = $this->completeLines($leftPeaks);
-        $rightRegions = $this->completeLines($rightPeaks);
-
-		$blueprintsByRegions = [];
-	    /** @var PlanetBuilder $builder */
-	    $builder = $this->get('planet_builder');
-	    /** @var PlanetEntity\Region $region */
-        foreach ($regions as $region) {
-	        $blueprintsByRegions[$region->getCoords()] = $builder->getAvailableBlueprints($region, $this->getHuman());
-        }
 		return $this->render('Map/overview.html.twig', [
 		    'settlement' => $this->getHuman()->getCurrentPosition(),
 			'human' => $this->getHuman(),
-			'centralRegion' => $centralRegion,
-			'nextRegions' => $regions,
-			'buildingBlueprints' => $blueprintsByRegions,
-            'rights' => $rightRegions,
-            'lefts' => $leftRegions,
 		]);
 	}
+
+    /**
+     * @Route("/ajax", name="map_ajax_data")
+     */
+    public function mapAjaxAction(Request $request)
+    {
+        $centralRegion = $this->getHuman()->getCurrentPosition()->getMainRegion();
+        $peakRepo = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Peak::class);
+        $mapRepo = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class);
+        $regions = [];
+        $peaks = [];
+
+        /** @var PlanetEntity\Peak $peak */
+        foreach($peakRepo->findAll() as $peak) {
+            $heightDegrees = 360 + 90*$peak->getYcoord()/($this->getPlanet()->getSurfaceGranularity());
+            $widthDegrees = 360*$peak->getXcoord()/$this->getPlanet()->getCoordsWidthLength($peak->getYcoord());
+
+            $p = new \stdClass();
+            $p->x = $peak->getXcoord();
+            $p->y = $peak->getYcoord();
+            $p->h = $heightDegrees;
+            $p->w = $widthDegrees;
+            $p->height = $peak->getHeight();
+
+            $p->projection = $this->computeProjection($peak->getXcoord(), $peak->getYcoord(), $peak->getHeight()/10);
+            $peaks[$peak->getId()] = $p;
+        }
+        /** @var PlanetEntity\Region $region */
+        foreach($mapRepo->findAll() as $region) {
+            $r = new \stdClass();
+            $r->peaks = [
+                $region->getPeakLeft()->getId(),
+                $region->getPeakRight()->getId(),
+                $region->getPeakCenter()->getId(),
+            ];
+            $r->type = $region->getTerrainType();
+
+            if ($region->getSettlement() !== null) {
+                $r->settlement = new \stdClass();
+                $r->settlement->owner = $region->getSettlement()->getOwner()->getId();
+                $r->settlement->isMine = $region->getSettlement()->getOwner() == $this->getHuman()
+                    || $region->getSettlement()->getManager() == $this->getHuman();
+
+                $r->settlement->borderPeaks[] = $this->computeProjection($region->getPeakCenter()->getXcoord(), $region->getPeakCenter()->getYcoord(), $region->getPeakCenter()->getHeight()/10 + 0.3);
+                $r->settlement->borderPeaks[] = $this->computeProjection($region->getPeakLeft()->getXcoord(), $region->getPeakLeft()->getYcoord(), $region->getPeakLeft()->getHeight()/10 + 0.3);
+                $r->settlement->borderPeaks[] = $this->computeProjection($region->getPeakRight()->getXcoord(), $region->getPeakRight()->getYcoord(), $region->getPeakRight()->getHeight()/10 + 0.3);
+            }
+            $regions[] = $r;
+        }
+
+        $json = [
+            'planetDiameter' => $this->getPlanet()->getDiameter(),
+            'peaks' => $peaks,
+            'regions' => $regions,
+        ];
+        return new JsonResponse($json);
+    }
+
+    private function computeProjection($xcoord, $ycoord, $surfaceHeight = 0) {
+        $heightDegrees = 360 + 90*$ycoord/($this->getPlanet()->getSurfaceGranularity());
+        $widthDegrees = 360*$xcoord/$this->getPlanet()->getCoordsWidthLength($ycoord);
+
+        $peakRadius = $this->getPlanet()->getDiameter()/2 + $surfaceHeight;
+        $peakRadius *= 10;
+        $projection = new \stdClass();
+        $projection->x = $peakRadius * cos(deg2rad($heightDegrees)) * cos(deg2rad($widthDegrees));
+        $projection->z = $peakRadius * cos(deg2rad($heightDegrees)) * sin(deg2rad($widthDegrees));
+        $projection->y = $peakRadius * sin(deg2rad($heightDegrees));
+        return $projection;
+    }
 
     /**
      * @param PlanetEntity\Peak[] $peaks

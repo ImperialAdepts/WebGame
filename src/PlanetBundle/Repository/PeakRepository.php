@@ -2,6 +2,7 @@
 
 namespace PlanetBundle\Repository;
 
+use PlanetBundle\Entity\Peak;
 use PlanetBundle\Entity\Region;
 
 /**
@@ -12,5 +13,23 @@ use PlanetBundle\Entity\Region;
  */
 class PeakRepository extends \Doctrine\ORM\EntityRepository
 {
-
+    /**
+     * @param integer $xcoord
+     * @param integer $ycoord
+     * @return Peak
+     */
+    public function findOrCreateByCoords($xcoord, $ycoord, $defaultHeight = 0) {
+        $peak = $this->findOneBy([
+            'xcoord' => $xcoord,
+            'ycoord' => $ycoord,
+        ]);
+        if ($peak !== null) {
+            return $peak;
+        }
+        $peak = new Peak();
+        $peak->setXcoord($xcoord);
+        $peak->setYcoord($ycoord);
+        $peak->setHeight($defaultHeight);
+        return $peak;
+    }
 }

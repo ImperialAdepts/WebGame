@@ -1,181 +1,245 @@
 {% extends 'Settlement/base.html.twig' %}
 
+{% block javascripts %}
+    <script src="/js/three.min.js"></script>
+    <script src="/js/TrackballControls.js"></script>
+    <script src="/js/CSS3DRenderer.js"></script>
+
+	<script>
+		var camera, scene, renderer;
+		var scene2, renderer2;
+		var controls;
+		var peaks;
+		var regionTriangles;
+		var planetDiameter;
+		var colorsByTerrainTypes = {
+		    'dead': 0x999966,
+            'plain': 0xffff99,
+            'fertile': 0x669900,
+            'rock': 0x6b6b47,
+            'tundra': 0x26734d,
+            'swamp': 0x264d00,
+            'frozen': 0xe6fffa,
+            'water': 0x0000b3
+        };
+		var selectedRegion;
+		var lastSelectedMesh;
+		var lastSelectedMaterial;
+		var triangles;
+		var peakA;
+		var peakB;
+		var peakC;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:2000/map/ajax', false);
+        xhr.setRequestHeader("Content-Type", "text/xml");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    var data=xhr.responseText;
+                    var jsonResponse = JSON.parse(data);
+                    peaks = jsonResponse["peaks"];
+                    regionTriangles = jsonResponse["regions"];
+                    planetDiameter = jsonResponse["planetDiameter"];
+                    init();
+                    animate();
+					document.getElementById('map-canvas').addEventListener( 'mousedown', onDocumentMouseDown, false );
+                }
+            }
+        };
+        xhr.send(null);
+		function init() {
+			camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
+			camera.position.set( 200, 200, 200 );
+			controls = new THREE.TrackballControls( camera );
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color( 0xf0f0f0 );
+			scene2 = new THREE.Scene();
+
+			triangles = [];
+			var region;
+			for(var i=0; i<regionTriangles.length; i++) {
+                region = regionTriangles[i];
+
+				renderRegion(scene, region);
+				renderRegionBorders(scene, region);
+			}
+			//
+			renderer = new THREE.WebGLRenderer( { antialias: true } );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+            document.getElementById('map-canvas').appendChild( renderer.domElement );
+			renderer2 = new THREE.CSS3DRenderer();
+			renderer2.setSize( window.innerWidth, window.innerHeight );
+			renderer2.domElement.style.position = 'absolute';
+			renderer2.domElement.style.top = 0;
+            document.getElementById('map-canvas').appendChild( renderer2.domElement );
+		}
+
+		function renderRegion(scene, region) {
+			var color = colorsByTerrainTypes[region["type"]];
+			// if (region["settlement"] == null) {
+				var material = new THREE.MeshBasicMaterial({
+					color: color,
+					wireframe: false,
+					wireframeLinewidth: 1,
+					side: THREE.DoubleSide
+				});
+			// } else {
+			// 	var material = new THREE.MeshBasicMaterial({
+			// 		color: 0x000,
+			// 		wireframe: false,
+			// 		wireframeLinewidth: 1,
+			// 		side: THREE.DoubleSide
+			// 	});
+			// }
+			var geometry = new THREE.Geometry();
+
+			peakA = peaks[region["peaks"][0]];
+			peakB = peaks[region["peaks"][1]];
+			peakC = peaks[region["peaks"][2]];
+			geometry.vertices.push(
+					new THREE.Vector3(peakA["projection"]["x"], peakA["projection"]["y"], peakA["projection"]["z"]),
+					new THREE.Vector3(peakB["projection"]["x"], peakB["projection"]["y"], peakB["projection"]["z"]),
+					new THREE.Vector3(peakC["projection"]["x"], peakC["projection"]["y"], peakC["projection"]["z"])
+			);
+
+			geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
+			geometry.computeFaceNormals();
+
+			var mesh = new THREE.Mesh( geometry, material );
+			mesh.region = region;
+			triangles.push(mesh);
+			scene.add( mesh );
+		}
+
+		function renderRegionBorders(scene, region) {
+			var wireframe = new THREE.MeshBasicMaterial( { color: 0x000, wireframe: true, wireframeLinewidth: 1, side: THREE.DoubleSide } );
+			var geometry = new THREE.Geometry();
+
+			peakA = peaks[region["peaks"][0]];
+			peakB = peaks[region["peaks"][1]];
+			peakC = peaks[region["peaks"][2]];
+			geometry.vertices.push(
+					new THREE.Vector3(peakA["projection"]["x"], peakA["projection"]["y"], peakA["projection"]["z"]),
+					new THREE.Vector3(peakB["projection"]["x"], peakB["projection"]["y"], peakB["projection"]["z"]),
+					new THREE.Vector3(peakC["projection"]["x"], peakC["projection"]["y"], peakC["projection"]["z"])
+			);
+
+			geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
+			geometry.computeFaceNormals();
+
+			var meshBorder = new THREE.Mesh( geometry, wireframe );
+			scene.add( meshBorder );
+
+			if (region["settlement"] != null) {
+				console.log(region["settlement"]);
+				var myTerritory = new THREE.MeshBasicMaterial({
+					color: 0xffa31a,
+					wireframe: true,
+					wireframeLinewidth: 3,
+					side: THREE.DoubleSide
+				});
+				var foreignTerritory = new THREE.MeshBasicMaterial({
+					color: 0xff0000,
+					wireframe: true,
+					wireframeLinewidth: 3,
+					side: THREE.DoubleSide
+				});
+				var geometry = new THREE.Geometry();
+
+				var peakProjectionA = region["settlement"]["borderPeaks"][0];
+				var peakProjectionB = region["settlement"]["borderPeaks"][1];
+				var peakProjectionC = region["settlement"]["borderPeaks"][2];
+				geometry.vertices.push(
+						new THREE.Vector3(peakProjectionA["x"], peakProjectionA["y"], peakProjectionA["z"]),
+						new THREE.Vector3(peakProjectionB["x"], peakProjectionB["y"], peakProjectionB["z"]),
+						new THREE.Vector3(peakProjectionC["x"], peakProjectionC["y"], peakProjectionC["z"])
+				);
+
+				geometry.faces.push(new THREE.Face3(0, 1, 2));
+				geometry.computeFaceNormals();
+
+                var meshBorder;
+				if (region["settlement"]["isMine"]) {
+					meshBorder = new THREE.Mesh(geometry, myTerritory);
+				} else {
+					meshBorder = new THREE.Mesh(geometry, foreignTerritory);
+				}
+				scene.add(meshBorder);
+			}
+		}
+
+		function onDocumentMouseDown(event) {
+
+			var mouse = new THREE.Vector2();
+			// mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+			// mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+			// var offsets = document.getElementById('map-canvas').getElementsByTagName('div').item(0).getBoundingClientRect();
+			mouse.x = 0;
+			mouse.y = 0;
+
+			console.debug(mouse.x);
+			console.debug(mouse.y);
+
+			var raycaster = new THREE.Raycaster();
+			raycaster.setFromCamera( mouse, camera );
+			var intersects = raycaster.intersectObjects( triangles );
+
+			if(intersects.length > 0) {
+				console.error(intersects[0]);
+				if (lastSelectedMaterial != null) {
+					lastSelectedMesh["material"] = lastSelectedMaterial;
+				}
+				lastSelectedMaterial = intersects[0]["object"]["material"];
+				lastSelectedMesh = intersects[0]["object"];
+				intersects[0]["object"]["material"] = new THREE.MeshBasicMaterial({
+					color: 0x000,
+					wireframe: false,
+					wireframeLinewidth: 1,
+					side: THREE.DoubleSide
+				});
+				selectedRegion = intersects[0]["object"]["region"];
+			}
+
+		}
+
+		function animate() {
+			requestAnimationFrame( animate );
+			controls.update();
+			renderer.render( scene, camera );
+			renderer2.render( scene2, camera );
+		}
+	</script>
+{% endblock %}
+
 {% block subbody %}
 	{% import _self as thistemplate %}
 
-	<div class="left-half">
-	{% for x, regionLine in lefts %}
-		<div class="left-line {% if (loop.index is even) %}even-line{% endif %}">
-			{% for region in regionLine %}
-				{{ thistemplate.region(region, human) }}
-			{% endfor %}
-		</div>
-	{% endfor %}
-	</div>
+	<div id="map-canvas"></div>
 
-	<div class="right-half">
-		{% for x, regionLine in rights %}
-			<div class="right-line {% if (loop.index is even) %}even-line{% endif %}">
-				{% for region in regionLine %}
-					{{ thistemplate.region(region, human) }}
-				{% endfor %}
-			</div>
-		{% endfor %}
-	</div>
-
-<style type="text/css">
-	.right-line, .left-line {
-		width: 100%;
-		height: 110px;
-	}
-	.region {
-		border-style: dashed;
-		border-color: #563b15;
-		width: 100px;
-		height: 100px;
-		margin-top: 0;
-		margin-bottom: 0;
-		/*margin-left: 20px;*/
-		display: block;
-		color: #333333;
-	}
-	.right-half {
-		width: 45%;
-		float: left;
-		min-width: 500px;
-	}
-	.left-half {
-		width: 45%;
-		float: left;
-		min-width: 500px;
-	}
-
-	.right-line .region {
-		float: left;
-	}
-	.left-line .region {
-		float: right;
-	}
-	.region.settlement.current-position {
-		border-style: solid;
-		border-color: darkorange;
-		border-width: 3px;
-		color: darkorange;
-	}
-	.fertility-dead {
-		background-color: #636363;
-	}
-	.fertility-tundra {
-		background-color: #496310;
-	}
-	.fertility-fertile {
-		background-color: #6b9311;
-	}
-	.settlement {
-		border-style: solid;
-		border-color: #000000;
-	}
-</style>
+	<style>
+		body {
+			background-color: #ffffff;
+			margin: 0;
+			overflow: hidden;
+		}
+        #map-canvas {
+        }
+		#info {
+			position: absolute;
+			top: 0px;
+			width: 100%;
+			color: #000000;
+			padding: 5px;
+			font-family: Monospace;
+			font-size: 13px;
+			text-align: center;
+			z-index: 1;
+		}
+		a {
+			color: #000000;
+		}
+	</style>
 {% endblock %}
-
-{% macro region(region, currentHuman) %}
-	{% set classes = '' %}
-	{% if region.fertility < 10 %}
-		{% set classes = classes ~ ' fertility-dead' %}
-	{% endif %}
-	{% if region.fertility >= 10 and region.fertility < 30 %}
-		{% set classes = classes ~ ' fertility-tundra' %}
-	{% endif %}
-	{% if region.fertility >= 30 and region.fertility < 60 %}
-		{% set classes = classes ~ ' fertility-fertile' %}
-	{% endif %}
-
-	{% if region.settlement is not null %}
-		{% if region.settlement.owner == currentHuman %}
-			{% set classes = classes ~ ' current-position' %}
-		{% endif %}
-		<a class="region settlement {{ classes }}" href="{{ path('settlement_dashboard', {'settlement': region.settlement.id}) }}">
-			{{ region.settlement.owner.name }}
-		</a>
-	{% else %}
-		<div class="region {{ classes }}">
-			{{ region.coords }}
-		</div>
-	{% endif %}
-{% endmacro %}
-
-
-{% macro region_map(region) %}
-	<table>
-		<tbody>
-		<tr>
-			<td colspan="2">
-				{{ region.coords }}:
-				{% if region.settlement is not null %}
-					<strong>{{ region.settlement.type }}</strong>
-					<small> ruled by </small>
-					<strong>{{ region.settlement.manager.name }}</strong>
-				{% else %}
-					nature
-				{% endif %}
-			</td>
-			<td>History:</td>
-			<td>
-				{% if region.settlement is not null %}
-					<a href="{{ path('settlement_dashboard', {'settlement': region.settlement.id}) }}">settlement_dashboard</a>
-				{% endif %}
-			</td>
-		</tr>
-		<tr>
-			{#<td>#}
-			{# TODO: opravit vypisovani maker #}
-			{#{{ regioMacro.resource_deposit_info({r:region, h:human}) }}#}
-			{#</td>#}
-			{% if region.project is not null %}
-				<td>
-					Project {{ region.project.buildingBlueprint.description }}...
-					<br/> {{ dump(region.project.missingResources) }}
-					<ul>
-						{% for notification in region.project.notifications %}
-							<li>{{ notification.description }}</li>
-						{% endfor %}
-					</ul>
-				</td>
-			{% else %}
-				<td>
-					{#							{{ render(controller('PlanetBundle:Region:availableSettlements', {#}
-					{#								'regionC': region.peakCenter.id,#}
-					{#								'regionL': region.peakLeft.id,#}
-					{#								'regionR': region.peakRight.id#}
-					{#							})) }}#}
-				</td>
-			{% endif %}
-			<td>
-				<dt>Fertility:</dt>
-				<dd>{{ region.fertility }}</dd>
-			</td>
-			<td>
-				{% for project in region.projectHistory %}
-					<h4>{{ project.buildingBlueprint.name }}</h4>
-					<ul>
-						{% for notification in project.notifications %}
-							<li>{{ notification.description }}</li>
-						{% endfor %}
-					</ul>
-				{% endfor %}
-			</td>
-			<td>
-				{% if region.settlement is null %}
-					<a href="{{ path('map_newcolony', {
-						'regionC': region.peakCenter.id,
-						'regionL': region.peakLeft.id,
-						'regionR': region.peakRight.id
-					}) }}">New colony</a>
-				{% endif %}
-			</td>
-		</tr>
-		</tbody>
-	</table>
-{% endmacro %}
-
 

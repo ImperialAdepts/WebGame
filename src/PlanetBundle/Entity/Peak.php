@@ -15,7 +15,7 @@ class Peak
 	 *
 	 * @ORM\Column(name="id", type="integer", length=30)
 	 * @ORM\Id
-	 * @ ORM\GeneratedValue(strategy="")
+	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
 	private $id;
 

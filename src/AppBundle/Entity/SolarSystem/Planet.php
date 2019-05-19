@@ -100,6 +100,13 @@ class Planet
     private $timeCoefficient = 60;
 
     /**
+     * @var integer peak count from equator to pole
+     *
+     * @ORM\Column(name="surface_granularity", type="integer", nullable=false)
+     */
+    private $surfaceGranularity = 10;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="last_phase_counted", type="integer", nullable=true)
@@ -319,6 +326,22 @@ class Planet
     /**
      * @return int
      */
+    public function getSurfaceGranularity()
+    {
+        return $this->surfaceGranularity;
+    }
+
+    /**
+     * @param int $surfaceGranularity
+     */
+    public function setSurfaceGranularity($surfaceGranularity)
+    {
+        $this->surfaceGranularity = $surfaceGranularity;
+    }
+
+    /**
+     * @return int
+     */
     public function getLastPhaseUpdate()
     {
         return $this->lastPhaseUpdate;
@@ -360,6 +383,14 @@ class Planet
 
     public function getOrbitPhaseLengthInSec() {
         return floor(24*60*60*$this->getOrbitPeriod() / $this->getOrbitPhaseCount());
+    }
+
+    public function getCoordsWidthLength($height) {
+        $hemisphereSize = $this->getSurfaceGranularity();
+        if (abs($height) == $hemisphereSize) {
+            return 1;
+        }
+        return 4*($hemisphereSize-abs($height));
     }
 
 }
