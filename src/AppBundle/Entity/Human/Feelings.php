@@ -131,20 +131,25 @@ class Feelings
     }
 
     /**
-     * @param $time
      * @param $feelingChange
      * @param $description
+     * @param array $descriptionData
      */
-    public function change($time, $feelingChange, $description) {
+    public function change($feelingChange, $description, array $descriptionData = []) {
         $this->setAllLife($this->getAllLife() + $feelingChange);
         $this->setLastPeriod($this->getLastPeriod() + $feelingChange);
         $this->setThisTime($this->getThisTime() + $feelingChange);
 
         $change = new FeelingChange();
-        $change->setTime($time);
+        $change->setTime(time());
         $change->setHuman($this->getHuman());
+        $change->setPlanet($this->getHuman()->getPlanet());
+        $change->setPlanetPhase($this->getHuman()->getPlanet()->getLastPhaseUpdate());
         $change->setChange($feelingChange);
         $change->setDescription($description);
+        if (!empty($descriptionData)) {
+            $change->setDescriptionData($descriptionData);
+        }
         $change->setFeelings($this);
         $this->history->add($change);
     }

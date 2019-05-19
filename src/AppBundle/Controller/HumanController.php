@@ -46,7 +46,9 @@ class HumanController extends Controller
             return $this->redirectToRoute('gamer_human_selection');
         }
         $human = $this->get('logged_user_settings')->getHuman();
-        $human->getFeelings()->change(0, $change, "handmade change for test by ".$this->get('logged_user_settings')->getGamer()->getLogin());
+        $human->getFeelings()->change($change, "handmade change for test by ".$this->get('logged_user_settings')->getGamer()->getLogin(), [
+            'human_cause' => $this->get('logged_user_settings')->getHuman(),
+        ]);
         $this->getDoctrine()->getManager()->flush($human->getFeelings());
         return $this->redirectToRoute('human_dashboard');
     }
@@ -60,7 +62,9 @@ class HumanController extends Controller
             return $this->redirectToRoute('gamer_human_selection');
         }
         $human = $this->get('logged_user_settings')->getHuman();
-        $human->getFeelings()->change(0, -1*$change, "handmade change for test by ".$this->get('logged_user_settings')->getGamer()->getLogin());
+        $human->getFeelings()->change(-1*$change, "handmade change for test by ".$this->get('logged_user_settings')->getGamer()->getLogin(), [
+            'human_cause' => $this->get('logged_user_settings')->getHuman(),
+        ]);
         $this->getDoctrine()->getManager()->flush($human->getFeelings());
         return $this->redirectToRoute('human_dashboard');
     }

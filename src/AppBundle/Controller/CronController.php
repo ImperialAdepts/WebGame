@@ -120,24 +120,28 @@ class CronController extends Controller
 	 */
 	public function maintananceAction()
 	{
-		$settlements = $this->getDoctrine()->getRepository(PlanetEntity\Settlement::class)->getAll();
+	    // TODO: presunout do zpracovani jednotlivych planet
+//		$settlements = $this->getDoctrine()->getRepository(PlanetEntity\Settlement::class)->getAll();
+//
+//        /** @var PlanetEntity\Settlement $settlement */
+//        foreach ($settlements as $settlement) {
+//            /** @var PlanetEntity\Region $region */
+//            foreach ($settlement->getRegions() as $region) {
+//                /** @var Team $team */
+//                foreach (Team::in($region) as $team) {
+//                    $team->getDeposit()->setWorkHours(24*365);
+//                    $this->getDoctrine()->getManager()->persist($team->getDeposit());
+//                }
+//
+//                $this->get('maintainer_food')->eatFood($region);
+//
+//                $this->getDoctrine()->getManager()->flush($region);
+//            }
+//        }
 
-        /** @var PlanetEntity\Settlement $settlement */
-        foreach ($settlements as $settlement) {
-            /** @var PlanetEntity\Region $region */
-            foreach ($settlement->getRegions() as $region) {
-                /** @var Team $team */
-                foreach (Team::in($region) as $team) {
-                    $team->getDeposit()->setWorkHours(24*365);
-                    $this->getDoctrine()->getManager()->persist($team->getDeposit());
-                }
-
-                $this->get('maintainer_food')->eatFood($region);
-
-                $this->getDoctrine()->getManager()->flush($region);
-            }
-        }
-        $this->get('maintainer')->clearEmptyDeposits();
+//        $this->get('maintainer')->clearEmptyDeposits();
+        $this->get('maintainer_human')->addHumanHours();
+        $this->get('maintainer_human')->resetFeelings();
 		$this->getDoctrine()->getManager()->flush();
 
 		$response = "";

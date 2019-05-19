@@ -35,6 +35,13 @@ class Human
     private $name;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="hours", type="smallint", nullable=false)
+     */
+    private $hours = 0;
+
+    /**
      * @var Soul
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Soul", inversedBy="incarnations")
@@ -107,6 +114,30 @@ class Human
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHours()
+    {
+        return $this->hours;
+    }
+
+    /**
+     * @param int $hours
+     */
+    public function setHours($hours)
+    {
+        $this->hours = $hours;
+    }
+
+    /**
+     * @param int $hours
+     */
+    public function spendHours($hours)
+    {
+        $this->hours -= $hours;
     }
 
     /**

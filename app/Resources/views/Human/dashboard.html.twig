@@ -24,7 +24,10 @@
 
 	<ul>
 		{% for feelingChange in human.feelings.history %}
-			<li>{{ feelingChange.time }}# {{ feelingChange.change }}, {{ feelingChange.description }}</li>
+			<li>
+				{{ feelingChange.time }}# {{ feelingChange.planetPhase }}@{{ feelingChange.planet.name }}; {{ feelingChange.change }}, {{ feelingChange.description }}
+				{{ dump(feelingChange.descriptionData) }}
+			</li>
 		{% endfor %}
 	</ul>
 
