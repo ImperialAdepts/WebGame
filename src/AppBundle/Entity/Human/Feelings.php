@@ -24,23 +24,44 @@ class Feelings
     /**
      * @var integer
      *
-     * @ORM\Column(name="all_life", type="integer", nullable=false)
+     * @ORM\Column(name="all_life_happiness", type="integer", nullable=false)
      */
-    private $allLife = 0;
+    private $allLifeHappiness = 0;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="last_period", type="integer", nullable=false)
+     * @ORM\Column(name="all_life_sadness", type="integer", nullable=false)
      */
-    private $lastPeriod = 0;
+    private $allLifeSadness = 0;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="this_time", type="integer", nullable=false)
+     * @ORM\Column(name="last_period_happiness", type="integer", nullable=false)
      */
-    private $thisTime = 0;
+    private $lastPeriodHappiness = 0;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="last_period_sadness", type="integer", nullable=false)
+     */
+    private $lastPeriodSadness = 0;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="this_time_happiness", type="integer", nullable=false)
+     */
+    private $thisTimeHappiness = 0;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="this_time_sadness", type="integer", nullable=false)
+     */
+    private $thisTimeSadness = 0;
 
     /**
      * @var ArrayCollection
@@ -71,15 +92,7 @@ class Feelings
      */
     public function getAllLife()
     {
-        return $this->allLife;
-    }
-
-    /**
-     * @param int $allLife
-     */
-    public function setAllLife($allLife)
-    {
-        $this->allLife = $allLife;
+        return $this->getAllLifeHappiness() - $this->getAllLifeSadness();
     }
 
     /**
@@ -87,15 +100,7 @@ class Feelings
      */
     public function getLastPeriod()
     {
-        return $this->lastPeriod;
-    }
-
-    /**
-     * @param int $lastPeriod
-     */
-    public function setLastPeriod($lastPeriod)
-    {
-        $this->lastPeriod = $lastPeriod;
+        return $this->getLastPeriodHappiness() - $this->getLastPeriodSadness();
     }
 
     /**
@@ -103,15 +108,104 @@ class Feelings
      */
     public function getThisTime()
     {
-        return $this->thisTime;
+        return $this->getThisTimeHappiness() - $this->getThisTimeSadness();
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getAllLifeHappiness()
+    {
+        return $this->allLifeHappiness;
     }
 
     /**
-     * @param int $thisTime
+     * @param int $allLifeHappiness
      */
-    public function setThisTime($thisTime)
+    public function setAllLifeHappiness($allLifeHappiness)
     {
-        $this->thisTime = $thisTime;
+        $this->allLifeHappiness = $allLifeHappiness;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAllLifeSadness()
+    {
+        return $this->allLifeSadness;
+    }
+
+    /**
+     * @param int $allLifeSadness
+     */
+    public function setAllLifeSadness($allLifeSadness)
+    {
+        $this->allLifeSadness = $allLifeSadness;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastPeriodHappiness()
+    {
+        return $this->lastPeriodHappiness;
+    }
+
+    /**
+     * @param int $lastPeriodHappiness
+     */
+    public function setLastPeriodHappiness($lastPeriodHappiness)
+    {
+        $this->lastPeriodHappiness = $lastPeriodHappiness;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastPeriodSadness()
+    {
+        return $this->lastPeriodSadness;
+    }
+
+    /**
+     * @param int $lastPeriodSadness
+     */
+    public function setLastPeriodSadness($lastPeriodSadness)
+    {
+        $this->lastPeriodSadness = $lastPeriodSadness;
+    }
+
+    /**
+     * @return int
+     */
+    public function getThisTimeHappiness()
+    {
+        return $this->thisTimeHappiness;
+    }
+
+    /**
+     * @param int $thisTimeHappiness
+     */
+    public function setThisTimeHappiness($thisTimeHappiness)
+    {
+        $this->thisTimeHappiness = $thisTimeHappiness;
+    }
+
+    /**
+     * @return int
+     */
+    public function getThisTimeSadness()
+    {
+        return $this->thisTimeSadness;
+    }
+
+    /**
+     * @param int $thisTimeSadness
+     */
+    public function setThisTimeSadness($thisTimeSadness)
+    {
+        $this->thisTimeSadness = $thisTimeSadness;
     }
 
     /**
@@ -136,9 +230,15 @@ class Feelings
      * @param array $descriptionData
      */
     public function change($feelingChange, $description, array $descriptionData = []) {
-        $this->setAllLife($this->getAllLife() + $feelingChange);
-        $this->setLastPeriod($this->getLastPeriod() + $feelingChange);
-        $this->setThisTime($this->getThisTime() + $feelingChange);
+        if ($feelingChange >= 0) {
+            $this->setAllLifeHappiness($this->getAllLifeHappiness() + $feelingChange);
+            $this->setLastPeriodHappiness($this->getLastPeriodHappiness() + $feelingChange);
+            $this->setThisTimeHappiness($this->getThisTimeHappiness() + $feelingChange);
+        } else {
+            $this->setAllLifeSadness($this->getAllLifeSadness() + abs($feelingChange));
+            $this->setLastPeriodSadness($this->getLastPeriodSadness() + abs($feelingChange));
+            $this->setThisTimeSadness($this->getThisTimeSadness() + abs($feelingChange));
+        }
 
         $change = new FeelingChange();
         $change->setTime(time());

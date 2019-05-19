@@ -7,11 +7,14 @@
 	{% import _self as this_macros %}
 
 	<dt>Alltime feelings</dt>
-	<dd>{{ human.feelings.allLife }}</dd>
+    <dd>{{ human.feelings.allLife }}</dd>
+    <dd>+{{ human.feelings.allLifeHappiness }}/-{{ human.feelings.allLifeSadness }}</dd>
 	<dt>Last period feelings</dt>
 	<dd>{{ human.feelings.lastPeriod }}</dd>
+    <dd>+{{ human.feelings.lastPeriodHappiness }}/-{{ human.feelings.lastPeriodSadness }}</dd>
 	<dt>This time</dt>
 	<dd>{{ human.feelings.thisTime }}</dd>
+    <dd>+{{ human.feelings.thisTimeHappiness }}/-{{ human.feelings.thisTimeSadness }}</dd>
 
 	<a href="{{ path('human_happy', {'change': 1}) }}">Happy +1</a><br />
 	<a href="{{ path('human_happy', {'change': 10}) }}">Happy +10</a><br />
