@@ -42,7 +42,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
         foreach ($humans as $human) {
             /** @var PlanetEntity\Region $centralRegion */
             $centralRegion = $regions[$regionCounter];
-            $regionCounter += 4;
+            $regionCounter += 100;
 			$builder->newColony($centralRegion, $human, 'simple');
 			$human->setCurrentPosition($centralRegion->getSettlement());
 		}
