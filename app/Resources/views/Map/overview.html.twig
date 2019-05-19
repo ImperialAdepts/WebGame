@@ -22,6 +22,10 @@
             'frozen': 0xe6fffa,
             'water': 0x0000b3
         };
+		var selectedRegion;
+		var lastSelectedMesh;
+		var lastSelectedMaterial;
+		var triangles;
 		var peakA;
 		var peakB;
 		var peakC;
@@ -39,6 +43,7 @@
                     planetDiameter = jsonResponse["planetDiameter"];
                     init();
                     animate();
+					document.getElementById('map-canvas').addEventListener( 'mousedown', onDocumentMouseDown, false );
                 }
             }
         };
@@ -51,6 +56,7 @@
 			scene.background = new THREE.Color( 0xf0f0f0 );
 			scene2 = new THREE.Scene();
 
+			triangles = [];
 			var region;
 			for(var i=0; i<regionTriangles.length; i++) {
                 region = regionTriangles[i];
@@ -102,6 +108,8 @@
 			geometry.computeFaceNormals();
 
 			var mesh = new THREE.Mesh( geometry, material );
+			mesh.region = region;
+			triangles.push(mesh);
 			scene.add( mesh );
 		}
 
@@ -160,6 +168,40 @@
 				}
 				scene.add(meshBorder);
 			}
+		}
+
+		function onDocumentMouseDown(event) {
+
+			var mouse = new THREE.Vector2();
+			// mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+			// mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+			// var offsets = document.getElementById('map-canvas').getElementsByTagName('div').item(0).getBoundingClientRect();
+			mouse.x = 0;
+			mouse.y = 0;
+
+			console.debug(mouse.x);
+			console.debug(mouse.y);
+
+			var raycaster = new THREE.Raycaster();
+			raycaster.setFromCamera( mouse, camera );
+			var intersects = raycaster.intersectObjects( triangles );
+
+			if(intersects.length > 0) {
+				console.error(intersects[0]);
+				if (lastSelectedMaterial != null) {
+					lastSelectedMesh["material"] = lastSelectedMaterial;
+				}
+				lastSelectedMaterial = intersects[0]["object"]["material"];
+				lastSelectedMesh = intersects[0]["object"];
+				intersects[0]["object"]["material"] = new THREE.MeshBasicMaterial({
+					color: 0x000,
+					wireframe: false,
+					wireframeLinewidth: 1,
+					side: THREE.DoubleSide
+				});
+				selectedRegion = intersects[0]["object"]["region"];
+			}
+
 		}
 
 		function animate() {
