@@ -65,6 +65,7 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
                 }
                 $manager->flush();
             }
+            echo "done\n";
         }
 	}
 
