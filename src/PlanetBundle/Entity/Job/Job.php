@@ -9,12 +9,15 @@ use AppBundle\Entity\Notification\ProjectNotification;
 use PlanetBundle\Entity\Region;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
+use PlanetBundle\Entity\RegionDependencyTrait;
 
 /**
  * @ORM\MappedSuperclass
  */
 abstract class Job
 {
+    use RegionDependencyTrait;
+
     /**
      * @var int
      *
@@ -23,18 +26,6 @@ abstract class Job
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var Region
-     *
-     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Region")
-     * @ORM\JoinColumns(
-     *  @ORM\JoinColumn(name="region_peak_center_id", referencedColumnName="peak_center_id", nullable=false),
-     *  @ORM\JoinColumn(name="region_peak_left_id", referencedColumnName="peak_left_id", nullable=false),
-     *  @ORM\JoinColumn(name="region_peak_right_id", referencedColumnName="peak_right_id", nullable=false)
-     * )
-     */
-    private $region;
 
     /**
      * @var \PlanetBundle\Entity\Human
@@ -77,22 +68,6 @@ abstract class Job
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return Region
-     */
-    public function getRegion()
-    {
-        return $this->region;
-    }
-
-    /**
-     * @param Region $region
-     */
-    public function setRegion(Region $region)
-    {
-        $this->region = $region;
     }
 
     /**

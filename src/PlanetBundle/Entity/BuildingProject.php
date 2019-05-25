@@ -3,7 +3,6 @@
 namespace PlanetBundle\Entity;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
-use AppBundle\Entity\Blueprint;
 use AppBundle\Entity\ProjectNotification;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -15,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 abstract class BuildingProject
 {
+    use RegionDependencyTrait;
+
 	/**
 	 * @var int
 	 *
@@ -23,18 +24,6 @@ abstract class BuildingProject
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
 	private $id;
-
-	/**
-	 * @var Region
-	 *
-	 * @ORM\OneToOne(targetEntity="PlanetBundle\Entity\Region", inversedBy="project")
-     * @ORM\JoinColumns(
-	 *  @ORM\JoinColumn(name="region_peak_center_id", referencedColumnName="peak_center_id", nullable=false),
-	 *  @ORM\JoinColumn(name="region_peak_left_id", referencedColumnName="peak_left_id", nullable=false),
-	 *  @ORM\JoinColumn(name="region_peak_right_id", referencedColumnName="peak_right_id", nullable=false)
-     * )
-	 */
-	private $region;
 
 	/**
 	 * @var Blueprint
@@ -66,30 +55,6 @@ abstract class BuildingProject
 	public function getId()
 	{
 		return $this->id;
-	}
-
-	/**
-	 * Set region
-	 *
-	 * @param Region $region
-	 *
-	 * @return BuildingProject
-	 */
-	public function setRegion($region)
-	{
-		$this->region = $region;
-
-		return $this;
-	}
-
-	/**
-	 * Get region
-	 *
-	 * @return Region
-	 */
-	public function getRegion()
-	{
-		return $this->region;
 	}
 
 	/**

@@ -16,6 +16,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ResourceDeposit
 {
+    use RegionDependencyTrait;
+
     /**
      * @var int
      *
@@ -54,17 +56,6 @@ class ResourceDeposit
      */
     private $blueprint;
 
-    /**
-     * @var Region
-     *
-     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Region")
-     * @ORM\JoinColumns(
-     *  @ORM\JoinColumn(name="region_peak_center_id", referencedColumnName="peak_center_id", nullable=false),
-     *  @ORM\JoinColumn(name="region_peak_left_id", referencedColumnName="peak_left_id", nullable=false),
-     *  @ORM\JoinColumn(name="region_peak_right_id", referencedColumnName="peak_right_id", nullable=false)
-     * )
-     */
-    private $region;
 
     /**
      * Get id
@@ -162,30 +153,6 @@ class ResourceDeposit
     public function getBlueprint()
     {
         return $this->blueprint;
-    }
-
-    /**
-     * Set settlement
-     *
-     * @param Region $region
-     *
-     * @return ResourceDeposit
-     */
-    public function setRegion(Region $region)
-    {
-        $this->region = $region;
-
-        return $this;
-    }
-
-    /**
-     * Get settlement
-     *
-     * @return Region
-     */
-    public function getRegion()
-    {
-        return $this->region;
     }
 
     public function getUseCases() {
