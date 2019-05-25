@@ -50,6 +50,7 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
         $earth->setOrbitDiameter(300);
         $earth->setOrbitingCenter($sun);
         $earth->setOrbitPeriod(360);
+        $earth->setSurfaceGranularity(6);
         $earth->setDatabaseCredentials([
             'database_host' => $this->container->getParameter('planet2_database_host'),
             'database_port' => $this->container->getParameter('planet2_database_port'),
@@ -80,6 +81,7 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
         $testPlanet->setOrbitDiameter(150);
         $testPlanet->setOrbitingCenter($testStar);
         $testPlanet->setOrbitPeriod(60);
+        $testPlanet->setSurfaceGranularity(3);
         $testPlanet->setDatabaseCredentials([
             'database_host' => $this->container->getParameter('planet1_database_host'),
             'database_port' => $this->container->getParameter('planet1_database_port'),
