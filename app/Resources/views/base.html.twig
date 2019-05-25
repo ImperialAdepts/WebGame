@@ -52,11 +52,16 @@
                 <a href="{{ path('gamer_human_selection') }}">
                     {% if sessionSettings.human is not null %}
                         <strong>{{ sessionSettings.human.soul.name }}</strong> in
-                        <strong>{{ sessionSettings.human.name }}</strong>
+                        <strong>{{ sessionSettings.human.name }}</strong><br/>
                     {% else %}
                         <strong>Nobody is logged in</strong>
                     {% endif %}
                 </a>
+                {% if sessionSettings.human is not null %}
+                    <span>Current feeling: {{ sessionSettings.human.feelings.thisTime }},
+                            details in <a href="{{ path('human_dashboard') }}">Journal</a></span><br/>
+                    <span>Time use: {{ sessionSettings.human.hours }}h</span>
+                {% endif %}
             </div>
             <div id="planet-info">{% block planetinfo %}{% endblock %}</div>
         </div>

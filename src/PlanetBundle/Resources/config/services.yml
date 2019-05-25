@@ -14,6 +14,12 @@ services:
     arguments:
       - '@doctrine.orm.entity_manager'
 
+  maintainer_human:
+    class: PlanetBundle\Maintainer\HumanMaintainer
+    public: true
+    arguments:
+      - '@doctrine.orm.entity_manager'
+
   maintainer_population:
     class: PlanetBundle\Maintainer\PopulationMaintainer
     public: true

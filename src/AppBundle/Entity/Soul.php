@@ -2,7 +2,9 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\rpg\SoulPreference;
 use AppBundle\EnumAlignmentType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -46,9 +48,26 @@ class Soul
     private $incarnations;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\rpg\SoulPreference", mappedBy="soul", cascade={"all"})
+     */
+    private $preferences;
+
+    /**
      * @ORM\Column(type="alignment_enum")
      */
     private $alignment = EnumAlignmentType::NEUTRAL_NEUTRAL;
+
+    /**
+     * Soul constructor.
+     * @param int $id
+     */
+    public function __construct($id = null)
+    {
+        $this->id = $id;
+        $this->preferences = new ArrayCollection();
+    }
+
 
     /**
      * @return int
@@ -112,6 +131,30 @@ class Soul
     public function setIncarnations($incarnations)
     {
         $this->incarnations = $incarnations;
+    }
+
+    /**
+     * @return SoulPreference[]
+     */
+    public function getPreferences()
+    {
+        return $this->preferences;
+    }
+
+    /**
+     * @param SoulPreference[] $preferences
+     */
+    public function setPreferences($preferences)
+    {
+        $this->preferences[] = $preferences;
+    }
+
+    /**
+     * @param SoulPreference $preference
+     */
+    public function addPreference(SoulPreference $preference)
+    {
+        $this->preferences->add($preference);
     }
 
     /**
