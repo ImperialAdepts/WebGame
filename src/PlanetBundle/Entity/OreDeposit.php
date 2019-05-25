@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class OreDeposit
 {
+    use PeakDependencyTrait;
+
     /**
      * @var int
      *
@@ -20,14 +22,6 @@ class OreDeposit
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var Peak
-     *
-     * @ORM\ManyToOne(targetEntity="Peak")
-     * @ORM\JoinColumn(name="peak_id", referencedColumnName="id")
-     */
-    private $peak;
 
     /**
      * @var string
@@ -60,23 +54,6 @@ class OreDeposit
     {
         return $this->id;
     }
-
-    /**
-     * @return Peak
-     */
-    public function getPeak()
-    {
-        return $this->peak;
-    }
-
-    /**
-     * @param Peak $peak
-     */
-    public function setPeak(Peak $peak)
-    {
-        $this->peak = $peak;
-    }
-
 
     /**
      * Set type
