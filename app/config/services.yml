@@ -43,6 +43,13 @@ services:
         arguments:
             - "AppBundle\\Entity\\Gamer"
 
+    repo_planet:
+        class: AppBundle\Repository\SolarSystem\PlanetRepository
+        public: true
+        factory: ["@doctrine.orm.entity_manager", "getRepository"]
+        arguments:
+            - "AppBundle\\Entity\\SolarSystem\\Planet"
+
     logged_user_settings:
         class: AppBundle\LoggedUserSettings
         public: true
@@ -50,6 +57,7 @@ services:
             - '@session'
             - '@repo_human'
             - '@repo_gamer'
+            - '@repo_planet'
 
     planet_builder:
         class: AppBundle\Builder\PlanetBuilder
@@ -67,6 +75,12 @@ services:
     AppBundle\Fixture\:
         resource: '%kernel.project_dir%/src/AppBundle/Fixture/'
         tags: ['doctrine.fixture.orm']
+
+    dynamic_planet_connector:
+        class: AppBundle\PlanetConnection\DynamicPlanetConnector
+        public: true
+        calls:
+            - [ setContainer, [ "@service_container" ] ]
 
 #        fixture_planets:
 #            class: AppBundle\Fixture\PlanetsFixture

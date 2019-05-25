@@ -58,13 +58,33 @@ doctrine:
                 charset: UTF8
                 mapping_types:
                     enum: string
-            planet_connection:
+            dynamic_planet:
                 driver: pdo_mysql
-                host: '%planet_database_host%'
-                port: '%planet_database_port%'
-                dbname: '%planet_database_name%'
-                user: '%planet_database_user%'
-                password: '%planet_database_password%'
+                host: '%planet2_database_host%'
+                port: '%planet2_database_port%'
+                dbname: '%planet2_database_name%'
+                user: '%planet2_database_user%'
+                password: '%planet2_database_password%'
+                charset: UTF8
+                mapping_types:
+                    enum: string
+            planet1_connection:
+                driver: pdo_mysql
+                host: '%planet1_database_host%'
+                port: '%planet1_database_port%'
+                dbname: '%planet1_database_name%'
+                user: '%planet1_database_user%'
+                password: '%planet1_database_password%'
+                charset: UTF8
+                mapping_types:
+                    enum: string
+            planet2_connection:
+                driver: pdo_mysql
+                host: '%planet2_database_host%'
+                port: '%planet2_database_port%'
+                dbname: '%planet2_database_name%'
+                user: '%planet2_database_user%'
+                password: '%planet2_database_password%'
                 charset: UTF8
                 mapping_types:
                     enum: string
@@ -82,7 +102,15 @@ doctrine:
 #        auto_mapping: true
         entity_managers:
             planet:
-                connection: planet_connection
+                connection: dynamic_planet
+                mappings:
+                    PlanetBundle: ~
+            planet_test1:
+                connection: planet1_connection
+                mappings:
+                    PlanetBundle: ~
+            planet_test2:
+                connection: planet2_connection
                 mappings:
                     PlanetBundle: ~
             default:

@@ -34,6 +34,21 @@ services:
       ports:
         - "2003:3306"
 
+    mysql-planet2:
+      image: mysql:5.7
+      container_name: imperiumsandbox-mysql-planet2
+      working_dir: /application-mysql-planet2
+      volumes:
+        - .:/application
+      environment:
+        - MYSQL_ROOT_PASSWORD=toor
+        - MYSQL_DATABASE=imperium_planet_test2
+        - MYSQL_USER=imperator
+        - MYSQL_PASSWORD=muaddib
+        - DATABASE_URL=mysql://imperator:muaddib@mysql-planet2:3306/imperium_planet_test2
+      ports:
+        - "2004:3306"
+
     webserver:
       image: nginx:alpine
       container_name: imperiumsandbox-webserver

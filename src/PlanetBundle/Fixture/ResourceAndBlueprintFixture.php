@@ -1,7 +1,7 @@
 <?php
 namespace PlanetBundle\Fixture;
 
-use AppBundle\Entity;
+use AppBundle\Entity as GeneralEntity;
 use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -17,8 +17,13 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
      */
     protected $container;
 
-	public function load(\Doctrine\Common\Persistence\ObjectManager $manager)
+	public function load(\Doctrine\Common\Persistence\ObjectManager $generalManager)
 	{
+        echo __CLASS__."\n";
+        $testPlanet = $generalManager->getRepository(GeneralEntity\SolarSystem\Planet::class)->findOneBy(['type'=>'test']);
+        $this->container->get('dynamic_planet_connector')->setPlanet($testPlanet);
+        $manager = $this->container->get('doctrine')->getManager('planet');
+
 		foreach ($this->container->getParameter('default_blueprints') as $name => $blueprintData) {
             $blueprint = $this->createBlueprint(
                 $name,

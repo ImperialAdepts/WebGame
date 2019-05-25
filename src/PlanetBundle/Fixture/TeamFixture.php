@@ -4,6 +4,7 @@ namespace PlanetBundle\Fixture;
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity as GeneralEntity;
 use AppBundle\Fixture\PlanetsFixture;
+use Doctrine\Common\Persistence\ObjectManager;
 use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -19,12 +20,17 @@ class TeamFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Con
     protected $container;
 
     /**
-	 * Load data fixtures with the passed EntityManager
-	 *
-	 * @param \Doctrine\Common\Persistence\ObjectManager $manager
-	 */
-	public function load(\Doctrine\Common\Persistence\ObjectManager $manager)
+     * @param ObjectManager $generalManager
+     * @throws \Exception
+     */
+	public function load(ObjectManager $generalManager)
 	{
+        echo __CLASS__."\n";
+        $testPlanet = $generalManager->getRepository(GeneralEntity\SolarSystem\Planet::class)->findOneBy(['type'=>'test']);
+        $this->container->get('dynamic_planet_connector')->setPlanet($testPlanet, true);
+
+        /** @var ObjectManager $manager */
+        $manager = $this->container->get('doctrine')->getManager('planet');
         $blueprints = array_merge(
             $transporterBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_TRANSPORTERS),
             $builderBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_BUILDERS),

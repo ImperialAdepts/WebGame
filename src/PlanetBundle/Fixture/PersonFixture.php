@@ -8,6 +8,7 @@ use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Entity as GlobalEntity;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Tracy\Debugger;
 
 class PersonFixture extends Fixture implements ContainerAwareInterface
 {
@@ -18,14 +19,14 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
      */
     protected $container;
 
-	/**
-	 * Load data fixtures with the passed EntityManager
-	 *
-	 * @param ObjectManager $manager
-	 */
-	public function load(ObjectManager $manager)
+    /**
+     * @param ObjectManager $generalManager
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+	public function load(ObjectManager $generalManager)
 	{
-        $generalManager = $this->container->get('doctrine.orm.entity_manager');
+        echo __CLASS__."\n";
         $testPlanet = $generalManager->getRepository(GlobalEntity\SolarSystem\Planet::class, 'default')->findOneBy(['type'=>'test']);
 
 		$troi = new GlobalEntity\Gamer();
@@ -71,6 +72,8 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
 
         $generalManager->flush();
 
+        $this->container->get('dynamic_planet_connector')->setPlanet($testPlanet, true);
+        $manager = $this->container->get('doctrine')->getManager('planet');
 
         $human = new PlanetEntity\Human();
         $human->setName('Erik krvava sekera');
@@ -106,4 +109,5 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
     {
         $this->container = $container;
     }
+
 }

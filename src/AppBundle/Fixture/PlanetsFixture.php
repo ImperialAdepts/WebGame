@@ -50,6 +50,13 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
         $earth->setOrbitDiameter(300);
         $earth->setOrbitingCenter($sun);
         $earth->setOrbitPeriod(360);
+        $earth->setDatabaseCredentials([
+            'database_host' => $this->container->getParameter('planet2_database_host'),
+            'database_port' => $this->container->getParameter('planet2_database_port'),
+            'database_name' => $this->container->getParameter('planet2_database_name'),
+            'database_user' => $this->container->getParameter('planet2_database_user'),
+            'database_password' => $this->container->getParameter('planet2_database_password'),
+        ]);
         $manager->persist($earth);
 
         $testSystem = new GeneralEntity\SolarSystem\System();
@@ -72,13 +79,13 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
         $testPlanet->setDiameter(30);
         $testPlanet->setOrbitDiameter(150);
         $testPlanet->setOrbitingCenter($testStar);
-        $testPlanet->setOrbitPeriod(360);
+        $testPlanet->setOrbitPeriod(60);
         $testPlanet->setDatabaseCredentials([
-            'planet_database_host' => $this->container->getParameter('planet_database_host'),
-            'planet_database_port' => $this->container->getParameter('planet_database_port'),
-            'planet_database_name' => $this->container->getParameter('planet_database_name'),
-            'planet_database_user' => $this->container->getParameter('planet_database_user'),
-            'planet_database_password' => $this->container->getParameter('planet_database_password'),
+            'database_host' => $this->container->getParameter('planet1_database_host'),
+            'database_port' => $this->container->getParameter('planet1_database_port'),
+            'database_name' => $this->container->getParameter('planet1_database_name'),
+            'database_user' => $this->container->getParameter('planet1_database_user'),
+            'database_password' => $this->container->getParameter('planet1_database_password'),
         ]);
         $manager->persist($testPlanet);
 

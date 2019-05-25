@@ -5,6 +5,7 @@ use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity as GeneralEntity;
 use AppBundle\Fixture\PlanetsFixture;
+use PlanetBundle\Builder\RegionTerrainTypeEnumBuilder;
 use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -21,21 +22,34 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
     protected $container;
 
     /**
-	 * Load data fixtures with the passed EntityManager
-	 *
-	 * @param \Doctrine\Common\Persistence\ObjectManager $manager
-	 */
-	public function load(\Doctrine\Common\Persistence\ObjectManager $manager)
+     * @param \Doctrine\Common\Persistence\ObjectManager $generalManager
+     * @throws \Exception
+     */
+	public function load(\Doctrine\Common\Persistence\ObjectManager $generalManager)
 	{
-        $farmingBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class, 'default')->getByUseCase(UseCaseEnum::TYPE_FARMING);
-        $productionBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class, 'default')->getByUseCase(UseCaseEnum::TYPE_PRODUCTION);
+        echo __CLASS__."\n";
 
-		$regions = $manager->getRepository(PlanetEntity\Region::class, 'planet')->findAll();
-        foreach ($regions as $region) {
-            if ($region->getSettlement() != null) {
+        /** @var GeneralEntity\SolarSystem\Planet $planets */
+        $planets = $generalManager->getRepository(GeneralEntity\SolarSystem\Planet::class)->findAll();
+        /** @var GeneralEntity\SolarSystem\Planet $planet */
+        foreach ($planets as $planet) {
+            echo "Planet ".$planet->getName().": ";
+            if ($planet->getDatabaseCredentials() == null) {
+                echo "skipped\n";
+                continue;
+            }
+
+            $this->container->get('dynamic_planet_connector')->setPlanet($planet, true);
+            $manager = $this->container->get('doctrine')->getManager('planet');
+
+            $farmingBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TYPE_FARMING);
+            $productionBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TYPE_PRODUCTION);
+            $settlements = $manager->getRepository(PlanetEntity\Settlement::class)->findAll();
+            /** @var PlanetEntity\Settlement $settlement */
+            foreach ($settlements as $settlement) {
                 foreach ($farmingBlueprints as $blueprint) {
                     $farmingJob = new PlanetEntity\Job\ProduceJob();
-                    $farmingJob->setRegion($region);
+                    $farmingJob->setRegion($settlement->getMainRegion());
                     $farmingJob->setAmount(4);
                     $farmingJob->setRepetition(null);
                     $farmingJob->setBlueprint($blueprint);
@@ -43,16 +57,15 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
                 }
                 foreach ($productionBlueprints as $blueprint) {
                     $productionJob = new PlanetEntity\Job\ProduceJob();
-                    $productionJob->setRegion($region);
+                    $productionJob->setRegion($settlement->getMainRegion());
                     $productionJob->setAmount(4);
                     $productionJob->setRepetition(null);
                     $productionJob->setBlueprint($blueprint);
                     $manager->persist($productionJob);
                 }
+                $manager->flush();
             }
-		}
-
-		$manager->flush();
+        }
 	}
 
     /**
