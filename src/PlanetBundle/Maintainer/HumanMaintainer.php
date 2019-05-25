@@ -49,8 +49,10 @@ class HumanMaintainer
             foreach ($human->getFeelings()->getHistory() as $feelingChange) {
                 $historyCount += $feelingChange->getChange();
             }
-            $human->getFeelings()->setLastPeriod($historyCount);
-            $human->getFeelings()->setThisTime(0);
+            $human->getFeelings()->setLastPeriodHappiness($historyCount);
+            $human->getFeelings()->setLastPeriodSadness($historyCount);
+            $human->getFeelings()->setThisTimeHappiness(0);
+            $human->getFeelings()->setThisTimeSadness(0);
             $this->entityManager->persist($human);
         }
         $this->entityManager->flush();
