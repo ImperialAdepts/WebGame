@@ -15,7 +15,7 @@ class SettlementRepository extends \Doctrine\ORM\EntityRepository
 	{
 		return $this->getEntityManager()
 			->createQuery(
-				"SELECT s FROM AppBundle:Planet\Settlement s"
+				"SELECT s FROM PlanetBundle:Settlement s"
 			)
 			->getResult();
 	}
@@ -25,7 +25,7 @@ class SettlementRepository extends \Doctrine\ORM\EntityRepository
 		$id = $human->getId();
 		return $this->getEntityManager()
 			->createQuery(
-				"SELECT s FROM AppBundle:Planet\Settlement s WHERE s.manager = '$id'"
+				"SELECT s FROM PlanetBundle:Settlement s WHERE s.manager = '$id'"
 			)
 			->getResult();
 	}
