@@ -2,6 +2,7 @@
 namespace PlanetBundle\Fixture;
 
 use AppBundle\Entity as GeneralEntity;
+use AppBundle\Fixture\PlanetsFixture;
 use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -20,39 +21,46 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 	public function load(\Doctrine\Common\Persistence\ObjectManager $generalManager)
 	{
         echo __CLASS__."\n";
-        $testPlanet = $generalManager->getRepository(GeneralEntity\SolarSystem\Planet::class)->findOneBy(['type'=>'test']);
-        $this->container->get('dynamic_planet_connector')->setPlanet($testPlanet);
-        $manager = $this->container->get('doctrine')->getManager('planet');
+        $planets = $generalManager->getRepository(GeneralEntity\SolarSystem\Planet::class)->findAll();
+        foreach ($planets as $planet) {
+            if ($planet->getDatabaseCredentials() == null) continue;
 
-		foreach ($this->container->getParameter('default_blueprints') as $name => $blueprintData) {
-            $blueprint = $this->createBlueprint(
-                $name,
-                $name,
-                $blueprintData['building_resource_requirements'],
-                $blueprintData['building_usecase_requirements'],
-                $blueprintData['constraints'],
-                $blueprintData['useCases'],
-                $blueprintData['trait_values']
-            );
-            $manager->persist($blueprint);
+            $this->container->get('dynamic_planet_connector')->setPlanet($planet, true);
+            $manager = $this->container->get('doctrine')->getManager('planet');
+
+            foreach ($this->container->getParameter('default_blueprints') as $name => $blueprintData) {
+                $blueprint = $this->createBlueprint(
+                    $name,
+                    $name,
+                    $blueprintData['building_resource_requirements'],
+                    $blueprintData['building_usecase_requirements'],
+                    $blueprintData['constraints'],
+                    $blueprintData['useCases'],
+                    $blueprintData['trait_values']
+                );
+                $manager->persist($blueprint);
+            }
+            $manager->flush();
+
+            $builder = new \AppBundle\Builder\PlanetBuilder($manager, $this->container->getParameter('default_colonization_packs'));
+            $humans = $manager->getRepository(PlanetEntity\Human::class)->findAllIncarnated();
+            $regions = $manager->getRepository(PlanetEntity\Region::class)->findAll();
+
+            $regionCounter = floor(count($regions)/3);
+            /** @var PlanetEntity\Human $human */
+            foreach ($humans as $human) {
+                /** @var PlanetEntity\Region $centralRegion */
+                $centralRegion = $regions[$regionCounter];
+                $regionCounter += ceil(count($regions) / count($humans));
+                $regionCounter = $regionCounter % count($regions);
+                $builder->newColony($centralRegion, $human, 'simple');
+                $human->setCurrentPosition($centralRegion->getSettlement());
+
+                echo "Planet {$planet->getName()} settlement generated for {$human->getName()}\n";
+            }
+
+            $manager->flush();
         }
-        $manager->flush();
-
-		$builder = new \AppBundle\Builder\PlanetBuilder($manager, $this->container->getParameter('default_colonization_packs'));
-		$humans = $manager->getRepository(PlanetEntity\Human::class)->findAllIncarnated();
-		$regions = $manager->getRepository(PlanetEntity\Region::class)->findAll();
-
-		$regionCounter = 1;
-		/** @var PlanetEntity\Human $human */
-        foreach ($humans as $human) {
-            /** @var PlanetEntity\Region $centralRegion */
-            $centralRegion = $regions[$regionCounter];
-            $regionCounter += 100;
-			$builder->newColony($centralRegion, $human, 'simple');
-			$human->setCurrentPosition($centralRegion->getSettlement());
-		}
-
-		$manager->flush();
 	}
 
     /**
@@ -86,6 +94,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
     {
         return [
             PersonFixture::class,
+            PlanetsFixture::class,
             PlanetMapFixture::class,
         ];
     }

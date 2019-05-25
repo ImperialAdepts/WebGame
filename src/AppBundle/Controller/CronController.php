@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use AppBundle\Descriptor\TimeTransformator;
+use Tracy\Debugger;
 
 /**
  * @Route(path="cron")
@@ -170,5 +171,10 @@ class CronController extends Controller
 
     private function update(Entity\SolarSystem\Planet $planet)
     {
+        $this->get('dynamic_planet_connector')->setPlanet($planet);
+        Debugger::dump($planet);
+
+        $settlements = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Settlement::class)->findAll();
+        Debugger::dump($settlements);
     }
 }

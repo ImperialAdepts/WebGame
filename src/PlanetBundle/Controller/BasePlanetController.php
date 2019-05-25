@@ -28,6 +28,8 @@ class BasePlanetController extends Controller
     public function init() {
         $this->globalHuman = $this->get('logged_user_settings')->getHuman();
         $this->planet = $this->globalHuman->getPlanet();
+
+        $this->container->get('dynamic_planet_connector')->setPlanet($this->planet, true);
         $this->human = $this->getDoctrine()->getManager('planet')
             ->getRepository(PlanetEntity\Human::class)->getByGlobalHuman($this->globalHuman);
 

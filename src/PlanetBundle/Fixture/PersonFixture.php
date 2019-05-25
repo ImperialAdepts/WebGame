@@ -27,7 +27,8 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
 	public function load(ObjectManager $generalManager)
 	{
         echo __CLASS__."\n";
-        $testPlanet = $generalManager->getRepository(GlobalEntity\SolarSystem\Planet::class, 'default')->findOneBy(['type'=>'test']);
+        $test1Planet = $generalManager->getRepository(GlobalEntity\SolarSystem\Planet::class, 'default')->findOneBy(['type'=>'test']);
+        $test2Planet = $generalManager->getRepository(GlobalEntity\SolarSystem\Planet::class, 'default')->findOneBy(['type'=>'EARTH']);
 
 		$troi = new GlobalEntity\Gamer();
 		$troi->setLogin('troi');
@@ -43,13 +44,13 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $globalHuman1 = new GlobalEntity\Human();
         $globalHuman1->setName('Erik krvava sekera');
         $globalHuman1->setSoul($soul);
-        $globalHuman1->setPlanet($testPlanet);
+        $globalHuman1->setPlanet($test1Planet);
         $generalManager->persist($globalHuman1);
 
         $globalHuman2 = new GlobalEntity\Human();
         $globalHuman2->setName('Rudovous');
         $globalHuman2->setSoul($soul);
-        $globalHuman2->setPlanet($testPlanet);
+        $globalHuman2->setPlanet($test2Planet);
         $generalManager->persist($globalHuman2);
 
         $soul = new GlobalEntity\Soul();
@@ -61,18 +62,18 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $globalHuman3 = new GlobalEntity\Human();
         $globalHuman3->setName('Herakles');
         $globalHuman3->setSoul($soul);
-        $globalHuman3->setPlanet($testPlanet);
+        $globalHuman3->setPlanet($test1Planet);
         $generalManager->persist($globalHuman3);
 
         $globalHuman4 = new GlobalEntity\Human();
         $globalHuman4->setName('Oidipus');
         $globalHuman4->setSoul($soul);
-        $globalHuman4->setPlanet($testPlanet);
+        $globalHuman4->setPlanet($test2Planet);
         $generalManager->persist($globalHuman4);
 
         $generalManager->flush();
 
-        $this->container->get('dynamic_planet_connector')->setPlanet($testPlanet, true);
+        $this->container->get('dynamic_planet_connector')->setPlanet($test1Planet, true);
         $manager = $this->container->get('doctrine')->getManager('planet');
 
         $human = new PlanetEntity\Human();
@@ -82,15 +83,20 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $manager->persist($human);
 
         $human = new PlanetEntity\Human();
-        $human->setName('Rudovous');
-        $human->setBornIn(0);
-        $human->setGlobalHumanId($globalHuman2->getId());
-        $manager->persist($human);
-
-        $human = new PlanetEntity\Human();
         $human->setName('Herakles');
         $human->setBornIn(0);
         $human->setGlobalHumanId($globalHuman3->getId());
+        $manager->persist($human);
+
+        $manager->flush();
+
+        $this->container->get('dynamic_planet_connector')->setPlanet($test2Planet, true);
+        $manager = $this->container->get('doctrine')->getManager('planet');
+
+        $human = new PlanetEntity\Human();
+        $human->setName('Rudovous');
+        $human->setBornIn(0);
+        $human->setGlobalHumanId($globalHuman2->getId());
         $manager->persist($human);
 
         $human = new PlanetEntity\Human();
