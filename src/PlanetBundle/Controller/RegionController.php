@@ -30,9 +30,9 @@ class RegionController extends BasePlanetController
 		$project->setSupervisor($this->getHuman());
 		$project->setPriority(3);
 
-		$this->getDoctrine()->getManager()->persist($project);
-		$this->getDoctrine()->getManager()->persist($region);
-		$this->getDoctrine()->getManager()->flush();
+		$this->getDoctrine()->getManager('planet')->persist($project);
+		$this->getDoctrine()->getManager('planet')->persist($region);
+		$this->getDoctrine()->getManager('planet')->flush();
 		return $this->redirectToRoute('settlement_dashboard', [
 			'settlement' => $region->getSettlement()->getId(),
 		]);
@@ -47,7 +47,7 @@ class RegionController extends BasePlanetController
         $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
 
         // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
-        $this->get('doctrine.orm.entity_manager')->transactional(function ($em) use ($blueprint, $region, $count) {
+        $this->getDoctrine()->getManager('planet')->transactional(function ($em) use ($blueprint, $region, $count) {
             $builder = $this->get('builder_factory')->createRegionBuilder($blueprint);
             $builder->setResourceHolder($region);
             $builder->setSupervisor($this->getHuman());

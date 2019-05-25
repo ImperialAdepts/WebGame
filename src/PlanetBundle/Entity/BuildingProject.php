@@ -28,8 +28,8 @@ abstract class BuildingProject
 	/**
 	 * @var Blueprint
 	 *
-	 * @ ORM\ManyToOne(targetEntity="AppBundle\Entity\Blueprint")
-	 * @ ORM\JoinColumn(name="building_blueprint_id", referencedColumnName="id")
+	 * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Blueprint")
+	 * @ORM\JoinColumn(name="building_blueprint_id", referencedColumnName="id")
 	 */
 	private $buildingBlueprint;
 
