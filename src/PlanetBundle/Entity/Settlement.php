@@ -58,6 +58,14 @@ class Settlement implements ResourcefullInterface
      */
     private $peaks;
 
+    /**
+     * @var Peak
+     *
+     * @ORM\OneToOne(targetEntity="PlanetBundle\Entity\Peak")
+     * @ORM\JoinColumn(name="main_peak_id", referencedColumnName="id")
+     */
+    private $administrativeCenter;
+
 	/**
 	 * Get id
 	 *
@@ -181,6 +189,22 @@ class Settlement implements ResourcefullInterface
     public function setPeaks($peaks)
     {
         $this->peaks = $peaks;
+    }
+
+    /**
+     * @return Peak
+     */
+    public function getAdministrativeCenter()
+    {
+        return $this->administrativeCenter;
+    }
+
+    /**
+     * @param Peak $administrativeCenter
+     */
+    public function setAdministrativeCenter($administrativeCenter)
+    {
+        $this->administrativeCenter = $administrativeCenter;
     }
 
 	/**

@@ -28,6 +28,7 @@
         <li><a href="{{ path('settlement_buildings', { 'settlement': settlement.id }) }}">Buildings</a></li>
         <li><a href="{{ path('settlement_housing', { 'settlement': settlement.id }) }}">Housing</a></li>
         <li><a href="{{ path('settlement_warehouses', { 'settlement': settlement.id }) }}">Storage</a></li>
+        <li><a href="{{ path('trade_list', { 'settlement': settlement.id }) }}">Trade</a></li>
     </ul>
     <div id="subbody">{% block subbody %}{% endblock %}</div>
 {% endblock %}

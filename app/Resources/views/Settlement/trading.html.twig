@@ -1,0 +1,17 @@
+{% extends 'Settlement/base.html.twig' %}
+
+{% block subbody %}
+	<strong>Trade offers:</strong>
+	{% if offers|length > 0 %}
+		<ul>
+			{% for offer in offers %}
+				<li>
+					{{ offer.offeredResourceDeposit.amount }}&times;{{ offer.offeredResourceDeposit.blueprint.description }} for {{ offer.amountRequested }} {{ offer.blueprint.description }}
+				</li>
+			{% endfor %}
+		</ul>
+
+	{% else %}
+		<small>There are no trade offers.</small>
+	{% endif %}
+{% endblock %}
