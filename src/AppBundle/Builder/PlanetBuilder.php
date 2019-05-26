@@ -120,7 +120,7 @@ class PlanetBuilder
 
 		foreach ($this->colonyPacks as $colonyPackName => $colonyPack) {
             foreach ($colonyPack['deposits'] as $resource => $data) {
-                $resourceDeposit = new PlanetEntity\ResourceDeposit();
+                $resourceDeposit = new PlanetEntity\RegionResourceDeposit();
                 $resourceDeposit->setAmount($data['amount']);
                 $resourceDeposit->setResourceDescriptor($resource);
                 if (isset($data['blueprint']) && ($blueprint = $this->getBlueprint($data['blueprint'])) != null) {

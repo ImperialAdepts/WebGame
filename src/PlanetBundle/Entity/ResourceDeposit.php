@@ -11,13 +11,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ResourceDeposit
  *
- * @ORM\Table(name="resource_deposits")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\ResourceDepositRepository")
+ * @ORM\MappedSuperclass
  */
-class ResourceDeposit
+abstract class ResourceDeposit
 {
-    use RegionDependencyTrait;
-
     /**
      * @var int
      *

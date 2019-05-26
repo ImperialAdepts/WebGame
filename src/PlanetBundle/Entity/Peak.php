@@ -1,6 +1,7 @@
 <?php
 
 namespace PlanetBundle\Entity;
+use AppBundle\Descriptor\ResourcefullInterface;
 use Doctrine\ORM\Mapping as ORM;
 /**
  * Peak - map unit
@@ -8,8 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="peaks")
  * @ORM\Entity(repositoryClass="PlanetBundle\Repository\PeakRepository")
  */
-class Peak
+class Peak implements ResourcefullInterface
 {
+    use SettlementDependencyTrait;
+
 	/**
 	 * @var integer
 	 *
@@ -47,6 +50,13 @@ class Peak
      * @ORM\OneToMany(targetEntity="OreDeposit", mappedBy="region")
      */
     private $oreDeposits;
+
+    /**
+     * @var PeakResourceDeposit[]
+     *
+     * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\PeakResourceDeposit", mappedBy="peak", cascade={"all"})
+     */
+    private $resourceDeposits;
 
     /**
      * Peak constructor.
@@ -138,6 +148,68 @@ class Peak
         $this->oreDeposits = $oreDeposits;
     }
 
+    /**
+     * @return PeakResourceDeposit[]
+     */
+    public function getResourceDeposits()
+    {
+        return $this->resourceDeposits;
+    }
+
+    /**
+     * @param $resourceDescriptor
+     * @return PeakResourceDeposit|null
+     */
+    public function getResourceDeposit($resourceDescriptor)
+    {
+        foreach ($this->getResourceDeposits() as $deposit) {
+            if ($deposit->getResourceDescriptor() == $resourceDescriptor) return $deposit;
+        }
+        return null;
+    }
+
+    /**
+     * @param \AppBundle\Entity\PeakResourceDeposit[] $resourceDeposits
+     */
+    public function setResourceDeposits($resourceDeposits)
+    {
+        $this->resourceDeposits = $resourceDeposits;
+    }
+
+    public function addResourceDeposit(Blueprint $blueprint, $amount = 1)
+    {
+        if (($deposit = $this->getResourceDeposit($blueprint->getResourceDescriptor())) != null) {
+            $deposit->setAmount($deposit->getAmount() + $amount);
+        } else {
+            $deposit = new PeakResourceDeposit();
+            $deposit->setAmount($amount);
+            $deposit->setResourceDescriptor($blueprint->getResourceDescriptor());
+            $deposit->setBlueprint($blueprint);
+            $deposit->setPeak($this);
+            $this->getResourceDeposits()->add($deposit);
+        }
+    }
+
+    /**
+     * @param string $resourceDescriptor
+     * @return int
+     */
+    public function getResourceDepositAmount($resourceDescriptor)
+    {
+        if ($this->getResourceDeposit($resourceDescriptor) != null) {
+            return $this->getResourceDeposit($resourceDescriptor)->getAmount();
+        }
+        return 0;
+    }
+
+    /**
+     * @param $resourceDescriptor
+     * @param int $count
+     */
+    public function consumeResourceDepositAmount($resourceDescriptor, $count = 1)
+    {
+        $this->getResourceDeposit($resourceDescriptor)->setAmount($this->getResourceDeposit($resourceDescriptor)->getAmount() - $count);
+    }
 
 }
 

@@ -8,7 +8,7 @@
 		<ul>
 			{% for building in buildings %}
 				<li>
-					{{ render(controller('PlanetBundle:ResourceDeposit:depositDetail', {
+					{{ render(controller('PlanetBundle:ResourceDeposit:regionDepositDetail', {
 						'deposit': building.deposit.id,
 					})) }}
 				</li>

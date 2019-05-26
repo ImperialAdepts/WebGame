@@ -12,27 +12,4 @@ use AppBundle\Entity\ResourceDeposit;
  */
 class ResourceDepositRepository extends \Doctrine\ORM\EntityRepository
 {
-    /**
-     * @return ResourceDeposit[]
-     */
-    public function getAll()
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                "SELECT rd FROM AppBundle:ResourceDeposit rd"
-            )
-            ->getResult();
-    }
-
-    /**
-     * @return ResourceDeposit[]
-     */
-    public function getEmpty()
-    {
-        return $this->getEntityManager()
-            ->createQuery(
-                "SELECT rd FROM AppBundle:ResourceDeposit rd where rd.amount = 0"
-            )
-            ->getResult();
-    }
 }

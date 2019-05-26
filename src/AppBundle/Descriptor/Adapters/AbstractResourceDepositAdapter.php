@@ -2,10 +2,8 @@
 namespace AppBundle\Descriptor\Adapters;
 
 use AppBundle\Descriptor\ResourcefullInterface;
-use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
 use PlanetBundle\Entity\ResourceDeposit;
-use Tracy\Debugger;
 
 class AbstractResourceDepositAdapter
 {
@@ -56,7 +54,7 @@ class AbstractResourceDepositAdapter
     }
 
     /**
-     * @return Entity\Blueprint
+     * @return PlanetEntity\Blueprint
      */
     public function getBlueprint()
     {

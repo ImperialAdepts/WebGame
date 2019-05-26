@@ -51,6 +51,13 @@ class Settlement implements ResourcefullInterface
 	 */
 	private $regions;
 
+    /**
+     * @var Peak[]
+     *
+     * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\Peak", mappedBy="settlement")
+     */
+    private $peaks;
+
 	/**
 	 * Get id
 	 *
@@ -159,6 +166,22 @@ class Settlement implements ResourcefullInterface
 	{
 		$this->regions = $regions;
 	}
+
+    /**
+     * @return Peak[]
+     */
+    public function getPeaks()
+    {
+        return $this->peaks;
+    }
+
+    /**
+     * @param Peak[] $peaks
+     */
+    public function setPeaks($peaks)
+    {
+        $this->peaks = $peaks;
+    }
 
 	/**
 	 * @param $resourceDescriptor

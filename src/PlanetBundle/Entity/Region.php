@@ -17,6 +17,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Region implements ResourcefullInterface
 {
+    use SettlementDependencyTrait;
+
 	/**
 	 * @var Peak
 	 *
@@ -47,18 +49,10 @@ class Region implements ResourcefullInterface
      */
     private $peakRight;
 
-	/**
-	 * @var Settlement
-	 *
-	 * @ORM\ManyToOne(targetEntity="Settlement", inversedBy="regions")
-	 * @ORM\JoinColumn(name="settlement_id", referencedColumnName="id")
-	 */
-	private $settlement;
-
     /**
-     * @var ResourceDeposit[]
+     * @var RegionResourceDeposit[]
      *
-     * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\ResourceDeposit", mappedBy="region", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\RegionResourceDeposit", mappedBy="region", cascade={"all"})
      */
     private $resourceDeposits;
 
@@ -181,7 +175,7 @@ class Region implements ResourcefullInterface
         if (($deposit = $this->getResourceDeposit($blueprint->getResourceDescriptor())) != null) {
             $deposit->setAmount($deposit->getAmount() + $amount);
         } else {
-            $deposit = new ResourceDeposit();
+            $deposit = new RegionResourceDeposit();
             $deposit->setAmount($amount);
             $deposit->setResourceDescriptor($blueprint->getResourceDescriptor());
             $deposit->setBlueprint($blueprint);

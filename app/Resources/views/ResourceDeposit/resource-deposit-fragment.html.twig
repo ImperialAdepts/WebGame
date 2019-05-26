@@ -13,7 +13,7 @@
 				<td>
 					<strong>{{ name }}</strong>
 					{% if adapter is not null%}
-						{{ render(controller('PlanetBundle:ResourceDeposit:adapterDetail', {
+						{{ render(controller('PlanetBundle:ResourceDeposit:adapterRegionDetail', {
 							'useCase': name,
 							'deposit': adapter.deposit.id
 						})) }}
