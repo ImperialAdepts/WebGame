@@ -1,12 +1,28 @@
 {% extends 'Settlement/base.html.twig' %}
 
 {% block subbody %}
-	<strong>Trade offers:</strong>
+	<strong>Your trade offers:</strong>
 	{% if offers|length > 0 %}
 		<ul>
 			{% for offer in offers %}
 				<li>
 					{{ offer.offeredResourceDeposit.amount }}&times;{{ offer.offeredResourceDeposit.blueprint.description }} for {{ offer.amountRequested }} {{ offer.blueprint.description }}
+				</li>
+			{% endfor %}
+		</ul>
+
+	{% else %}
+		<small>There are no trade offers.</small>
+	{% endif %}
+	<br/>
+	<br/>
+	<strong>Other's trade requests:</strong>
+	{% if requests|length > 0 %}
+		<ul>
+			{% for request in requests %}
+				<li>
+					<a href="{{ path('trade_buy', {'offer': request.id}) }}">Buy</a>
+					{{ request.offeredResourceDeposit.amount }} of {{ request.offeredResourceDeposit.blueprint.description }} for {{ request.amountRequested }} {{ request.blueprint.description }}
 				</li>
 			{% endfor %}
 		</ul>

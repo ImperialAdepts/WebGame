@@ -316,12 +316,12 @@ class Region implements ResourcefullInterface
      */
     public function consumeResourceDepositAmount($resourceDescriptor, $count = 1)
     {
-//        if ($this->getResourceDepositAmount($resourceDescriptor) > $count) {
+        if ($this->getResourceDepositAmount($resourceDescriptor) > $count) {
             $this->getResourceDeposit($resourceDescriptor)->setAmount($this->getResourceDeposit($resourceDescriptor)->getAmount() - $count);
-//        }
-//        if ($this->getResourceDepositAmount($resourceDescriptor) <= $count) {
-//            $this->getResourceDeposit($resourceDescriptor)->setAmount(0);
-//        }
+        }
+        if ($this->getResourceDeposit($resourceDescriptor) != null && $this->getResourceDepositAmount($resourceDescriptor) <= $count) {
+            $this->getResourceDeposit($resourceDescriptor)->setAmount(0);
+        }
     }
 }
 

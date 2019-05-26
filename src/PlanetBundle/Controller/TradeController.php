@@ -25,11 +25,17 @@ class TradeController extends BasePlanetController
      */
     public function tradingAction(Entity\Settlement $settlement, Request $request)
     {
-        $offers = $this->getDoctrine()->getManager('planet')->getRepository(Entity\TradeOffer::class)->findBy(['settlement'=>$settlement]);
+        $offers = $this->getDoctrine()->getManager('planet')->getRepository(Entity\TradeOffer::class)->findBy([
+            'settlement'=>$settlement
+        ]);
+        $requests = $this->getDoctrine()->getManager('planet')->getRepository(Entity\TradeOffer::class)->findBy([
+            'settlement'=>$settlement
+        ]);
 
         return $this->render('Settlement/trading.html.twig', [
             'settlement' => $settlement,
             'offers' => $offers,
+            'requests' => $requests,
         ]);
     }
 
@@ -104,6 +110,24 @@ class TradeController extends BasePlanetController
 
         return $this->redirectToRoute('trade_list', [
             'settlement' => $deposit->getPeak()->getSettlement()->getId(),
+        ]);
+    }
+
+    /**
+     * @Route("/buy/{offer}", name="trade_buy")
+     */
+    public function buyAction(Entity\TradeOffer $offer, Request $request)
+    {
+        /** @var Entity\Settlement $settlement */
+        $settlement = $this->getHuman()->getCurrentPosition();
+        $settlement->addResourceDeposit($offer->getOfferedResourceDeposit()->getBlueprint(), $offer->getOfferedResourceDeposit()->getAmount());
+        $settlement->consumeResourceDepositAmount($offer->getBlueprint()->getResourceDescriptor(), $offer->getAmountRequested());
+        $this->getDoctrine()->getManager('planet')->persist($settlement);
+        $this->getDoctrine()->getManager('planet')->remove($offer);
+        $this->getDoctrine()->getManager('planet')->flush();
+
+        return $this->redirectToRoute('trade_list', [
+            'settlement' => $settlement->getId(),
         ]);
     }
 }
