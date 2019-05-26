@@ -70,7 +70,7 @@ services:
         class: AppBundle\Builder\BuilderFactory
         public: true
         arguments:
-            - '@doctrine.orm.entity_manager'
+            - '@doctrine.orm.planet_entity_manager'
 
     AppBundle\Fixture\:
         resource: '%kernel.project_dir%/src/AppBundle/Fixture/'

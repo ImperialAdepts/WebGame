@@ -215,5 +215,14 @@ class Settlement implements ResourcefullInterface
     {
         $this->getMainRegion()->addResourceDeposit($blueprint, $count);
     }
+
+    /**
+     * @param $resourceDescriptor
+     * @param int $count
+     */
+    public function consumeResourceDepositAmount($resourceDescriptor, $count = 1)
+    {
+        $this->getMainRegion()->consumeResourceDepositAmount($resourceDescriptor, $count);
+    }
 }
 

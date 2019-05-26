@@ -25,6 +25,12 @@ interface ResourcefullInterface
     public function getResourceDepositAmount($resourceDescriptor);
 
     /**
+     * @param $resourceDescriptor
+     * @param int $count
+     */
+    public function consumeResourceDepositAmount($resourceDescriptor, $count = 1);
+
+    /**
      * @param Blueprint $blueprint
      * @param int $count
      */

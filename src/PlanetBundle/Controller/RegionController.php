@@ -56,7 +56,7 @@ class RegionController extends BasePlanetController
             $builder->build();
         });
 
-        return $this->redirectToRoute('settlement_dashboard', [
+        return $this->redirectToRoute('settlement_buildings', [
             'settlement' => $region->getSettlement()->getId(),
         ]);
     }

@@ -20,6 +20,6 @@ final class ResourceDescriptorEnum
     const LABORATORY_DISTRICT = 'settlement_laboratory';
 	const WAREHOUSE = 'warehouse';
 	const FURNACE = 'furnace';
-    const SIMPLE_HOUSE = 'house';
+    const SIMPLE_HOUSE = 'container_house';
     const OIL_GENERATOR = 'oilGenerator';
 }

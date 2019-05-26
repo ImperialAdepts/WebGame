@@ -57,7 +57,6 @@ class RegionBuilder
             foreach ($adapters as $adapter) {
                 $isAdapterGood = true;
                 foreach ($traits as $traitName => $requiredTraitValue) {
-                    echo " - trait: $traitName ";
                     if ($traitName == 'manpower') {
                         continue;
                     }
@@ -150,18 +149,29 @@ class RegionBuilder
         }
     }
 
+    /**
+     * @return int amout of builded items
+     */
     public function build() {
+        $counter = 0;
         if ($this->count === null) {
             while (true) {
-                if (!$this->buildOne()) {
-                    return true;
+                if ($this->buildOne()) {
+                    $counter++;
+                } else {
+                    return $counter;
                 }
             }
         } else {
-            for ($i = 1; $i < $this->count; $i++) {
-                $this->buildOne();
+            for ($i = 0; $i < $this->count; $i++) {
+                if ($this->buildOne()){
+                    $counter++;
+                } else {
+                    return $counter;
+                }
             }
         }
+        return $counter;
     }
 
     private function buildOne() {
@@ -170,11 +180,11 @@ class RegionBuilder
         }
 
         foreach ($this->resourceRequirements as $resourceDescriptor => $requirementCount) {
-            $currentAmount = $this->resourceHolder->getResourceDepositAmount($resourceDescriptor);
-            $this->resourceHolder->getResourceDeposit($resourceDescriptor)->setAmount($currentAmount - $requirementCount);
+            $this->resourceHolder->consumeResourceDepositAmount($resourceDescriptor, $requirementCount);
         }
 
         $this->resourceHolder->addResourceDeposit($this->blueprint, 1);
+        return true;
     }
 
     /**

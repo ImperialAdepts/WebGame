@@ -315,5 +315,19 @@ class Region implements ResourcefullInterface
         }
         return 0;
     }
+
+    /**
+     * @param $resourceDescriptor
+     * @param int $count
+     */
+    public function consumeResourceDepositAmount($resourceDescriptor, $count = 1)
+    {
+//        if ($this->getResourceDepositAmount($resourceDescriptor) > $count) {
+            $this->getResourceDeposit($resourceDescriptor)->setAmount($this->getResourceDeposit($resourceDescriptor)->getAmount() - $count);
+//        }
+//        if ($this->getResourceDepositAmount($resourceDescriptor) <= $count) {
+//            $this->getResourceDeposit($resourceDescriptor)->setAmount(0);
+//        }
+    }
 }
 
