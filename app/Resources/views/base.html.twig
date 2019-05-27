@@ -33,9 +33,35 @@
             }
             #cheat-panel {
                 position: relative;
-                width: 200px;
+                width: 500px;
                 float: right;
-                background-color: #6b9311;
+                border-width: 1px;
+                border-color: #6c6159;
+                background-color: #d1bfac;
+            }
+
+            #event-panel {
+                width: 100%;
+            }
+            #event-panel ul,
+            #event-panel li
+            {
+                width: 100%;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+            #event-panel li {
+                padding: 5px;
+            }
+            #event-panel li strong {
+                /*float: left;*/
+            }
+            #event-panel li span {
+                /*float: left;*/
+            }
+            #event-panel li small {
+                float: right;
             }
         </style>
         {% block stylesheets %}{% endblock %}
@@ -70,6 +96,22 @@
         </div>
         <div id="cheat-panel">
             {% block cheatpanel %}{{ cron.maintanance_controls() }}{% endblock %}
+            <div id="event-panel">
+                {% if events != null and events|length > 0 %}
+                    <Strong>Events:</Strong>
+                    <ul>
+                    {% for event in events %}
+                        <li>
+                            <strong>{{ event.description }}</strong>
+                            <span>
+                                {{ dump(event.descriptionData) }}
+                            </span>
+                            <small>{{ event.time|date('H:i') }} phase {{ event.planetPhase }} on {{ event.planet.name }}</small>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
         </div>
         {% block javascripts %}{% endblock %}
     </body>

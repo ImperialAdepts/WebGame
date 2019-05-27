@@ -33,11 +33,34 @@ class BasePlanetController extends Controller
         $this->human = $this->getDoctrine()->getManager('planet')
             ->getRepository(PlanetEntity\Human::class)->getByGlobalHuman($this->globalHuman);
 
+        $this->get('twig')->addGlobal('planet', $this->planet);
+        $this->get('twig')->addGlobal('settlement', $this->human->getCurrentPosition());
+        $this->get('twig')->addGlobal('events', $this->getDoctrine()->getManager()
+            ->getRepository(Entity\Human\Event::class)->findAll());
+
         if ($this->human === null) {
             throw new NotFoundHttpException("Human was not found on this planet");
         }
     }
 
+    /**
+     * @param $eventNme
+     * @param array $eventData
+     * @return Entity\Human\Event
+     */
+    public function createEvent($eventNme, array $eventData = []) {
+        $event = new Entity\Human\Event();
+        $event->setDescription($eventNme);
+        $event->setPlanet($this->planet);
+        $event->setPlanetPhase($this->planet->getLastPhaseUpdate());
+        $event->setTime(time());
+        $event->setDescriptionData($eventData);
+        $event->setHuman($this->globalHuman);
+
+        $this->getDoctrine()->getManager()->persist($event);
+        $this->getDoctrine()->getManager()->flush();
+        return $event;
+    }
 
     /**
      * @return Entity\SolarSystem\Planet

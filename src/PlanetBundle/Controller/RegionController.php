@@ -3,6 +3,8 @@
 namespace PlanetBundle\Controller;
 
 use AppBundle\Descriptor\UseCaseEnum;
+use AppBundle\Entity\Human\EventDataTypeEnum;
+use AppBundle\Entity\Human\EventTypeEnum;
 use PlanetBundle\Entity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,6 +35,12 @@ class RegionController extends BasePlanetController
 		$this->getDoctrine()->getManager('planet')->persist($project);
 		$this->getDoctrine()->getManager('planet')->persist($region);
 		$this->getDoctrine()->getManager('planet')->flush();
+
+        $this->createEvent(EventTypeEnum::SETTLEMENT_BUILD_PLAN, [
+            EventDataTypeEnum::BLUEPRINT => $blueprint,
+            EventDataTypeEnum::REGION => $region,
+        ]);
+
 		return $this->redirectToRoute('settlement_dashboard', [
 			'settlement' => $region->getSettlement()->getId(),
 		]);
@@ -55,6 +63,11 @@ class RegionController extends BasePlanetController
             $builder->setCount($count);
             $builder->build();
         });
+
+        $this->createEvent(EventTypeEnum::SETTLEMENT_BUILD, [
+            EventDataTypeEnum::BLUEPRINT => $blueprint,
+            EventDataTypeEnum::REGION => $region,
+        ]);
 
         return $this->redirectToRoute('settlement_buildings', [
             'settlement' => $region->getSettlement()->getId(),
@@ -129,6 +142,7 @@ class RegionController extends BasePlanetController
 	 */
 	public function depositScreeningAction($regionUuid, Request $request)
 	{
+	    /** @var Entity\Region $region */
 		$region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->getByUuid($regionUuid);
 
 		srand($regionUuid);
@@ -146,9 +160,8 @@ class RegionController extends BasePlanetController
 			$heavyDeposit->setQuality(10);
 			$heavyDeposit->setPeak($region);
 			$deposits[] = $heavyDeposit;
-			$region->setOreDeposits($deposits);
-			$this->getDoctrine()->getManager()->persist($lightDeposit);
-			$this->getDoctrine()->getManager()->persist($heavyDeposit);
+			$this->getDoctrine()->getManager('planet')->persist($lightDeposit);
+			$this->getDoctrine()->getManager('planet')->persist($heavyDeposit);
 		}
 
 		if (random_int(1, 10) == 1) {
@@ -164,13 +177,18 @@ class RegionController extends BasePlanetController
 			$heavyDeposit->setQuality(10);
 			$heavyDeposit->setPeak($region);
 			$deposits[] = $heavyDeposit;
-			$region->setOreDeposits($deposits);
-			$this->getDoctrine()->getManager()->persist($lightDeposit);
-			$this->getDoctrine()->getManager()->persist($heavyDeposit);
+			$this->getDoctrine()->getManager('planet')->persist($lightDeposit);
+			$this->getDoctrine()->getManager('planet')->persist($heavyDeposit);
 		}
+        $region->getPeakCenter()->setOreDeposits($deposits);
 
-		$this->getDoctrine()->getManager()->persist($region);
-		$this->getDoctrine()->getManager()->flush();
+		$this->getDoctrine()->getManager('planet')->persist($region);
+		$this->getDoctrine()->getManager('planet')->flush();
+
+        $this->createEvent(EventTypeEnum::RESOURCES_SCREENING, [
+            EventDataTypeEnum::REGION => $region,
+            EventDataTypeEnum::NEW_RESOURCES => $deposits,
+        ]);
 
 		return $this->redirectToRoute('human_dashboard', [
 			'human' => $this->getHuman(),

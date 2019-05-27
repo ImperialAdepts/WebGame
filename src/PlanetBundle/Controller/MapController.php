@@ -4,6 +4,8 @@ namespace PlanetBundle\Controller;
 
 use AppBundle\Builder\PlanetBuilder;
 use AppBundle\Descriptor\TimeTransformator;
+use AppBundle\Entity\Human\EventDataTypeEnum;
+use AppBundle\Entity\Human\EventTypeEnum;
 use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -183,6 +185,10 @@ class MapController extends BasePlanetController
 		$builder = new \AppBundle\Builder\PlanetBuilder($this->getDoctrine()->getManager(), $this->getParameter('default_colonization_packs'));
 		$builder->newColony($region, $this->getHuman(), 'simple');
         $this->getDoctrine()->getManager()->flush();
+
+        $this->createEvent(EventTypeEnum::SETTLEMENT_COLONIZATION, [
+            EventDataTypeEnum::REGION => $region,
+        ]);
 
 		return $this->redirectToRoute('settlement_dashboard', [
 		    'settlement' => $region->getSettlement()->getId(),

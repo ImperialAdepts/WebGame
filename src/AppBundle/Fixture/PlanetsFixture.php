@@ -91,6 +91,13 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
         ]);
         $manager->persist($testPlanet);
 
+        $event = new GeneralEntity\Human\Event();
+        $event->setDescription("Planet data generated");
+        $event->setPlanet($testPlanet);
+        $event->setTime(time());
+
+        $manager->persist($event);
+
 		$manager->flush();
 	}
 

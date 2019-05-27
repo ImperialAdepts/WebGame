@@ -6,6 +6,9 @@ use AppBundle\Builder\PlanetBuilder;
 use AppBundle\Descriptor\Adapters;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\UseCaseEnum;
+use AppBundle\Entity\Human\Event;
+use AppBundle\Entity\Human\EventDataTypeEnum;
+use AppBundle\Entity\Human\EventTypeEnum;
 use PlanetBundle\Entity;
 use AppBundle\Repository\JobRepository;
 use PlanetBundle\Repository\RegionRepository;
@@ -221,6 +224,10 @@ class SettlementController extends BasePlanetController
         $this->getDoctrine()->getManager('planet')->persist($settlement);
         $this->getDoctrine()->getManager('planet')->flush();
 
+        $this->createEvent(EventTypeEnum::SETTLEMENT_EXPAND, [
+            EventDataTypeEnum::REGION => $region,
+        ]);
+
         return $this->redirectToRoute('settlement_dashboard', [
             'settlement' => $settlement->getId(),
         ]);
@@ -236,11 +243,16 @@ class SettlementController extends BasePlanetController
         $builder->buildProjectStep($project);
         if ($project->isDone()) {
             $builder->buildProject($project);
-            $this->getDoctrine()->getManager()->remove($project);
+            $this->getDoctrine()->getManager('planet')->remove($project);
         } else {
-            $this->getDoctrine()->getManager()->persist($project);
+            $this->getDoctrine()->getManager('planet')->persist($project);
         }
-        $this->getDoctrine()->getManager()->flush();
+        $this->getDoctrine()->getManager('planet')->flush();
+
+
+        $this->createEvent(EventTypeEnum::SETTLEMENT_BUILD, [
+            EventDataTypeEnum::BLUEPRINT => $project->getBuildingBlueprint()->getDescription(),
+        ]);
 
         return $this->redirectToRoute('settlement_dashboard', [
             'settlement' => $settlement->getId(),
@@ -250,11 +262,15 @@ class SettlementController extends BasePlanetController
     /**
      * @Route("/changeType/{settlement}to{blueprint}", name="settlement_change_type")
      */
-    public function changeTypeAction(Entity\Settlement $settlement, Blueprint $blueprint, Request $request)
+    public function changeTypeAction(Entity\Settlement $settlement, Entity\Blueprint $blueprint, Request $request)
     {
         $settlement->setType($blueprint->getResourceDescriptor());
-        $this->getDoctrine()->getManager()->persist($settlement);
-        $this->getDoctrine()->getManager()->flush();
+        $this->getDoctrine()->getManager('planet')->persist($settlement);
+        $this->getDoctrine()->getManager('planet')->flush();
+
+        $this->createEvent(EventTypeEnum::SETTLEMENT_ADMINISTRATIVE_CHANGE, [
+            EventDataTypeEnum::BLUEPRINT => $blueprint,
+        ]);
 
         return $this->redirectToRoute('settlement_dashboard', [
             'settlement' => $settlement->getId(),

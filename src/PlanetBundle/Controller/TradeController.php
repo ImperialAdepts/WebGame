@@ -6,6 +6,8 @@ use AppBundle\Builder\PlanetBuilder;
 use AppBundle\Descriptor\Adapters;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\UseCaseEnum;
+use AppBundle\Entity\Human\EventDataTypeEnum;
+use AppBundle\Entity\Human\EventTypeEnum;
 use PlanetBundle\Entity;
 use AppBundle\Repository\JobRepository;
 use PlanetBundle\Repository\RegionRepository;
@@ -83,11 +85,17 @@ class TradeController extends BasePlanetController
         $offer = new Entity\TradeOffer();
         $offer->setBlueprint($blueprint);
         $offer->setAmountRequested($count);
-        $offer->setAmountRequested($count);
         $offer->setOfferedResourceDeposit($peak->getResourceDeposit($deposit->getResourceDescriptor()));
         $offer->setSettlement($deposit->getRegion()->getSettlement());
         $this->getDoctrine()->getManager('planet')->persist($offer);
         $this->getDoctrine()->getManager('planet')->flush();
+
+        $this->createEvent(EventTypeEnum::TRADE_SELL, [
+            EventDataTypeEnum::BLUEPRINT => $offer->getOfferedResourceDeposit()->getBlueprint(),
+            EventDataTypeEnum::PRICE => [
+                $offer->getBlueprint()->getResourceDescriptor() => $offer->getAmountRequested(),
+            ],
+        ]);
 
         return $this->redirectToRoute('trade_list', [
             'settlement' => $deposit->getRegion()->getSettlement()->getId(),
@@ -102,11 +110,17 @@ class TradeController extends BasePlanetController
         $offer = new Entity\TradeOffer();
         $offer->setBlueprint($blueprint);
         $offer->setAmountRequested($count);
-        $offer->setAmountRequested($count);
         $offer->setOfferedResourceDeposit($deposit);
         $offer->setSettlement($deposit->getPeak()->getSettlement());
         $this->getDoctrine()->getManager('planet')->persist($offer);
         $this->getDoctrine()->getManager('planet')->flush();
+
+        $this->createEvent(EventTypeEnum::TRADE_SELL, [
+            EventDataTypeEnum::BLUEPRINT => $offer->getOfferedResourceDeposit()->getBlueprint(),
+            EventDataTypeEnum::PRICE => [
+                $offer->getBlueprint()->getResourceDescriptor() => $offer->getAmountRequested(),
+            ],
+        ]);
 
         return $this->redirectToRoute('trade_list', [
             'settlement' => $deposit->getPeak()->getSettlement()->getId(),
@@ -125,6 +139,13 @@ class TradeController extends BasePlanetController
         $this->getDoctrine()->getManager('planet')->persist($settlement);
         $this->getDoctrine()->getManager('planet')->remove($offer);
         $this->getDoctrine()->getManager('planet')->flush();
+
+        $this->createEvent(EventTypeEnum::TRADE_BUY, [
+            EventDataTypeEnum::BLUEPRINT => $offer->getOfferedResourceDeposit()->getBlueprint(),
+            EventDataTypeEnum::PRICE => [
+                $offer->getBlueprint()->getResourceDescriptor() => $offer->getAmountRequested(),
+            ],
+        ]);
 
         return $this->redirectToRoute('trade_list', [
             'settlement' => $settlement->getId(),

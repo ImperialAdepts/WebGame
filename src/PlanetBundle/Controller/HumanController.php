@@ -2,6 +2,8 @@
 
 namespace PlanetBundle\Controller;
 
+use AppBundle\Entity\Human\EventDataTypeEnum;
+use AppBundle\Entity\Human\EventTypeEnum;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -41,6 +43,9 @@ class HumanController extends BasePlanetController
 		$this->getDoctrine()->getManager()->persist($soul);
 		$this->getDoctrine()->getManager()->persist($human);
 		$this->getDoctrine()->getManager()->flush();
+
+        $this->createEvent(EventTypeEnum::SOUL_HUMAN_CONNECTION, [
+        ]);
 
 		return $this->forward('AppBundle:Gamer:dashboard');
 	}
