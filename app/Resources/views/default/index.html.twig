@@ -2,6 +2,7 @@
 
 {% block body %}
 	<div id="wrapper">
+		<Strong>Choose gamer account:</Strong>
 		<ul>
 			{% for gamer in gamers %}
 				<li><a href="{{ path('gamer_login', {'login': gamer.login }) }}">{{ gamer.login }}</a></li>

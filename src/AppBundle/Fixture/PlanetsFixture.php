@@ -92,8 +92,9 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
         $manager->persist($testPlanet);
 
         $event = new GeneralEntity\Human\Event();
-        $event->setDescription("Planet data generated");
+        $event->setDescription(GeneralEntity\Human\EventTypeEnum::PLANET_MAP_GENERATION);
         $event->setPlanet($testPlanet);
+        $event->setPlanetPhase(0);
         $event->setTime(time());
 
         $manager->persist($event);

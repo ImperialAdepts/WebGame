@@ -12,4 +12,5 @@ class EventTypeEnum
     const RESOURCES_SCREENING = 'resources_screening';
     const SOUL_HUMAN_CONNECTION = 'soul_human_connection';
     const SETTLEMENT_COLONIZATION = 'settlement_colonization';
+    const PLANET_MAP_GENERATION = 'planet_map_generation';
 }
