@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'base-human.html.twig' %}
 
 {% block pagetitle %}Settlement {{ settlement.type }} {{ settlement.id }}{% endblock %}
 {% block pagedescription %}ruled by {{ settlement.manager.name }}, owned by {{ settlement.owner.name }}{% endblock %}
@@ -31,8 +31,4 @@
         <li><a href="{{ path('trade_list', { 'settlement': settlement.id }) }}">Trade</a></li>
     </ul>
     <div id="subbody">{% block subbody %}{% endblock %}</div>
-{% endblock %}
-
-{% block planetinfo %}
-    {{ render(controller('PlanetBundle:Map:currentPlanetInfo')) }}
 {% endblock %}

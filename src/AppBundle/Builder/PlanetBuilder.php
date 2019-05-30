@@ -3,7 +3,6 @@ namespace AppBundle\Builder;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use PlanetBundle\Entity as PlanetEntity;
-use AppBundle\Fixture\ResourceAndBlueprintFixture;
 use Doctrine\ORM\EntityManager;
 
 class PlanetBuilder
@@ -105,28 +104,44 @@ class PlanetBuilder
 		}
 	}
 
-	public function newColony(PlanetEntity\Region $region, PlanetEntity\Human $human, $colonizationPack)
+    /**
+     * @param PlanetEntity\Peak $administrativeCenter
+     * @param PlanetEntity\Human $human
+     * @param $colonizationPack
+     * @throws \Doctrine\ORM\ORMException
+     */
+	public function newColony(PlanetEntity\Peak $administrativeCenter, PlanetEntity\Human $human, $colonizationPack)
 	{
-		$settlement = new PlanetEntity\Settlement();
+	    $regions = $this->entityManager->getRepository(PlanetEntity\Region::class)->findPeakSurrounding($administrativeCenter);
+
+	    $settlement = new PlanetEntity\Settlement();
 		$settlement->setType(ResourceDescriptorEnum::VILLAGE);
-		$settlement->setRegions([$region]);
+		$settlement->setRegions($regions);
+		$settlement->setAdministrativeCenter($administrativeCenter);
 		$settlement->setOwner($human);
 		$settlement->setManager($human);
-		$region->setSettlement($settlement);
 		$this->entityManager->persist($settlement);
-		$this->entityManager->persist($region);
+
+        $administrativeCenter->setSettlement($settlement);
+		$this->entityManager->persist($administrativeCenter);
+
+		/** @var PlanetEntity\Region $region */
+        foreach ($regions as $region) {
+		    $region->setSettlement($settlement);
+            $this->entityManager->persist($region);
+        }
 
 		$colonyPack = $this->colonyPacks[$colonizationPack];
 
 		foreach ($this->colonyPacks as $colonyPackName => $colonyPack) {
             foreach ($colonyPack['deposits'] as $resource => $data) {
-                $resourceDeposit = new PlanetEntity\RegionResourceDeposit();
+                $resourceDeposit = new PlanetEntity\PeakResourceDeposit();
                 $resourceDeposit->setAmount($data['amount']);
                 $resourceDeposit->setResourceDescriptor($resource);
                 if (isset($data['blueprint']) && ($blueprint = $this->getBlueprint($data['blueprint'])) != null) {
                     $resourceDeposit->setBlueprint($blueprint);
                 }
-                $resourceDeposit->setRegion($settlement->getMainRegion());
+                $resourceDeposit->setPeak($settlement->getAdministrativeCenter());
                 $this->entityManager->persist($resourceDeposit);
             }
         }

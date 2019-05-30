@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 abstract class BuildingProject
 {
-    use RegionDependencyTrait;
+//    use RegionDependencyTrait;
 
 	/**
 	 * @var int

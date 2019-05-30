@@ -54,6 +54,15 @@ class MapController extends BasePlanetController
             $p->height = $peak->getHeight();
 
             $p->projection = $this->computeProjection($peak->getXcoord(), $peak->getYcoord(), $peak->getHeight());
+
+            if ($peak->getSettlement() != null && $peak == $peak->getSettlement()->getAdministrativeCenter()) {
+                $p->administrativeCenter = $this->computeProjection($peak->getXcoord(), $peak->getYcoord(), $peak->getHeight(), 5);
+            }
+
+            if ($peak->getSettlement() != null && $peak == $peak->getSettlement()->getTradeCenter()) {
+                $p->tradeCenter = $this->computeProjection($peak->getXcoord(), $peak->getYcoord(), $peak->getHeight(), 2);
+            }
+
             $peaks[$peak->getId()] = $p;
         }
         /** @var PlanetEntity\Region $region */
@@ -176,22 +185,20 @@ class MapController extends BasePlanetController
     }
 
 	/**
-	 * @Route("/newcolony/{regionC}_{regionL}_{regionR}", name="map_newcolony")
+	 * @Route("/newcolony/{administrativeCenter}", name="map_newcolony")
 	 */
-	public function newColonyAction(PlanetEntity\Peak $regionC, PlanetEntity\Peak $regionL, PlanetEntity\Peak $regionR, Request $request)
+	public function newColonyAction(PlanetEntity\Peak $administrativeCenter, Request $request)
 	{
-        /** @var PlanetEntity\Region $region */
-        $region = $this->getDoctrine()->getRepository(PlanetEntity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
-		$builder = new \AppBundle\Builder\PlanetBuilder($this->getDoctrine()->getManager(), $this->getParameter('default_colonization_packs'));
-		$builder->newColony($region, $this->getHuman(), 'simple');
+		$builder = new \AppBundle\Builder\PlanetBuilder($this->getDoctrine()->getManager('planet'), $this->getParameter('default_colonization_packs'));
+		$builder->newColony($administrativeCenter, $this->getHuman(), 'simple');
         $this->getDoctrine()->getManager()->flush();
 
         $this->createEvent(EventTypeEnum::SETTLEMENT_COLONIZATION, [
-            EventDataTypeEnum::REGION => $region,
+            EventDataTypeEnum::PEAK => $administrativeCenter,
         ]);
 
 		return $this->redirectToRoute('settlement_dashboard', [
-		    'settlement' => $region->getSettlement()->getId(),
+		    'settlement' => $administrativeCenter->getSettlement()->getId(),
 		]);
 	}
 	

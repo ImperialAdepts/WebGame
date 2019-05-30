@@ -62,9 +62,17 @@ class Settlement implements ResourcefullInterface
      * @var Peak
      *
      * @ORM\OneToOne(targetEntity="PlanetBundle\Entity\Peak")
-     * @ORM\JoinColumn(name="main_peak_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="administrative_peak_id", referencedColumnName="id", nullable=false)
      */
     private $administrativeCenter;
+
+    /**
+     * @var Peak
+     *
+     * @ORM\OneToOne(targetEntity="PlanetBundle\Entity\Peak")
+     * @ORM\JoinColumn(name="trade_peak_id", referencedColumnName="id", nullable=true)
+     */
+    private $tradeCenter;
 
 	/**
 	 * Get id
@@ -205,6 +213,22 @@ class Settlement implements ResourcefullInterface
     public function setAdministrativeCenter($administrativeCenter)
     {
         $this->administrativeCenter = $administrativeCenter;
+    }
+
+    /**
+     * @return Peak
+     */
+    public function getTradeCenter()
+    {
+        return $this->tradeCenter;
+    }
+
+    /**
+     * @param Peak $tradeCenter
+     */
+    public function setTradeCenter($tradeCenter)
+    {
+        $this->tradeCenter = $tradeCenter;
     }
 
 	/**

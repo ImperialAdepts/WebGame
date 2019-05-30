@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block planetinfo  %}
+    {{ render(controller('PlanetBundle:Map:currentPlanetInfo')) }}
+{% endblock %}
+
+{% block playerinfo  %}
+    <a href="{{ path('gamer_human_selection') }}">
+        {% if sessionSettings.human is not null %}
+            <strong>{{ sessionSettings.human.soul.name }}</strong> in
+            <strong>{{ sessionSettings.human.name }}</strong><br/>
+        {% else %}
+            <strong>Nobody is logged in</strong>
+        {% endif %}
+    </a>
+    {% if sessionSettings.human is not null %}
+        <span>Current feeling: {{ sessionSettings.human.feelings.thisTime }},
+                details in <a href="{{ path('human_dashboard') }}">Journal</a></span><br/>
+        <span>Time use: {{ sessionSettings.human.hours }}h</span>
+    {% endif %}
+{% endblock %}
+
+{% block eventlist %}
+    <style type="text/css">
+        #event-list ul,
+        #event-list li
+        {
+            width: 100%;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        #event-list li {
+            padding: 5px;
+        }
+        #event-list li strong {
+            /*float: left;*/
+        }
+        #event-list li span {
+            /*float: left;*/
+        }
+        #event-list li small {
+            float: right;
+        }
+    </style>
+
+    {% if events != null and events|length > 0 %}
+        <Strong>Events:</Strong>
+        <ul>
+        {% for event in events %}
+            <li>
+                <strong>{{ event.description }}</strong>
+                <span>
+                    {{ dump(event.descriptionData) }}
+                </span>
+                <small>{{ event.time|date('H:i') }} phase {{ event.planetPhase }} on {{ event.planet.name }}</small>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

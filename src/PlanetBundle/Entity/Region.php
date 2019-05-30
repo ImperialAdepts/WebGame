@@ -59,7 +59,8 @@ class Region implements ResourcefullInterface
 	/**
 	 * @var CurrentBuildingProject
 	 *
-	 * @ORM\OneToOne(targetEntity="CurrentBuildingProject", mappedBy="region")
+     * TODO: predelat na seznam naplanovanych uloh
+	 * @ ORM\OneToOne(targetEntity="CurrentBuildingProject", mappedBy="region")
 	 */
 	private $project;
 

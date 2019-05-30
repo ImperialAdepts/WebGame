@@ -64,6 +64,16 @@
 				renderRegion(scene, region);
 				renderRegionBorders(scene, region);
 			}
+			var peak;
+			for(var i=0; i<peaks.length; i++) {
+				peak = peaks[i];
+				if (peak["adinistrativeCenter"] != null) {
+					renderAdministrativeCenter(scene, peak);
+				}
+				if (peak["tradeCenter"] != null) {
+					renderTradeCenter(scene, peak);
+				}
+			}
 			//
 			renderer = new THREE.WebGLRenderer( { antialias: true } );
 			renderer.setPixelRatio( window.devicePixelRatio );
@@ -168,6 +178,35 @@
 				}
 				scene.add(meshBorder);
 			}
+		}
+
+		function renderAdministrativeCenter(scene, peak) {
+			var color = 0xFF0000;
+			// if (region["settlement"] == null) {
+			var material = new THREE.MeshBasicMaterial({
+				color: color,
+				wireframe: true,
+				wireframeLinewidth: 10,
+				side: THREE.DoubleSide
+			});
+			var geometry = new THREE.PointLight();
+
+			peakA = peaks[region["peaks"][0]];
+			peakB = peaks[region["peaks"][1]];
+			peakC = peaks[region["peaks"][2]];
+			geometry.vertices.push(
+					new THREE.Vector3(peakA["projection"]["x"], peakA["projection"]["y"], peakA["projection"]["z"]),
+					new THREE.Vector3(peakB["projection"]["x"], peakB["projection"]["y"], peakB["projection"]["z"]),
+					new THREE.Vector3(peakC["projection"]["x"], peakC["projection"]["y"], peakC["projection"]["z"])
+			);
+
+			geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
+			geometry.computeFaceNormals();
+
+			var mesh = new THREE.Mesh( geometry, material );
+			mesh.region = region;
+			triangles.push(mesh);
+			scene.add( mesh );
 		}
 
 		function onDocumentMouseDown(event) {

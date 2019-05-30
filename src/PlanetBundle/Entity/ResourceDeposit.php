@@ -11,7 +11,11 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ResourceDeposit
  *
- * @ORM\MappedSuperclass
+ * @ORM\Entity()
+ * @ORM\Table(name="resource_deposits")
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="owner_type", type="string")
+ * @ORM\DiscriminatorMap({"region" = "RegionResourceDeposit", "peak" = "PeakResourceDeposit"})
  */
 abstract class ResourceDeposit
 {
@@ -19,7 +23,7 @@ abstract class ResourceDeposit
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
+     * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;

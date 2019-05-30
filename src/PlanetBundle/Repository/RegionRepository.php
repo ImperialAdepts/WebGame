@@ -14,6 +14,18 @@ use PlanetBundle\Entity\Region;
 class RegionRepository extends \Doctrine\ORM\EntityRepository
 {
 
+    public function findPeakSurrounding(Peak $peakInCenter) {
+        return $this->getEntityManager()
+            ->createQuery(
+                "SELECT r FROM PlanetBundle:Region r WHERE "
+                . "r.peakCenter=:peak OR "
+                . "r.peakLeft=:peak OR "
+                . "r.peakRight=:peak"
+            )
+            ->setParameter('peak', $peakInCenter)
+            ->getResult();
+    }
+
     /**
      * @param Region $region
      * @return Region[]

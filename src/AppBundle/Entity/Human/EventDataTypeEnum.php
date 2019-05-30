@@ -6,4 +6,5 @@ class EventDataTypeEnum
     const BLUEPRINT = 'blueprint';
     const REGION = 'region';
     const PRICE = 'price';
+    const PEAK = 'peak';
 }

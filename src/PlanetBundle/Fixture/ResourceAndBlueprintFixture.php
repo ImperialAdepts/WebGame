@@ -7,7 +7,6 @@ use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Tracy\Debugger;
 
 class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements ContainerAwareInterface, DependentFixtureInterface
 {
@@ -43,18 +42,18 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
             $manager->flush();
 
             $builder = new \AppBundle\Builder\PlanetBuilder($manager, $this->container->getParameter('default_colonization_packs'));
-            $humans = $manager->getRepository(PlanetEntity\Human::class)->findAllIncarnated();
-            $regions = $manager->getRepository(PlanetEntity\Region::class)->findAll();
+            $humans = $manager->getRepository(PlanetEntity\Human::class)->findAll();
+            $peaks = $manager->getRepository(PlanetEntity\Peak::class)->findAll();
 
-            $regionCounter = floor(count($regions)/3);
+            $peakCounter = floor(count($peaks)/3);
             /** @var PlanetEntity\Human $human */
             foreach ($humans as $human) {
-                /** @var PlanetEntity\Region $centralRegion */
-                $centralRegion = $regions[$regionCounter];
-                $regionCounter += ceil(count($regions) / count($humans));
-                $regionCounter = $regionCounter % count($regions);
-                $builder->newColony($centralRegion, $human, 'simple');
-                $human->setCurrentPosition($centralRegion->getSettlement());
+                /** @var PlanetEntity\Peak $administrativeCenter */
+                $administrativeCenter = $peaks[$peakCounter];
+                $peakCounter += ceil(count($peaks) / count($humans));
+                $peakCounter = $peakCounter % count($peaks);
+                $builder->newColony($administrativeCenter, $human, 'simple');
+                $human->setCurrentPosition($administrativeCenter->getSettlement());
 
                 echo "Planet {$planet->getName()} settlement generated for {$human->getName()}\n";
             }
