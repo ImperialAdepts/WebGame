@@ -24,6 +24,7 @@ class People extends AbstractResourceDepositAdapter
      */
     public static function findByDescriptor(PlanetEntity\Region $region, $resourceDescriptor) {
         $descriptor = $region->getResourceDeposit($resourceDescriptor);
+        if ($descriptor == null) return null;
         return $descriptor->asUseCase(UseCaseEnum::PEOPLE);
     }
 

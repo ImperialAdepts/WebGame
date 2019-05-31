@@ -2,6 +2,7 @@
 
 namespace PlanetBundle\Repository;
 
+use PlanetBundle\Entity\Job\AdministrationJob;
 use PlanetBundle\Entity\Job\BuildJob;
 use PlanetBundle\Entity\Job\BuyJob;
 use PlanetBundle\Entity\Job\ProduceJob;
@@ -19,9 +20,10 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param Settlement $settlement
+     * @param string $triggerType
      * @return AdministrationJob[]
      */
-    public function getAdministrationBySettlement(Settlement $settlement)
+    public function getAdministrationBySettlement(Settlement $settlement, $triggerType = null)
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('job')
@@ -32,15 +34,20 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('job.triggerType', 'DESC')
             ->orderBy('job.priority', 'DESC')
         ;
+        if ($triggerType !== null) {
+            $qb->andWhere('job.triggerType = :tt');
+            $qb->setParameter('tt', $triggerType);
+        }
 
         return $qb->getQuery()->getResult();
     }
 
     /**
      * @param Settlement $settlement
+     * @param string $triggerType
      * @return BuildJob[]
      */
-    public function getBuildBySettlement(Settlement $settlement)
+    public function getBuildBySettlement(Settlement $settlement, $triggerType = null)
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('job')
@@ -51,15 +58,20 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('job.triggerType', 'DESC')
             ->orderBy('job.priority', 'DESC')
         ;
+        if ($triggerType !== null) {
+            $qb->andWhere('job.triggerType = :tt')
+                ->setParameter('tt', $triggerType);
+        }
 
         return $qb->getQuery()->getResult();
     }
 
     /**
      * @param Settlement $settlement
+     * @param string $triggerType
      * @return TransportJob[]
      */
-    public function getTransportBySettlement(Settlement $settlement)
+    public function getTransportBySettlement(Settlement $settlement, $triggerType = null)
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('job')
@@ -70,15 +82,20 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('job.triggerType', 'DESC')
             ->orderBy('job.priority', 'DESC')
         ;
+        if ($triggerType !== null) {
+            $qb->andWhere('job.triggerType = :tt')
+                ->setParameter('tt', $triggerType);
+        }
 
         return $qb->getQuery()->getResult();
     }
 
     /**
      * @param Settlement $settlement
+     * @param string $triggerType
      * @return ProduceJob[]
      */
-    public function getProduceBySettlement(Settlement $settlement)
+    public function getProduceBySettlement(Settlement $settlement, $triggerType = null)
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('job')
@@ -89,15 +106,20 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('job.triggerType', 'DESC')
             ->orderBy('job.priority', 'DESC')
         ;
+        if ($triggerType !== null) {
+            $qb->andWhere('job.triggerType = :tt')
+                ->setParameter('tt', $triggerType);
+        }
 
         return $qb->getQuery()->getResult();
     }
 
     /**
      * @param Settlement $settlement
+     * @param string $triggerType
      * @return BuyJob[]
      */
-    public function getBuyBySettlement(Settlement $settlement)
+    public function getBuyBySettlement(Settlement $settlement, $triggerType = null)
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('job')
@@ -108,15 +130,20 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('job.triggerType', 'DESC')
             ->orderBy('job.priority', 'DESC')
         ;
+        if ($triggerType !== null) {
+            $qb->andWhere('job.triggerType = :tt')
+                ->setParameter('tt', $triggerType);
+        }
 
         return $qb->getQuery()->getResult();
     }
 
     /**
      * @param Settlement $settlement
+     * @param string $triggerType
      * @return SellJob[]
      */
-    public function getSellBySettlement(Settlement $settlement)
+    public function getSellBySettlement(Settlement $settlement, $triggerType = null)
     {
         $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('job')
@@ -127,6 +154,10 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('job.triggerType', 'DESC')
             ->orderBy('job.priority', 'DESC')
         ;
+        if ($triggerType !== null) {
+            $qb->andWhere('job.triggerType = :tt')
+                ->setParameter('tt', $triggerType);
+        }
 
         return $qb->getQuery()->getResult();
     }

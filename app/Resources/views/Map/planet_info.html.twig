@@ -1,3 +1,5 @@
 Planet name: {{ planet.name }}<br/>
 Gravity: {{ planet.gravity }}g<br/>
+Phase {{ planet.lastPhaseUpdate + 1 }}<br/>
 Phase ends {{ (endphase+2*3600)|date('d. m. Y H:i') }}<br/>
+<a href="{{ path('cron_new_phase', { 'planet': planet.id, 'settlementToRedirect': settlement.id }) }}">New phase</a>

@@ -17,7 +17,7 @@ class BuildingProjectRepository extends \Doctrine\ORM\EntityRepository
 	{
 		return $this->getEntityManager()
 			->createQuery(
-				'SELECT p FROM AppBundle:Planet\CurrentBuildingProject p ORDER BY p.priority ASC'
+				'SELECT p FROM PlanetBundle:CurrentBuildingProject p ORDER BY p.priority ASC'
 			)
 			->getResult();
 	}

@@ -39,7 +39,6 @@ class HumanMaintainer
             }
             $this->entityManager->persist($human);
         }
-        $this->entityManager->flush();
     }
 
     public function resetFeelings() {
@@ -55,6 +54,5 @@ class HumanMaintainer
             $human->getFeelings()->setThisTimeSadness(0);
             $this->entityManager->persist($human);
         }
-        $this->entityManager->flush();
     }
 }

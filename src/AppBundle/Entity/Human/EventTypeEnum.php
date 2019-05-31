@@ -13,4 +13,5 @@ class EventTypeEnum
     const SOUL_HUMAN_CONNECTION = 'soul_human_connection';
     const SETTLEMENT_COLONIZATION = 'settlement_colonization';
     const PLANET_MAP_GENERATION = 'planet_map_generation';
+    const JOB_DONE = 'job_done';
 }

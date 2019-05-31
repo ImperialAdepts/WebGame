@@ -69,8 +69,8 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
                     $administrationJob = new PlanetEntity\Job\AdministrationJob();
                     $administrationJob->setSupervisor($settlement->getManager());
                     $administrationJob->setRegion($region);
-                    $administrationJob->setAmount(null);
-                    $administrationJob->setRepetition(null);
+                    $administrationJob->setAmount(1);
+                    $administrationJob->setRepetition(1);
                     $administrationJob->setTriggerType(PlanetEntity\Job\JobTriggerTypeEnum::PHASE_START);
                     $manager->persist($administrationJob);
                 }

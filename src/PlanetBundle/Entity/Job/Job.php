@@ -22,7 +22,7 @@ abstract class Job
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
+     * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
@@ -90,7 +90,7 @@ abstract class Job
     /**
      * @param \PlanetBundle\Entity\Human $supervisor
      */
-    public function setSupervisor(Human $supervisor)
+    public function setSupervisor($supervisor)
     {
         $this->supervisor = $supervisor;
     }

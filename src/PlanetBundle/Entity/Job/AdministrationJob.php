@@ -15,5 +15,29 @@ use PlanetBundle\Entity\SettlementDependencyTrait;
  */
 class AdministrationJob extends Job
 {
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="time_spent", type="integer")
+     */
+    private $timeSpent = 0;
+
+    /**
+     * @return int
+     */
+    public function getTimeSpent()
+    {
+        return $this->timeSpent;
+    }
+
+    /**
+     * @param int $timeSpent
+     */
+    public function setTimeSpent($timeSpent)
+    {
+        $this->timeSpent = $timeSpent;
+    }
+
+
 }
 
