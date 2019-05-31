@@ -44,6 +44,7 @@ class BasicFood extends AbstractResourceDepositAdapter
     }
 
     public static function countVariety(array $foodChanges) {
+        if (count($foodChanges) == 0) return 0;
         $average = 0;
         foreach ($foodChanges as $resourceDescriptor => $count) {
         }
