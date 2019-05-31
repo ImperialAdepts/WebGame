@@ -16,6 +16,26 @@ use PlanetBundle\Entity\Settlement;
  */
 class JobRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * @param Settlement $settlement
+     * @return AdministrationJob[]
+     */
+    public function getAdministrationBySettlement(Settlement $settlement)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select('job')
+            ->from('PlanetBundle:Job\AdministrationJob', 'job')
+            ->innerJoin('job.region', 'r')
+            ->where('r.settlement=?1')
+            ->setParameter(1, $settlement)
+            ->orderBy('job.triggerType', 'DESC')
+            ->orderBy('job.priority', 'DESC')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
     /**
      * @param Settlement $settlement
      * @return BuildJob[]
@@ -28,6 +48,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('job.region', 'r')
             ->where('r.settlement=?1')
             ->setParameter(1, $settlement)
+            ->orderBy('job.triggerType', 'DESC')
             ->orderBy('job.priority', 'DESC')
         ;
 
@@ -46,6 +67,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('job.region', 'r')
             ->where('r.settlement=?1')
             ->setParameter(1, $settlement)
+            ->orderBy('job.triggerType', 'DESC')
             ->orderBy('job.priority', 'DESC')
         ;
 
@@ -64,6 +86,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('job.region', 'r')
             ->where('r.settlement=?1')
             ->setParameter(1, $settlement)
+            ->orderBy('job.triggerType', 'DESC')
             ->orderBy('job.priority', 'DESC')
         ;
 
@@ -82,6 +105,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('job.region', 'r')
             ->where('r.settlement=?1')
             ->setParameter(1, $settlement)
+            ->orderBy('job.triggerType', 'DESC')
             ->orderBy('job.priority', 'DESC')
         ;
 
@@ -100,6 +124,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('job.region', 'r')
             ->where('r.settlement=?1')
             ->setParameter(1, $settlement)
+            ->orderBy('job.triggerType', 'DESC')
             ->orderBy('job.priority', 'DESC')
         ;
 

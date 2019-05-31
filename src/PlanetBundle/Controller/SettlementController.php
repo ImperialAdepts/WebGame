@@ -205,6 +205,7 @@ class SettlementController extends BasePlanetController
         return $this->render('Settlement/jobs.html.twig', [
             'human' => $this->getHuman(),
             'settlement' => $settlement,
+            'administrationJobs' => $jobRepo->getAdministrationBySettlement($settlement),
             'buildJobs' => $jobRepo->getBuildBySettlement($settlement),
             'transportJobs' => $jobRepo->getTransportBySettlement($settlement),
             'produceJobs' => $jobRepo->getProduceBySettlement($settlement),

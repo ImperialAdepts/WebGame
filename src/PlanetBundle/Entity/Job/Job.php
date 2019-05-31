@@ -37,6 +37,15 @@ abstract class Job
      */
     private $supervisor;
 
+    /**
+     * @var string
+     *
+     * null => unlimited (maximum what is possible)
+     *
+     * @ORM\Column(name="trigger_type", type="job_triggertype_enum", nullable=false)
+     */
+    private $triggerType;
+
 	/**
 	 * @var int
 	 *
@@ -84,6 +93,22 @@ abstract class Job
     public function setSupervisor(Human $supervisor)
     {
         $this->supervisor = $supervisor;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTriggerType()
+    {
+        return $this->triggerType;
+    }
+
+    /**
+     * @param string $triggerType
+     */
+    public function setTriggerType($triggerType)
+    {
+        $this->triggerType = $triggerType;
     }
 
     /**

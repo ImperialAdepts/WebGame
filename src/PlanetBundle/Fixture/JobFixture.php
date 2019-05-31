@@ -53,6 +53,7 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
                     $farmingJob->setAmount(4);
                     $farmingJob->setRepetition(null);
                     $farmingJob->setBlueprint($blueprint);
+                    $farmingJob->setTriggerType(PlanetEntity\Job\JobTriggerTypeEnum::PHASE_END);
                     $manager->persist($farmingJob);
                 }
                 foreach ($productionBlueprints as $blueprint) {
@@ -61,7 +62,17 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
                     $productionJob->setAmount(4);
                     $productionJob->setRepetition(null);
                     $productionJob->setBlueprint($blueprint);
+                    $productionJob->setTriggerType(PlanetEntity\Job\JobTriggerTypeEnum::PHASE_END);
                     $manager->persist($productionJob);
+                }
+                foreach ($settlement->getRegions() as $region) {
+                    $administrationJob = new PlanetEntity\Job\AdministrationJob();
+                    $administrationJob->setSupervisor($settlement->getManager());
+                    $administrationJob->setRegion($region);
+                    $administrationJob->setAmount(null);
+                    $administrationJob->setRepetition(null);
+                    $administrationJob->setTriggerType(PlanetEntity\Job\JobTriggerTypeEnum::PHASE_START);
+                    $manager->persist($administrationJob);
                 }
                 $manager->flush();
             }

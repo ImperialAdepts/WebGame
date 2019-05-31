@@ -3,28 +3,33 @@
 {% block subbody %}
 <strong>Jobs</strong>
 <ol>
+    {% for job in administrationJobs %}
+        <li>[{{ job.triggerType }}] region {{ job.region.coords }} aministration</li>
+    {% endfor %}
+</ol>
+<ol>
     {% for job in buildJobs %}
-        <li>[{{ job.region.coords }}] <strong>{{ job.blueprint.description }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
+        <li>[{{ job.triggerType }}] [{{ job.region.coords }}] <strong>{{ job.blueprint.description }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
     {% endfor %}
 </ol>
 <ol>
     {% for job in produceJobs %}
-        <li>[{{ job.region.coords }}] <strong>{{ job.blueprint.description }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
+        <li>[{{ job.triggerType }}] [{{ job.region.coords }}] <strong>{{ job.blueprint.description }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
     {% endfor %}
 </ol>
 <ol>
     {% for job in transportJobs %}
-        <li>[{{ job.region.coords }}] <strong>{{ job.resourceDeposit.resourceDescriptor }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
+        <li>[{{ job.triggerType }}] [{{ job.region.coords }}] <strong>{{ job.resourceDeposit.resourceDescriptor }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
     {% endfor %}
 </ol>
 <ol>
     {% for job in buyJobs %}
-        <li>[{{ job.region.coords }}] <strong>{{ job.resourceDeposit.resourceDescriptor }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
+        <li>[{{ job.triggerType }}] [{{ job.region.coords }}] <strong>{{ job.resourceDeposit.resourceDescriptor }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
     {% endfor %}
 </ol>
 <ol>
     {% for job in sellJobs %}
-        <li>[{{ job.region.coords }}] <strong>{{ job.resourceDeposit.resourceDescriptor }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
+        <li>[{{ job.triggerType }}] [{{ job.region.coords }}] <strong>{{ job.resourceDeposit.resourceDescriptor }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
     {% endfor %}
 </ol>
 
