@@ -32,8 +32,16 @@ class HumanController extends Controller
 	    if ($this->get('logged_user_settings')->getHuman() === null) {
             return $this->redirectToRoute('gamer_human_selection');
         }
+
+        $planet = $this->get('logged_user_settings')->getHuman()->getPlanet();
+
+        $this->container->get('dynamic_planet_connector')->setPlanet($planet, true);
+        $localHuman = $this->getDoctrine()->getManager('planet')
+            ->getRepository(PlanetEntity\Human::class)->getByGlobalHuman($this->get('logged_user_settings')->getHuman());
+
 		return $this->render('Human/dashboard.html.twig', [
 		    'human' => $this->get('logged_user_settings')->getHuman(),
+            'planetHuman' => $localHuman,
 		]);
 	}
 

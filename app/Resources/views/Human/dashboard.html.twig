@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block pagetitle %}{{ human.name }}{% endblock %}
-{% block pagedescription %}Person journal{% endblock %}
+{% block pagedescription %}
+	Person journal, currently in <a href="{{ path('settlement_dashboard', {'settlement': planetHuman.currentPosition.id}) }}">Current position</a>
+{% endblock %}
 
 {% block body %}
 	{% import _self as this_macros %}
