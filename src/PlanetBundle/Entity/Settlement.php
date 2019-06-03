@@ -250,6 +250,18 @@ class Settlement implements ResourcefullInterface
                 }
             }
         }
+        /** @var Peak $peak */
+        foreach ($this->getPeaks() as $peak) {
+            if ($resourceDescriptor != null) {
+                if (($localDeposit = $peak->getResourceDeposit($resourceDescriptor)) != null) {
+                    $deposits[] = $localDeposit;
+                }
+            } else {
+                foreach ($peak->getResourceDeposits() as $deposit) {
+                    $deposits[] = $deposit;
+                }
+            }
+        }
 		return $deposits;
 	}
 

@@ -7,4 +7,7 @@ class EventDataTypeEnum
     const REGION = 'region';
     const PRICE = 'price';
     const PEAK = 'peak';
+    const POPULATION_CHANGE = 'population_change';
+    const REGIONS = 'regions';
+    const PEAKS = 'peaks';
 }

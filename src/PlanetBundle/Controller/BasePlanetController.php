@@ -35,8 +35,9 @@ class BasePlanetController extends Controller
 
         $this->get('twig')->addGlobal('planet', $this->planet);
         $this->get('twig')->addGlobal('settlement', $this->human->getCurrentPosition());
-        $this->get('twig')->addGlobal('events', $this->getDoctrine()->getManager()
-            ->getRepository(Entity\Human\Event::class)->findAll());
+        $events = $this->getDoctrine()->getManager()
+            ->getRepository(Entity\Human\Event::class)->getThisPhaseReport($this->globalHuman);
+        $this->get('twig')->addGlobal('events', $events);
 
         if ($this->human === null) {
             throw new NotFoundHttpException("Human was not found on this planet");

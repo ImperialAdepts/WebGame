@@ -48,10 +48,11 @@ class JobMaintainer
             ]);
         }
 //        try {
-            $this->createEvent(Human\EventTypeEnum::JOB_DONE, $globalSupervisor, [
-                'job' => $job,
-                'region' => $job->getRegion(),
-            ]);
+//            $this->createEvent(Human\EventTypeEnum::JOB_DONE, $globalSupervisor, [
+//                'job' => $job,
+//                'jobType' => get_class($job),
+//                'region' => $job->getRegion(),
+//            ]);
 //        } catch (ORMException $e) {
 //        }
     }

@@ -7,9 +7,12 @@ use AppBundle\Descriptor\Adapters\People;
 use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
+use PlanetBundle\Entity\Peak;
+use PlanetBundle\Entity\PeakResourceDeposit;
 use PlanetBundle\Entity\Region;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\EntityManager;
+use PlanetBundle\Entity\RegionResourceDeposit;
 
 class PopulationMaintainer
 {
@@ -34,11 +37,30 @@ class PopulationMaintainer
         return $births;
     }
 
-    public function doBirths(Region $resourceHandler) {
+    public function doBirths(ResourcefullInterface $resourceHandler) {
         $births = $this->getBirths($resourceHandler);
-        $unusedHumans = People::findByDescriptor($resourceHandler, ResourceDescriptorEnum::PEOPLE);
+        $birthCount = 0;
         foreach ($births as $birth) {
-            $unusedHumans->getDeposit()->setAmount($unusedHumans->getDeposit()->getAmount() + $birth);
+            $birthCount += $birth;
+        }
+
+        $unusedHumansAdapter = People::findByDescriptor($resourceHandler, ResourceDescriptorEnum::PEOPLE);
+        if ($unusedHumansAdapter == null) {
+            if ($resourceHandler instanceof Region) {
+                $unusedHumansDeposit = new RegionResourceDeposit();
+                $unusedHumansDeposit->setResourceDescriptor(ResourceDescriptorEnum::PEOPLE);
+                $unusedHumansDeposit->setRegion($resourceHandler);
+            }
+            if ($resourceHandler instanceof Peak) {
+                $unusedHumansDeposit = new PeakResourceDeposit();
+                $unusedHumansDeposit->setResourceDescriptor(ResourceDescriptorEnum::PEOPLE);
+                $unusedHumansDeposit->setPeak($resourceHandler);
+            }
+            $unusedHumansDeposit->setAmount($birthCount);
+            $this->entityManager->persist($unusedHumansDeposit);
+        } else {
+            $unusedHumansAdapter->getDeposit()->setAmount($unusedHumansAdapter->getDeposit()->getAmount() + $birthCount);
+            $this->entityManager->persist($unusedHumansAdapter->getDeposit());
         }
     }
 

@@ -16,7 +16,7 @@
 		<ul>
 			{% for food in foods %}
 				<li>
-					{{ render(controller('PlanetBundle:ResourceDeposit:regionDepositDetail', {
+					{{ render(controller('PlanetBundle:ResourceDeposit:depositDetail', {
 						'deposit': food.deposit.id,
 					})) }}
 				</li>
@@ -32,7 +32,7 @@
 		<ul>
 			{% for house in houses %}
 				<li>
-					{{ render(controller('PlanetBundle:ResourceDeposit:regionDepositDetail', {
+					{{ render(controller('PlanetBundle:ResourceDeposit:depositDetail', {
 						'deposit': house.deposit.id,
 					})) }}
 				</li>

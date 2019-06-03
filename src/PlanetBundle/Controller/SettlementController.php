@@ -91,7 +91,9 @@ class SettlementController extends BasePlanetController
         $peopleBirths = 0;
         foreach (Adapters\People::in($settlement) as $people) {
             $peopleCount += $people->getPeopleCount();
-            $peopleBirths += $this->get('maintainer')->getProduction($settlement, $people->getResourceDescriptor());
+        }
+        foreach ($this->get('maintainer_population')->getBirths($settlement) as $birthCount) {
+            $peopleBirths += $birthCount;
         }
 
         $foods = Adapters\BasicFood::in($settlement);
