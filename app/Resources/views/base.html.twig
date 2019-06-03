@@ -28,8 +28,9 @@
                 position: relative;
                 float: left;
                 padding: 15px;
+                width: 1000px;
             }
-            #cheat-panel {
+            #right-panel {
                 position: relative;
                 width: 500px;
                 float: right;
@@ -58,7 +59,7 @@
         <div id="content">
             {% block body %}{% endblock %}
         </div>
-        <div id="cheat-panel">
+        <div id="right-panel">
             <div id="event-list">{% block eventlist %}{% endblock %}</div>
         </div>
         {% block javascripts %}{% endblock %}
