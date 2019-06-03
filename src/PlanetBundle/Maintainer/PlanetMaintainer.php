@@ -65,6 +65,7 @@ class PlanetMaintainer
 
         $this->doPlanedBuildingProjects();
         $this->doEndPhaseJobs();
+        $this->giveHumanRelationshipFeelings();
         $this->clear();
         $this->switchPhases();
         $this->maintainWorkhours();
@@ -339,5 +340,10 @@ class PlanetMaintainer
 
         $this->generalEntityManager->persist($event);
         return $event;
+    }
+
+    private function giveHumanRelationshipFeelings()
+    {
+        // TODO: zapocitat radost z progresu pratel a smutek z progresu rivalu
     }
 }
