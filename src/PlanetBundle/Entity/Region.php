@@ -6,6 +6,8 @@ use AppBundle\Descriptor\Adapters\LivingBuilding;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Entity as GeneralEntity;
+use AppBundle\PlanetConnection\DynamicPlanetConnector;
+use Doctrine\ORM\Query\Expr\Math;
 use PlanetBundle\Builder\RegionTerrainTypeEnumBuilder;
 use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\ORM\Mapping as ORM;
@@ -267,8 +269,10 @@ class Region implements ResourcefullInterface
 	 */
 	public function getArea()
 	{
-		// TODO vylovit z informaci o planete
-		return 200;
+        $radius = DynamicPlanetConnector::$PLANET->getDiameter() / 2;
+        $planetWidth = DynamicPlanetConnector::$PLANET->getSurfaceGranularity();
+	    $regionCount = $planetWidth*$planetWidth/2;
+		return floor(4*pi()*$radius*$radius/$regionCount);
 	}
 
 	/**
@@ -276,12 +280,7 @@ class Region implements ResourcefullInterface
 	 */
 	public function getEmptyArea()
 	{
-		if ($this->getSettlement() === null) {
-			return $this->getArea();
-		} else {
-			// TODO: vytahnout spravnou hodnotu ze settlementu
-			return $this->getArea() / 2;
-		}
+        return $this->getArea() - $this->getUsedArea();
 	}
 
     public function getUsedArea()

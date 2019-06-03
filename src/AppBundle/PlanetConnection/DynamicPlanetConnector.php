@@ -12,6 +12,9 @@ class DynamicPlanetConnector implements ContainerAwareInterface
     /** @var ContainerInterface */
     private $container;
 
+    /** @var Planet */
+    public static $PLANET;
+
     /**
      * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
      */
@@ -75,6 +78,7 @@ class DynamicPlanetConnector implements ContainerAwareInterface
      */
     public function setPlanet(Planet $planet, $reset = false)
     {
+        self::$PLANET = $planet;
         $credentials = $planet->getDatabaseCredentials();
         $this->resetConnection(
             $credentials['database_name'],

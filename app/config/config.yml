@@ -39,7 +39,6 @@ twig:
     strict_variables: '%kernel.debug%'
     globals:
         sessionSettings: '@logged_user_settings'
-        region_area: '%region_area%'
 
 # Doctrine Configuration
 doctrine:

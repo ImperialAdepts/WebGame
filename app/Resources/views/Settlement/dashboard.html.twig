@@ -11,7 +11,7 @@
 	        {% for region in settlement.regions %}
                 <td>
                     <h3>Region {{ region.coords }}</h3>
-                    <small>Used area: {{ region.usedArea }}/{{ region_area }}m2 ({{ 100*region.usedArea/ region_area}} %)</small><br>
+                    <small>Used area: {{ region.usedArea }}/{{ region.area }}m2 ({{ 100*region.usedArea/ region.area}} %)</small><br>
 
                     {% if region.project is null %}
                         {{ render(controller('PlanetBundle:Region:availableBuildings', {
