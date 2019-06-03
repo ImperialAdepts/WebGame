@@ -14,7 +14,7 @@
 	{% endfor %}
 
 	<dt>Empty space</dt>
-	<dd>{{ region.emptyArea }} from {{ region.area }}</dd>
+	<dd>{{ region.emptyArea|area }} from {{ region.area|area }}</dd>
 {% endmacro %}
 
 {% macro production_info(region) %}
