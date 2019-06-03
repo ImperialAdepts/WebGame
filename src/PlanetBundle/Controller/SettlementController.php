@@ -161,8 +161,8 @@ class SettlementController extends BasePlanetController
         /** @var Entity\Region $region */
         $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
         $region->addResourceDeposit($blueprint, 1);
-        $this->getDoctrine()->getManager()->persist($region);
-        $this->getDoctrine()->getManager()->flush();
+        $this->getDoctrine()->getManager('planet')->persist($region);
+        $this->getDoctrine()->getManager('planet')->flush();
         return $this->redirectToRoute('settlement_jobs', [
             'settlement' => $region->getSettlement()->getId(),
         ]);
