@@ -3,8 +3,8 @@
 {% block subbody %}
 	{% if buildings|length > 0 %}
 		<strong>Buildings:</strong>
-		<small>Space capacity: X/Ym3 </small>
-		<small>Weight capacity: X/Ykg </small>
+		<small>Space capacity: {{ 0|volume }} / {{ 0|volume }} </small>
+		<small>Weight capacity: {{ 0|weight }} / {{ 0|weight }} </small>
 		<ul>
 			{% for building in buildings %}
 				<li>

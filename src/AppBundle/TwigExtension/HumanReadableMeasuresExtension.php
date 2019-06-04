@@ -15,6 +15,7 @@ class HumanReadableMeasuresExtension extends AbstractExtension
             new TwigFilter('distance', [$this, 'formatDistance']),
             new TwigFilter('area', [$this, 'formatArea']),
             new TwigFilter('volume', [$this, 'formatVolume']),
+            new TwigFilter('weight', [$this, 'formatWeight']),
         ];
     }
 
@@ -56,6 +57,25 @@ class HumanReadableMeasuresExtension extends AbstractExtension
      */
     public function formatVolume($numberInMeter) {
         return $this->formatDistance($numberInMeter).'3';
+    }
+
+    /**
+     * @param int $numberInKg weight in kilograms
+     * @return string
+     */
+    public function formatWeight($numberInKg) {
+        if ($numberInKg < 0.5) {
+            return round($numberInKg*1000, 1).' g';
+        }
+        if ($numberInKg <= 500) {
+            return round($numberInKg, 1).' kg';
+        }
+        $numberInTons = $numberInKg / 1000;
+        if ($numberInTons <= 500000) {
+            return round($numberInTons, 1).' T';
+        }
+        $numberInMegaTons = $numberInKg / 1000000000;
+        return round($numberInMegaTons, 1).' MT';
     }
 
 }

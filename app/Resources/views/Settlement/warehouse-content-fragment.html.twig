@@ -17,8 +17,8 @@
 	{% endif %}
 	{% if warehouses|length > 0 %}
 		<strong>Warehouses</strong>
-		<small>Space capacity: X/Ym3 </small>
-		<small>Weight capacity: X/Ykg </small>
+		<small>Space capacity: {{ 0|volume }} / {{ 0|volume }} </small>
+		<small>Weight capacity: {{ 0|weight }} / {{ 0|weight }} </small>
 		<ul>
 			{% for warehouse in warehouses %}
 				<li>
