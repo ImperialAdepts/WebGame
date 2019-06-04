@@ -53,9 +53,10 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
                 $peakCounter += ceil(count($peaks) / count($humans));
                 $peakCounter = $peakCounter % count($peaks);
                 $builder->newColony($administrativeCenter, $human, 'simple');
-                $human->setCurrentPosition($administrativeCenter->getSettlement());
+                $human->setCurrentPeakPosition($administrativeCenter);
 
-                echo "Planet {$planet->getName()} settlement generated for {$human->getName()}\n";
+                $globalHuman = $generalManager->getRepository(GeneralEntity\Human::class)->find($human->getGlobalHumanId());
+                echo "Planet {$planet->getName()} settlement generated for {$globalHuman->getName()}\n";
             }
 
             $manager->flush();

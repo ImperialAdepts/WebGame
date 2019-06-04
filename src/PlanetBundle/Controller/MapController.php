@@ -25,7 +25,7 @@ class MapController extends BasePlanetController
 	public function dashboardAction(Request $request)
 	{
 		return $this->render('Map/overview.html.twig', [
-		    'settlement' => $this->getHuman()->getCurrentPosition(),
+		    'settlement' => $this->getHuman()->getCurrentPeakPosition()->getSettlement(),
 			'human' => $this->getHuman(),
 		]);
 	}
@@ -35,7 +35,7 @@ class MapController extends BasePlanetController
      */
     public function mapAjaxAction(Request $request)
     {
-        $centralRegion = $this->getHuman()->getCurrentPosition()->getMainRegion();
+        $centralRegion = $this->getHuman()->getCurrentPeakPosition()->getMainRegion();
         $peakRepo = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Peak::class);
         $mapRepo = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class);
         $regions = [];

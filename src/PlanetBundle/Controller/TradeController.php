@@ -133,7 +133,7 @@ class TradeController extends BasePlanetController
     public function buyAction(Entity\TradeOffer $offer, Request $request)
     {
         /** @var Entity\Settlement $settlement */
-        $settlement = $this->getHuman()->getCurrentPosition();
+        $settlement = $this->getHuman()->getCurrentPeakPosition()->getSettlement();
         $settlement->addResourceDeposit($offer->getOfferedResourceDeposit()->getBlueprint(), $offer->getOfferedResourceDeposit()->getAmount());
         $settlement->consumeResourceDepositAmount($offer->getBlueprint()->getResourceDescriptor(), $offer->getAmountRequested());
         $this->getDoctrine()->getManager('planet')->persist($settlement);

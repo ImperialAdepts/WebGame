@@ -5,7 +5,6 @@ namespace AppBundle\Entity;
 use AppBundle\Entity\Human\Feelings;
 use AppBundle\Entity\rpg\HumanPreference;
 use AppBundle\Entity\rpg\Knowledge;
-use AppBundle\Entity\rpg\SoulPreference;
 use AppBundle\Entity\SolarSystem\Planet;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -74,6 +73,55 @@ class Human
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Human\Feelings", mappedBy="human", cascade={"all"})
      */
     private $feelings;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="born_phase", type="integer", nullable=false)
+     */
+    private $bornPhase;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="died_in", type="integer", nullable=true)
+     */
+    private $deathTime;
+
+    /**
+     * @var Planet
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SolarSystem\Planet")
+     * @ORM\JoinColumn(name="planet_born_id", referencedColumnName="id", nullable=false)
+     */
+    private $bornPlanet;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="family_id", type="integer", nullable=true)
+     */
+    private $familyId;
+
+    /**
+     * @var Human
+     *
+     * @ORM\ManyToOne(targetEntity="Human")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="father_human_id", referencedColumnName="id")
+     * })
+     */
+    private $fatherHuman;
+
+    /**
+     * @var Human
+     *
+     * @ORM\ManyToOne(targetEntity="Human")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="mother_human_id", referencedColumnName="id")
+     * })
+     */
+    private $motherHuman;
 
     public function __construct($id = null)
     {
@@ -232,5 +280,100 @@ class Human
         $this->feelings = $feelings;
     }
 
+    /**
+     * @return int
+     */
+    public function getBornPhase()
+    {
+        return $this->bornPhase;
+    }
+
+    /**
+     * @param int $bornPhase
+     */
+    public function setBornPhase($bornPhase)
+    {
+        $this->bornPhase = $bornPhase;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDeathTime()
+    {
+        return $this->deathTime;
+    }
+
+    /**
+     * @param int $deathTime
+     */
+    public function setDeathTime($deathTime)
+    {
+        $this->deathTime = $deathTime;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFamilyId()
+    {
+        return $this->familyId;
+    }
+
+    /**
+     * @param int $familyId
+     */
+    public function setFamilyId($familyId)
+    {
+        $this->familyId = $familyId;
+    }
+
+    /**
+     * @return Planet
+     */
+    public function getBornPlanet()
+    {
+        return $this->bornPlanet;
+    }
+
+    /**
+     * @param Planet $bornPlanet
+     */
+    public function setBornPlanet($bornPlanet)
+    {
+        $this->bornPlanet = $bornPlanet;
+    }
+
+    /**
+     * @return Human
+     */
+    public function getFatherHuman()
+    {
+        return $this->fatherHuman;
+    }
+
+    /**
+     * @param Human $fatherHuman
+     */
+    public function setFatherHuman($fatherHuman)
+    {
+        $this->fatherHuman = $fatherHuman;
+    }
+
+    /**
+     * @return Human
+     */
+    public function getMotherHuman()
+    {
+        return $this->motherHuman;
+    }
+
+    /**
+     * @param Human $motherHuman
+     */
+    public function setMotherHuman($motherHuman)
+    {
+        $this->motherHuman = $motherHuman;
+    }
 }
 

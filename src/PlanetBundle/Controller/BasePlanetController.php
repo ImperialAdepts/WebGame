@@ -32,9 +32,14 @@ class BasePlanetController extends Controller
         $this->container->get('dynamic_planet_connector')->setPlanet($this->planet, true);
         $this->human = $this->getDoctrine()->getManager('planet')
             ->getRepository(PlanetEntity\Human::class)->getByGlobalHuman($this->globalHuman);
+        $settlement = $this->human->getCurrentPeakPosition()->getSettlement();
 
         $this->get('twig')->addGlobal('planet', $this->planet);
-        $this->get('twig')->addGlobal('settlement', $this->human->getCurrentPosition());
+        $this->get('twig')->addGlobal('settlement', $settlement);
+        $this->get('twig')->addGlobal('settlementOwner', $this->getDoctrine()->getManager()
+            ->getRepository(Entity\Human::class)->find($settlement->getOwner()->getGlobalHumanId()));
+        $this->get('twig')->addGlobal('settlementManager', $this->getDoctrine()->getManager()
+            ->getRepository(Entity\Human::class)->find($settlement->getManager()->getGlobalHumanId()));
         $events = $this->getDoctrine()->getManager()
             ->getRepository(Entity\Human\Event::class)->getThisPhaseReport($this->globalHuman);
         $this->get('twig')->addGlobal('events', $events);

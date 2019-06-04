@@ -1,6 +1,7 @@
 <?php
 namespace PlanetBundle\Fixture;
 
+use AppBundle\Descriptor\TimeTransformator;
 use AppBundle\EnumAlignmentType;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -48,6 +49,8 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $globalHuman1->setName('Erik krvava sekera');
         $globalHuman1->setSoul($soul);
         $globalHuman1->setPlanet($test1Planet);
+        $globalHuman1->setBornPlanet($test1Planet);
+        $globalHuman1->setBornPhase(TimeTransformator::timestampToPhase($test1Planet, time()));
         $globalHuman1->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FAMILY_OPINION, 'STRONG', $globalHuman1));
         $globalHuman1->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::KNOWLEDGE_VALUE, 'NONE', $globalHuman1));
         $globalHuman1->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FORTUNE_SENSE, 'WEAK', $globalHuman1));
@@ -60,6 +63,8 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $globalHuman2->setName('Rudovous');
         $globalHuman2->setSoul($soul);
         $globalHuman2->setPlanet($test2Planet);
+        $globalHuman2->setBornPlanet($test2Planet);
+        $globalHuman2->setBornPhase(TimeTransformator::timestampToPhase($test2Planet, time()));
         $globalHuman2->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FAMILY_OPINION, 'STRONG', $globalHuman2));
         $globalHuman2->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::KNOWLEDGE_VALUE, 'NONE', $globalHuman2));
         $globalHuman2->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FORTUNE_SENSE, 'WEAK', $globalHuman2));
@@ -82,6 +87,8 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $globalHuman3->setName('Herakles');
         $globalHuman3->setSoul($soul);
         $globalHuman3->setPlanet($test1Planet);
+        $globalHuman3->setBornPlanet($test1Planet);
+        $globalHuman3->setBornPhase(TimeTransformator::timestampToPhase($test1Planet, time()));
         $globalHuman3->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FAMILY_OPINION, 'WEAK', $globalHuman3));
         $globalHuman3->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::KNOWLEDGE_VALUE, 'WEAK', $globalHuman3));
         $globalHuman3->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FORTUNE_SENSE, 'STRONG', $globalHuman3));
@@ -93,6 +100,8 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $globalHuman4->setName('Oidipus');
         $globalHuman4->setSoul($soul);
         $globalHuman4->setPlanet($test2Planet);
+        $globalHuman4->setBornPlanet($test2Planet);
+        $globalHuman4->setBornPhase(TimeTransformator::timestampToPhase($test2Planet, time()));
         $globalHuman4->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::FAMILY_OWN_CHILDREN, 'STRONG', $globalHuman4));
         $globalHuman4->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::KNOWLEDGE_VALUE, 'STRONG', $globalHuman4));
         $globalHuman4->addPreference(GlobalEntity\rpg\HumanPreference::create(GlobalEntity\rpg\HumanPreferenceTypeEnum::VIOLENCE, 'STRONG', $globalHuman4));
@@ -106,14 +115,10 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $manager = $this->container->get('doctrine')->getManager('planet');
 
         $human = new PlanetEntity\Human();
-        $human->setName('Erik krvava sekera');
-        $human->setBornIn(0);
         $human->setGlobalHumanId($globalHuman1->getId());
         $manager->persist($human);
 
         $human = new PlanetEntity\Human();
-        $human->setName('Herakles');
-        $human->setBornIn(0);
         $human->setGlobalHumanId($globalHuman3->getId());
         $manager->persist($human);
 
@@ -123,14 +128,10 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
         $manager = $this->container->get('doctrine')->getManager('planet');
 
         $human = new PlanetEntity\Human();
-        $human->setName('Rudovous');
-        $human->setBornIn(0);
         $human->setGlobalHumanId($globalHuman2->getId());
         $manager->persist($human);
 
         $human = new PlanetEntity\Human();
-        $human->setName('Oidipus');
-        $human->setBornIn(0);
         $human->setGlobalHumanId($globalHuman4->getId());
         $manager->persist($human);
 

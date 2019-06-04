@@ -29,63 +29,14 @@ class Human
     private $globalHumanId;
 
     /**
-     * @var string
+     * @var Peak
      *
-     * @ORM\Column(name="name", type="string", length=100, nullable=false)
-     */
-    private $name;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="born_in", type="bigint", nullable=false)
-     */
-    private $bornIn;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="died_in", type="bigint", nullable=true)
-     */
-    private $diedIn;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="family_id", type="bigint", nullable=true)
-     */
-    private $familyId;
-
-    /**
-     * @var PlanetBundle\Entity\Settlement
-     *
-     * @ORM\ManyToOne(targetEntity="\PlanetBundle\Entity\Settlement")
+     * @ORM\ManyToOne(targetEntity="\PlanetBundle\Entity\Peak")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="current_settlement_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="current_peak_id", referencedColumnName="id")
      * })
      */
-    private $currentPosition;
-
-    /**
-     * @var Human
-     *
-     * @ORM\ManyToOne(targetEntity="Human")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="father_human_id", referencedColumnName="id")
-     * })
-     */
-    private $fatherHuman;
-
-    /**
-     * @var Human
-     *
-     * @ORM\ManyToOne(targetEntity="Human")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="mother_human_id", referencedColumnName="id")
-     * })
-     */
-    private $motherHuman;
-
+    private $currentPeakPosition;
 
     /**
      * @ORM\Get("id")
@@ -121,115 +72,19 @@ class Human
     }
 
     /**
-     * @return string
+     * @return Peak
      */
-    public function getName()
+    public function getCurrentPeakPosition()
     {
-        return $this->name;
+        return $this->currentPeakPosition;
     }
 
     /**
-     * @param string $name
+     * @param Peak $currentPeakPosition
      */
-    public function setName($name)
+    public function setCurrentPeakPosition(Peak $currentPeakPosition)
     {
-        $this->name = $name;
-    }
-
-    /**
-     * @return int
-     */
-    public function getBornIn()
-    {
-        return $this->bornIn;
-    }
-
-    /**
-     * @param int $bornIn
-     */
-    public function setBornIn($bornIn)
-    {
-        $this->bornIn = $bornIn;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDiedIn()
-    {
-        return $this->diedIn;
-    }
-
-    /**
-     * @param int $diedIn
-     */
-    public function setDiedIn($diedIn)
-    {
-        $this->diedIn = $diedIn;
-    }
-
-    /**
-     * @return Settlement
-     */
-    public function getCurrentPosition()
-    {
-        return $this->currentPosition;
-    }
-
-    /**
-     * @param Settlement $currentPosition
-     */
-    public function setCurrentPosition(Settlement $currentPosition)
-    {
-        $this->currentPosition = $currentPosition;
-    }
-
-    /**
-     * @return int
-     */
-    public function getFamilyId()
-    {
-        return $this->familyId;
-    }
-
-    /**
-     * @param int $familyId
-     */
-    public function setFamilyId($familyId)
-    {
-        $this->familyId = $familyId;
-    }
-
-    /**
-     * @return Human
-     */
-    public function getFatherHuman()
-    {
-        return $this->fatherHuman;
-    }
-
-    /**
-     * @param Human $fatherHuman
-     */
-    public function setFatherHuman($fatherHuman)
-    {
-        $this->fatherHuman = $fatherHuman;
-    }
-
-    /**
-     * @return Human
-     */
-    public function getMotherHuman()
-    {
-        return $this->motherHuman;
-    }
-
-    /**
-     * @param Human $motherHuman
-     */
-    public function setMotherHuman($motherHuman)
-    {
-        $this->motherHuman = $motherHuman;
+        $this->currentPeakPosition = $currentPeakPosition;
     }
 
 }

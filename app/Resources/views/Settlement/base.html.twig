@@ -1,7 +1,7 @@
 {% extends 'base-human.html.twig' %}
 
 {% block pagetitle %}Settlement {{ settlement.type }} {{ settlement.id }}{% endblock %}
-{% block pagedescription %}ruled by {{ settlement.manager.name }}, owned by {{ settlement.owner.name }}{% endblock %}
+{% block pagedescription %}ruled by {{ settlementManager.name }}, owned by {{ settlementOwner.name }}{% endblock %}
 
 {% block body %}
     <style type="text/css">

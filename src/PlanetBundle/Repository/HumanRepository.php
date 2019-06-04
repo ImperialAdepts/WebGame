@@ -11,7 +11,7 @@ class HumanRepository extends \Doctrine\ORM\EntityRepository
 	{
 		return $this->getEntityManager()
 			->createQuery(
-				'SELECT h FROM PlanetBundle:Human h WHERE h.globalHumanId IS NULL ORDER BY h.name ASC'
+				'SELECT h FROM PlanetBundle:Human h WHERE h.globalHumanId IS NULL ORDER BY h.id ASC'
 			)
 			->getResult();
 	}
@@ -20,7 +20,7 @@ class HumanRepository extends \Doctrine\ORM\EntityRepository
 	{
 		return $this->getEntityManager()
 			->createQuery(
-				'SELECT h FROM PlanetBundle:Human h WHERE h.globalHumanId IS NOT NULL ORDER BY h.name ASC'
+				'SELECT h FROM PlanetBundle:Human h WHERE h.globalHumanId IS NOT NULL ORDER BY h.id ASC'
 			)
 			->getResult();
 	}
@@ -34,7 +34,7 @@ class HumanRepository extends \Doctrine\ORM\EntityRepository
     {
         return $this->getEntityManager()
             ->createQuery(
-                "SELECT h FROM PlanetBundle:Human h WHERE h.globalHumanId = :globalHuman ORDER BY h.name ASC"
+                "SELECT h FROM PlanetBundle:Human h WHERE h.globalHumanId = :globalHuman ORDER BY h.id ASC"
             )
             ->setParameter('globalHuman', $globalHuman->getId())
             ->getOneOrNullResult();
