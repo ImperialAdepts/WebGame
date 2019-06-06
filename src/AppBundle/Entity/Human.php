@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\Human\Feelings;
+use AppBundle\Entity\Human\Title;
 use AppBundle\Entity\rpg\HumanPreference;
 use AppBundle\Entity\rpg\Knowledge;
 use AppBundle\Entity\SolarSystem\Planet;
@@ -73,6 +74,14 @@ class Human
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Human\Title", mappedBy="humanHolder", cascade={"all"})
      */
     private $titles;
+
+    /**
+     * @var Title
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Human\Title")
+     * @ORM\JoinColumn(name="title_id", referencedColumnName="id", nullable=true)
+     */
+    private $title;
 
     /**
      * @var Feelings
@@ -285,6 +294,22 @@ class Human
     public function setTitles($titles)
     {
         $this->titles = $titles;
+    }
+
+    /**
+     * @return Title
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param Title $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
     }
 
     /**

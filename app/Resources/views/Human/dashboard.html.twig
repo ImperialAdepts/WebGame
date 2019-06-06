@@ -1,6 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block pagetitle %}{{ human.name }}{% endblock %}
+{% block pagetitle %}
+    {{ human.name }} -
+    {% if human.title.superiorTitle == null %}
+        Sovereign <strong>{{ human.title.name }}</strong>
+    {% else %}
+        <strong>{{ human.title.name }}</strong>, vassal of {{ human.title.superiorTitle.humanHolder.name }} - {{ human.title.superiorTitle.name }}
+    {% endif %}
+{% endblock %}
+
 {% block pagedescription %}
 	Person journal, currently in <a href="{{ path('settlement_dashboard', {'settlement': planetHuman.currentPeakPosition.settlement.id}) }}">Settlement #{{ planetHuman.currentPeakPosition.settlement.id }}</a>
 {% endblock %}
@@ -8,20 +16,17 @@
 {% block body %}
 	{% import _self as this_macros %}
 
-	<ul>
-		{% for title in human.titles %}
-			<li>
-				{% if title.superiorTitle == null %}
-					Sovereign <strong>{{ title.name }}</strong>
-				{% else %}
-					<strong>{{ title.name }}</strong>, vassal of {{ title.superiorTitle.humanHolder.name }}, {{ title.superiorTitle.name }}
-				{% endif %}
-                {% if attribute(title, 'settlementId') is defined %}
-                    <a href="{{ path('settlement_dashboard', {'settlement': title.settlementId }) }}">Go to settlement</a>
-                {% endif %}
-			</li>
-		{% endfor %}
-	</ul>
+    <strong>Titles:</strong>
+    <ul>
+        {% for title in human.titles %}
+            <li><small>{{ title.name }}</small></li>
+        {% endfor %}
+    </ul>
+
+    {% if attribute(human.title, 'settlementId') is defined %}
+        <a href="{{ path('settlement_dashboard', {'settlement': human.title.settlementId }) }}">Go to settlement</a>
+    {% endif %}
+
 
 	<dt>Alltime feelings</dt>
     <dd>{{ human.feelings.allLife }}</dd>

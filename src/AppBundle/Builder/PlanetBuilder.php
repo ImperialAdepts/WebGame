@@ -132,7 +132,7 @@ class PlanetBuilder
 		$this->planetEntityManager->flush($settlement);
 
 		$protectorTitle = new Human\SettlementTitle();
-		$protectorTitle->setName('Protector of land');
+		$protectorTitle->setName('Protector of settlement '.$settlement->getId());
 		$protectorTitle->setHumanHolder($globalHuman);
 		$protectorTitle->setTransferSettings([
 		    'inheritance' => 'primogeniture',
@@ -141,6 +141,7 @@ class PlanetBuilder
 		$protectorTitle->setSettlementPlanet(DynamicPlanetConnector::$PLANET);
         $this->generalEntityManager->persist($protectorTitle);
         $globalHuman->getTitles()->add($protectorTitle);
+        $globalHuman->setTitle($protectorTitle);
 
         $administrativeCenter->setSettlement($settlement);
 		$this->planetEntityManager->persist($administrativeCenter);
