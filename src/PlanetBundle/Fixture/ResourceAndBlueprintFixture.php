@@ -41,7 +41,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
             }
             $manager->flush();
 
-            $builder = new \AppBundle\Builder\PlanetBuilder($manager, $this->container->getParameter('default_colonization_packs'));
+            $builder = new \AppBundle\Builder\PlanetBuilder($generalManager, $manager, $this->container->getParameter('default_colonization_packs'));
             $humans = $manager->getRepository(PlanetEntity\Human::class)->findAll();
             $peaks = $manager->getRepository(PlanetEntity\Peak::class)->findAll();
 
@@ -60,6 +60,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
             }
 
             $manager->flush();
+            $generalManager->flush();
         }
 	}
 

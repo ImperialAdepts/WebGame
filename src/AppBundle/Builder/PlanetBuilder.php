@@ -2,6 +2,9 @@
 namespace AppBundle\Builder;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
+use AppBundle\Entity\Human;
+use AppBundle\Entity\Human\Title;
+use AppBundle\PlanetConnection\DynamicPlanetConnector;
 use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\ORM\EntityManager;
 
@@ -10,30 +13,34 @@ class PlanetBuilder
 	// TODO: predelat do rozumnejsiho configu
 	const STEP_DAY_COUNT = 0.5;
 
+    /** @var EntityManager */
+    private $generalEntityManager;
 	/** @var EntityManager */
-	private $entityManager;
+	private $planetEntityManager;
 	private $colonyPacks;
 
     /**
      * PlanetBuilder constructor.
-     * @param EntityManager $entityManager
-     * @param $colonyPacks
+     * @param EntityManager $generalEntityManager
+     * @param EntityManager $planetEntityManager
+     * @param array $colonyPacks
      */
-	public function __construct(EntityManager $entityManager, $colonyPacks)
-	{
-		$this->entityManager = $entityManager;
-		$this->colonyPacks = $colonyPacks;
-	}
+    public function __construct(EntityManager $generalEntityManager, EntityManager $planetEntityManager, $colonyPacks = [])
+    {
+        $this->generalEntityManager = $generalEntityManager;
+        $this->planetEntityManager = $planetEntityManager;
+        $this->colonyPacks = $colonyPacks;
+    }
 
-	public function buildProject(PlanetEntity\BuildingProject $project)
+    public function buildProject(PlanetEntity\BuildingProject $project)
 	{
         $project->getRegion()->addResourceDeposit($project->getBuildingBlueprint(), 1);
-		$this->entityManager->persist($project->getRegion());
+		$this->planetEntityManager->persist($project->getRegion());
 	}
 
 	public function buildProjectStep(PlanetEntity\CurrentBuildingProject $project)
 	{
-		$resourceSettlements = $this->entityManager->getRepository(PlanetEntity\Settlement::class)->getByHumanSupervisor($project->getSupervisor());
+		$resourceSettlements = $this->planetEntityManager->getRepository(PlanetEntity\Settlement::class)->getByHumanSupervisor($project->getSupervisor());
         $regions = [];
         /** @var PlanetEntity\Settlement $settlement */
         foreach ($resourceSettlements as $settlement) {
@@ -72,7 +79,7 @@ class PlanetBuilder
 					if ($storedAmount > $missingResource) {
 						$mandays[$region->getCoords()] = $storedAmount - $missingResource;
 						$project->setMissingResource($resource, 0);
-						$this->entityManager->persist($region);
+						$this->planetEntityManager->persist($region);
 						break;
 					}
 					if ($storedAmount <= $missingResource) {
@@ -92,11 +99,11 @@ class PlanetBuilder
 					if ($storedAmount > $missingResource) {
 						$region->getResourceDeposit($resource)->setAmount($storedAmount - $missingResource);
 						$project->setMissingResource($resource, 0);
-						$this->entityManager->persist($region);
+						$this->planetEntityManager->persist($region);
 						break;
 					}
 					if ($storedAmount <= $missingResource) {
-						$this->entityManager->remove($region->getResourceDeposit($resource));
+						$this->planetEntityManager->remove($region->getResourceDeposit($resource));
 						$project->setMissingResource($resource, $missingResource - $storedAmount);
 					}
 				}
@@ -112,7 +119,8 @@ class PlanetBuilder
      */
 	public function newColony(PlanetEntity\Peak $administrativeCenter, PlanetEntity\Human $human, $colonizationPack)
 	{
-	    $regions = $this->entityManager->getRepository(PlanetEntity\Region::class)->findPeakSurrounding($administrativeCenter);
+	    $globalHuman = $this->generalEntityManager->find(Human::class, $human->getGlobalHumanId());
+	    $regions = $this->planetEntityManager->getRepository(PlanetEntity\Region::class)->findPeakSurrounding($administrativeCenter);
 
 	    $settlement = new PlanetEntity\Settlement();
 		$settlement->setType(ResourceDescriptorEnum::VILLAGE);
@@ -120,15 +128,27 @@ class PlanetBuilder
 		$settlement->setAdministrativeCenter($administrativeCenter);
 		$settlement->setOwner($human);
 		$settlement->setManager($human);
-		$this->entityManager->persist($settlement);
+		$this->planetEntityManager->persist($settlement);
+		$this->planetEntityManager->flush($settlement);
+
+		$protectorTitle = new Human\SettlementTitle();
+		$protectorTitle->setName('Protector of land');
+		$protectorTitle->setHumanHolder($globalHuman);
+		$protectorTitle->setTransferSettings([
+		    'inheritance' => 'primogeniture',
+        ]);
+		$protectorTitle->setSettlementId($settlement->getId());
+		$protectorTitle->setSettlementPlanet(DynamicPlanetConnector::$PLANET);
+        $this->generalEntityManager->persist($protectorTitle);
+        $globalHuman->getTitles()->add($protectorTitle);
 
         $administrativeCenter->setSettlement($settlement);
-		$this->entityManager->persist($administrativeCenter);
+		$this->planetEntityManager->persist($administrativeCenter);
 
 		/** @var PlanetEntity\Region $region */
         foreach ($regions as $region) {
 		    $region->setSettlement($settlement);
-            $this->entityManager->persist($region);
+            $this->planetEntityManager->persist($region);
         }
 
 		$colonyPack = $this->colonyPacks[$colonizationPack];
@@ -142,7 +162,7 @@ class PlanetBuilder
                     $resourceDeposit->setBlueprint($blueprint);
                 }
                 $resourceDeposit->setPeak($settlement->getAdministrativeCenter());
-                $this->entityManager->persist($resourceDeposit);
+                $this->planetEntityManager->persist($resourceDeposit);
             }
         }
 	}
@@ -150,7 +170,7 @@ class PlanetBuilder
 	public function getAvailableBlueprints(PlanetEntity\Region $region, PlanetEntity\Human $human) {
 	    // TODO: overit ze dotycny vlastni blueprinty
         $availables = [];
-        $blueprints = $this->entityManager->getRepository(PlanetEntity\Blueprint::class)->getAll();
+        $blueprints = $this->planetEntityManager->getRepository(PlanetEntity\Blueprint::class)->getAll();
         /** @var Entity\Blueprint $blueprint */
         foreach ($blueprints as $blueprint) {
             foreach ($blueprint->getConstraints() as $resourceType => $amount) {
@@ -182,7 +202,7 @@ class PlanetBuilder
 
 	private function getBlueprint($name)
 	{
-		return $this->entityManager->getRepository(PlanetEntity\Blueprint::class)->getByName($name);
+		return $this->planetEntityManager->getRepository(PlanetEntity\Blueprint::class)->getByName($name);
 	}
 
 }

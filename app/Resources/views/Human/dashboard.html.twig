@@ -2,11 +2,26 @@
 
 {% block pagetitle %}{{ human.name }}{% endblock %}
 {% block pagedescription %}
-	Person journal, currently in <a href="{{ path('settlement_dashboard', {'settlement': planetHuman.currentPosition.id}) }}">Current position</a>
+	Person journal, currently in <a href="{{ path('settlement_dashboard', {'settlement': planetHuman.currentPeakPosition.settlement.id}) }}">Settlement #{{ planetHuman.currentPeakPosition.settlement.id }}</a>
 {% endblock %}
 
 {% block body %}
 	{% import _self as this_macros %}
+
+	<ul>
+		{% for title in human.titles %}
+			<li>
+				{% if title.superiorTitle == null %}
+					Sovereign <strong>{{ title.name }}</strong>
+				{% else %}
+					<strong>{{ title.name }}</strong>, vassal of {{ title.superiorTitle.humanHolder.name }}, {{ title.superiorTitle.name }}
+				{% endif %}
+                {% if attribute(title, 'settlementId') is defined %}
+                    <a href="{{ path('settlement_dashboard', {'settlement': title.settlementId }) }}">Go to settlement</a>
+                {% endif %}
+			</li>
+		{% endfor %}
+	</ul>
 
 	<dt>Alltime feelings</dt>
     <dd>{{ human.feelings.allLife }}</dd>
@@ -18,14 +33,14 @@
 	<dd>{{ human.feelings.thisTime }}</dd>
     <dd>+{{ human.feelings.thisTimeHappiness }}/-{{ human.feelings.thisTimeSadness }}</dd>
 
-	<a href="{{ path('human_happy', {'change': 1}) }}">Happy +1</a><br />
-	<a href="{{ path('human_happy', {'change': 10}) }}">Happy +10</a><br />
-	<a href="{{ path('human_happy', {'change': 50}) }}">Happy +50</a><br />
-	<a href="{{ path('human_happy', {'change': 100}) }}">Happy +100</a><br />
-	<a href="{{ path('human_sad', {'change': 1}) }}">Sad +1</a><br />
-	<a href="{{ path('human_sad', {'change': 10}) }}">Sad +10</a><br />
-	<a href="{{ path('human_sad', {'change': 50}) }}">Sad +50</a><br />
-	<a href="{{ path('human_sad', {'change': 100}) }}">Sad +100</a><br />
+	<a href="{{ path('human_happy', {'change': 1}) }}">Happy +1</a>
+	<a href="{{ path('human_happy', {'change': 10}) }}">+10</a>
+	<a href="{{ path('human_happy', {'change': 50}) }}">+50</a>
+	<a href="{{ path('human_happy', {'change': 100}) }}">+100</a><br />
+	<a href="{{ path('human_sad', {'change': 1}) }}">Sad +1</a>
+	<a href="{{ path('human_sad', {'change': 10}) }}">+10</a>
+	<a href="{{ path('human_sad', {'change': 50}) }}">+50</a>
+	<a href="{{ path('human_sad', {'change': 100}) }}">+100</a><br />
 
 	<ul>
 		{% for feelingChange in human.feelings.history %}

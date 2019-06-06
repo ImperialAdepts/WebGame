@@ -189,7 +189,7 @@ class MapController extends BasePlanetController
 	 */
 	public function newColonyAction(PlanetEntity\Peak $administrativeCenter, Request $request)
 	{
-		$builder = new \AppBundle\Builder\PlanetBuilder($this->getDoctrine()->getManager('planet'), $this->getParameter('default_colonization_packs'));
+		$builder = new \AppBundle\Builder\PlanetBuilder($this->getDoctrine()->getManager(), $this->getDoctrine()->getManager('planet'), $this->getParameter('default_colonization_packs'));
 		$builder->newColony($administrativeCenter, $this->getHuman(), 'simple');
         $this->getDoctrine()->getManager()->flush();
 

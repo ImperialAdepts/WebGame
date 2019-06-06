@@ -6,7 +6,9 @@ use AppBundle\Entity\SolarSystem\Planet;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\MappedSuperclass()
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="type", type="string")
+ * @ORM\DiscriminatorMap({"general" = "Title", "land-title" = "SettlementTitle"})
  * @ORM\Table(name="human_titles")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\Human\TitleRepository")
  */

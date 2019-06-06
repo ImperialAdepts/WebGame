@@ -52,7 +52,7 @@ class PlanetMaintainer
         $this->planet = $planet;
         $this->populationMaintainer = new PopulationMaintainer($planetEntityManager);
         $this->foodMaintainer = new FoodMaintainer($planetEntityManager);
-        $this->planetBuilder = new PlanetBuilder($planetEntityManager, []);
+        $this->planetBuilder = new PlanetBuilder($generalEntityManager, $planetEntityManager, []);
         $this->jobMaintainer = new JobMaintainer($generalEntityManager, $planetEntityManager, $planet);
         $this->humanMaintainer = new HumanMaintainer($generalEntityManager);
         $this->maintainer = new Maintainer($planetEntityManager, $this->foodMaintainer, $this->populationMaintainer);
