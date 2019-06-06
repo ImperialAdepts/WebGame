@@ -69,6 +69,12 @@ class Human
     private $knowledge;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Human\Title", mappedBy="humanHolder", cascade={"all"})
+     */
+    private $titles;
+
+    /**
      * @var Feelings
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Human\Feelings", mappedBy="human", cascade={"all"})
      */
@@ -128,6 +134,7 @@ class Human
         $this->id = $id;
         $this->preferences = new ArrayCollection();
         $this->knowledge = new ArrayCollection();
+        $this->titles = new ArrayCollection();
         $this->feelings = new Feelings($this);
     }
 
@@ -262,6 +269,22 @@ class Human
 
     public function addKnowledge(Knowledge $knowledge) {
         $this->knowledge->add($knowledge);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getTitles()
+    {
+        return $this->titles;
+    }
+
+    /**
+     * @param ArrayCollection $titles
+     */
+    public function setTitles($titles)
+    {
+        $this->titles = $titles;
     }
 
     /**
