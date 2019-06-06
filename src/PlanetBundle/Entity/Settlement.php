@@ -3,6 +3,7 @@
 namespace PlanetBundle\Entity;
 
 use AppBundle\Descriptor\ResourcefullInterface;
+use AppBundle\UuidSerializer\UuidName;
 use Doctrine\ORM\Mapping as ORM;
 /**
  * Settlement - management unit
@@ -83,6 +84,10 @@ class Settlement implements ResourcefullInterface
 	{
 		return $this->id;
 	}
+
+	public function getName() {
+	    return UuidName::getSettlementName($this). ' settlement';
+    }
 
 	/**
 	 * Set owner

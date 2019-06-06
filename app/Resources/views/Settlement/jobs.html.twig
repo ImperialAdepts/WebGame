@@ -4,32 +4,32 @@
 <strong>Jobs</strong>
 <ol>
     {% for job in administrationJobs %}
-        <li>[{{ job.triggerType }}] region {{ job.region.coords }} aministration</li>
+        <li>[{{ job.triggerType }}] region {{ job.region.name }} aministration</li>
     {% endfor %}
 </ol>
 <ol>
     {% for job in buildJobs %}
-        <li>[{{ job.triggerType }}] [{{ job.region.coords }}] <strong>{{ job.blueprint.description }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
+        <li>[{{ job.triggerType }}] [{{ job.region.name }}] <strong>{{ job.blueprint.description }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
     {% endfor %}
 </ol>
 <ol>
     {% for job in produceJobs %}
-        <li>[{{ job.triggerType }}] [{{ job.region.coords }}] <strong>{{ job.blueprint.description }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
+        <li>[{{ job.triggerType }}] [{{ job.region.name }}] <strong>{{ job.blueprint.description }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
     {% endfor %}
 </ol>
 <ol>
     {% for job in transportJobs %}
-        <li>[{{ job.triggerType }}] [{{ job.region.coords }}] <strong>{{ job.resourceDeposit.resourceDescriptor }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
+        <li>[{{ job.triggerType }}] [{{ job.region.name }}] <strong>{{ job.resourceDeposit.resourceDescriptor }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
     {% endfor %}
 </ol>
 <ol>
     {% for job in buyJobs %}
-        <li>[{{ job.triggerType }}] [{{ job.region.coords }}] <strong>{{ job.resourceDeposit.resourceDescriptor }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
+        <li>[{{ job.triggerType }}] [{{ job.region.name }}] <strong>{{ job.resourceDeposit.resourceDescriptor }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
     {% endfor %}
 </ol>
 <ol>
     {% for job in sellJobs %}
-        <li>[{{ job.triggerType }}] [{{ job.region.coords }}] <strong>{{ job.resourceDeposit.resourceDescriptor }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
+        <li>[{{ job.triggerType }}] [{{ job.region.name }}] <strong>{{ job.resourceDeposit.resourceDescriptor }}</strong>&times;{{ job.amount }}&times;{{ job.repetition }}</li>
     {% endfor %}
 </ol>
 
@@ -49,7 +49,7 @@
         {% for region in settlement.regions %}
         <tr>
             <th>
-                Region {{ region.coords }}
+                Region {{ region.name }}
             </th>
             {{ render(controller('PlanetBundle:Settlement:teams', {
                 'regionC': region.peakCenter.id,

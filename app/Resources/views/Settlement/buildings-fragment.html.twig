@@ -21,7 +21,7 @@
 		<tr>
 			{% for region in settlement.regions %}
 				<td>
-					<h3>Region {{ region.coords }}</h3>
+					<h3>Region {{ region.name }}</h3>
 					<small>Used area: {{ region.usedArea|area }}/{{ region.area|area }} ({{ 100*region.usedArea/ region.area}} %)</small><br>
 
 					{% if region.project is null %}

@@ -7,6 +7,7 @@ use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Entity as GeneralEntity;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
+use AppBundle\UuidSerializer\UuidName;
 use Doctrine\ORM\Query\Expr\Math;
 use PlanetBundle\Builder\RegionTerrainTypeEnumBuilder;
 use PlanetBundle\Entity as PlanetEntity;
@@ -119,6 +120,22 @@ class Region implements ResourcefullInterface
 
     public function getCoords() {
         return $this->getPeakCenter()->getId()."_".$this->getPeakLeft()->getId()."_".$this->getPeakRight()->getId();
+    }
+
+    public function getName() {
+        if ($this->getSettlement() == null) {
+            return $this->getTerrainType(). ' '.$this->getCoords();
+        } else {
+            $count = 0;
+            $type = $this->getTerrainType();
+            foreach ($this->getSettlement()->getRegions() as $region) {
+                if ($region->getTerrainType() == $type) {
+                    $count++;
+                }
+                if ($region == $this) return $count.". ".$type." of ".UuidName::getSettlementName($this->getSettlement());
+            }
+
+        }
     }
 
 	/**
