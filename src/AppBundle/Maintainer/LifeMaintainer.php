@@ -9,6 +9,7 @@ class LifeMaintainer
      * @return int promile
      */
     public function getDeathByAgeProbability(Human $human) {
+
         if ($human->getAge() <= 40) {
             return 0;
         }
@@ -17,7 +18,6 @@ class LifeMaintainer
 
     public function kill(Human $human) {
         $human->setDeathTime(time());
-        $
 
         $this->inheritTitles($human);
 
@@ -38,6 +38,9 @@ class LifeMaintainer
         if ($heir != null) {
             $title->setHumanHolder($heir);
             $heir->addTitle($title);
+            if ($heir->getTitle() == null) {
+                $heir->setTitle($title);
+            }
         }
         // TODO: povznest nahodneho lowborna do slechtickeho titulu => vyrobit noveho humana
     }
