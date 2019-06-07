@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\EnumAlignmentType;
+use AppBundle\Maintainer\LifeMaintainer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -44,6 +45,50 @@ class HumanController extends Controller
             'planetHuman' => $localHuman,
 		]);
 	}
+
+    /**
+     * @Route("/create-children", name="human_create_children")
+     */
+    public function createChildrenAction()
+    {
+        if ($this->get('logged_user_settings')->getHuman() === null) {
+            return $this->redirectToRoute('gamer_human_selection');
+        }
+        /** @var Entity\Human $father */
+        $mother = $this->get('logged_user_settings')->getHuman();
+
+        $offspring = new Entity\Human();
+        $offspring->setName($mother->getName(). ' '.random_int(0, 20));
+        $offspring->setBornPlanet($mother->getPlanet());
+        $offspring->setBornPhase($mother->getPlanet()->getLastPhaseUpdate());
+        $offspring->setMotherHuman($mother);
+        $offspring->setFatherHuman(null);
+
+        $this->getDoctrine()->getManager()->persist($offspring);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->redirectToRoute('human_dashboard');
+    }
+
+    /**
+     * @Route("/suicide", name="human_suicide")
+     */
+    public function suicideAction()
+    {
+        if ($this->get('logged_user_settings')->getHuman() === null) {
+            return $this->redirectToRoute('gamer_human_selection');
+        }
+        /** @var Entity\Human $father */
+        $human = $this->get('logged_user_settings')->getHuman();
+
+        $lifeMaintainer = new LifeMaintainer();
+        $lifeMaintainer->kill($human);
+
+        $this->getDoctrine()->getManager()->persist($human);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->redirectToRoute('human_dashboard');
+    }
 
     /**
      * @Route("/happy/{change}", name="human_happy")

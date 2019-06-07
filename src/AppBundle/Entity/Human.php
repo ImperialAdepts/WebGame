@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Descriptor\TimeTransformator;
 use AppBundle\Entity\Human\Feelings;
 use AppBundle\Entity\Human\Title;
 use AppBundle\Entity\rpg\HumanPreference;
@@ -137,6 +138,20 @@ class Human
      * })
      */
     private $motherHuman;
+
+    /**
+     * @var Human[]
+     *
+     * @ORM\OneToMany(targetEntity="Human", mappedBy="motherHuman", cascade={"all"})
+     */
+    private $childrenByMother;
+
+    /**
+     * @var Human[]
+     *
+     * @ORM\OneToMany(targetEntity="Human", mappedBy="fatherHuman", cascade={"all"})
+     */
+    private $childrenByFather;
 
     public function __construct($id = null)
     {
@@ -296,6 +311,12 @@ class Human
         $this->titles = $titles;
     }
 
+    public function addTitle(Title $title)
+    {
+        $title->setHumanHolder($this);
+        $this->titles->add($title);
+    }
+
     /**
      * @return Title
      */
@@ -422,6 +443,61 @@ class Human
     public function setMotherHuman($motherHuman)
     {
         $this->motherHuman = $motherHuman;
+    }
+
+    /**
+     * @return Human[]
+     */
+    public function getChildrenByMother()
+    {
+        return $this->childrenByMother;
+    }
+
+    /**
+     * @param Human[] $childrenByMother
+     */
+    public function setChildrenByMother($childrenByMother)
+    {
+        $this->childrenByMother = $childrenByMother;
+    }
+
+    /**
+     * @return Human[]
+     */
+    public function getChildrenByFather()
+    {
+        return $this->childrenByFather;
+    }
+
+    /**
+     * @param Human[] $childrenByFather
+     */
+    public function setChildrenByFather($childrenByFather)
+    {
+        $this->childrenByFather = $childrenByFather;
+    }
+
+    /**
+     * @return Human[]
+     */
+    public function getChildren() {
+        foreach ($this->getChildrenByFather() as $human) {
+            yield $human;
+        }
+        foreach ($this->getChildrenByMother() as $human) {
+            yield $human;
+        }
+//        return array_merge(, $this->getChildrenByMother());
+    }
+
+    /**
+     * @return float|int age in Earth years
+     */
+    public function getAge()
+    {
+        $bornTime = TimeTransformator::phaseToTimestamp($this->getBornPlanet(), $this->getBornPhase());
+        $thisPhaseTime = TimeTransformator::phaseToTimestamp($this->getPlanet(), $this->getPlanet()->getLastPhaseUpdate());
+        return TimeTransformator::timeLengthToAge($thisPhaseTime - $bornTime);
     }
 }
 

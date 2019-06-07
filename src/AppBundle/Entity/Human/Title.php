@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Title
 {
+    const LINE_OF_SUCCESSION_MAX_SIZE = 100;
+
     /**
      * @var integer
      *
@@ -132,5 +134,54 @@ class Title
     public function setTransferSettings($transferSettings)
     {
         $this->transferSettings = $transferSettings;
+    }
+
+    /**
+     * @return Human|null
+     */
+    public function getHeir() {
+        $line = $this->getLineOfSuccession();
+        return array_pop($line);
+    }
+
+    /**
+     * @return Human[]
+     */
+    public function getLineOfSuccession() {
+        $line = [];
+        if ($this->getHumanHolder()->getDeathTime() === null) {
+            $line[] = $this->getHumanHolder();
+        }
+//        if (isset($transferSettings['inheritance'])) {
+            $this->addChildren($line, $this->humanHolder);
+//        }
+        if (count($line) >= self::LINE_OF_SUCCESSION_MAX_SIZE) {
+            return $line;
+        }
+        if ($this->getSuperiorTitle() != null && count($line) <= self::LINE_OF_SUCCESSION_MAX_SIZE) {
+            foreach ($this->getSuperiorTitle()->getLineOfSuccession() as $superiorSuccessor) {
+                if (count($line) >= self::LINE_OF_SUCCESSION_MAX_SIZE) {
+                    return $line;
+                }
+                if ($superiorSuccessor->getDeathTime() === null) {
+                    $line[] = $superiorSuccessor;
+                }
+            }
+        }
+        return $line;
+    }
+
+    private function addChildren(array &$line, Human $human) {
+        if (count($line) > self::LINE_OF_SUCCESSION_MAX_SIZE) {
+            return;
+        }
+        foreach ($human->getChildren() as $child) {
+            if ($child->getDeathTime() === null) {
+                $line[] = $child;
+            }
+        }
+        foreach ($human->getChildren() as $child) {
+            $this->addChildren($line, $child);
+        }
     }
 }

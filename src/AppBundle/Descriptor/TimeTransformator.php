@@ -25,4 +25,8 @@ class TimeTransformator
         if ($planet->getOrbitPeriod() == null) return 0;
         return $timestamp * $planet->getTimeCoefficient();
     }
+
+    public static function timeLengthToAge($timeLength) {
+        return $timeLength / 360*24*3600;
+    }
 }

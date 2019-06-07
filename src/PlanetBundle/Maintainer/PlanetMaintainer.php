@@ -7,6 +7,7 @@ use AppBundle\Descriptor\TimeTransformator;
 use AppBundle\Entity\Human;
 use AppBundle\Entity\Human\Event;
 use AppBundle\Entity\SolarSystem\Planet;
+use AppBundle\Maintainer\LifeMaintainer;
 use Doctrine\Common\Persistence\ObjectManager;
 use PlanetBundle\Entity as PlanetEntity;
 
@@ -39,6 +40,9 @@ class PlanetMaintainer
     /** @var Maintainer */
     private $maintainer;
 
+    /** @var LifeMaintainer */
+    private $lifeMainteiner;
+
     /**
      * PlanetMaintainer constructor.
      * @param ObjectManager $generalEntityManager
@@ -56,6 +60,7 @@ class PlanetMaintainer
         $this->jobMaintainer = new JobMaintainer($generalEntityManager, $planetEntityManager, $planet);
         $this->humanMaintainer = new HumanMaintainer($generalEntityManager);
         $this->maintainer = new Maintainer($planetEntityManager, $this->foodMaintainer, $this->populationMaintainer);
+        $this->lifeMainteiner = new LifeMaintainer();
     }
 
     public function goToNewPlanetPhase() {
@@ -66,6 +71,7 @@ class PlanetMaintainer
         $this->doPlanedBuildingProjects();
         $this->doEndPhaseJobs();
         $this->giveHumanRelationshipFeelings();
+        $this->killPeopleByAge();
         $this->clear();
         $this->switchPhases();
         $this->maintainWorkhours();
@@ -345,5 +351,17 @@ class PlanetMaintainer
     private function giveHumanRelationshipFeelings()
     {
         // TODO: zapocitat radost z progresu pratel a smutek z progresu rivalu
+    }
+
+    private function killPeopleByAge()
+    {
+        $humans = $this->generalEntityManager->getRepository(Human::class)->findBy(['deathTime' => null]);
+        foreach ($humans as $human) {
+            $reaperDiceRoll = 1000;
+            $reaperDiceRoll = @random_int(0, 1000);
+            if ($this->lifeMainteiner->getDeathByAgeProbability($human) >= $reaperDiceRoll) {
+                $this->lifeMainteiner->kill($human);
+            }
+        }
     }
 }

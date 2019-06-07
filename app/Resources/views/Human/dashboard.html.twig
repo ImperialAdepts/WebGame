@@ -2,10 +2,14 @@
 
 {% block pagetitle %}
     {{ human.name }} -
-    {% if human.title.superiorTitle == null %}
-        Sovereign <strong>{{ human.title.name }}</strong>
-    {% else %}
-        <strong>{{ human.title.name }}</strong>, vassal of {{ human.title.superiorTitle.humanHolder.name }} - {{ human.title.superiorTitle.name }}
+    {% if human.title != null %}
+		{% if human.title.superiorTitle == null %}
+			Sovereign <strong>{{ human.title.name }}</strong>
+		{% else %}
+			<strong>{{ human.title.name }}</strong>, vassal
+		{% endif %}
+	{% else %}
+		<small>lowborn</small>
     {% endif %}
 {% endblock %}
 
@@ -15,17 +19,29 @@
 
 {% block body %}
 	{% import _self as this_macros %}
+	Children:
+	{% for child in human.children %}
+		{{ child.name }},
+	{% endfor %}
+	<br/>
+	{% if human.deathTime == null %}
+		<a href="{{ path('human_create_children') }}">Make offspring</a>, <a href="{{ path('human_suicide') }}">commit suicide</a> <br/>
+	{% else %}
+		Died {{ human.deathTime|date('d. m. Y h:i') }}<br/>
+	{% endif %}
 
-    <strong>Titles:</strong>
-    <ul>
-        {% for title in human.titles %}
-            <li><small>{{ title.name }}</small></li>
-        {% endfor %}
-    </ul>
-
-    {% if attribute(human.title, 'settlementId') is defined %}
-        <a href="{{ path('settlement_dashboard', {'settlement': human.title.settlementId }) }}">Go to settlement</a>
-    {% endif %}
+	{% for title in human.titles %}
+		<h4>{{ title.name }}</h4>
+		{% if attribute(title, 'settlementId') is defined %}
+			<a href="{{ path('settlement_dashboard', {'settlement': title.settlementId }) }}">Go to settlement</a>
+		{% endif %}
+		<strong>Succession line:</strong>
+		<ol>
+			{% for heir in title.lineOfSuccession %}
+				<li>{{ heir.name }}</li>
+			{% endfor %}
+		</ol>
+	{% endfor %}
 
 
 	<dt>Alltime feelings</dt>
