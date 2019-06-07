@@ -2,6 +2,7 @@
 
 namespace AppBundle\UuidSerializer;
 
+use AppBundle\PlanetConnection\DynamicPlanetConnector;
 use PlanetBundle\Entity\Settlement;
 
 class UuidName
@@ -25,6 +26,7 @@ class UuidName
         $adjectiveNames = self::$colorNames;
         $cityNames = self::$cityNames;
         $cityUuid = implode('-', [
+            $data->getId(),
             $data->getAdministrativeCenter()->getYcoord(),
             $data->getAdministrativeCenter()->getXcoord(),
         ]);
