@@ -87,7 +87,9 @@
 					{% for human in soul.incarnations %}
 						<li class="human">
 							<strong>{{ human.name }}</strong> <small>living on {{ human.planet.name }}</small>
-							<a href="{{ path('gamer_play_as_human', {'human': human.id }) }}">Play as {{ human.name }}</a>
+							{% if human.deathTime == null %}
+								<a href="{{ path('gamer_play_as_human', {'human': human.id }) }}">Play as {{ human.name }}</a>
+							{% endif %}
 						</li>
 					{% endfor %}
 					</ul>
