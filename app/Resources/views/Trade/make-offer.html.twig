@@ -7,7 +7,7 @@
     Trade for:
     <ul>
         {% for blueprint in priceBlueprints %}
-            <li><a href="{{ path('trade_set_offer_from_region', {'deposit': deposit.id, 'blueprint': blueprint.id, 'count': 1} ) }}">Try to sell for 1 {{ blueprint.description }}</a></li>
+            <li><a href="{{ path('trade_set_offer', {'deposit': deposit.id, 'blueprint': blueprint.id, 'count': 1} ) }}">Try to sell for 1 {{ blueprint.description }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}

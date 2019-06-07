@@ -26,9 +26,9 @@ class TradeOffer
     private $id;
 
 	/**
-	 * @var PeakResourceDeposit
+	 * @var ResourceDeposit
 	 *
-     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\PeakResourceDeposit")
+     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\ResourceDeposit")
      * @ORM\JoinColumn(name="resource_deposit_id", referencedColumnName="id", nullable=false)
 	 */
 	private $offeredResourceDeposit;
