@@ -21,7 +21,7 @@ class HumanController extends BasePlanetController
 	public function incarnationListAction(GlobalEntity\Soul $soul, Request $request)
 	{
 		$humans = $this->getDoctrine()
-			->getRepository(PlanetEntity\Human::class)
+			->getRepository(GlobalEntity\Human::class)
 			->findByAvailableChildren();
 		return $this->render('Human/incarnation-list.html.twig', [
 			'soul' => $soul,
@@ -32,13 +32,13 @@ class HumanController extends BasePlanetController
 	/**
 	 * @Route("/connect/{soul}/{human}", name="human_connect")
 	 */
-	public function connectAction(GlobalEntity\Soul $soul, PlanetEntity\Human $human, Request $request)
+	public function connectAction(GlobalEntity\Soul $soul, GlobalEntity\Human $human, Request $request)
 	{
 		// TODO: zkontrolovat jestli to zkousi spravny gamer
-		if ($soul->getIncarnations() != null || $human->getSoul() != null) {
+		if ($human->getSoul() != null) {
 			throw new \InvalidArgumentException("This soul and human can't be connected, not empty");
 		}
-		$soul->setIncarnations($human);
+		$soul->getIncarnations()->add($human);
 		$human->setSoul($soul);
 		$this->getDoctrine()->getManager()->persist($soul);
 		$this->getDoctrine()->getManager()->persist($human);

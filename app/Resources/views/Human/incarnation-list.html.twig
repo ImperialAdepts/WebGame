@@ -7,6 +7,15 @@
 			{% for human in humans %}
 				<li>
 					{{ human.name }}
+					{% if human.title != null %}
+						{% if human.title.superiorTitle == null %}
+							Sovereign <strong>{{ human.title.name }}</strong>
+						{% else %}
+							<strong>{{ human.title.name }}</strong>, vassal
+						{% endif %}
+					{% else %}
+						<small>lowborn</small>
+					{% endif %}
 					<a href="{{ path('human_connect', {'soul': soul.id, 'human': human.id}) }}">connect human</a>
 				</li>
 			{% endfor %}

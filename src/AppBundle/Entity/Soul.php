@@ -42,8 +42,8 @@ class Soul
     private $gamer;
 
     /**
-     * @var Human
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Human", mappedBy="soul")
+     * @var Human[]
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Human", mappedBy="soul", cascade={"all"})
      */
     private $incarnations;
 
@@ -65,6 +65,7 @@ class Soul
     public function __construct($id = null)
     {
         $this->id = $id;
+        $this->incarnations = new ArrayCollection();
         $this->preferences = new ArrayCollection();
     }
 
@@ -118,7 +119,7 @@ class Soul
     }
 
     /**
-     * @return Human
+     * @return Human[]|ArrayCollection
      */
     public function getIncarnations()
     {
@@ -126,7 +127,7 @@ class Soul
     }
 
     /**
-     * @param Human $incarnations
+     * @param Human[]|ArrayCollection $incarnations
      */
     public function setIncarnations($incarnations)
     {
