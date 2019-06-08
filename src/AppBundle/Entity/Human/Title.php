@@ -149,9 +149,6 @@ class Title
      */
     public function getLineOfSuccession() {
         $line = [];
-        if ($this->getHumanHolder()->getDeathTime() === null) {
-            $line[] = $this->getHumanHolder();
-        }
 //        if (isset($transferSettings['inheritance'])) {
             $this->addChildren($line, $this->humanHolder);
 //        }
@@ -159,6 +156,7 @@ class Title
             return $line;
         }
         if ($this->getSuperiorTitle() != null && count($line) <= self::LINE_OF_SUCCESSION_MAX_SIZE) {
+            $line[] = $this->getSuperiorTitle()->getHumanHolder();
             foreach ($this->getSuperiorTitle()->getLineOfSuccession() as $superiorSuccessor) {
                 if (count($line) >= self::LINE_OF_SUCCESSION_MAX_SIZE) {
                     return $line;
