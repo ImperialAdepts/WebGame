@@ -7,7 +7,6 @@ use AppBundle\Descriptor\TimeTransformator;
 use AppBundle\Entity\Human;
 use AppBundle\Entity\Human\Event;
 use AppBundle\Entity\SolarSystem\Planet;
-use AppBundle\Maintainer\LifeMaintainer;
 use Doctrine\Common\Persistence\ObjectManager;
 use PlanetBundle\Entity as PlanetEntity;
 

@@ -3,7 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\EnumAlignmentType;
-use AppBundle\Maintainer\LifeMaintainer;
+use PlanetBundle\Maintainer\LifeMaintainer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;

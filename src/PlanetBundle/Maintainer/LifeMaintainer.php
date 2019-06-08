@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Maintainer;
+namespace PlanetBundle\Maintainer;
 
 use AppBundle\Entity\Human;
 use AppBundle\Entity\SolarSystem\Planet;
