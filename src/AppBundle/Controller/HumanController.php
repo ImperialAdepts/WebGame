@@ -57,28 +57,9 @@ class HumanController extends Controller
         /** @var Entity\Human $father */
         $mother = $this->get('logged_user_settings')->getHuman();
         $this->container->get('dynamic_planet_connector')->setPlanet($mother->getPlanet(), true);
-        /** @var PlanetEntity\Human $planetMother */
-        $planetMother = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Human::class)->findOneBy([
-            'globalHumanId' => $mother->getId(),
-        ]);
 
-        $offspring = new Entity\Human();
-        $offspring->setName($mother->getName(). ' '.random_int(0, 20));
-        $offspring->setBornPlanet($mother->getPlanet());
-        $offspring->setBornPhase($mother->getPlanet()->getLastPhaseUpdate());
-        $offspring->setPlanet($mother->getPlanet());
-        $offspring->setMotherHuman($mother);
-        $offspring->setFatherHuman(null);
-
-        $this->getDoctrine()->getManager()->persist($offspring);
-        $this->getDoctrine()->getManager()->flush();
-
-        $planetOffspring = new PlanetEntity\Human();
-        $planetOffspring->setGlobalHumanId($offspring->getId());
-        $planetOffspring->setCurrentPeakPosition($planetMother->getCurrentPeakPosition());
-
-        $this->getDoctrine()->getManager('planet')->persist($planetOffspring);
-        $this->getDoctrine()->getManager('planet')->flush();
+        $lifeMaintainer = new LifeMaintainer($this->get('doctrine.orm.entity_manager'), $this->get('doctrine.orm.planet_entity_manager'), $mother->getPlanet());
+        $lifeMaintainer->makeOffspring($mother);
 
         return $this->redirectToRoute('human_dashboard');
     }
@@ -94,7 +75,7 @@ class HumanController extends Controller
         /** @var Entity\Human $father */
         $human = $this->get('logged_user_settings')->getHuman();
 
-        $lifeMaintainer = new LifeMaintainer();
+        $lifeMaintainer = new LifeMaintainer($this->get('doctrine.orm.entity_manager'), $this->get('doctrine.orm.planet_entity_manager'), $mother->getPlanet());
         $lifeMaintainer->kill($human);
 
         $this->getDoctrine()->getManager()->persist($human);
