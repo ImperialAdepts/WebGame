@@ -35,7 +35,6 @@ class MapController extends BasePlanetController
      */
     public function mapAjaxAction(Request $request)
     {
-        $centralRegion = $this->getHuman()->getCurrentPeakPosition()->getMainRegion();
         $peakRepo = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Peak::class);
         $mapRepo = $this->getDoctrine()->getManager('planet')->getRepository(PlanetEntity\Region::class);
         $regions = [];
