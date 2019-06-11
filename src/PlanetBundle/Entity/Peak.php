@@ -2,6 +2,7 @@
 
 namespace PlanetBundle\Entity;
 use AppBundle\Descriptor\ResourcefullInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 /**
  * Peak - map unit
@@ -65,6 +66,7 @@ class Peak implements ResourcefullInterface
     public function __construct($id = null)
     {
         $this->id = $id;
+        $this->resourceDeposits = new ArrayCollection();
     }
 
     /**

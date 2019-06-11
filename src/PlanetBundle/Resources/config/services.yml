@@ -1,30 +1,78 @@
 services:
 
+  repo_settlement:
+    class: PlanetBundle\Repository\SettlementRepository
+    public: true
+    factory: ["@doctrine.orm.planet_entity_manager", "getRepository"]
+    arguments:
+      - "PlanetBundle\\Entity\\Settlement"
+
+  event_builder:
+    class: PlanetBundle\Builder\EventBuilder
+    public: true
+    arguments:
+      - '@doctrine.orm.entity_manager'
+      - '@dynamic_planet_connector'
+
+  human_builder:
+    class: PlanetBundle\Builder\HumanBuilder
+    arguments:
+      - '@doctrine.orm.entity_manager'
+      - '@doctrine.orm.planet_entity_manager'
+      - '@repo_human'
+
   maintainer:
     class: PlanetBundle\Maintainer\Maintainer
     public: true
     arguments:
-      - '@doctrine.orm.entity_manager'
+      - '@doctrine.orm.planet_entity_manager'
       - '@maintainer_food'
       - '@maintainer_population'
 
   maintainer_food:
     class: PlanetBundle\Maintainer\FoodMaintainer
     public: true
-    arguments:
-      - '@doctrine.orm.entity_manager'
 
   maintainer_human:
     class: PlanetBundle\Maintainer\HumanMaintainer
     public: true
     arguments:
-      - '@doctrine.orm.entity_manager'
+      - '@repo_human'
 
   maintainer_population:
     class: PlanetBundle\Maintainer\PopulationMaintainer
     public: true
+
+  maintainer_job:
+    class: PlanetBundle\Maintainer\JobMaintainer
+    public: true
+    arguments:
+      - '@repo_human'
+
+  maintainer_life:
+    class: PlanetBundle\Maintainer\LifeMaintainer
+    public: true
+    arguments:
+      - '@human_builder'
+      - '@event_builder'
+
+  maintainer_planet:
+    class: PlanetBundle\Maintainer\PlanetMaintainer
+    public: true
     arguments:
       - '@doctrine.orm.entity_manager'
+      - '@doctrine.orm.planet_entity_manager'
+      - "@dynamic_planet_connector"
+      - '@repo_human'
+      - '@repo_settlement'
+      - '@event_builder'
+      - '@maintainer_population'
+      - '@maintainer_food'
+      - '@planet_builder'
+      - '@maintainer_job'
+      - '@maintainer_human'
+      - '@maintainer'
+      - '@maintainer_life'
 
   PlanetBundle\Fixture\:
     resource: '../../../PlanetBundle/Fixture/'

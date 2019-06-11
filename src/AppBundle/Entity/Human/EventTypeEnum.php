@@ -16,4 +16,8 @@ class EventTypeEnum
     const JOB_DONE = 'job_done';
     const SETTLEMENT_PEOPLE_BORN = 'settlement_people_born';
     const SETTLEMENT = 'settlement';
+    const HUMAN_BIRTH = 'human_birth';
+    const HUMAN_OFFSPRING_BORN = 'human_offspring_born';
+    const HUMAN_DEATH = 'human_death';
+    const HUMAN_INHERITANCE = 'human_inheritance';
 }

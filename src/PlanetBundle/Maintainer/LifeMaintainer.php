@@ -2,33 +2,27 @@
 namespace PlanetBundle\Maintainer;
 
 use AppBundle\Entity\Human;
-use AppBundle\Entity\SolarSystem\Planet;
-use AppBundle\PlanetConnection\DynamicPlanetConnector;
-use Doctrine\ORM\EntityManager;
+use PlanetBundle\Builder\EventBuilder;
+use PlanetBundle\Builder\HumanBuilder;
 use PlanetBundle\Entity as PlanetEntity;
 
 class LifeMaintainer
 {
-    /** @var EntityManager */
-    private $generalEntityManager;
+    /** @var HumanBuilder */
+    private $humanBuilder;
 
-    /** @var EntityManager */
-    private $planetEntityManager;
-
-    /** @var Planet */
-    private $planet;
+    /** @var EventBuilder */
+    private $eventBuilder;
 
     /**
-     * JobMaintainer constructor.
-     * @param EntityManager $generalEntityManager
-     * @param EntityManager $planetEntityManager
-     * @param Planet $planet
+     * LifeMaintainer constructor.
+     * @param HumanBuilder $humanBuilder
+     * @param EventBuilder $eventBuilder
      */
-    public function __construct(EntityManager $generalEntityManager, EntityManager $planetEntityManager, Planet $planet)
+    public function __construct(HumanBuilder $humanBuilder, EventBuilder $eventBuilder)
     {
-        $this->generalEntityManager = $generalEntityManager;
-        $this->planetEntityManager = $planetEntityManager;
-        $this->planet = $planet;
+        $this->humanBuilder = $humanBuilder;
+        $this->eventBuilder = $eventBuilder;
     }
 
     /**
@@ -44,6 +38,10 @@ class LifeMaintainer
 
     public function kill(Human $human) {
         $human->setDeathTime(time());
+
+        $this->eventBuilder->create(Human\EventTypeEnum::HUMAN_DEATH, $human, [
+            Human\EventDataTypeEnum::DESCRIPTION => 'death by age',
+        ]);
 
         $this->inheritTitles($human);
 
@@ -67,37 +65,28 @@ class LifeMaintainer
             if ($heir->getTitle() == null) {
                 $heir->setTitle($title);
             }
+
+            $this->eventBuilder->create(Human\EventTypeEnum::HUMAN_INHERITANCE, $heir, [
+                Human\EventDataTypeEnum::TITLE => $title,
+            ]);
         }
         // TODO: povznest nahodneho lowborna do slechtickeho titulu => vyrobit noveho humana
     }
 
     public function makeOffspring(Human $mother, Human $father = null) {
-        if ($mother->getPlanet() !== DynamicPlanetConnector::$PLANET) {
-            throw new \Exception("Creating offspring on different planet then mother is.");
-        }
+        $offspring = $this->humanBuilder->create($mother, $father);
 
-        /** @var PlanetEntity\Human $planetMother */
-        $planetMother = $this->planetEntityManager->getRepository(PlanetEntity\Human::class)->findOneBy([
-            'globalHumanId' => $mother->getId(),
-        ]);
-
-        $offspring = new Human();
         $offspring->setName($mother->getName(). ' '.random_int(0, 20));
-        $offspring->setBornPlanet($mother->getPlanet());
-        $offspring->setBornPhase($mother->getPlanet()->getLastPhaseUpdate());
-        $offspring->setPlanet($mother->getPlanet());
-        $offspring->setMotherHuman($mother);
-        $offspring->setFatherHuman(null);
 
-        $this->generalEntityManager->persist($offspring);
-        $this->generalEntityManager->flush();
-
-        $planetOffspring = new PlanetEntity\Human();
-        $planetOffspring->setGlobalHumanId($offspring->getId());
-        $planetOffspring->setCurrentPeakPosition($planetMother->getCurrentPeakPosition());
-
-        $this->planetEntityManager->persist($planetOffspring);
-        $this->planetEntityManager->flush();
+        $this->eventBuilder->create(Human\EventTypeEnum::HUMAN_BIRTH, $offspring, []);
+        $this->eventBuilder->create(Human\EventTypeEnum::HUMAN_OFFSPRING_BORN, $mother, [
+            Human\EventDataTypeEnum::HUMAN => $offspring,
+        ]);
+        if ($father) {
+            $this->eventBuilder->create(Human\EventTypeEnum::HUMAN_OFFSPRING_BORN, $father, [
+                Human\EventDataTypeEnum::HUMAN => $offspring,
+            ]);
+        }
 
         return $offspring;
     }

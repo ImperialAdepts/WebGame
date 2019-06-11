@@ -15,18 +15,6 @@ class FoodMaintainer
 {
     const PEOPLE_STARVATION_RATIO = 0.3;
 
-    /** @var EntityManager */
-    private $entityManager;
-
-    /**
-     * Maintainer constructor.
-     * @param EntityManager $entityManager
-     */
-    public function __construct(EntityManager $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
     /**
      * @param ResourcefullInterface $resourceHandler
      * @return int[] resource_descriptor => unit amount consumption

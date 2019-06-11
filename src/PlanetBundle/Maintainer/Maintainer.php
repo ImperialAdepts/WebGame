@@ -6,14 +6,15 @@ use AppBundle\Descriptor\Adapters\BasicFood;
 use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 use PlanetBundle\Entity\Region;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\EntityManager;
 
 class Maintainer
 {
-    /** @var EntityManager */
-    private $entityManager;
+    /** @var ObjectManager */
+    private $planetEntityManager;
     /** @var FoodMaintainer */
     private $foodMaitainer;
     /** @var PopulationMaintainer */
@@ -26,24 +27,24 @@ class Maintainer
 
     /**
      * Maintainer constructor.
-     * @param EntityManager $entityManager
+     * @param ObjectManager $planetEntityManager
      * @param FoodMaintainer $foodMaitainer
      * @param PopulationMaintainer $peopleMaintainer
      */
-    public function __construct(EntityManager $entityManager, FoodMaintainer $foodMaitainer, PopulationMaintainer $peopleMaintainer)
+    public function __construct(ObjectManager $planetEntityManager, FoodMaintainer $foodMaitainer, PopulationMaintainer $peopleMaintainer)
     {
-        $this->entityManager = $entityManager;
+        $this->planetEntityManager = $planetEntityManager;
         $this->foodMaitainer = $foodMaitainer;
         $this->peopleMaintainer = $peopleMaintainer;
     }
 
 
     public function clearEmptyDeposits() {
-        $emptyDeposits = $this->entityManager->getRepository(\PlanetBundle\Entity\ResourceDeposit::class)->findBy(['amount' => 0]);
+        $emptyDeposits = $this->planetEntityManager->getRepository(\PlanetBundle\Entity\ResourceDeposit::class)->findBy(['amount' => 0]);
         foreach ($emptyDeposits as $deposit) {
-            $this->entityManager->remove($deposit);
+            $this->planetEntityManager->remove($deposit);
         }
-        $this->entityManager->flush();
+        $this->planetEntityManager->flush();
     }
 
     /**

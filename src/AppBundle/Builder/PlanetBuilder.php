@@ -5,6 +5,7 @@ use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Entity\Human;
 use AppBundle\Entity\Human\Title;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
+use Doctrine\Common\Persistence\ObjectManager;
 use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\ORM\EntityManager;
 
@@ -13,19 +14,19 @@ class PlanetBuilder
 	// TODO: predelat do rozumnejsiho configu
 	const STEP_DAY_COUNT = 0.5;
 
-    /** @var EntityManager */
+    /** @var ObjectManager */
     private $generalEntityManager;
-	/** @var EntityManager */
+	/** @var ObjectManager */
 	private $planetEntityManager;
 	private $colonyPacks;
 
     /**
      * PlanetBuilder constructor.
-     * @param EntityManager $generalEntityManager
-     * @param EntityManager $planetEntityManager
+     * @param ObjectManager $generalEntityManager
+     * @param ObjectManager $planetEntityManager
      * @param array $colonyPacks
      */
-    public function __construct(EntityManager $generalEntityManager, EntityManager $planetEntityManager, $colonyPacks = [])
+    public function __construct(ObjectManager $generalEntityManager, ObjectManager $planetEntityManager, $colonyPacks = [])
     {
         $this->generalEntityManager = $generalEntityManager;
         $this->planetEntityManager = $planetEntityManager;

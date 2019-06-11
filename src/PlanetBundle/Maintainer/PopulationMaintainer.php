@@ -16,18 +16,6 @@ use PlanetBundle\Entity\RegionResourceDeposit;
 
 class PopulationMaintainer
 {
-    /** @var EntityManager */
-    private $entityManager;
-
-    /**
-     * Maintainer constructor.
-     * @param EntityManager $entityManager
-     */
-    public function __construct(EntityManager $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
     public function getBirths(ResourcefullInterface $resourceHandler) {
         $peoples = People::in($resourceHandler);
         $births = [];
@@ -57,10 +45,8 @@ class PopulationMaintainer
                 $unusedHumansDeposit->setPeak($resourceHandler);
             }
             $unusedHumansDeposit->setAmount($birthCount);
-            $this->entityManager->persist($unusedHumansDeposit);
         } else {
             $unusedHumansAdapter->getDeposit()->setAmount($unusedHumansAdapter->getDeposit()->getAmount() + $birthCount);
-            $this->entityManager->persist($unusedHumansAdapter->getDeposit());
         }
     }
 

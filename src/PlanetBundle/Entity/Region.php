@@ -8,6 +8,7 @@ use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Entity as GeneralEntity;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
 use AppBundle\UuidSerializer\UuidName;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Expr\Math;
 use PlanetBundle\Builder\RegionTerrainTypeEnumBuilder;
 use PlanetBundle\Entity as PlanetEntity;
@@ -92,6 +93,7 @@ class Region implements ResourcefullInterface
         $this->peakCenter = $peakCenter;
         $this->peakLeft = $peakLeft;
         $this->peakRight = $peakRight;
+        $this->resourceDeposits = new ArrayCollection();
     }
 
     /**

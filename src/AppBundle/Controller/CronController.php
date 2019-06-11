@@ -28,12 +28,9 @@ class CronController extends Controller
     {
         $this->get('dynamic_planet_connector')->setPlanet($planet);
 
-        $planetMaintainer = new PlanetMaintainer(
-            $this->getDoctrine()->getManager(),
-            $this->getDoctrine()->getManager('planet'),
-            $planet
-        );
-        $planetMaintainer->goToNewPlanetPhase();
+        $this->get('maintainer_planet')->goToNewPlanetPhase();
+        $this->getDoctrine()->getManager()->flush();
+        $this->getDoctrine()->getManager('planet')->flush();
 
         return $this->redirectToRoute('settlement_dashboard', [
             'settlement' => $settlementToRedirect->getId(),

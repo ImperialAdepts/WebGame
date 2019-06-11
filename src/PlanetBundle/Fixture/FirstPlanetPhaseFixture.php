@@ -40,8 +40,11 @@ class FirstPlanetPhaseFixture extends Fixture implements ContainerAwareInterface
 
             $this->container->get('dynamic_planet_connector')->setPlanet($planet, true);
 
-            $planetMaintainer = new PlanetMaintainer($generalManager, $this->container->get('doctrine.orm.planet_entity_manager'), $planet);
+            $planetMaintainer = $this->container->get('maintainer_planet');
             $planetMaintainer->goToNewPlanetPhase();
+
+            $generalManager->flush();
+            $this->container->get('doctrine.orm.planet_entity_manager')->flush();
         }
 	}
 

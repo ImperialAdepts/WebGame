@@ -5,21 +5,31 @@ use AppBundle\Builder\PlanetBuilder;
 use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Descriptor\TimeTransformator;
 use AppBundle\Entity\Human;
-use AppBundle\Entity\Human\Event;
-use AppBundle\Entity\SolarSystem\Planet;
+use AppBundle\PlanetConnection\DynamicPlanetConnector;
+use AppBundle\Repository\HumanRepository;
 use Doctrine\Common\Persistence\ObjectManager;
+use PlanetBundle\Builder\EventBuilder;
 use PlanetBundle\Entity as PlanetEntity;
+use PlanetBundle\Repository\SettlementRepository;
 
 class PlanetMaintainer
 {
     /** @var ObjectManager */
     private $generalEntityManager;
-
     /** @var ObjectManager */
     private $planetEntityManager;
 
-    /** @var Planet */
-    private $planet;
+    /** @var DynamicPlanetConnector */
+    private $plannetConnection;
+
+    /** @var HumanRepository */
+    private $generalHumanRepository;
+
+    /** @var SettlementRepository */
+    private $settlementRepository;
+
+    /** @var EventBuilder */
+    private $eventBuilder;
 
     /** @var PopulationMaintainer */
     private $populationMaintainer;
@@ -40,30 +50,49 @@ class PlanetMaintainer
     private $maintainer;
 
     /** @var LifeMaintainer */
-    private $lifeMainteiner;
+    private $lifeMaintainer;
 
     /**
      * PlanetMaintainer constructor.
      * @param ObjectManager $generalEntityManager
      * @param ObjectManager $planetEntityManager
-     * @param Planet $planet
+     * @param DynamicPlanetConnector $plannetConnection
+     * @param HumanRepository $generalHumanRepository
+     * @param SettlementRepository $settlementRepository
+     * @param EventBuilder $eventBuilder
+     * @param PopulationMaintainer $populationMaintainer
+     * @param FoodMaintainer $foodMaintainer
+     * @param PlanetBuilder $planetBuilder
+     * @param JobMaintainer $jobMaintainer
+     * @param HumanMaintainer $humanMaintainer
+     * @param Maintainer $maintainer
+     * @param LifeMaintainer $lifeMaintainer
      */
-    public function __construct(ObjectManager $generalEntityManager, ObjectManager $planetEntityManager, Planet $planet)
+    public function __construct(ObjectManager $generalEntityManager, ObjectManager $planetEntityManager, DynamicPlanetConnector $plannetConnection, HumanRepository $generalHumanRepository, SettlementRepository $settlementRepository, EventBuilder $eventBuilder, PopulationMaintainer $populationMaintainer, FoodMaintainer $foodMaintainer, PlanetBuilder $planetBuilder, JobMaintainer $jobMaintainer, HumanMaintainer $humanMaintainer, Maintainer $maintainer, LifeMaintainer $lifeMaintainer)
     {
         $this->generalEntityManager = $generalEntityManager;
         $this->planetEntityManager = $planetEntityManager;
-        $this->planet = $planet;
-        $this->populationMaintainer = new PopulationMaintainer($planetEntityManager);
-        $this->foodMaintainer = new FoodMaintainer($planetEntityManager);
-        $this->planetBuilder = new PlanetBuilder($generalEntityManager, $planetEntityManager, []);
-        $this->jobMaintainer = new JobMaintainer($generalEntityManager, $planetEntityManager, $planet);
-        $this->humanMaintainer = new HumanMaintainer($generalEntityManager);
-        $this->maintainer = new Maintainer($planetEntityManager, $this->foodMaintainer, $this->populationMaintainer);
-        $this->lifeMainteiner = new LifeMaintainer();
+        $this->plannetConnection = $plannetConnection;
+        $this->generalHumanRepository = $generalHumanRepository;
+        $this->settlementRepository = $settlementRepository;
+        $this->eventBuilder = $eventBuilder;
+        $this->populationMaintainer = $populationMaintainer;
+        $this->foodMaintainer = $foodMaintainer;
+        $this->planetBuilder = $planetBuilder;
+        $this->jobMaintainer = $jobMaintainer;
+        $this->humanMaintainer = $humanMaintainer;
+        $this->maintainer = $maintainer;
+        $this->lifeMaintainer = $lifeMaintainer;
     }
 
+
+    private function getPlanet() {
+        return $this->plannetConnection->getPlanet();
+    }
+
+
     public function goToNewPlanetPhase() {
-        if ($this->planet->getLastPhaseUpdate() == null) {
+        if ($this->getPlanet()->getLastPhaseUpdate() == null) {
             $this->switchPhases();
         }
 
@@ -76,14 +105,11 @@ class PlanetMaintainer
         $this->maintainWorkhours();
         $this->doBirths();
         $this->doStartPhaseJobs();
-
-        $this->planetEntityManager->flush();
-        $this->generalEntityManager->flush();
     }
 
     private function doStartPhaseJobs()
     {
-        $settlements = $this->planetEntityManager->getRepository(PlanetEntity\Settlement::class)->getAll();
+        $settlements = $this->settlementRepository->getAll();
 
         /** @var PlanetEntity\Settlement $settlement */
         foreach ($settlements as $settlement) {
@@ -151,7 +177,7 @@ class PlanetMaintainer
             }
 
             $globalHuman = $this->generalEntityManager->getRepository(Human::class)->find($settlement->getManager()->getGlobalHumanId());
-            $this->createEvent('PRE_'.Human\EventTypeEnum::JOB_DONE, $globalHuman, [
+            $this->eventBuilder->create('PRE_'.Human\EventTypeEnum::JOB_DONE, $globalHuman, [
                 Human\EventTypeEnum::SETTLEMENT => $settlement->getId(),
                 'jobs_count' => $jobsCount,
                 'jobs_type' => $jobsCountByType,
@@ -161,7 +187,7 @@ class PlanetMaintainer
 
     private function doEndPhaseJobs()
     {
-        $settlements = $this->planetEntityManager->getRepository(PlanetEntity\Settlement::class)->getAll();
+        $settlements = $this->settlementRepository->getAll();
 
         /** @var PlanetEntity\Settlement $settlement */
         foreach ($settlements as $settlement) {
@@ -229,7 +255,7 @@ class PlanetMaintainer
             }
 
             $globalHuman = $this->generalEntityManager->getRepository(Human::class)->find($settlement->getManager()->getGlobalHumanId());
-            $this->createEvent('POST_'.Human\EventTypeEnum::JOB_DONE, $globalHuman, [
+            $this->eventBuilder->create('POST_'.Human\EventTypeEnum::JOB_DONE, $globalHuman, [
                 Human\EventTypeEnum::SETTLEMENT => $settlement->getId(),
                 'jobs_count' => $jobsCount,
                 'jobs_type' => $jobsCountByType,
@@ -239,19 +265,19 @@ class PlanetMaintainer
 
     private function switchPhases()
     {
-        if ($this->planet->getLastPhaseUpdate() === null) {
-            $this->planet->setLastPhaseUpdate(TimeTransformator::timestampToPhase($this->planet, time()));
+        if ($this->getPlanet()->getLastPhaseUpdate() === null) {
+            $this->getPlanet()->setLastPhaseUpdate(TimeTransformator::timestampToPhase($this->getPlanet(), time()));
         } else {
-            $this->planet->setLastPhaseUpdate($this->planet->getLastPhaseUpdate()+1);
+            $this->getPlanet()->setLastPhaseUpdate($this->getPlanet()->getLastPhaseUpdate()+1);
         }
-        $this->planet->setNextUpdateTime(TimeTransformator::phaseToTimestamp($this->planet, $this->planet->getLastPhaseUpdate()+1));
+        $this->getPlanet()->setNextUpdateTime(TimeTransformator::phaseToTimestamp($this->getPlanet(), $this->getPlanet()->getLastPhaseUpdate()+1));
 
-        $this->generalEntityManager->persist($this->planet);
+        $this->generalEntityManager->persist($this->getPlanet());
     }
 
     private function doBirths()
     {
-        $settlements = $this->planetEntityManager->getRepository(PlanetEntity\Settlement::class)->getAll();
+        $settlements = $this->settlementRepository->getAll();
 
         /** @var PlanetEntity\Settlement $settlement */
         foreach ($settlements as $settlement) {
@@ -277,8 +303,8 @@ class PlanetMaintainer
                 $this->populationMaintainer->doBirths($peak);
                 $this->planetEntityManager->persist($peak);
             }
-            $globalHuman = $this->generalEntityManager->getRepository(Human::class)->find($settlement->getManager()->getGlobalHumanId());
-            $this->createEvent(Human\EventTypeEnum::SETTLEMENT_PEOPLE_BORN, $globalHuman, [
+            $globalHuman = $this->generalHumanRepository->find($settlement->getManager()->getGlobalHumanId());
+            $this->eventBuilder->create(Human\EventTypeEnum::SETTLEMENT_PEOPLE_BORN, $globalHuman, [
                 Human\EventDataTypeEnum::POPULATION_CHANGE => $settlementPopulationIncrease,
                 Human\EventDataTypeEnum::REGIONS => $regions,
                 Human\EventDataTypeEnum::PEAKS => $peaks,
@@ -287,7 +313,7 @@ class PlanetMaintainer
     }
 
     private function maintainWorkhours() {
-        $settlements = $this->planetEntityManager->getRepository(PlanetEntity\Settlement::class)->getAll();
+        $settlements = $this->settlementRepository->getAll();
 
         /** @var PlanetEntity\Settlement $settlement */
         foreach ($settlements as $settlement) {
@@ -327,26 +353,6 @@ class PlanetMaintainer
         $this->humanMaintainer->resetFeelings();
     }
 
-    /**
-     * @param $eventNme
-     * @param Human $supervisor
-     * @param array $eventData
-     * @return Event
-     * @throws \Doctrine\ORM\ORMException
-     */
-    public function createEvent($eventNme, Human $supervisor, array $eventData = []) {
-        $event = new Event();
-        $event->setDescription($eventNme);
-        $event->setPlanet($this->planet);
-        $event->setPlanetPhase($this->planet->getLastPhaseUpdate());
-        $event->setTime(time());
-        $event->setDescriptionData($eventData);
-        $event->setHuman($supervisor);
-
-        $this->generalEntityManager->persist($event);
-        return $event;
-    }
-
     private function giveHumanRelationshipFeelings()
     {
         // TODO: zapocitat radost z progresu pratel a smutek z progresu rivalu
@@ -354,12 +360,12 @@ class PlanetMaintainer
 
     private function killPeopleByAge()
     {
-        $humans = $this->generalEntityManager->getRepository(Human::class)->findBy(['deathTime' => null]);
+        $humans = $this->generalHumanRepository->findBy(['deathTime' => null]);
         foreach ($humans as $human) {
             $reaperDiceRoll = 1000;
             $reaperDiceRoll = @random_int(0, 1000);
-            if ($this->lifeMainteiner->getDeathByAgeProbability($human) >= $reaperDiceRoll) {
-                $this->lifeMainteiner->kill($human);
+            if ($this->lifeMaintainer->getDeathByAgeProbability($human) >= $reaperDiceRoll) {
+                $this->lifeMaintainer->kill($human);
             }
         }
     }

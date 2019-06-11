@@ -10,4 +10,7 @@ class EventDataTypeEnum
     const POPULATION_CHANGE = 'population_change';
     const REGIONS = 'regions';
     const PEAKS = 'peaks';
+    const HUMAN = 'human';
+    const DESCRIPTION = 'description';
+    const TITLE = 'title';
 }

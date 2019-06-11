@@ -73,6 +73,14 @@ class DynamicPlanetConnector implements ContainerAwareInterface
     }
 
     /**
+     * @return Planet
+     */
+    public static function getPlanet()
+    {
+        return self::$PLANET;
+    }
+
+    /**
      * @param Planet $planet
      * @throws Exception
      */

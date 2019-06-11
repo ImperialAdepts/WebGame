@@ -7,6 +7,7 @@ use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Entity\Human;
+use AppBundle\Repository\HumanRepository;
 use PlanetBundle\Entity\Region;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\EntityManager;
@@ -16,20 +17,22 @@ class HumanMaintainer
     // magick number, later will be calculated by genom, gravity and planet rotation, etc
     const HUMAN_WORK_HOURS_BY_PHASE = 5000;
 
-    /** @var EntityManager */
-    private $entityManager;
+    /** @var HumanRepository */
+    private $generalHumanRepository;
 
     /**
      * HumanMaintainer constructor.
-     * @param EntityManager $entityManager
+     * @param HumanRepository $generalHumanRepository
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(HumanRepository $generalHumanRepository)
     {
-        $this->entityManager = $entityManager;
+        $this->generalHumanRepository = $generalHumanRepository;
     }
 
+
     public function addHumanHours() {
-        $exaustedHumans = $this->entityManager->getRepository(Human::class)->findAll();
+        /** @var Human[] $exaustedHumans */
+        $exaustedHumans = $this->generalHumanRepository->findAll();
         foreach ($exaustedHumans as $human) {
             $newWorkHours = $human->getHours() + self::HUMAN_WORK_HOURS_BY_PHASE;
             if ($newWorkHours > self::HUMAN_WORK_HOURS_BY_PHASE) {
@@ -37,12 +40,12 @@ class HumanMaintainer
             } else {
                 $human->setHours($newWorkHours);
             }
-            $this->entityManager->persist($human);
         }
     }
 
     public function resetFeelings() {
-        $humans = $this->entityManager->getRepository(Human::class)->findAll();
+        /** @var Human[] $humans */
+        $humans = $this->generalHumanRepository->findAll();
         foreach ($humans as $human) {
             $historyCount = 0;
             foreach ($human->getFeelings()->getHistory() as $feelingChange) {
@@ -52,7 +55,6 @@ class HumanMaintainer
             $human->getFeelings()->setLastPeriodSadness($historyCount);
             $human->getFeelings()->setThisTimeHappiness(0);
             $human->getFeelings()->setThisTimeSadness(0);
-            $this->entityManager->persist($human);
         }
     }
 }
