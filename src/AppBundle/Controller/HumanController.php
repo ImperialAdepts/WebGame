@@ -58,8 +58,7 @@ class HumanController extends Controller
         $mother = $this->get('logged_user_settings')->getHuman();
         $this->container->get('dynamic_planet_connector')->setPlanet($mother->getPlanet(), true);
 
-        $lifeMaintainer = new LifeMaintainer($this->get('doctrine.orm.entity_manager'), $this->get('doctrine.orm.planet_entity_manager'), $mother->getPlanet());
-        $lifeMaintainer->makeOffspring($mother);
+        $this->get('maintainer_life')->makeOffspring($mother);
 
         return $this->redirectToRoute('human_dashboard');
     }
@@ -75,8 +74,7 @@ class HumanController extends Controller
         /** @var Entity\Human $father */
         $human = $this->get('logged_user_settings')->getHuman();
 
-        $lifeMaintainer = new LifeMaintainer($this->get('doctrine.orm.entity_manager'), $this->get('doctrine.orm.planet_entity_manager'), $mother->getPlanet());
-        $lifeMaintainer->kill($human);
+        $this->get('maintainer_life')->kill($human);
 
         $this->getDoctrine()->getManager()->persist($human);
         $this->getDoctrine()->getManager()->flush();
