@@ -80,11 +80,11 @@ class LifeMaintainer
 
         $this->eventBuilder->create(Human\EventTypeEnum::HUMAN_BIRTH, $offspring, []);
         $this->eventBuilder->create(Human\EventTypeEnum::HUMAN_OFFSPRING_BORN, $mother, [
-            Human\EventDataTypeEnum::HUMAN => $offspring,
+            Human\EventDataTypeEnum::HUMAN => $offspring->getId(),
         ]);
         if ($father) {
             $this->eventBuilder->create(Human\EventTypeEnum::HUMAN_OFFSPRING_BORN, $father, [
-                Human\EventDataTypeEnum::HUMAN => $offspring,
+                Human\EventDataTypeEnum::HUMAN => $offspring->getId(),
             ]);
         }
 
