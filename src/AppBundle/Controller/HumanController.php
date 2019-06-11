@@ -59,6 +59,7 @@ class HumanController extends Controller
         $this->container->get('dynamic_planet_connector')->setPlanet($mother->getPlanet(), true);
 
         $this->get('maintainer_life')->makeOffspring($mother);
+        $this->get('doctrine.orm.entity_manager')->flush();
 
         return $this->redirectToRoute('human_dashboard');
     }
