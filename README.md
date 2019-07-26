@@ -1,4 +1,6 @@
-.checkout
+How to run on linux
 =========
-
-A Symfony project created on August 4, 2018, 5:56 pm.
+- install `docker` and `docker-compose`: `sudo apt-get install docker docker-compose`
+- checkout this project `git clone https://github.com/ImperialAdepts/WebGame`
+- run docker container: `sh run.sh`
+- go to `http://localhost:2000/`
