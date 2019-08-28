@@ -75,6 +75,7 @@ class RegionController extends BasePlanetController
     }
 
     /**
+     * popup
      * @Route("/available-buildings/{regionC}_{regionL}_{regionR}", name="region_build_availability")
      */
     public function availableBuildingsAction(Entity\Peak $regionC, Entity\Peak $regionL, Entity\Peak $regionR, Request $request)

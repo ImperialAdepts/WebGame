@@ -6,18 +6,23 @@
 </td>
 <td>
     {% if transporterBlueprints|length > 0 %}
-        <ul>
-            {% for blueprint in transporterBlueprints %}
-                <li>
-                    <a href="{{ path('settlement_team_create', {
-                        'regionC': region.peakCenter.id,
-                        'regionL': region.peakLeft.id,
-                        'regionR': region.peakRight.id,
-                        'blueprint': blueprint.id
-                    }) }}">Create {{ blueprint.description }} team</a>
-                </li>
-            {% endfor %}
-        </ul>
+        {% set modalId = "transporter-modal-for-"~ region.coords %}
+        <a href="#{{ modalId }}" rel="modal:open">Create team</a>
+        <div class="team-modal modal" id="{{ modalId }}">
+            <a href="#" rel="modal:close">Close</a>
+            <ul>
+                {% for blueprint in transporterBlueprints %}
+                    <li>
+                        <a href="{{ path('settlement_team_create', {
+                            'regionC': region.peakCenter.id,
+                            'regionL': region.peakLeft.id,
+                            'regionR': region.peakRight.id,
+                            'blueprint': blueprint.id
+                        }) }}">Create {{ blueprint.description }} team</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
 
     {% if transporters|length > 0 %}
@@ -34,18 +39,23 @@
 </td>
 <td>
     {% if builderBlueprints|length > 0 %}
-        <ul>
-            {% for blueprint in builderBlueprints %}
-                <li>
-                    <a href="{{ path('settlement_team_create', {
-                        'regionC': region.peakCenter.id,
-                        'regionL': region.peakLeft.id,
-                        'regionR': region.peakRight.id,
-                        'blueprint': blueprint.id
-                    }) }}">Create {{ blueprint.description }} team</a>
-                </li>
-            {% endfor %}
-        </ul>
+        {% set modalId = "builder-modal-for-"~ region.coords %}
+        <a href="#{{ modalId }}" rel="modal:open">Create team</a>
+        <div class="team-modal modal" id="{{ modalId }}">
+            <a href="#" rel="modal:close">Close</a>
+            <ul>
+                {% for blueprint in builderBlueprints %}
+                    <li>
+                        <a href="{{ path('settlement_team_create', {
+                            'regionC': region.peakCenter.id,
+                            'regionL': region.peakLeft.id,
+                            'regionR': region.peakRight.id,
+                            'blueprint': blueprint.id
+                        }) }}">Create {{ blueprint.description }} team</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
 
     {% if builders|length > 0 %}
@@ -64,18 +74,23 @@
 </td>
 <td>
     {% if merchantBlueprints|length > 0 %}
-        <ul>
-            {% for blueprint in merchantBlueprints %}
-                <li>
-                    <a href="{{ path('settlement_team_create', {
-                        'regionC': region.peakCenter.id,
-                        'regionL': region.peakLeft.id,
-                        'regionR': region.peakRight.id,
-                        'blueprint': blueprint.id
-                    }) }}">Create {{ blueprint.description }} team</a>
-                </li>
-            {% endfor %}
-        </ul>
+        {% set modalId = "merchant-modal-for-"~ region.coords %}
+        <a href="#{{ modalId }}" rel="modal:open">Create team</a>
+        <div class="team-modal modal" id="{{ modalId }}">
+            <a href="#" rel="modal:close">Close</a>
+            <ul>
+                {% for blueprint in merchantBlueprints %}
+                    <li>
+                        <a href="{{ path('settlement_team_create', {
+                            'regionC': region.peakCenter.id,
+                            'regionL': region.peakLeft.id,
+                            'regionR': region.peakRight.id,
+                            'blueprint': blueprint.id
+                        }) }}">Create {{ blueprint.description }} team</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
 
     {% if merchants|length > 0 %}
@@ -92,18 +107,23 @@
 </td>
 <td>
     {% if scientistBlueprints|length > 0 %}
-        <ul>
-            {% for blueprint in scientistBlueprints %}
-                <li>
-                    <a href="{{ path('settlement_team_create', {
-                        'regionC': region.peakCenter.id,
-                        'regionL': region.peakLeft.id,
-                        'regionR': region.peakRight.id,
-                        'blueprint': blueprint.id
-                    }) }}">Create {{ blueprint.description }} team</a>
-                </li>
-            {% endfor %}
-        </ul>
+        {% set modalId = "scientist-modal-for-"~ region.coords %}
+        <a href="#{{ modalId }}" rel="modal:open">Create team</a>
+        <div class="team-modal modal" id="{{ modalId }}">
+            <a href="#" rel="modal:close">Close</a>
+            <ul>
+                {% for blueprint in scientistBlueprints %}
+                    <li>
+                        <a href="{{ path('settlement_team_create', {
+                            'regionC': region.peakCenter.id,
+                            'regionL': region.peakLeft.id,
+                            'regionR': region.peakRight.id,
+                            'blueprint': blueprint.id
+                        }) }}">Create {{ blueprint.description }} team</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
 
     {% if scientists|length > 0 %}
@@ -120,18 +140,23 @@
 </td>
 <td>
     {% if workerBlueprints|length > 0 %}
-        <ul>
-            {% for blueprint in workerBlueprints %}
-                <li>
-                    <a href="{{ path('settlement_team_create', {
-                        'regionC': region.peakCenter.id,
-                        'regionL': region.peakLeft.id,
-                        'regionR': region.peakRight.id,
-                        'blueprint': blueprint.id
-                    }) }}">Create {{ blueprint.description }} team</a>
-                </li>
-            {% endfor %}
-        </ul>
+        {% set modalId = "worker-modal-for-"~ region.coords %}
+        <a href="#{{ modalId }}" rel="modal:open">Create team</a>
+        <div class="team-modal modal" id="{{ modalId }}">
+            <a href="#" rel="modal:close">Close</a>
+            <ul>
+                {% for blueprint in workerBlueprints %}
+                    <li>
+                        <a href="{{ path('settlement_team_create', {
+                            'regionC': region.peakCenter.id,
+                            'regionL': region.peakLeft.id,
+                            'regionR': region.peakRight.id,
+                            'blueprint': blueprint.id
+                        }) }}">Create {{ blueprint.description }} team</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
 
     {% if workers|length > 0 %}
@@ -148,18 +173,23 @@
 </td>
 <td>
     {% if farmerBlueprints|length > 0 %}
-        <ul>
-            {% for blueprint in farmerBlueprints %}
-                <li>
-                    <a href="{{ path('settlement_team_create', {
-                        'regionC': region.peakCenter.id,
-                        'regionL': region.peakLeft.id,
-                        'regionR': region.peakRight.id,
-                        'blueprint': blueprint.id
-                    }) }}">Create {{ blueprint.description }} team</a>
-                </li>
-            {% endfor %}
-        </ul>
+        {% set modalId = "farmer-modal-for-"~ region.coords %}
+        <a href="#{{ modalId }}" rel="modal:open">Create team</a>
+        <div class="team-modal modal" id="{{ modalId }}">
+            <a href="#" rel="modal:close">Close</a>
+            <ul>
+                {% for blueprint in farmerBlueprints %}
+                    <li>
+                        <a href="{{ path('settlement_team_create', {
+                            'regionC': region.peakCenter.id,
+                            'regionL': region.peakLeft.id,
+                            'regionR': region.peakRight.id,
+                            'blueprint': blueprint.id
+                        }) }}">Create {{ blueprint.description }} team</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
 
     {% if farmers|length > 0 %}
@@ -176,18 +206,23 @@
 </td>
 <td>
     {% if armyBlueprints|length > 0 %}
-        <ul>
-            {% for blueprint in armyBlueprints %}
-                <li>
-                    <a href="{{ path('settlement_team_create', {
-                        'regionC': region.peakCenter.id,
-                        'regionL': region.peakLeft.id,
-                        'regionR': region.peakRight.id,
-                        'blueprint': blueprint.id
-                    }) }}">Create {{ blueprint.description }} team</a>
-                </li>
-            {% endfor %}
-        </ul>
+        {% set modalId = "army-modal-for-"~ region.coords %}
+        <a href="#{{ modalId }}" rel="modal:open">Create team</a>
+        <div class="team-modal modal" id="{{ modalId }}">
+            <a href="#" rel="modal:close">Close</a>
+            <ul>
+                {% for blueprint in armyBlueprints %}
+                    <li>
+                        <a href="{{ path('settlement_team_create', {
+                            'regionC': region.peakCenter.id,
+                            'regionL': region.peakLeft.id,
+                            'regionR': region.peakRight.id,
+                            'blueprint': blueprint.id
+                        }) }}">Create {{ blueprint.description }} team</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
 
     {% if army|length > 0 %}

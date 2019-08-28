@@ -14,11 +14,16 @@
                     <small>Used area: {{ region.usedArea|area }}/{{ region.area|area }} ({{ 100*region.usedArea/ region.area}} %)</small><br>
 
                     {% if region.project is null %}
-                        {{ render(controller('PlanetBundle:Region:availableBuildings', {
-                            'regionC': region.peakCenter.id,
-                            'regionL': region.peakLeft.id,
-                            'regionR': region.peakRight.id
-                        })) }}
+                        {% set modalId = "buildings-modal-for-"~ region.coords %}
+                        <a href="#{{ modalId }}" rel="modal:open">Build</a>
+                        <div class="buildings-modal modal" id="{{ modalId }}">
+                            <a href="#" rel="modal:close">Close</a>
+                            {{ render(controller('PlanetBundle:Region:availableBuildings', {
+                                'regionC': region.peakCenter.id,
+                                'regionL': region.peakLeft.id,
+                                'regionR': region.peakRight.id
+                            })) }}
+                        </div>
                     {% else %}
                         Project {{ region.project.buildingBlueprint.description }}...
                         <a href="{{ path('settlement_fast_build', {
