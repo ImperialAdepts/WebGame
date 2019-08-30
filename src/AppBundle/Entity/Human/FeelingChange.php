@@ -73,6 +73,14 @@ class FeelingChange
     private $human;
 
     /**
+     * @var Event
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Human\Event")
+     * @ORM\JoinColumn(name="event_cause_id", referencedColumnName="id", nullable=true)
+     */
+    private $causeEvent;
+
+    /**
      * @var Feelings
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Human\Feelings", inversedBy="history")
@@ -213,6 +221,22 @@ class FeelingChange
     public function setHuman(Human $human)
     {
         $this->human = $human;
+    }
+
+    /**
+     * @return Event
+     */
+    public function getCauseEvent()
+    {
+        return $this->causeEvent;
+    }
+
+    /**
+     * @param Event $causeEvent
+     */
+    public function setCauseEvent($causeEvent)
+    {
+        $this->causeEvent = $causeEvent;
     }
 
     /**

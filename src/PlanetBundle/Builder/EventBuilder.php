@@ -1,17 +1,11 @@
 <?php
 namespace PlanetBundle\Builder;
 
-use AppBundle\Entity\Blueprint;
+use AppBundle\Builder\FeelingsChangeFactory;
 use AppBundle\Entity\Human;
 use AppBundle\Entity\Human\Event;
-use AppBundle\Entity\Job\ProduceJob;
-use AppBundle\Entity\SolarSystem\Planet;
-use AppBundle\LoggedUserSettings;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\ORMException;
-use PlanetBundle\Entity\Job\Job;
 
 class EventBuilder
 {
@@ -21,16 +15,22 @@ class EventBuilder
     /** @var DynamicPlanetConnector */
     protected $dynamicPlanetConnector;
 
+    /** @var FeelingsChangeFactory */
+    private $feelingsChangeFactory;
+
     /**
-     * MaintainerEventBuilder constructor.
+     * EventBuilder constructor.
      * @param ObjectManager $generalEntityManager
-     * @param DynamicPlanetConnector $planetConnector
+     * @param DynamicPlanetConnector $dynamicPlanetConnector
+     * @param FeelingsChangeFactory $feelingsChangeFactory
      */
-    public function __construct(ObjectManager $generalEntityManager, DynamicPlanetConnector $planetConnector)
+    public function __construct(ObjectManager $generalEntityManager, DynamicPlanetConnector $dynamicPlanetConnector, FeelingsChangeFactory $feelingsChangeFactory)
     {
         $this->generalEntityManager = $generalEntityManager;
-        $this->dynamicPlanetConnector = $planetConnector;
+        $this->dynamicPlanetConnector = $dynamicPlanetConnector;
+        $this->feelingsChangeFactory = $feelingsChangeFactory;
     }
+
 
     /**
      * @param $eventNme
@@ -42,8 +42,8 @@ class EventBuilder
     public function create($eventNme, Human $supervisor, array $eventData = []) {
         $event = new Event();
         $event->setDescription($eventNme);
-        $event->setPlanet($this->dynamicPlanetConnector->getPlanet());
-        $event->setPlanetPhase($this->dynamicPlanetConnector->getPlanet()->getLastPhaseUpdate());
+        $event->setPlanet($supervisor->getPlanet());
+        $event->setPlanetPhase($supervisor->getPlanet()->getLastPhaseUpdate());
         $event->setTime(time());
         $event->setDescriptionData($eventData);
         $event->setHuman($supervisor);

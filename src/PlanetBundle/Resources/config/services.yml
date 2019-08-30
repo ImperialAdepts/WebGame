@@ -13,6 +13,7 @@ services:
     arguments:
       - '@doctrine.orm.entity_manager'
       - '@dynamic_planet_connector'
+      - '@builder_feeling_change'
 
   human_builder:
     class: PlanetBundle\Builder\HumanBuilder

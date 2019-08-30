@@ -72,8 +72,9 @@ class HumanController extends Controller
         if ($this->get('logged_user_settings')->getHuman() === null) {
             return $this->redirectToRoute('gamer_human_selection');
         }
-        /** @var Entity\Human $father */
+        /** @var Entity\Human $human */
         $human = $this->get('logged_user_settings')->getHuman();
+        $this->container->get('dynamic_planet_connector')->setPlanet($human->getPlanet(), true);
 
         $this->get('maintainer_life')->kill($human);
 

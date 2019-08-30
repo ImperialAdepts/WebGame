@@ -228,8 +228,9 @@ class Feelings
      * @param $feelingChange
      * @param $description
      * @param array $descriptionData
+     * @param Event|null $cause
      */
-    public function change($feelingChange, $description, array $descriptionData = []) {
+    public function change($feelingChange, $description, array $descriptionData = [], Event $cause = null) {
         if ($feelingChange >= 0) {
             $this->setAllLifeHappiness($this->getAllLifeHappiness() + $feelingChange);
             $this->setLastPeriodHappiness($this->getLastPeriodHappiness() + $feelingChange);
@@ -249,6 +250,9 @@ class Feelings
         $change->setDescription($description);
         if (!empty($descriptionData)) {
             $change->setDescriptionData($descriptionData);
+        }
+        if ($cause != null) {
+            $change->setCauseEvent($cause);
         }
         $change->setFeelings($this);
         $this->history->add($change);
