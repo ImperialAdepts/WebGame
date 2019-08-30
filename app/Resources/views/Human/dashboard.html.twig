@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block pagedescription %}
-	Person journal, currently in <a href="{{ path('settlement_dashboard', {'settlement': planetHuman.currentPeakPosition.settlement.id}) }}">Settlement #{{ planetHuman.currentPeakPosition.settlement.id }}</a>
+	Person journal, currently in <a href="{{ path('settlement_dashboard', {'settlement': planetHuman.currentPeakPosition.settlement.id}) }}">{{ planetHuman.currentPeakPosition.settlement.name }}</a>
 {% endblock %}
 
 {% block body %}
@@ -31,12 +31,15 @@
 	{% endif %}
 
 	{% for title in human.titles %}
-		<h4>{{ title.name }}</h4>
-		{% if attribute(title, 'settlementId') is defined %}
-			<a href="{{ path('settlement_dashboard', {'settlement': title.settlementId }) }}">Go to settlement</a>
-		{% endif %}
-		<strong>Succession line:</strong>
-		<ol>
+		{% set modalId = "title-modal-for-"~title.id %}
+		<h4>{{ title.name }},
+			<a href="#{{ modalId }}" rel="modal:open"><small>succession line</small></a>
+			{% if attribute(title, 'settlementId') is defined %}
+				, <small><a href="{{ path('settlement_dashboard', {'settlement': title.settlementId }) }}">go to settlement</a></small>
+			{% endif %}
+		</h4>
+
+		<ol class="succession-modal modal" id="{{ modalId }}">
 			{% for heir in title.lineOfSuccession %}
 				<li>{{ heir.name }}</li>
 			{% endfor %}
