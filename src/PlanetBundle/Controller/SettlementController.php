@@ -6,9 +6,12 @@ use AppBundle\Builder\PlanetBuilder;
 use AppBundle\Descriptor\Adapters;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\UseCaseEnum;
+use AppBundle\Entity\Human;
 use AppBundle\Entity\Human\Event;
 use AppBundle\Entity\Human\EventDataTypeEnum;
 use AppBundle\Entity\Human\EventTypeEnum;
+use AppBundle\Entity\Human\SettlementTitle;
+use AppBundle\PlanetConnection\DynamicPlanetConnector;
 use PlanetBundle\Entity;
 use AppBundle\Repository\JobRepository;
 use PlanetBundle\Repository\RegionRepository;
@@ -274,6 +277,61 @@ class SettlementController extends BasePlanetController
         $this->createEvent(EventTypeEnum::SETTLEMENT_ADMINISTRATIVE_CHANGE, [
             EventDataTypeEnum::BLUEPRINT => $blueprint,
         ]);
+
+        return $this->redirectToRoute('settlement_dashboard', [
+            'settlement' => $settlement->getId(),
+        ]);
+    }
+
+    /**
+     * @Route("/cut-to-half/{settlement}", name="settlement_cut")
+     */
+    public function cutOutHalfAction(Entity\Settlement $settlement) {
+        $remainsRegions = [];
+        $transferRegions = [];
+        $count = count($settlement->getRegions());
+        foreach ($settlement->getRegions() as $region) {
+            if ($count-- < count($settlement->getRegions())) {
+                $transferRegions[] = $region;
+            } else {
+                $remainsRegions[] = $region;
+            }
+        }
+        $settlement->setRegions($remainsRegions);
+
+        $newHalf = new Entity\Settlement();
+        $newHalf->setRegions($transferRegions);
+        /** @var Entity\Region $firstRegion */
+        $firstRegion = array_pop($transferRegions);
+        // FIXME: zkontrolovat jestli se vrchol uz nepouziva jako nejake administrativni centrum
+        $newHalf->setAdministrativeCenter($firstRegion->getPeakCenter());
+        $newHalf->setOwner($settlement->getOwner());
+        $newHalf->setManager($settlement->getOwner());
+        $newHalf->setType($settlement->getType());
+
+        foreach ($transferRegions as $transferRegion) {
+            $transferRegion->setSettlement($newHalf);
+            $this->get('doctrine.orm.planet_entity_manager')->persist($transferRegion);
+        }
+
+        $this->get('doctrine.orm.planet_entity_manager')->persist($settlement);
+        $this->get('doctrine.orm.planet_entity_manager')->persist($newHalf);
+        $this->get('doctrine.orm.planet_entity_manager')->flush();
+
+        /** @var Human $globalHuman */
+        $globalHuman = $this->get('doctrine.orm.entity_manager')->find(Human::class, $settlement->getOwner()->getGlobalHumanId());
+        $protectorTitle = new SettlementTitle();
+        $protectorTitle->setName('Protector of '.$newHalf->getName());
+        $protectorTitle->setHumanHolder($globalHuman);
+        $protectorTitle->setTransferSettings([
+            'inheritance' => 'primogeniture',
+        ]);
+        $protectorTitle->setSettlementId($newHalf->getId());
+        $protectorTitle->setSettlementPlanet(DynamicPlanetConnector::$PLANET);
+        $globalHuman->addTitle($protectorTitle);
+        $this->get('doctrine.orm.entity_manager')->persist($protectorTitle);
+        $this->get('doctrine.orm.entity_manager')->persist($globalHuman);
+        $this->get('doctrine.orm.entity_manager')->flush();
 
         return $this->redirectToRoute('settlement_dashboard', [
             'settlement' => $settlement->getId(),
