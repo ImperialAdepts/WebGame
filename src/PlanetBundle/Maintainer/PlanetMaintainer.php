@@ -103,7 +103,8 @@ class PlanetMaintainer
         $this->clear();
         $this->switchPhases();
         $this->maintainWorkhours();
-        $this->doBirths();
+        $this->doPopulationBirths();
+        $this->doNPCBirths();
         $this->doStartPhaseJobs();
     }
 
@@ -275,7 +276,7 @@ class PlanetMaintainer
         $this->generalEntityManager->persist($this->getPlanet());
     }
 
-    private function doBirths()
+    private function doPopulationBirths()
     {
         $settlements = $this->settlementRepository->getAll();
 
@@ -309,6 +310,43 @@ class PlanetMaintainer
                 Human\EventDataTypeEnum::REGIONS => $regions,
                 Human\EventDataTypeEnum::PEAKS => $peaks,
             ]);
+        }
+    }
+
+    private function doNPCBirths()
+    {
+        $settlements = $this->settlementRepository->getAll();
+
+        /** @var PlanetEntity\Settlement $settlement */
+        foreach ($settlements as $settlement) {
+            $freeNPCCapacity = 3;
+            /** @var PlanetEntity\Region $region */
+            foreach ($settlement->getRegions() as $region) {
+                $freeNPCCapacity += $region->getNPCCapacity();
+            }
+
+            $aliveHumans = [];
+            /** @var PlanetEntity\Peak $peak */
+            foreach ($settlement->getPeaks() as $peak) {
+                $freeNPCCapacity += $peak->getNPCCapacity();
+                foreach ($peak->getHumans() as $human) {
+                    /** @var Human $globalHuman */
+                    $globalHuman = $this->generalHumanRepository->find($human->getGlobalHumanId());
+                    if ($globalHuman->isAlive()) {
+                        $aliveHumans[] = $globalHuman;
+                        $freeNPCCapacity--;
+                    }
+                }
+            }
+
+            if ($freeNPCCapacity > 0 && count($aliveHumans) > 0) {
+                $probability = 100* $freeNPCCapacity / count($aliveHumans);
+                foreach ($aliveHumans as $human) {
+                    if (random_int(0, 100) < $probability) {
+                        $this->lifeMaintainer->makeOffspring($human);
+                    }
+                }
+            }
         }
     }
 

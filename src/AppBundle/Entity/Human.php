@@ -381,6 +381,10 @@ class Human
         $this->deathTime = $deathTime;
     }
 
+    public function isAlive() {
+        return $this->getDeathTime() === null;
+    }
+
     /**
      * @return int
      */

@@ -1,6 +1,7 @@
 <?php
 
 namespace PlanetBundle\Entity;
+use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -58,6 +59,13 @@ class Peak implements ResourcefullInterface
      * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\PeakResourceDeposit", mappedBy="peak", cascade={"all"})
      */
     private $resourceDeposits;
+
+    /**
+     * @var Human[]
+     *
+     * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\Human", mappedBy="currentPeakPosition", cascade={"all"})
+     */
+    private $humans;
 
     /**
      * Peak constructor.
@@ -156,6 +164,35 @@ class Peak implements ResourcefullInterface
     public function getResourceDeposits()
     {
         return $this->resourceDeposits;
+    }
+
+    /**
+     * @return Human[]
+     */
+    public function getHumans()
+    {
+        return $this->humans;
+    }
+
+    /**
+     * @param Human[] $humans
+     */
+    public function setHumans($humans)
+    {
+        $this->humans = $humans;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPeopleCount() {
+        $deposit = $this->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
+        if ($deposit == null) return 0;
+        return $deposit->getAmount();
+    }
+
+    public function getNPCCapacity() {
+        return floor(sqrt($this->getPeopleCount()/100));
     }
 
     /**

@@ -154,6 +154,10 @@ class Region implements ResourcefullInterface
 		return $this;
 	}
 
+	public function getNPCCapacity() {
+	    return floor(sqrt($this->getPeopleCount()/100));
+    }
+
 	/**
 	 * Get settlement
 	 *

@@ -26,7 +26,7 @@ class CronController extends Controller
      */
     public function newPhaseAction(Entity\SolarSystem\Planet $planet, PlanetEntity\Settlement $settlementToRedirect)
     {
-        $this->get('dynamic_planet_connector')->setPlanet($planet);
+        $this->get('dynamic_planet_connector')->setPlanet($planet, true);
 
         $this->get('maintainer_planet')->goToNewPlanetPhase();
         $this->getDoctrine()->getManager()->flush();
