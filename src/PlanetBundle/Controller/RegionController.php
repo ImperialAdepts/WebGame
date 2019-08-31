@@ -6,8 +6,10 @@ use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity\Human\EventDataTypeEnum;
 use AppBundle\Entity\Human\EventTypeEnum;
 use PlanetBundle\Entity;
+use PlanetBundle\Form\BuildersFormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Tracy\Debugger;
 
 /**
  * @Route(path="region")
@@ -83,25 +85,61 @@ class RegionController extends BasePlanetController
         $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
         $blueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LAND_BUILDING);
 
-        $blueprintAnalyzes = [];
-        foreach ($blueprints as $blueprint) {
-            $builder = $this->get('builder_factory')->createRegionBuilder($blueprint);
-            $builder->setResourceHolder($region);
-            $builder->setSupervisor($this->getHuman());
-            $builder->setAllRegionTeams();
-            $blueprintAnalyzes[$blueprint->getId()]['valid'] = $builder->isValidBuildable();
-            $blueprintAnalyzes[$blueprint->getId()]['count'] = $builder->getPosibilityCount();
-            $blueprintAnalyzes[$blueprint->getId()]['validationErrors'] = [];
-            if (!$builder->isValidBuildable()) {
-                $blueprintAnalyzes[$blueprint->getId()]['validationErrors'] = $builder->getValidationErrors();
+        return $this->render('Region/available-buildings-fragment.html.twig', [
+            'builderForm' => $this->createForm(BuildersFormType::class, [], [
+                'blueprints' => $blueprints,
+                'action' => $this->generateUrl('region_buildform_handler', [
+                    'regionC' => $regionC->getId(),
+                    'regionL' => $regionL->getId(),
+                    'regionR' => $regionR->getId(),
+                ]),
+            ])->createView(),
+            'region' => $region,
+            'human' => $this->getHuman(),
+        ]);
+    }
+
+    /**
+     * @Route("/builder-form-handler/{regionC}_{regionL}_{regionR}", name="region_buildform_handler")
+     */
+    public function handleBuilderFormAction(Entity\Peak $regionC, Entity\Peak $regionL, Entity\Peak $regionR, Request $request)
+    {
+        /** @var Entity\Region $region */
+        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $blueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LAND_BUILDING);
+
+        $form = $this->createForm(BuildersFormType::class, $request->get('builders_form'), [
+            'blueprints' => $blueprints,
+            'action' => $this->generateUrl('region_buildform_handler', [
+                'regionC' => $regionC->getId(),
+                'regionL' => $regionL->getId(),
+                'regionR' => $regionR->getId(),
+            ]),
+        ]);
+
+        foreach ($request->get('builders_form') as $blueprintId => $options) {
+            if (isset($options['count']) && $count = $options['count'] > 0) {
+                $blueprint = $this->getDoctrine()->getManager('planet')->find(Entity\Blueprint::class, $blueprintId);
+
+                // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
+                $this->getDoctrine()->getManager('planet')->transactional(function ($em) use ($blueprint, $region, $count) {
+                    $builder = $this->get('builder_factory')->createRegionBuilder($blueprint);
+                    $builder->setResourceHolder($region);
+                    $builder->setSupervisor($this->getHuman());
+                    $builder->setAllRegionTeams();
+                    $builder->setCount($count);
+                    $builder->build();
+                });
+
+                $this->createEvent(EventTypeEnum::SETTLEMENT_BUILD, [
+                    EventDataTypeEnum::BLUEPRINT => $blueprint,
+                    EventDataTypeEnum::REGION => $region,
+                ]);
             }
         }
 
-        return $this->render('Region/available-buildings-fragment.html.twig', [
-            'blueprints' => $blueprints,
-            'blueprintAnalyzes' => $blueprintAnalyzes,
-            'region' => $region,
-            'human' => $this->getHuman(),
+        return $this->redirectToRoute('settlement_dashboard', [
+            'settlement' => $region->getSettlement()->getId(),
         ]);
     }
 
