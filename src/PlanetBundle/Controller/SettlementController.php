@@ -14,8 +14,14 @@ use AppBundle\Entity\Human\SettlementTitle;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
 use PlanetBundle\Entity;
 use AppBundle\Repository\JobRepository;
+use PlanetBundle\Entity\Peak;
+use PlanetBundle\Entity\Region;
+use PlanetBundle\Form\PeakSelectorType;
+use PlanetBundle\Form\RegionSelectorType;
 use PlanetBundle\Repository\RegionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Tracy\Debugger;
@@ -39,10 +45,50 @@ class SettlementController extends BasePlanetController
             $blueprintsByRegions[$region->getCoords()] = $builder->getAvailableBlueprints($region, $settlement->getManager());
         }
 
+        $peaks = [];
+        foreach ($settlement->getRegions() as $region) {
+            $peaks[$region->getPeakLeft()->getId()] = $region->getPeakLeft();
+            $peaks[$region->getPeakCenter()->getId()] = $region->getPeakCenter();
+            $peaks[$region->getPeakRight()->getId()] = $region->getPeakRight();
+        }
+        foreach ($settlement->getPeaks() as $peak) {
+            unset($peaks[$peak->getId()]);
+        }
+
+        $cutOffForm = $this->createFormBuilder(null, [
+            'action' => $this->generateUrl('settlement_cut', [
+                'settlement' => $settlement->getId(),
+            ]),
+        ])
+            ->add('regionsToMigrate', ChoiceType::class, [
+                'multiple' => true,
+                'choices' => $settlement->getRegions(),
+                'choice_label' => function (Region $region) {
+                    return $region->getName();
+                },
+                'choice_value' => function (Region $region) {
+                    return $region->getCoords();
+                },
+                'required' => false,
+            ])
+            ->add('newAdministrativeCenter', ChoiceType::class, [
+                'multiple' => false,
+                'choices' => $peaks,
+                'choices_as_values' => true,
+                'choice_label' => function (Peak $peak) {
+                    return $peak->getId();
+                },
+                'required' => true,
+            ])
+            ->add('cutoff', SubmitType::class)
+            ;
+
+
         return $this->render('Settlement/dashboard.html.twig', [
             'settlement' => $settlement,
             'buildingBlueprints' => $blueprintsByRegions,
             'human' => $settlement->getManager(),
+            'cutOffForm' => $cutOffForm->getForm()->createView(),
             'foodConsumption' => $this->get('maintainer_food')->getFoodConsumptionEstimation($settlement),
             'populationChanges' => $this->get('maintainer_population')->getBirths($settlement),
         ]);
@@ -286,12 +332,15 @@ class SettlementController extends BasePlanetController
     /**
      * @Route("/cut-to-half/{settlement}", name="settlement_cut")
      */
-    public function cutOutHalfAction(Entity\Settlement $settlement) {
+    public function cutOutHalfAction(Entity\Settlement $settlement, Request $request) {
         $remainsRegions = [];
         $transferRegions = [];
         $count = count($settlement->getRegions());
+        $formData = $request->get('form');
+        $regionCoords = $formData['regionsToMigrate'];
+
         foreach ($settlement->getRegions() as $region) {
-            if ($count-- < count($settlement->getRegions())) {
+            if (in_array($region->getCoords(), $regionCoords)) {
                 $transferRegions[] = $region;
             } else {
                 $remainsRegions[] = $region;

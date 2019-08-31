@@ -45,9 +45,7 @@
         'settlement': settlement.id,
     })) }}
 
-    <a href="{{ path('settlement_cut', {
-        'settlement': settlement.id
-    }) }}">Cut to halfs</a>
+    {{ form(cutOffForm) }}
     {{ render(controller('PlanetBundle:Settlement:connectableRegions', {
         'settlement': settlement.id
     })) }}
