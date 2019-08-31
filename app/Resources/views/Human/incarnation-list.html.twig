@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block pagetitle %}Humans to incarnate for {{ soul.name }}{% endblock %}
+{% block pagedescription %}Choose your new human{% endblock %}
 {% block body %}
 	<div id="wrapper">
-		<h1>Humans to incarnate for {{ soul.name }}</h1>
 		<ul>
 			{% for human in humans %}
 				<li>

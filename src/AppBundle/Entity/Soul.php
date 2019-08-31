@@ -44,6 +44,7 @@ class Soul
     /**
      * @var Human[]
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Human", mappedBy="soul", cascade={"all"})
+     * @ORM\OrderBy({"bornPhase"="DESC"})
      */
     private $incarnations;
 

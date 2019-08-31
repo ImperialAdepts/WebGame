@@ -86,9 +86,10 @@
 					<ul class="people">
 					{% for human in soul.incarnations %}
 						<li class="human">
-							<strong>{{ human.name }}</strong> <small>living on {{ human.planet.name }}</small>
-							{% if human.deathTime == null %}
-								<a href="{{ path('gamer_play_as_human', {'human': human.id }) }}">Play as {{ human.name }}</a>
+							{% if human.isAlive %}
+								<strong><a href="{{ path('gamer_play_as_human', {'human': human.id }) }}">{{ human.name }}</a></strong> <small>living on {{ human.planet.name }}</small>
+							{% else %}
+								<strong>{{ human.name }}</strong> <small>died on {{ human.planet.name }} at {{ human.deathTime|date('d.m.Y H:i') }}</small>
 							{% endif %}
 						</li>
 					{% endfor %}

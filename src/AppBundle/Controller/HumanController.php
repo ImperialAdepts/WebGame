@@ -155,9 +155,28 @@ class HumanController extends Controller
         $this->getDoctrine()->getManager()->persist($human);
         $this->getDoctrine()->getManager()->flush();
 
-        $this->createEvent(EventTypeEnum::SOUL_HUMAN_CONNECTION, [
+        $this->createEvent(EventTypeEnum::SOUL_HUMAN_CONNECTION, $human->getPlanet(), [
         ]);
 
         return $this->forward('AppBundle:Gamer:dashboard');
+    }
+
+    /**
+     * @param $eventNme
+     * @param array $eventData
+     * @return Entity\Human\Event
+     */
+    public function createEvent($eventNme, Entity\SolarSystem\Planet $planet, array $eventData = []) {
+        $event = new Entity\Human\Event();
+        $event->setDescription($eventNme);
+        $event->setPlanet($planet);
+        $event->setPlanetPhase($planet->getLastPhaseUpdate());
+        $event->setTime(time());
+        $event->setDescriptionData($eventData);
+        $event->setHuman($this->globalHuman);
+
+        $this->getDoctrine()->getManager()->persist($event);
+        $this->getDoctrine()->getManager()->flush();
+        return $event;
     }
 }
