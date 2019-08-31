@@ -10,7 +10,7 @@ class HumanRepository extends \Doctrine\ORM\EntityRepository
 	{
 		return $this->getEntityManager()
 			->createQuery(
-				'SELECT h FROM AppBundle:Human h WHERE h.soul IS NULL ORDER BY h.name ASC'
+				'SELECT h FROM AppBundle:Human h WHERE h.soul IS NULL AND h.deathTime IS NULL ORDER BY h.name ASC'
 			)
 			->getResult();
 	}

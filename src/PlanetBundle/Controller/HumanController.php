@@ -15,41 +15,6 @@ use AppBundle\Entity as GlobalEntity;
  */
 class HumanController extends BasePlanetController
 {
-    /**
-	 * @Route("/incarnation-list/{soul}", name="human_incarnation_list")
-	 */
-	public function incarnationListAction(GlobalEntity\Soul $soul, Request $request)
-	{
-		$humans = $this->getDoctrine()
-			->getRepository(GlobalEntity\Human::class)
-			->findByAvailableChildren();
-		return $this->render('Human/incarnation-list.html.twig', [
-			'soul' => $soul,
-			'humans' => $humans,
-		]);
-	}
-
-	/**
-	 * @Route("/connect/{soul}/{human}", name="human_connect")
-	 */
-	public function connectAction(GlobalEntity\Soul $soul, GlobalEntity\Human $human, Request $request)
-	{
-		// TODO: zkontrolovat jestli to zkousi spravny gamer
-		if ($human->getSoul() != null) {
-			throw new \InvalidArgumentException("This soul and human can't be connected, not empty");
-		}
-		$soul->getIncarnations()->add($human);
-		$human->setSoul($soul);
-		$this->getDoctrine()->getManager()->persist($soul);
-		$this->getDoctrine()->getManager()->persist($human);
-		$this->getDoctrine()->getManager()->flush();
-
-        $this->createEvent(EventTypeEnum::SOUL_HUMAN_CONNECTION, [
-        ]);
-
-		return $this->forward('AppBundle:Gamer:dashboard');
-	}
-
 	/**
 	 * @Route("/", name="human_dashboard")
 	 */
