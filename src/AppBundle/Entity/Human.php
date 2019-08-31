@@ -156,6 +156,8 @@ class Human
     public function __construct($id = null)
     {
         $this->id = $id;
+        $this->childrenByFather = new ArrayCollection();
+        $this->childrenByMother = new ArrayCollection();
         $this->preferences = new ArrayCollection();
         $this->knowledge = new ArrayCollection();
         $this->titles = new ArrayCollection();
