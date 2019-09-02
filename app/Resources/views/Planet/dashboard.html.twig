@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}{{ planet.name }}{% endblock %}
+{% block pagedescription %}Dashboard{% endblock %}
+{% block body %}
+	Gravity: {{ planet.gravity }}g<br/>
+	Phase {{ planet.lastPhaseUpdate + 1 }}<br/>
+	{% if planet.orbitingCenter is not null %}
+		Orbiting around <a href="{{ path('planet_dashboard', { 'planet': planet.orbitingCenter.id }) }}">{{ planet.orbitingCenter.name }}</a> in distance {{ planet.orbitDiameter|distance }}<br>
+	{% endif %}
+	Phase ends {{ (endphase+2*3600)|date('d. m. Y H:i') }}<br/>
+	Phase length {{ phaseLength }}h<br/>
+	Planet diameter {{ planet.diameter|distance }}<br/>
+	Planet weight {{ planet.weight|weight }}<br/>
+
+	People on planet: {{ peopleCount }}<br/>
+
+	{% if planet.satelites|length > 0 %}
+		<h2>Satelites</h2>
+		<ul>
+			{% for satelite in planet.satelites %}
+				<li><a href="{{ path('planet_dashboard', { 'planet': satelite.id }) }}">{{ satelite.name }}</a>, distance {{ satelite.orbitDiameter|distance }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+{% endblock %}

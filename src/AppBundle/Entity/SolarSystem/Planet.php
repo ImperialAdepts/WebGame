@@ -44,6 +44,12 @@ class Planet
 	private $orbitingCenter;
 
     /**
+     * @var Planet[]
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\SolarSystem\Planet", mappedBy="orbitingCenter")
+     */
+	private $satelites;
+
+    /**
      * @var float in millions of kilometers
      *
      * @ORM\Column(name="orbit_diameter", type="float", nullable=true)
@@ -192,6 +198,27 @@ class Planet
     public function setOrbitingCenter($orbitingCenter)
     {
         $this->orbitingCenter = $orbitingCenter;
+    }
+
+    /**
+     * @return Planet[]
+     */
+    public function getSatelites()
+    {
+        return $this->satelites;
+    }
+
+    /**
+     * @param Planet[] $satelites
+     */
+    public function setSatelites($satelites)
+    {
+        $this->satelites = $satelites;
+    }
+
+    public function addSatelite(Planet $satelite)
+    {
+        $this->satelites[] = $satelite;
     }
 
     /**
