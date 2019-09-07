@@ -8,16 +8,16 @@
 					<strong>[{{ buildingBlueprint.id }}]</strong>
 					{% if blueprintAnalyzes[buildingBlueprint.id].count > 0 %}
 					<a href="{{ path('region_build_settlement', {
-						'regionC': region.peakCenter.id,
-						'regionL': region.peakLeft.id,
-						'regionR': region.peakRight.id,
+						'peakC': region.peakCenter.id,
+						'peakL': region.peakLeft.id,
+						'peakR': region.peakRight.id,
 						'blueprint': buildingBlueprint.id
 					}) }}">
 						Build {{ buildingBlueprint.description }} ASAP</a>
 					<a href="{{ path('region_build_settlement', {
-						'regionC': region.peakCenter.id,
-						'regionL': region.peakLeft.id,
-						'regionR': region.peakRight.id,
+						'peakC': region.peakCenter.id,
+						'peakL': region.peakLeft.id,
+						'peakR': region.peakRight.id,
 						'blueprint': buildingBlueprint.id,
 						'count': blueprintAnalyzes[buildingBlueprint.id].count
 					}) }}">
@@ -28,9 +28,9 @@
 				</li>
 				<li>
 					<a href="{{ path('region_build_plan_settlement', {
-						'regionC': region.peakCenter.id,
-						'regionL': region.peakLeft.id,
-						'regionR': region.peakRight.id,
+						'peakC': region.peakCenter.id,
+						'peakL': region.peakLeft.id,
+						'peakR': region.peakRight.id,
 						'blueprint': buildingBlueprint.id
 					}) }}">
 						Build {{ buildingBlueprint.description }} later</a>

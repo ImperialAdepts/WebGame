@@ -17,12 +17,12 @@ use Tracy\Debugger;
 class RegionController extends BasePlanetController
 {
 	/**
-	 * @Route("/build-plan/{blueprint}/{regionC}_{regionL}_{regionR}", name="region_build_plan_settlement")
+	 * @Route("/build-plan/{blueprint}/{peakC}_{peakL}_{peakR}", name="region_build_plan_settlement")
 	 */
-	public function buildPlanAction(Entity\Blueprint $blueprint, Entity\Peak $regionC, Entity\Peak $regionL, Entity\Peak $regionR, Request $request)
+	public function buildPlanAction(Entity\Blueprint $blueprint, Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
 	{
         /** @var Entity\Region $region */
-		$region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+		$region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
 
 		// TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
 
@@ -49,12 +49,12 @@ class RegionController extends BasePlanetController
 	}
 
     /**
-     * @Route("/build/{blueprint}/{regionC}_{regionL}_{regionR}/{count}", name="region_build_settlement")
+     * @Route("/build/{blueprint}/{peakC}_{peakL}_{peakR}/{count}", name="region_build_settlement")
      */
-    public function buildAction(Entity\Blueprint $blueprint, Entity\Peak $regionC, Entity\Peak $regionL, Entity\Peak $regionR, $count = 1, Request $request)
+    public function buildAction(Entity\Blueprint $blueprint, Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, $count = 1, Request $request)
     {
         /** @var Entity\Region $region */
-        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
 
         // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
         $this->getDoctrine()->getManager('planet')->transactional(function ($em) use ($blueprint, $region, $count) {
@@ -78,20 +78,20 @@ class RegionController extends BasePlanetController
 
     /**
      * popup
-     * @Route("/available-buildings/{regionC}_{regionL}_{regionR}", name="region_build_availability")
+     * @Route("/available-buildings/{peakC}_{peakL}_{peakR}", name="region_build_availability")
      */
-    public function availableBuildingsAction(Entity\Peak $regionC, Entity\Peak $regionL, Entity\Peak $regionR, Request $request)
+    public function availableBuildingsAction(Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
     {
-        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
         $blueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LAND_BUILDING);
 
         return $this->render('Region/available-buildings-fragment.html.twig', [
             'builderForm' => $this->createForm(BuildersFormType::class, [], [
                 'blueprints' => $blueprints,
                 'action' => $this->generateUrl('region_buildform_handler', [
-                    'regionC' => $regionC->getId(),
-                    'regionL' => $regionL->getId(),
-                    'regionR' => $regionR->getId(),
+                    'peakC' => $peakC->getId(),
+                    'peakL' => $peakL->getId(),
+                    'peakR' => $peakR->getId(),
                 ]),
             ])->createView(),
             'region' => $region,
@@ -100,20 +100,20 @@ class RegionController extends BasePlanetController
     }
 
     /**
-     * @Route("/builder-form-handler/{regionC}_{regionL}_{regionR}", name="region_buildform_handler")
+     * @Route("/builder-form-handler/{peakC}_{peakL}_{peakR}", name="region_buildform_handler")
      */
-    public function handleBuilderFormAction(Entity\Peak $regionC, Entity\Peak $regionL, Entity\Peak $regionR, Request $request)
+    public function handleBuilderFormAction(Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
     {
         /** @var Entity\Region $region */
-        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
         $blueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LAND_BUILDING);
 
         $form = $this->createForm(BuildersFormType::class, $request->get('builders_form'), [
             'blueprints' => $blueprints,
             'action' => $this->generateUrl('region_buildform_handler', [
-                'regionC' => $regionC->getId(),
-                'regionL' => $regionL->getId(),
-                'regionR' => $regionR->getId(),
+                'peakC' => $peakC->getId(),
+                'peakL' => $peakL->getId(),
+                'peakR' => $peakR->getId(),
             ]),
         ]);
 
@@ -144,12 +144,12 @@ class RegionController extends BasePlanetController
     }
 
     /**
-     * @Route("/available-settlements/{regionC}_{regionL}_{regionR}", name="region_settlement_availability")
+     * @Route("/available-settlements/{peakC}_{peakL}_{peakR}", name="region_settlement_availability")
      */
-    public function availableSettlementsAction(Entity\Peak $regionC, Entity\Peak $regionL, Entity\Peak $regionR, Request $request)
+    public function availableSettlementsAction(Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
     {
         $blueprints = $this->getDoctrine()->getManager('planet')->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::ADMINISTRATIVE_DISTRICT);
-        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
 
         // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
 

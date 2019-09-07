@@ -58,46 +58,46 @@ class RegionRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
 	}
 
-	public function findByPeaks(Peak $regionC, Peak $regionL, Peak $regionR) {
+	public function findByPeaks(Peak $peakC, Peak $peakL, Peak $peakR) {
 	    $r = $this->findOneBy([
-            'peakCenter' => $regionC,
-            'peakLeft' => $regionL,
-            'peakRight' => $regionR]);
+            'peakCenter' => $peakC,
+            'peakLeft' => $peakL,
+            'peakRight' => $peakR]);
 	    if ($r) {
 	        return $r;
         }
         $r = $this->findOneBy([
-            'peakCenter' => $regionC,
-            'peakLeft' => $regionR,
-            'peakRight' => $regionL]);
+            'peakCenter' => $peakC,
+            'peakLeft' => $peakR,
+            'peakRight' => $peakL]);
         if ($r) {
             return $r;
         }
         $r = $this->findOneBy([
-            'peakCenter' => $regionL,
-            'peakLeft' => $regionC,
-            'peakRight' => $regionR]);
+            'peakCenter' => $peakL,
+            'peakLeft' => $peakC,
+            'peakRight' => $peakR]);
         if ($r) {
             return $r;
         }
         $r = $this->findOneBy([
-            'peakCenter' => $regionL,
-            'peakLeft' => $regionR,
-            'peakRight' => $regionC]);
+            'peakCenter' => $peakL,
+            'peakLeft' => $peakR,
+            'peakRight' => $peakC]);
         if ($r) {
             return $r;
         }
         $r = $this->findOneBy([
-            'peakCenter' => $regionR,
-            'peakLeft' => $regionC,
-            'peakRight' => $regionL]);
+            'peakCenter' => $peakR,
+            'peakLeft' => $peakC,
+            'peakRight' => $peakL]);
         if ($r) {
             return $r;
         }
         return $this->findOneBy([
-            'peakCenter' => $regionR,
-            'peakLeft' => $regionL,
-            'peakRight' => $regionC]);
+            'peakCenter' => $peakR,
+            'peakLeft' => $peakL,
+            'peakRight' => $peakC]);
     }
 
     public function getPeaksLeftOf(Peak $peak, $count = 1) {

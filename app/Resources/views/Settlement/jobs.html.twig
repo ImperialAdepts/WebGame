@@ -52,9 +52,9 @@
                 Region {{ region.name }}
             </th>
             {{ render(controller('PlanetBundle:Settlement:teams', {
-                'regionC': region.peakCenter.id,
-                'regionL': region.peakLeft.id,
-                'regionR': region.peakRight.id
+                'peakC': region.peakCenter.id,
+                'peakL': region.peakLeft.id,
+                'peakR': region.peakRight.id
             })) }}
         </tr>
         {% endfor %}

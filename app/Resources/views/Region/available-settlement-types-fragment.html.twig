@@ -6,9 +6,9 @@
 				{% for buildingBlueprint in blueprints %}
 					<li>
 						<a href="{{ path('region_build_settlement', {
-							'regionC': region.peakCenter.id,
-							'regionL': region.peakLeft.id,
-							'regionR': region.peakRight.id,
+							'peakC': region.peakCenter.id,
+							'peakL': region.peakLeft.id,
+							'peakR': region.peakRight.id,
 							'blueprint': buildingBlueprint.id
 						}) }}">
 							Settle as {{ buildingBlueprint.description }}</a>

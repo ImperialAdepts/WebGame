@@ -161,12 +161,12 @@ class SettlementController extends BasePlanetController
     }
 
     /**
-     * @Route("/teams/{regionC}_{regionL}_{regionR}", name="settlement_teams")
+     * @Route("/teams/{peakC}_{peakL}_{peakR}", name="settlement_teams")
      */
-    public function teamsAction(Entity\Peak $regionC, Entity\Peak $regionL, Entity\Peak $regionR, Request $request)
+    public function teamsAction(Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
     {
         /** @var Entity\Region $region */
-        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
         $transporterBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_TRANSPORTERS);
         $builderBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_BUILDERS);
         $merchantBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_MERCHANTS);
@@ -203,12 +203,12 @@ class SettlementController extends BasePlanetController
     }
 
     /**
-     * @Route("/create-team/{regionC}_{regionL}_{regionR}/{blueprint}", name="settlement_team_create")
+     * @Route("/create-team/{peakC}_{peakL}_{peakR}/{blueprint}", name="settlement_team_create")
      */
-    public function createTeamAction(Entity\Peak $regionC, Entity\Peak $regionL, Entity\Peak $regionR, Entity\Blueprint $blueprint, Request $request)
+    public function createTeamAction(Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Entity\Blueprint $blueprint, Request $request)
     {
         /** @var Entity\Region $region */
-        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
         $region->addResourceDeposit($blueprint, 1);
         $this->getDoctrine()->getManager('planet')->persist($region);
         $this->getDoctrine()->getManager('planet')->flush();
@@ -266,11 +266,11 @@ class SettlementController extends BasePlanetController
     }
 
     /**
-     * @Route("/connectRegions/{settlement}/{regionC}_{regionL}_{regionR}", name="settlement_connect_regions")
+     * @Route("/connectRegions/{settlement}/{peakC}_{peakL}_{peakR}", name="settlement_connect_regions")
      */
-    public function connectRegionsAction(Entity\Settlement $settlement, Entity\Peak $regionC, Entity\Peak $regionL, Entity\Peak $regionR, Request $request)
+    public function connectRegionsAction(Entity\Settlement $settlement, Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
     {
-        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($regionC, $regionL, $regionR);
+        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
         $region->setSettlement($settlement);
         $this->getDoctrine()->getManager('planet')->persist($region);
         $this->getDoctrine()->getManager('planet')->persist($settlement);
