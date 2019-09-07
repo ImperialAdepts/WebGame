@@ -6,11 +6,13 @@ use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Descriptor\TimeTransformator;
 use AppBundle\Entity\Human;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
+use AppBundle\Repository\Human\AchievementRepository;
 use AppBundle\Repository\HumanRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use PlanetBundle\Builder\EventBuilder;
 use PlanetBundle\Entity as PlanetEntity;
 use PlanetBundle\Repository\SettlementRepository;
+use Tracy\Debugger;
 
 class PlanetMaintainer
 {
@@ -27,6 +29,9 @@ class PlanetMaintainer
 
     /** @var SettlementRepository */
     private $settlementRepository;
+
+    /** @var AchievementRepository */
+    private $achievementRepository;
 
     /** @var EventBuilder */
     private $eventBuilder;
@@ -59,6 +64,7 @@ class PlanetMaintainer
      * @param DynamicPlanetConnector $plannetConnection
      * @param HumanRepository $generalHumanRepository
      * @param SettlementRepository $settlementRepository
+     * @param AchievementRepository $achievementRepository
      * @param EventBuilder $eventBuilder
      * @param PopulationMaintainer $populationMaintainer
      * @param FoodMaintainer $foodMaintainer
@@ -68,13 +74,14 @@ class PlanetMaintainer
      * @param Maintainer $maintainer
      * @param LifeMaintainer $lifeMaintainer
      */
-    public function __construct(ObjectManager $generalEntityManager, ObjectManager $planetEntityManager, DynamicPlanetConnector $plannetConnection, HumanRepository $generalHumanRepository, SettlementRepository $settlementRepository, EventBuilder $eventBuilder, PopulationMaintainer $populationMaintainer, FoodMaintainer $foodMaintainer, PlanetBuilder $planetBuilder, JobMaintainer $jobMaintainer, HumanMaintainer $humanMaintainer, Maintainer $maintainer, LifeMaintainer $lifeMaintainer)
+    public function __construct(ObjectManager $generalEntityManager, ObjectManager $planetEntityManager, DynamicPlanetConnector $plannetConnection, HumanRepository $generalHumanRepository, SettlementRepository $settlementRepository, AchievementRepository $achievementRepository, EventBuilder $eventBuilder, PopulationMaintainer $populationMaintainer, FoodMaintainer $foodMaintainer, PlanetBuilder $planetBuilder, JobMaintainer $jobMaintainer, HumanMaintainer $humanMaintainer, Maintainer $maintainer, LifeMaintainer $lifeMaintainer)
     {
         $this->generalEntityManager = $generalEntityManager;
         $this->planetEntityManager = $planetEntityManager;
         $this->plannetConnection = $plannetConnection;
         $this->generalHumanRepository = $generalHumanRepository;
         $this->settlementRepository = $settlementRepository;
+        $this->achievementRepository = $achievementRepository;
         $this->eventBuilder = $eventBuilder;
         $this->populationMaintainer = $populationMaintainer;
         $this->foodMaintainer = $foodMaintainer;
@@ -100,6 +107,7 @@ class PlanetMaintainer
         $this->doEndPhaseJobs();
         $this->giveHumanRelationshipFeelings();
         $this->killPeopleByAge();
+        $this->countStatisticsAndAchievements();
         $this->clear();
         $this->switchPhases();
         $this->maintainWorkhours();
@@ -382,6 +390,51 @@ class PlanetMaintainer
             } else {
                 $this->planetEntityManager->persist($project);
             }
+        }
+    }
+
+    private function countStatisticsAndAchievements() {
+        // TODO: spocitat statistiky
+        // TODO: rozdat casove achievementy
+        // TODO: odsunout vypocet do vlastniho maintaineru
+
+        /** @var Human $mostHappy */
+        $mostHappy = $this->achievementRepository->getMostHappyHuman();
+        if ($mostHappy) {
+            $happyAch = new Human\Achievement();
+            $happyAch->setType(Human\AchievementTypeEnum::MOST_HAPPY);
+            $happyAch->setTimeType(Human\AchievementTimeTypeEnum::BY_PHASE);
+            $happyAch->setSpaceType(Human\AchievementSpaceTypeEnum::PLANET);
+            $happyAch->setPlanet($this->getPlanet());
+            $happyAch->setPlanetPhase($this->getPlanet()->getLastPhaseUpdate());
+            $happyAch->setHolder($mostHappy);
+            $this->generalEntityManager->persist($happyAch);
+        }
+
+        /** @var Human $mostSad */
+        $mostSad = $this->achievementRepository->getMostSadHuman();
+        if ($mostSad) {
+            $sadAch = new Human\Achievement();
+            $sadAch->setType(Human\AchievementTypeEnum::MOST_SAD);
+            $sadAch->setTimeType(Human\AchievementTimeTypeEnum::BY_PHASE);
+            $sadAch->setSpaceType(Human\AchievementSpaceTypeEnum::PLANET);
+            $sadAch->setPlanet($this->getPlanet());
+            $sadAch->setPlanetPhase($this->getPlanet()->getLastPhaseUpdate());
+            $sadAch->setHolder($mostSad);
+            $this->generalEntityManager->persist($sadAch);
+        }
+
+        /** @var Human $mostEmotional */
+        $mostEmotional = $this->achievementRepository->getMostEmotionalHuman();
+        if ($mostEmotional) {
+            $emotionalAch = new Human\Achievement();
+            $emotionalAch->setType(Human\AchievementTypeEnum::MOST_EMOTIONAL);
+            $emotionalAch->setTimeType(Human\AchievementTimeTypeEnum::BY_PHASE);
+            $emotionalAch->setSpaceType(Human\AchievementSpaceTypeEnum::PLANET);
+            $emotionalAch->setPlanet($this->getPlanet());
+            $emotionalAch->setPlanetPhase($this->getPlanet()->getLastPhaseUpdate());
+            $emotionalAch->setHolder($mostEmotional);
+            $this->generalEntityManager->persist($emotionalAch);
         }
     }
 

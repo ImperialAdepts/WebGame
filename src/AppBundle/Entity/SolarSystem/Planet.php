@@ -399,6 +399,22 @@ class Planet
     }
 
     /**
+     * @param integer $distance in millions of kilometers
+     * @return float in kW per m2
+     */
+    private function getShinePower($distance) {
+        return $this->getDiameter()*$this->getWeight()/($distance*$distance);
+    }
+
+    /**
+     * @param Planet shine source
+     * @return float in kW per m2
+     */
+    public function getShinePowerFromSource(Planet $planet) {
+        return $this->getDiameter()*$this->getWeight()/($distance*$distance);
+    }
+
+    /**
      * @return int
      */
     public function getOrbitPhaseCount() {

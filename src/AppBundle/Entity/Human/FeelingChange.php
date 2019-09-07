@@ -3,6 +3,7 @@
 namespace AppBundle\Entity\Human;
 
 use AppBundle\Entity\Human;
+use AppBundle\Entity\PlanetAndPhaseTrait;
 use AppBundle\Entity\SolarSystem\Planet;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class FeelingChange
 {
+    use PlanetAndPhaseTrait;
+
     /**
      * @var integer
      *
@@ -48,21 +51,6 @@ class FeelingChange
      * @ORM\Column(name="time", type="integer", nullable=false)
      */
     private $time;
-
-    /**
-     * @var Planet
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SolarSystem\Planet")
-     * @ORM\JoinColumn(name="planet_id", referencedColumnName="id", nullable=false)
-     */
-    private $planet;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="planet_phase", type="integer", nullable=false)
-     */
-    private $planetPhase;
 
     /**
      * @var Human
@@ -173,38 +161,6 @@ class FeelingChange
     public function setTime($time)
     {
         $this->time = $time;
-    }
-
-    /**
-     * @return Planet
-     */
-    public function getPlanet()
-    {
-        return $this->planet;
-    }
-
-    /**
-     * @param Planet $planet
-     */
-    public function setPlanet($planet)
-    {
-        $this->planet = $planet;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPlanetPhase()
-    {
-        return $this->planetPhase;
-    }
-
-    /**
-     * @param int $planetPhase
-     */
-    public function setPlanetPhase($planetPhase)
-    {
-        $this->planetPhase = $planetPhase;
     }
 
     /**

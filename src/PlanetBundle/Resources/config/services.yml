@@ -66,6 +66,7 @@ services:
       - "@dynamic_planet_connector"
       - '@repo_human'
       - '@repo_settlement'
+      - '@repo_achievemnt'
       - '@event_builder'
       - '@maintainer_population'
       - '@maintainer_food'
