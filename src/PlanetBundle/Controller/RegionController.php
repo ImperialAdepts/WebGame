@@ -118,22 +118,28 @@ class RegionController extends BasePlanetController
         ]);
 
         foreach ($request->get('builders_form') as $blueprintId => $options) {
-            if (isset($options['count']) && $count = $options['count'] > 0) {
+            if (isset($options['count']) && ($count = $options['count']) > 0) {
                 $blueprint = $this->getDoctrine()->getManager('planet')->find(Entity\Blueprint::class, $blueprintId);
 
+                $built = 0;
                 // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
-                $this->getDoctrine()->getManager('planet')->transactional(function ($em) use ($blueprint, $region, $count) {
+                $this->getDoctrine()->getManager('planet')->transactional(function ($em) use ($blueprint, $region, $count, &$built) {
                     $builder = $this->get('builder_factory')->createRegionBuilder($blueprint);
                     $builder->setResourceHolder($region);
                     $builder->setSupervisor($this->getHuman());
                     $builder->setAllRegionTeams();
                     $builder->setCount($count);
-                    $builder->build();
+                    $built = $builder->build();
                 });
 
                 $this->createEvent(EventTypeEnum::SETTLEMENT_BUILD, [
-                    EventDataTypeEnum::BLUEPRINT => $blueprint,
-                    EventDataTypeEnum::REGION => $region,
+                    EventDataTypeEnum::BLUEPRINT => [
+                        'id' => $blueprint->getId(),
+                        'desc' => $blueprint->getDescription(),
+                    ],
+                    EventDataTypeEnum::REGION => $region->getName(),
+                    'countRequested' => $options['count'],
+                    'countBuilt' => $built,
                 ]);
             }
         }

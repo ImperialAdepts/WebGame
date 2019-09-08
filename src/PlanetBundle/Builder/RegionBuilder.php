@@ -132,7 +132,7 @@ class RegionBuilder
      */
     public function getPosibilityCount() {
         if (!$this->isValidBuildable()) return 0;
-        return 1;
+
         $possibleCount = null;
         foreach ($this->resourceRequirements as $resourceDescriptor => $count) {
             $resourcePosibility = $this->resourceHolder->getResourceDepositAmount($resourceDescriptor) / $count;
@@ -225,11 +225,14 @@ class RegionBuilder
     }
 
     /**
-     * @param int|null $count
+     * @param int|null $count null => infinite
      */
     public function setCount($count)
     {
-        $this->count = $count;
+        if (!is_numeric($count) || !$count === null) {
+            throw new \InvalidArgumentException("Count must be number or null");
+        }
+        $this->count = (int)$count;
     }
 
 
