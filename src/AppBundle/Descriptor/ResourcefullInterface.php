@@ -16,7 +16,7 @@ interface ResourcefullInterface
     /**
      * @return \AppBundle\Entity\ResourceDeposit[]
      */
-    public function getResourceDeposits();
+    public function getDeposit();
 
     /**
      * @param string $resourceDescriptor

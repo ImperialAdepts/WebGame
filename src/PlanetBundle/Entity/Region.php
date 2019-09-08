@@ -54,9 +54,9 @@ class Region implements ResourcefullInterface
     private $peakRight;
 
     /**
-     * @var RegionResourceDeposit[]
+     * @var RegionDeposit[]
      *
-     * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\RegionResourceDeposit", mappedBy="region", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="RegionDeposit", mappedBy="region", cascade={"all"})
      */
     private $resourceDeposits;
 
@@ -169,20 +169,20 @@ class Region implements ResourcefullInterface
 	}
 
     /**
-     * @return ResourceDeposit[]
+     * @return Deposit[]
      */
-    public function getResourceDeposits()
+    public function getDeposit()
     {
         return $this->resourceDeposits;
     }
 
     /**
      * @param $resourceDescriptor
-     * @return ResourceDeposit|null
+     * @return Deposit|null
      */
     public function getResourceDeposit($resourceDescriptor)
     {
-        foreach ($this->getResourceDeposits() as $deposit) {
+        foreach ($this->getDeposit() as $deposit) {
             if ($deposit->getResourceDescriptor() == $resourceDescriptor) return $deposit;
         }
         return null;
@@ -201,12 +201,12 @@ class Region implements ResourcefullInterface
         if (($deposit = $this->getResourceDeposit($blueprint->getResourceDescriptor())) != null) {
             $deposit->setAmount($deposit->getAmount() + $amount);
         } else {
-            $deposit = new RegionResourceDeposit();
+            $deposit = new RegionDeposit();
             $deposit->setAmount($amount);
             $deposit->setResourceDescriptor($blueprint->getResourceDescriptor());
             $deposit->setBlueprint($blueprint);
             $deposit->setRegion($this);
-            $this->getResourceDeposits()->add($deposit);
+            $this->getDeposit()->add($deposit);
         }
     }
 

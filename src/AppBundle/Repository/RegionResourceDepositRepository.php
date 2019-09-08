@@ -2,7 +2,7 @@
 
 namespace AppBundle\Repository;
 
-use PlanetBundle\Entity\RegionResourceDeposit;
+use PlanetBundle\Entity\RegionDeposit;
 
 /**
  * Class RegionResourceDepositRepository
@@ -11,7 +11,7 @@ use PlanetBundle\Entity\RegionResourceDeposit;
 class RegionResourceDepositRepository extends ResourceDepositRepository
 {
     /**
-     * @return RegionResourceDeposit[]
+     * @return RegionDeposit[]
      */
     public function getAll()
     {
@@ -23,7 +23,7 @@ class RegionResourceDepositRepository extends ResourceDepositRepository
     }
 
     /**
-     * @return RegionResourceDeposit[]
+     * @return RegionDeposit[]
      */
     public function getEmpty()
     {

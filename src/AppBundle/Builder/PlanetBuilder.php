@@ -58,7 +58,7 @@ class PlanetBuilder
 				$mandays[$region->getCoords()] = $people->getAmount() * self::STEP_DAY_COUNT;
 			} else {
 				$project->addNotification("There is no people in Settlement #{$region->getCoords()} there are only that:");
-				foreach ($region->getResourceDeposits() as $r => $deposit) {
+				foreach ($region->getDeposit() as $r => $deposit) {
 					$project->addNotification("...{$deposit->getAmount()} of {$deposit->getResourceDescriptor()}/key:$r");
 				}
 				$mandays[$region->getCoords()] = 0;
@@ -90,7 +90,7 @@ class PlanetBuilder
 					continue;
 				} elseif ($region->getResourceDeposit($resource) == null) {
 					$project->addNotification("There is no $resource in Region #{$region->getCoords()} there are only that:");
-					foreach ($region->getResourceDeposits() as $r => $deposit) {
+					foreach ($region->getDeposit() as $r => $deposit) {
 						$project->addNotification("...{$deposit->getAmount()} of {$deposit->getResourceDescriptor()}/$r");
 					}
 					continue;
@@ -157,7 +157,7 @@ class PlanetBuilder
 
 		foreach ($this->colonyPacks as $colonyPackName => $colonyPack) {
             foreach ($colonyPack['deposits'] as $resource => $data) {
-                $resourceDeposit = new PlanetEntity\PeakResourceDeposit();
+                $resourceDeposit = new PlanetEntity\PeakDeposit();
                 $resourceDeposit->setAmount($data['amount']);
                 $resourceDeposit->setResourceDescriptor($resource);
                 if (isset($data['blueprint']) && ($blueprint = $this->getBlueprint($data['blueprint'])) != null) {

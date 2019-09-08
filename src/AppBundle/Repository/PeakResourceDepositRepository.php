@@ -2,7 +2,7 @@
 
 namespace AppBundle\Repository;
 
-use PlanetBundle\Entity\PeakResourceDeposit;
+use PlanetBundle\Entity\PeakDeposit;
 
 /**
  * Class PeakResourceDepositRepository
@@ -11,7 +11,7 @@ use PlanetBundle\Entity\PeakResourceDeposit;
 class PeakResourceDepositRepository extends ResourceDepositRepository
 {
     /**
-     * @return PeakResourceDeposit[]
+     * @return PeakDeposit[]
      */
     public function getAll()
     {
@@ -23,7 +23,7 @@ class PeakResourceDepositRepository extends ResourceDepositRepository
     }
 
     /**
-     * @return PeakResourceDeposit[]
+     * @return PeakDeposit[]
      */
     public function getEmpty()
     {

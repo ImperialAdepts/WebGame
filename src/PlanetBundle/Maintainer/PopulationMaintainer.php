@@ -8,11 +8,11 @@ use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use PlanetBundle\Entity\Peak;
-use PlanetBundle\Entity\PeakResourceDeposit;
+use PlanetBundle\Entity\PeakDeposit;
 use PlanetBundle\Entity\Region;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\EntityManager;
-use PlanetBundle\Entity\RegionResourceDeposit;
+use PlanetBundle\Entity\RegionDeposit;
 
 class PopulationMaintainer
 {
@@ -35,12 +35,12 @@ class PopulationMaintainer
         $unusedHumansAdapter = People::findByDescriptor($resourceHandler, ResourceDescriptorEnum::PEOPLE);
         if ($unusedHumansAdapter == null) {
             if ($resourceHandler instanceof Region) {
-                $unusedHumansDeposit = new RegionResourceDeposit();
+                $unusedHumansDeposit = new RegionDeposit();
                 $unusedHumansDeposit->setResourceDescriptor(ResourceDescriptorEnum::PEOPLE);
                 $unusedHumansDeposit->setRegion($resourceHandler);
             }
             if ($resourceHandler instanceof Peak) {
-                $unusedHumansDeposit = new PeakResourceDeposit();
+                $unusedHumansDeposit = new PeakDeposit();
                 $unusedHumansDeposit->setResourceDescriptor(ResourceDescriptorEnum::PEOPLE);
                 $unusedHumansDeposit->setPeak($resourceHandler);
             }

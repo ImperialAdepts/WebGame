@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="region_resource_deposits")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\RegionResourceDepositRepository")
  */
-class RegionResourceDeposit extends ResourceDeposit
+class RegionDeposit extends Deposit
 {
     use RegionDependencyTrait;
 

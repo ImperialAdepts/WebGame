@@ -3,18 +3,18 @@ namespace AppBundle\Descriptor\Adapters;
 
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
-use PlanetBundle\Entity\ResourceDeposit;
+use PlanetBundle\Entity\Deposit;
 
 class AbstractResourceDepositAdapter
 {
-    /** @var ResourceDeposit */
+    /** @var Deposit */
     private $deposit;
 
     /**
      * LivingBuilding constructor.
-     * @param ResourceDeposit $deposit
+     * @param Deposit $deposit
      */
-    public function __construct(ResourceDeposit $deposit)
+    public function __construct(Deposit $deposit)
     {
         $this->deposit = $deposit;
     }
@@ -27,9 +27,9 @@ class AbstractResourceDepositAdapter
     public static function extractAdapterOfUseCase(ResourcefullInterface $resourcefull, $useCaseName) {
         /** @var AbstractResourceDepositAdapter[] $adapters */
         $adapters = [];
-        /** @var ResourceDeposit[] $deposits */
-        foreach ($resourcefull->getResourceDeposits() as $deposit) {
-            /** @var ResourceDeposit $deposit */
+        /** @var Deposit[] $deposits */
+        foreach ($resourcefull->getDeposit() as $deposit) {
+            /** @var Deposit $deposit */
             $useCaseAdapter = $deposit->asUseCase($useCaseName);
             if ($useCaseAdapter != null) {
                 $adapters[] = $useCaseAdapter;
@@ -39,7 +39,7 @@ class AbstractResourceDepositAdapter
     }
 
     /**
-     * @return  ResourceDeposit
+     * @return  Deposit
      */
     public function getDeposit() {
         return $this->deposit;

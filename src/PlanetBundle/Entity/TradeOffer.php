@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 class TradeOffer
 {
     use SettlementDependencyTrait;
+    use PlanetEntity\Resource\BlueprintDependencyTrait;
 
     /**
      * @var int
@@ -26,9 +27,9 @@ class TradeOffer
     private $id;
 
 	/**
-	 * @var ResourceDeposit
+	 * @var Deposit
 	 *
-     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\ResourceDeposit")
+     * @ORM\ManyToOne(targetEntity="Deposit")
      * @ORM\JoinColumn(name="resource_deposit_id", referencedColumnName="id", nullable=false)
 	 */
 	private $offeredResourceDeposit;
@@ -40,14 +41,6 @@ class TradeOffer
      */
     private $amountRequested;
 
-
-    /**
-     * @var Blueprint
-     *
-     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Blueprint")
-     * @ORM\JoinColumn(fieldName="blueprint_id", referencedColumnName="id", nullable=true)
-     */
-    private $blueprint;
 
     /**
      * @return int
@@ -67,7 +60,7 @@ class TradeOffer
 
 
     /**
-     * @return PeakResourceDeposit
+     * @return PeakDeposit
      */
     public function getOfferedResourceDeposit()
     {
@@ -75,7 +68,7 @@ class TradeOffer
     }
 
     /**
-     * @param PeakResourceDeposit $offeredResourceDeposit
+     * @param PeakDeposit $offeredResourceDeposit
      */
     public function setOfferedResourceDeposit($offeredResourceDeposit)
     {
@@ -97,22 +90,5 @@ class TradeOffer
     {
         $this->amountRequested = $amountRequested;
     }
-
-    /**
-     * @return Blueprint
-     */
-    public function getBlueprint()
-    {
-        return $this->blueprint;
-    }
-
-    /**
-     * @param Blueprint $blueprint
-     */
-    public function setBlueprint($blueprint)
-    {
-        $this->blueprint = $blueprint;
-    }
-
 }
 

@@ -74,7 +74,7 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 
 	private function createBlueprint($name, $resource, array $resourceRequirements = [], array $useCaseRequirements = [], array $constraints = [], array $useCases = [], array $traitValues = [])
 	{
-		$blueprint = new PlanetEntity\Blueprint();
+		$blueprint = new PlanetEntity\Resource\Blueprint();
 		$blueprint->setDescription($name);
 		$blueprint->setResourceDescriptor($resource);
 		$blueprint->setResourceRequirements($resourceRequirements);

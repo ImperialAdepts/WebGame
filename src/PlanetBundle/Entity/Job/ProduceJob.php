@@ -8,35 +8,14 @@ use PlanetBundle\Entity\Blueprint;
 use PlanetBundle\Entity\Region;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
+use PlanetBundle\Entity\Resource\WorkSheetDependencyTrait;
 
 /**
- * @ORM\Table(name="region_produce_jobs")
+ * @ORM\Table(name="job_produces")
  * @ORM\Entity(repositoryClass="PlanetBundle\Repository\JobRepository")
  */
 class ProduceJob extends Job
 {
-    /**
-     * @var Blueprint
-     *
-     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Blueprint")
-     * @ORM\JoinColumn(name="blueprint_id", referencedColumnName="id", nullable=true)
-     */
-    private $blueprint;
-
-    /**
-     * @return Blueprint
-     */
-    public function getBlueprint()
-    {
-        return $this->blueprint;
-    }
-
-    /**
-     * @param Blueprint $blueprint
-     */
-    public function setBlueprint(Blueprint $blueprint)
-    {
-        $this->blueprint = $blueprint;
-    }
+    use WorkSheetDependencyTrait;
 }
 

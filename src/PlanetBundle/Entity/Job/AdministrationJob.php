@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use PlanetBundle\Entity\SettlementDependencyTrait;
 
 /**
- * @ORM\Table(name="region_administration_jobs")
+ * @ORM\Table(name="job_administrations")
  * @ORM\Entity(repositoryClass="PlanetBundle\Repository\JobRepository")
  */
 class AdministrationJob extends Job

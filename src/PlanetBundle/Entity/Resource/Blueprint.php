@@ -1,6 +1,6 @@
 <?php
 
-namespace PlanetBundle\Entity;
+namespace PlanetBundle\Entity\Resource;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use Doctrine\ORM\Mapping as ORM;
@@ -35,30 +35,6 @@ class Blueprint
 	 * @ORM\Column(name="resource_descriptor", type="string", length=255)
 	 */
 	private $resourceDescriptor;
-
-	/**
-     * Every resource will be consumed
-	 * @var string[] resource_descriptor => count
-	 *
-	 * @ORM\Column(name="resource_requirements", type="json_array")
-	 */
-	private $resourceRequirements;
-
-    /**
-     * Every resource by usecase will be consumed
-     * @var string[] usecase_name => [trait_name => value]
-     *
-     * @ORM\Column(name="use_case_requirements", type="json_array")
-     */
-    private $useCaseRequirements;
-
-    /**
-     * Must be at place
-     * @var string[] resource_descriptor => count
-     *
-     * @ORM\Column(name="constraints", type="json_array")
-     */
-    private $constraints;
 
     /**
      * @var string[]
@@ -132,76 +108,6 @@ class Blueprint
 		return $this->resourceDescriptor;
 	}
 
-	/**
-	 * Get mandays
-	 *
-	 * @return int
-	 */
-	public function getMandays()
-	{
-	    if (isset($this->resourceRequirements[ResourceDescriptorEnum::MANDAY])) {
-            return $this->resourceRequirements[ResourceDescriptorEnum::MANDAY];
-        } else {
-	        return 0;
-        }
-	}
-
-	/**
-	 * Set requirements
-	 *
-	 * @param array $resourceRequirements
-	 *
-	 * @return Blueprint
-	 */
-	public function setResourceRequirements($resourceRequirements)
-	{
-		$this->resourceRequirements = $resourceRequirements;
-
-		return $this;
-	}
-
-	/**
-	 * Get requirements
-	 *
-	 * @return array
-	 */
-	public function getResourceRequirements()
-	{
-		return $this->resourceRequirements;
-	}
-
-    /**
-     * @return string[]
-     */
-    public function getUseCaseRequirements()
-    {
-        return $this->useCaseRequirements;
-    }
-
-    /**
-     * @param string[] $useCaseRequirements
-     */
-    public function setUseCaseRequirements($useCaseRequirements)
-    {
-        $this->useCaseRequirements = $useCaseRequirements;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getConstraints()
-    {
-        return $this->constraints;
-    }
-
-    /**
-     * @param string[] $constraints
-     */
-    public function setConstraints($constraints)
-    {
-        $this->constraints = $constraints;
-    }
-
     /**
      * @return string[]
      */
@@ -247,16 +153,6 @@ class Blueprint
     {
         $this->useCases = $useCases;
     }
-
-	public function getResourcesPerManday()
-	{
-		$requirementsPerManday = [];
-		$mandays = $this->resourceRequirements[ResourceDescriptorEnum::MANDAY];
-		foreach ($this->resourceRequirements as $resource => $count) {
-			$requirementsPerManday[$resource] = $count / $mandays;
-		}
-		return $requirementsPerManday;
-	}
 
 	function __toString()
 	{

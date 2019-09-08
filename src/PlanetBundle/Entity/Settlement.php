@@ -238,9 +238,9 @@ class Settlement implements ResourcefullInterface
 
 	/**
 	 * @param $resourceDescriptor
-	 * @return ResourceDeposit[] region_coords => ResourceDeposit[]
+	 * @return Deposit[] region_coords => ResourceDeposit[]
 	 */
-	public function getResourceDeposits($resourceDescriptor = null)
+	public function getDeposit($resourceDescriptor = null)
 	{
 	    $deposits = [];
 	    /** @var Region $region */
@@ -250,7 +250,7 @@ class Settlement implements ResourcefullInterface
                     $deposits[] = $localDeposit;
                 }
             } else {
-                foreach ($region->getResourceDeposits() as $deposit) {
+                foreach ($region->getDeposit() as $deposit) {
                     $deposits[] = $deposit;
                 }
             }
@@ -262,7 +262,7 @@ class Settlement implements ResourcefullInterface
                     $deposits[] = $localDeposit;
                 }
             } else {
-                foreach ($peak->getResourceDeposits() as $deposit) {
+                foreach ($peak->getDeposit() as $deposit) {
                     $deposits[] = $deposit;
                 }
             }
@@ -289,7 +289,7 @@ class Settlement implements ResourcefullInterface
     public function getResourceDepositAmount($resourceDescriptor)
     {
         $count = 0;
-        foreach ($this->getResourceDeposits($resourceDescriptor) as $deposit) {
+        foreach ($this->getDeposit($resourceDescriptor) as $deposit) {
             $count += $deposit->getAmount();
         }
         return $count;

@@ -54,9 +54,9 @@ class Peak implements ResourcefullInterface
     private $oreDeposits;
 
     /**
-     * @var PeakResourceDeposit[]
+     * @var PeakDeposit[]
      *
-     * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\PeakResourceDeposit", mappedBy="peak", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="PeakDeposit", mappedBy="peak", cascade={"all"})
      */
     private $resourceDeposits;
 
@@ -74,7 +74,6 @@ class Peak implements ResourcefullInterface
     public function __construct($id = null)
     {
         $this->id = $id;
-        $this->resourceDeposits = new ArrayCollection();
     }
 
     /**
@@ -159,11 +158,11 @@ class Peak implements ResourcefullInterface
     }
 
     /**
-     * @return PeakResourceDeposit[]
+     * @return PeakDeposit[]
      */
-    public function getResourceDeposits()
+    public function getDeposit()
     {
-        return $this->resourceDeposits;
+        return $this->deposit;
     }
 
     /**
@@ -197,22 +196,22 @@ class Peak implements ResourcefullInterface
 
     /**
      * @param $resourceDescriptor
-     * @return PeakResourceDeposit|null
+     * @return PeakDeposit|null
      */
     public function getResourceDeposit($resourceDescriptor)
     {
-        foreach ($this->getResourceDeposits() as $deposit) {
+        foreach ($this->getDeposit() as $deposit) {
             if ($deposit->getResourceDescriptor() == $resourceDescriptor) return $deposit;
         }
         return null;
     }
 
     /**
-     * @param \AppBundle\Entity\PeakResourceDeposit[] $resourceDeposits
+     * @param \AppBundle\Entity\PeakResourceDeposit[] $deposit
      */
-    public function setResourceDeposits($resourceDeposits)
+    public function setDeposit($deposit)
     {
-        $this->resourceDeposits = $resourceDeposits;
+        $this->deposit = $deposit;
     }
 
     public function addResourceDeposit(Blueprint $blueprint, $amount = 1)
@@ -220,12 +219,12 @@ class Peak implements ResourcefullInterface
         if (($deposit = $this->getResourceDeposit($blueprint->getResourceDescriptor())) != null) {
             $deposit->setAmount($deposit->getAmount() + $amount);
         } else {
-            $deposit = new PeakResourceDeposit();
+            $deposit = new PeakDeposit();
             $deposit->setAmount($amount);
             $deposit->setResourceDescriptor($blueprint->getResourceDescriptor());
             $deposit->setBlueprint($blueprint);
             $deposit->setPeak($this);
-            $this->getResourceDeposits()->add($deposit);
+            $this->getDeposit()->add($deposit);
         }
     }
 

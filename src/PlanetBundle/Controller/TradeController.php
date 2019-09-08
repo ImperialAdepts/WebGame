@@ -44,7 +44,7 @@ class TradeController extends BasePlanetController
     /**
      * @Route("/sell/{deposit}", name="trade_make_offer")
      */
-    public function sellAction(Entity\ResourceDeposit $deposit, Request $request)
+    public function sellAction(Entity\Deposit $deposit, Request $request)
     {
         $portables = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::PORTABLES);
         return $this->render('Trade/make-offer.html.twig', [
@@ -57,7 +57,7 @@ class TradeController extends BasePlanetController
     /**
      * @Route("/set-offer/{deposit}/{blueprint}/{count}", name="trade_set_offer")
      */
-    public function setOfferAction(Entity\ResourceDeposit $deposit, Entity\Blueprint $blueprint, $count, Request $request)
+    public function setOfferAction(Entity\Deposit $deposit, Entity\Blueprint $blueprint, $count, Request $request)
     {
         $offer = new Entity\TradeOffer();
         $offer->setBlueprint($blueprint);

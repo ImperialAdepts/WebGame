@@ -5,6 +5,7 @@ namespace PlanetBundle\Entity;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Entity\ProjectNotification;
 use Doctrine\ORM\Mapping as ORM;
+use PlanetBundle\Entity\Resource\BlueprintDependencyTrait;
 
 /**
  * BuildingProject
@@ -14,7 +15,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 abstract class BuildingProject
 {
-//    use RegionDependencyTrait;
+    use DepositDependencyTrait;
+    use BlueprintDependencyTrait;
 
 	/**
 	 * @var int
@@ -24,14 +26,6 @@ abstract class BuildingProject
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
 	private $id;
-
-	/**
-	 * @var Blueprint
-	 *
-	 * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Blueprint")
-	 * @ORM\JoinColumn(name="building_blueprint_id", referencedColumnName="id")
-	 */
-	private $buildingBlueprint;
 
 	/**
 	 * @var \PlanetBundle\Entity\Human
@@ -66,7 +60,7 @@ abstract class BuildingProject
 	 */
 	public function setBuildingBlueprint(Blueprint $buildingBlueprint)
 	{
-		$this->buildingBlueprint = $buildingBlueprint;
+		$this->setBlueprint($buildingBlueprint);
 
 		return $this;
 	}
@@ -78,7 +72,7 @@ abstract class BuildingProject
 	 */
 	public function getBuildingBlueprint()
 	{
-		return $this->buildingBlueprint;
+		return $this->getBlueprint();
 	}
 
 	/**

@@ -4,38 +4,20 @@ namespace PlanetBundle\Entity\Job;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Entity\Notification\ProjectNotification;
+use PlanetBundle\Entity\Deposit;
 use PlanetBundle\Entity\Region;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
+use PlanetBundle\Entity\Resource\ResourceDescriptor;
+use PlanetBundle\Entity\Resource\ResourceDescriptorDependencyTrait;
+use PlanetBundle\Entity\Resource\ThingDependencyTrait;
 
 /**
- * @ORM\Table(name="region_sell_jobs")
+ * @ORM\Table(name="job_sells")
  * @ORM\Entity(repositoryClass="PlanetBundle\Repository\JobRepository")
  */
 class SellJob extends Job
 {
-    /**
-     * @var ResourceDeposit
-     *
-     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\ResourceDeposit")
-     * @ORM\JoinColumn(name="resource_deposit_id", referencedColumnName="id", nullable=true)
-     */
-    private $resourceDeposit;
-
-    /**
-     * @return ResourceDeposit
-     */
-    public function getResourceDeposit()
-    {
-        return $this->resourceDeposit;
-    }
-
-    /**
-     * @param ResourceDeposit $resourceDeposit
-     */
-    public function setResourceDeposit(ResourceDeposit $resourceDeposit)
-    {
-        $this->resourceDeposit = $resourceDeposit;
-    }
+    use ResourceDescriptorDependencyTrait;
 }
 

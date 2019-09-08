@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="peak_resource_deposits")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PeakResourceDepositRepository")
  */
-class PeakResourceDeposit extends ResourceDeposit
+class PeakDeposit extends Deposit
 {
     use PeakDependencyTrait;
 

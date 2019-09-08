@@ -40,7 +40,7 @@ class Maintainer
 
 
     public function clearEmptyDeposits() {
-        $emptyDeposits = $this->planetEntityManager->getRepository(\PlanetBundle\Entity\ResourceDeposit::class)->findBy(['amount' => 0]);
+        $emptyDeposits = $this->planetEntityManager->getRepository(\PlanetBundle\Entity\Deposit::class)->findBy(['amount' => 0]);
         foreach ($emptyDeposits as $deposit) {
             $this->planetEntityManager->remove($deposit);
         }

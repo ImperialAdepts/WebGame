@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Road
 {
+    use PlanetEntity\Resource\BlueprintDependencyTrait;
+
 	/**
 	 * @var Peak
 	 *
@@ -48,14 +50,6 @@ class Road
      * @ORM\Column(name="free_capacity", type="integer")
      */
     private $freeCapacity;
-
-    /**
-     * @var Blueprint
-     *
-     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Blueprint")
-     * @ORM\JoinColumn(fieldName="blueprint_id", referencedColumnName="id", nullable=false)
-     */
-    private $blueprint;
 
     /**
      * @return Peak
@@ -119,22 +113,6 @@ class Road
     public function setFreeCapacity($freeCapacity)
     {
         $this->freeCapacity = $freeCapacity;
-    }
-
-    /**
-     * @return Blueprint
-     */
-    public function getBlueprint()
-    {
-        return $this->blueprint;
-    }
-
-    /**
-     * @param Blueprint $blueprint
-     */
-    public function setBlueprint($blueprint)
-    {
-        $this->blueprint = $blueprint;
     }
 
 }
