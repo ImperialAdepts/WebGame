@@ -4,6 +4,7 @@
 namespace AppBundle\TwigExtension;
 
 
+use AppBundle\Entity\SolarSystem\Planet;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
@@ -16,6 +17,7 @@ class HumanReadableMeasuresExtension extends AbstractExtension
             new TwigFilter('area', [$this, 'formatArea']),
             new TwigFilter('volume', [$this, 'formatVolume']),
             new TwigFilter('weight', [$this, 'formatWeight']),
+            new TwigFilter('phase', [$this, 'formatPlanetTime']),
         ];
     }
 
@@ -78,4 +80,15 @@ class HumanReadableMeasuresExtension extends AbstractExtension
         return round($numberInMegaTons, 1).' MT';
     }
 
+    public function formatPlanetTime(Planet $planet, $phase = null) {
+        if ($phase == null) {
+            $phase = $planet->getLastPhaseUpdate() + 1;
+        }
+        if ($planet->getOrbitPhaseCount() == 0) {
+            return $phase;
+        }
+        $cycle = floor($phase/$planet->getOrbitPhaseCount());
+        $phaseOffset = $phase % $planet->getOrbitPhaseCount();
+        return sprintf("%s of cycle %s", $phaseOffset, $cycle);
+    }
 }

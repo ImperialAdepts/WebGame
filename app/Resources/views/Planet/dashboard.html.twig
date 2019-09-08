@@ -4,7 +4,7 @@
 {% block pagedescription %}Dashboard{% endblock %}
 {% block body %}
 	Gravity: {{ planet.gravity }}g<br/>
-	Phase {{ planet.lastPhaseUpdate + 1 }}<br/>
+	Phase {{ planet|phase }}<br/>
 	{% if planet.orbitingCenter is not null %}
 		Orbiting around <a href="{{ path('planet_dashboard', { 'planet': planet.orbitingCenter.id }) }}">{{ planet.orbitingCenter.name }}</a> in distance {{ planet.orbitDiameter|distance }}<br>
 	{% endif %}
