@@ -418,6 +418,9 @@ class Planet
      * @return int
      */
     public function getOrbitPhaseCount() {
+        if ($this->getOrbitPeriod() === null) {
+            return 6;
+        }
         if ($this->getOrbitPeriod() < $this->getTimeCoefficient()*6) {
             return 6;
         }
@@ -425,7 +428,11 @@ class Planet
     }
 
     public function getOrbitPhaseLengthInSec() {
-        return floor(24*60*60*$this->getOrbitPeriod() / $this->getOrbitPhaseCount());
+        if ($this->getOrbitPeriod() !== null) {
+            return floor(24 * 60 * 60 * $this->getOrbitPeriod() / $this->getOrbitPhaseCount());
+        } else {
+            return floor(24 * 60 * 60 * 2);
+        }
     }
 
     public function getCoordsWidthLength($height) {

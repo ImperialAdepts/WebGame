@@ -454,7 +454,7 @@ class PlanetMaintainer
         $humans = $this->generalHumanRepository->findBy(['deathTime' => null]);
         foreach ($humans as $human) {
             $reaperDiceRoll = 1000;
-            $reaperDiceRoll = @random_int(0, 1000);
+            $reaperDiceRoll = @random_int(0, 10000);
             if ($this->lifeMaintainer->getDeathByAgeProbability($human) >= $reaperDiceRoll) {
                 $this->lifeMaintainer->kill($human);
             }

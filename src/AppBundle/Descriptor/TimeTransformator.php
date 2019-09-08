@@ -5,24 +5,23 @@ use AppBundle\Entity\SolarSystem\Planet;
 
 class TimeTransformator
 {
+    // it is timestamp of 1.1.2000
+    const BEGIN_OF_TIME = 946684800;
+
     public static function timestampToPhase(Planet $planet, $timestamp) {
-        if ($planet->getOrbitPeriod() == null) return 0;
-        $phase = floor(self::realToGameTime($planet, $timestamp) / ($planet->getOrbitPhaseLengthInSec()));
+        $phase = floor(self::realToGameTime($planet, $timestamp-self::BEGIN_OF_TIME) / ($planet->getOrbitPhaseLengthInSec()));
         return $phase;
     }
 
     public static function phaseToTimestamp(Planet $planet, $phase) {
-        if ($planet->getOrbitPeriod() == null) return 0;
-        return self::gameToRealTime($planet, $phase * $planet->getOrbitPhaseLengthInSec());
+        return self::gameToRealTime($planet, $phase * $planet->getOrbitPhaseLengthInSec()) + self::BEGIN_OF_TIME;
     }
 
     public static function gameToRealTime(Planet $planet, $timestamp) {
-        if ($planet->getOrbitPeriod() == null) return 0;
         return floor($timestamp / $planet->getTimeCoefficient());
     }
 
     public static function realToGameTime(Planet $planet, $timestamp) {
-        if ($planet->getOrbitPeriod() == null) return 0;
         return $timestamp * $planet->getTimeCoefficient();
     }
 

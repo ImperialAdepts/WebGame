@@ -84,9 +84,6 @@ class HumanReadableMeasuresExtension extends AbstractExtension
         if ($phase == null) {
             $phase = $planet->getLastPhaseUpdate() + 1;
         }
-        if ($planet->getOrbitPhaseCount() == 0) {
-            return $phase;
-        }
         $cycle = floor($phase/$planet->getOrbitPhaseCount());
         $phaseOffset = $phase % $planet->getOrbitPhaseCount();
         return sprintf("%s of cycle %s", $phaseOffset, $cycle);
