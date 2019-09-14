@@ -77,11 +77,14 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
 		$blueprint = new PlanetEntity\Resource\Blueprint();
 		$blueprint->setDescription($name);
 		$blueprint->setResourceDescriptor($resource);
-		$blueprint->setResourceRequirements($resourceRequirements);
-		$blueprint->setUseCaseRequirements($useCaseRequirements);
-		$blueprint->setConstraints($constraints);
-		$blueprint->setUseCases($useCases);
-		$blueprint->setTraitValues($traitValues);
+
+		$workSheet = new PlanetEntity\Resource\WorkSheet();
+		$workSheet->setInputs($resourceRequirements);
+		$workSheet->setProducts([$blueprint]);
+		$workSheet->setTools([$constraints]);
+
+		$blueprint->addWorkSheet($workSheet);
+
 		return $blueprint;
 	}
 

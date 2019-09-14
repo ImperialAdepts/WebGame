@@ -1,0 +1,3 @@
+{% for concept in concepts %}
+    <a href="{{ path('blueprint_create', {'conceptName': concept}) }}">{{ concept }}</a>,
+{% endfor %}

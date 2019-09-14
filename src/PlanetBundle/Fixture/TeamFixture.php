@@ -32,12 +32,12 @@ class TeamFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Con
         /** @var ObjectManager $manager */
         $manager = $this->container->get('doctrine')->getManager('planet');
         $blueprints = array_merge(
-            $transporterBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_TRANSPORTERS),
-            $builderBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_BUILDERS),
-            $merchantBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_MERCHANTS),
-            $scientistBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_SCIENTISTS),
-            $workerBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_WORKERS),
-            $farmerBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_FARMERS)
+            $transporterBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_TRANSPORTERS),
+            $builderBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_BUILDERS),
+            $merchantBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_MERCHANTS),
+            $scientistBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_SCIENTISTS),
+            $workerBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_WORKERS),
+            $farmerBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_FARMERS)
         );
 		$regions = $manager->getRepository(PlanetEntity\Region::class)->findAll();
         foreach ($regions as $region) {

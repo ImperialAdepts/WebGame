@@ -29,26 +29,19 @@ class Blueprint
 	 */
 	private $description;
 
-	/**
-	 * @var \stdClass
-	 *
-	 * @ORM\Column(name="resource_descriptor", type="string", length=255)
-	 */
-	private $resourceDescriptor;
-
-    /**
-     * @var string[]
-     *
-     * @ORM\Column(name="use_cases", type="json_array")
-     */
-    private $useCases;
-
     /**
      * @var int|float[] traitName => value
      *
      * @ORM\Column(name="trait_values", type="json_array")
      */
     private $traitValues = [];
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="concept", type="string", length=255, nullable=true)
+     */
+    private $concept;
 
 	/**
 	 * Get id
@@ -85,27 +78,13 @@ class Blueprint
 	}
 
 	/**
-	 * Set resource
-	 *
-	 * @param string $resourceDescriptor
-	 *
-	 * @return Blueprint
-	 */
-	public function setResourceDescriptor($resourceDescriptor)
-	{
-		$this->resourceDescriptor = $resourceDescriptor;
-
-		return $this;
-	}
-
-	/**
 	 * Get resource
 	 *
 	 * @return string
 	 */
 	public function getResourceDescriptor()
 	{
-		return $this->resourceDescriptor;
+		return $this->getId();
 	}
 
     /**
@@ -113,7 +92,8 @@ class Blueprint
      */
     public function getUseCases()
     {
-        return $this->useCases;
+        return [];
+        return $this->getConcept()->getUseCases();
     }
 
     /**
@@ -147,17 +127,30 @@ class Blueprint
     }
 
     /**
-     * @param string[] $useCases
+     * @return string
      */
-    public function setUseCases(array $useCases)
+    public function getConcept()
     {
-        $this->useCases = $useCases;
+        return $this->concept;
+    }
+
+    /**
+     * @param string $concept
+     */
+    public function setConcept($concept)
+    {
+        $this->concept = $concept;
     }
 
 	function __toString()
 	{
 		return $this->getResourceDescriptor().' '.$this->getDescription();
 	}
+
+    public function addWorkSheet(WorkSheet $workSheet)
+    {
+
+    }
 
 
 }

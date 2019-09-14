@@ -7,6 +7,13 @@ services:
     arguments:
       - "PlanetBundle\\Entity\\Settlement"
 
+  repo_blueprint:
+    class: PlanetBundle\Repository\BlueprintRepository
+    public: true
+    factory: ["@doctrine.orm.planet_entity_manager", "getRepository"]
+    arguments:
+      - "PlanetBundle\\Entity\\Resource\\Blueprint"
+
   event_builder:
     class: PlanetBundle\Builder\EventBuilder
     public: true
@@ -79,6 +86,13 @@ services:
   PlanetBundle\Fixture\:
     resource: '../../../PlanetBundle/Fixture/'
     tags: ['doctrine.fixture.orm']
+
+  blueprint_form:
+    class: PlanetBundle\Form\BlueprintChoiceType
+    arguments:
+      - '@repo_blueprint'
+    tags:
+      - { name: form.type }
 
   PlanetBundle\EventListener\BeforeControllerListener:
     tags:

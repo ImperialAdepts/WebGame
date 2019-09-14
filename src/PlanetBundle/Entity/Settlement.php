@@ -5,6 +5,8 @@ namespace PlanetBundle\Entity;
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\UuidSerializer\UuidName;
 use Doctrine\ORM\Mapping as ORM;
+use PlanetBundle\Entity\Resource\Blueprint;
+
 /**
  * Settlement - management unit
  *

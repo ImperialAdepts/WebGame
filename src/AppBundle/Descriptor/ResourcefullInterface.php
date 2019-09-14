@@ -9,7 +9,7 @@
 namespace AppBundle\Descriptor;
 
 use AppBundle\Entity\ResourceDeposit;
-use PlanetBundle\Entity\Blueprint;
+use PlanetBundle\Entity\Resource\Blueprint;
 
 interface ResourcefullInterface
 {

@@ -52,6 +52,17 @@ class UseCaseEnum
     const LINE_BUILDING = 'line_building';
     const ROAD = 'road';
     const DEFENSE_WALL = 'defence_wall';
+    const WEAPON = 'weapon';
+    const MILITARY_UNIT = 'military_unit';
+    const SPACE_SHIP = 'spaceship';
+    const SPACE_ENGINE = 'space_engine';
+    const OXYGEN_SOURCE = 'oxygen_source';
+    const WATER_SOURCE = 'water_source';
+    const WASTE_DISPOSAL = 'waste_disposal';
+    const FUEL_DEPOSIT = 'fuel_deposit';
+    const CONTROL_OPERATION_SUPPORT = 'control_operation_support';
+    const AMMUNITION_DEPOSIT = 'ammunition_deposit';
+    const SPACESHIP_PART = 'spaceship_part';
 
     public static $useCaseToAdapterMap = [
         self::BASIC_FOOD => BasicFood::class,

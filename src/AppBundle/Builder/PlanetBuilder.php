@@ -120,59 +120,72 @@ class PlanetBuilder
      */
 	public function newColony(PlanetEntity\Peak $administrativeCenter, PlanetEntity\Human $human, $colonizationPack)
 	{
-	    $globalHuman = $this->generalEntityManager->find(Human::class, $human->getGlobalHumanId());
 	    $regions = $this->planetEntityManager->getRepository(PlanetEntity\Region::class)->findPeakSurrounding($administrativeCenter);
-
-	    $settlement = new PlanetEntity\Settlement();
-		$settlement->setType(ResourceDescriptorEnum::VILLAGE);
-		$settlement->setRegions($regions);
-		$settlement->setAdministrativeCenter($administrativeCenter);
-		$settlement->setOwner($human);
-		$settlement->setManager($human);
-		$this->planetEntityManager->persist($settlement);
-		$this->planetEntityManager->flush($settlement);
-
-		$protectorTitle = new Human\SettlementTitle();
-		$protectorTitle->setName('Protector of '.$settlement->getName());
-		$protectorTitle->setHumanHolder($globalHuman);
-		$protectorTitle->setTransferSettings([
-		    'inheritance' => 'primogeniture',
-        ]);
-		$protectorTitle->setSettlementId($settlement->getId());
-		$protectorTitle->setSettlementPlanet(DynamicPlanetConnector::$PLANET);
-        $this->generalEntityManager->persist($protectorTitle);
-        $globalHuman->getTitles()->add($protectorTitle);
-        $globalHuman->setTitle($protectorTitle);
-
-        $administrativeCenter->setSettlement($settlement);
-		$this->planetEntityManager->persist($administrativeCenter);
-
-		/** @var PlanetEntity\Region $region */
-        foreach ($regions as $region) {
-		    $region->setSettlement($settlement);
-            $this->planetEntityManager->persist($region);
-        }
+	    $settlement = $this->createSettlement($regions, $administrativeCenter, $human);
 
 		$colonyPack = $this->colonyPacks[$colonizationPack];
 
 		foreach ($this->colonyPacks as $colonyPackName => $colonyPack) {
             foreach ($colonyPack['deposits'] as $resource => $data) {
-                $resourceDeposit = new PlanetEntity\PeakDeposit();
-                $resourceDeposit->setAmount($data['amount']);
-                $resourceDeposit->setResourceDescriptor($resource);
+                $deposit = new PlanetEntity\PeakDeposit();
+
                 if (isset($data['blueprint']) && ($blueprint = $this->getBlueprint($data['blueprint'])) != null) {
-                    $resourceDeposit->setBlueprint($blueprint);
+                    $descriptor = new PlanetEntity\Resource\Thing();
+                    $descriptor->setAmount($data['amount']);
+                    $descriptor->setBlueprint($blueprint);
+                } else {
+                    $descriptor = new PlanetEntity\Resource\Resource();
+                    $descriptor->setType($resource);
+                    $descriptor->setAmount($data['amount']);
                 }
-                $resourceDeposit->setPeak($settlement->getAdministrativeCenter());
-                $this->planetEntityManager->persist($resourceDeposit);
+                $deposit->setPeak($settlement->getAdministrativeCenter());
+                $descriptor->setDeposit($deposit);
+                $this->planetEntityManager->persist($deposit);
+                $this->planetEntityManager->persist($descriptor);
             }
         }
 	}
 
+	public function createSettlement(array $regions, PlanetEntity\Peak $administrativeCenter, PlanetEntity\Human $human) {
+        $globalHuman = $this->generalEntityManager->find(Human::class, $human->getGlobalHumanId());
+
+        $settlement = new PlanetEntity\Settlement();
+        $settlement->setType(ResourceDescriptorEnum::VILLAGE);
+        $settlement->setRegions($regions);
+        $settlement->setAdministrativeCenter($administrativeCenter);
+        $settlement->setOwner($human);
+        $settlement->setManager($human);
+        $this->planetEntityManager->persist($settlement);
+        $this->planetEntityManager->flush($settlement);
+
+        $protectorTitle = new Human\SettlementTitle();
+        $protectorTitle->setName('Protector of '.$settlement->getName());
+        $protectorTitle->setHumanHolder($globalHuman);
+        $protectorTitle->setTransferSettings([
+            'inheritance' => 'primogeniture',
+        ]);
+        $protectorTitle->setSettlementId($settlement->getId());
+        $protectorTitle->setSettlementPlanet(DynamicPlanetConnector::$PLANET);
+        $this->generalEntityManager->persist($protectorTitle);
+        $globalHuman->getTitles()->add($protectorTitle);
+        $globalHuman->setTitle($protectorTitle);
+
+        $administrativeCenter->setSettlement($settlement);
+        $this->planetEntityManager->persist($administrativeCenter);
+
+        /** @var PlanetEntity\Region $region */
+        foreach ($regions as $region) {
+            $region->setSettlement($settlement);
+            $this->planetEntityManager->persist($region);
+        }
+
+        return $settlement;
+    }
+
 	public function getAvailableBlueprints(PlanetEntity\Region $region, PlanetEntity\Human $human) {
 	    // TODO: overit ze dotycny vlastni blueprinty
         $availables = [];
-        $blueprints = $this->planetEntityManager->getRepository(PlanetEntity\Blueprint::class)->getAll();
+        $blueprints = $this->planetEntityManager->getRepository(PlanetEntity\Resource\Blueprint::class)->getAll();
         /** @var Entity\Blueprint $blueprint */
         foreach ($blueprints as $blueprint) {
             foreach ($blueprint->getConstraints() as $resourceType => $amount) {
@@ -204,7 +217,7 @@ class PlanetBuilder
 
 	private function getBlueprint($name)
 	{
-		return $this->planetEntityManager->getRepository(PlanetEntity\Blueprint::class)->getByName($name);
+		return $this->planetEntityManager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByName($name);
 	}
 
 }

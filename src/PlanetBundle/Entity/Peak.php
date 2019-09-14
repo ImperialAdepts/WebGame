@@ -5,6 +5,8 @@ use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use PlanetBundle\Entity\Resource\Blueprint;
+
 /**
  * Peak - map unit
  *

@@ -17,7 +17,7 @@ class BlueprintRepository extends \Doctrine\ORM\EntityRepository
 	{
 		return $this->getEntityManager()
 			->createQuery(
-				"SELECT b FROM PlanetBundle:Blueprint b WHERE b.description = '$name' ORDER BY b.id ASC"
+				"SELECT b FROM PlanetBundle:Resource\Blueprint b WHERE b.description = '$name' ORDER BY b.id ASC"
 			)
 			->getOneOrNullResult();
 	}
@@ -26,18 +26,25 @@ class BlueprintRepository extends \Doctrine\ORM\EntityRepository
     {
         return $this->getEntityManager()
             ->createQuery(
-                "SELECT b FROM PlanetBundle:Blueprint b ORDER BY b.id ASC"
+                "SELECT b FROM PlanetBundle:Resource\Blueprint b ORDER BY b.id ASC"
             )
             ->getResult();
     }
 
     public function getByUseCase($useCase)
     {
-        return $this->getEntityManager()
-            ->createQuery(
-                "SELECT b FROM PlanetBundle:Blueprint b WHERE b.useCases LIKE '%$useCase%' ORDER BY b.id ASC"
-            )
-            ->getResult();
+        $conceptRepository = new ConceptRepository();
+        $concepts = $conceptRepository->getByUseCase($useCase);
+
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select('blue')
+            ->from('PlanetBundle:Resource\Blueprint', 'blue')
+            ->where('blue.concept IN (?1)')
+            ->setParameter(1, $concepts)
+            ->orderBy('blue.description', 'ASC')
+        ;
+
+        return $qb->getQuery()->getResult();
     }
 
     public function getWarehouseable()
@@ -46,7 +53,7 @@ class BlueprintRepository extends \Doctrine\ORM\EntityRepository
         $portableUC = UseCaseEnum::PORTABLES;
         return $this->getEntityManager()
             ->createQuery(
-                "SELECT b FROM PlanetBundle:Blueprint b WHERE b.useCases LIKE '%$portableUC%' AND b.useCases NOT LIKE '%$buildingUC%' ORDER BY b.id ASC"
+                "SELECT b FROM PlanetBundle:Resource\Blueprint b WHERE b.useCases LIKE '%$portableUC%' AND b.useCases NOT LIKE '%$buildingUC%' ORDER BY b.id ASC"
             )
             ->getResult();
     }

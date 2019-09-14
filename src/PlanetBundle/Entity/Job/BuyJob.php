@@ -3,7 +3,7 @@
 namespace PlanetBundle\Entity\Job;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
-use PlanetBundle\Entity\Blueprint;
+use PlanetBundle\Entity\Resource\Blueprint;
 use AppBundle\Entity\Notification\ProjectNotification;
 use PlanetBundle\Entity\Region;
 use AppBundle\Entity\ResourceDeposit;
