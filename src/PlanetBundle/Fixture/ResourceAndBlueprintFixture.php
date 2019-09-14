@@ -30,7 +30,6 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
             foreach ($this->container->getParameter('default_blueprints') as $name => $blueprintData) {
                 $blueprint = $this->createBlueprint(
                     $name,
-                    $name,
                     $blueprintData['building_resource_requirements'],
                     $blueprintData['building_usecase_requirements'],
                     $blueprintData['constraints'],
@@ -72,11 +71,10 @@ class ResourceAndBlueprintFixture extends \Doctrine\Bundle\FixturesBundle\Fixtur
         $this->container = $container;
     }
 
-	private function createBlueprint($name, $resource, array $resourceRequirements = [], array $useCaseRequirements = [], array $constraints = [], array $useCases = [], array $traitValues = [])
+	private function createBlueprint($name, array $resourceRequirements = [], array $useCaseRequirements = [], array $constraints = [], array $useCases = [], array $traitValues = [])
 	{
 		$blueprint = new PlanetEntity\Resource\Blueprint();
 		$blueprint->setDescription($name);
-		$blueprint->setResourceDescriptor($resource);
 
 		$workSheet = new PlanetEntity\Resource\WorkSheet();
 		$workSheet->setInputs($resourceRequirements);
