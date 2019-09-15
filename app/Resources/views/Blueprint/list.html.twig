@@ -1,3 +1,17 @@
-{% for concept in concepts %}
-    <a href="{{ path('blueprint_create', {'conceptName': concept}) }}">{{ concept }}</a>,
-{% endfor %}
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Blueprints{% endblock %}
+{% block pagedescription %}{% endblock %}
+
+{% block body %}
+    <ul>
+        {% for concept, data in concepts %}
+            <li>
+                <strong>{{ data.label }}</strong> <a href="{{ path('blueprint_create', {'conceptName': concept}) }}">create new</a>,<br>
+                {% for blueprint in data.blueprints %}
+                    {{ blueprint }},
+                {% endfor %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

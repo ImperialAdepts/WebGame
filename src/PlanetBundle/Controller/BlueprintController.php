@@ -30,8 +30,18 @@ class BlueprintController extends Controller
 	public function dashboardAction(Request $request)
 	{
 	    $conceptRepository = new ConceptRepository();
+
+	    $concepts = [];
+        foreach ($conceptRepository->getAll() as $conceptName) {
+            $conceptNames = explode('\\', $conceptName);
+            $conceptLastName = array_pop($conceptNames);
+
+            $concepts[$conceptName]['label'] = $conceptLastName;
+            $concepts[$conceptName]['blueprints'] = $this->get('repo_blueprint')->findBy(['concept' => $conceptName]);
+	    }
+
         return $this->render('Blueprint/list.html.twig', [
-            'concepts' => $conceptRepository->getAll(),
+            'concepts' => $concepts,
         ]);
 	}
 
@@ -55,7 +65,11 @@ class BlueprintController extends Controller
             return $this->redirectToRoute('blueprint_dashboard');
         }
 
+        $conceptNames = explode('\\', $conceptName);
+        $conceptLastName = array_pop($conceptNames);
+
         return $this->render('Blueprint/create.html.twig', [
+            'concept' => $conceptLastName,
             'createForm' => $form->createView(),
         ]);
     }
