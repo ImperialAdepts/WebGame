@@ -70,7 +70,7 @@ class TeamFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Con
         return [
             PlanetMapFixture::class,
             PlanetsFixture::class,
-            ResourceAndBlueprintFixture::class,
+            PlayersFixture::class,
         ];
     }
 }

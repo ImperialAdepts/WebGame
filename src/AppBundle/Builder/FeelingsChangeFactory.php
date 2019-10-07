@@ -6,7 +6,7 @@ use AppBundle\Entity\Human;
 use AppBundle\Entity\Human\Event;
 use AppBundle\Entity\Human\FeelingChange;
 use PlanetBundle\Builder\RegionBuilder;
-use PlanetBundle\Entity\Blueprint;
+use PlanetBundle\Entity\Resource\Blueprint;
 use Doctrine\ORM\EntityManager;
 
 class FeelingsChangeFactory

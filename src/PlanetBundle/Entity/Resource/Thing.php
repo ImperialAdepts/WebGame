@@ -18,7 +18,7 @@ class Thing extends ResourceDescriptor
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="description", type="string", unique=true, length=255)
+	 * @ORM\Column(name="description", type="string", nullable=true, length=255)
 	 */
 	private $description;
 
@@ -27,7 +27,7 @@ class Thing extends ResourceDescriptor
      *
      * @ORM\Column(name="use_cases", type="json_array")
      */
-    private $useCases;
+    private $useCases = [];
 
     /**
      * @var int|float[] traitName => value

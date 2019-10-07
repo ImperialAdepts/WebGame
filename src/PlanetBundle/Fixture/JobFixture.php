@@ -42,8 +42,8 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
             $this->container->get('dynamic_planet_connector')->setPlanet($planet, true);
             $manager = $this->container->get('doctrine')->getManager('planet');
 
-            $farmingBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TYPE_FARMING);
-            $productionBlueprints = $manager->getRepository(PlanetEntity\Blueprint::class)->getByUseCase(UseCaseEnum::TYPE_PRODUCTION);
+            $farmingBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::TYPE_FARMING);
+            $productionBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::TYPE_PRODUCTION);
             $settlements = $manager->getRepository(PlanetEntity\Settlement::class)->findAll();
             /** @var PlanetEntity\Settlement $settlement */
             foreach ($settlements as $settlement) {
@@ -99,7 +99,7 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
     {
         return [
             PlanetsFixture::class,
-            ResourceAndBlueprintFixture::class,
+            PlayersFixture::class,
             TeamFixture::class,
         ];
     }

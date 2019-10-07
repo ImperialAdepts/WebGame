@@ -54,7 +54,7 @@ class AbstractResourceDepositAdapter
     }
 
     /**
-     * @return PlanetEntity\Blueprint
+     * @return PlanetEntity\Resource\Blueprint
      */
     public function getBlueprint()
     {

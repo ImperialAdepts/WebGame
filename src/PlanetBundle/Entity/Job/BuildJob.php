@@ -2,7 +2,7 @@
 
 namespace PlanetBundle\Entity\Job;
 
-use PlanetBundle\Entity\Blueprint;
+use PlanetBundle\Entity\Resource\Blueprint;
 use AppBundle\Entity\Notification\ProjectNotification;
 use Doctrine\ORM\Mapping as ORM;
 use PlanetBundle\Entity\Resource\WorkSheetDependencyTrait;

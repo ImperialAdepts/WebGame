@@ -123,27 +123,29 @@ class PlanetBuilder
 	    $regions = $this->planetEntityManager->getRepository(PlanetEntity\Region::class)->findPeakSurrounding($administrativeCenter);
 	    $settlement = $this->createSettlement($regions, $administrativeCenter, $human);
 
-		$colonyPack = $this->colonyPacks[$colonizationPack];
-
-		foreach ($this->colonyPacks as $colonyPackName => $colonyPack) {
-            foreach ($colonyPack['deposits'] as $resource => $data) {
-                $deposit = new PlanetEntity\PeakDeposit();
-
-                if (isset($data['blueprint']) && ($blueprint = $this->getBlueprint($data['blueprint'])) != null) {
-                    $descriptor = new PlanetEntity\Resource\Thing();
-                    $descriptor->setAmount($data['amount']);
-                    $descriptor->setBlueprint($blueprint);
-                } else {
-                    $descriptor = new PlanetEntity\Resource\Resource();
-                    $descriptor->setType($resource);
-                    $descriptor->setAmount($data['amount']);
-                }
-                $deposit->setPeak($settlement->getAdministrativeCenter());
-                $descriptor->setDeposit($deposit);
-                $this->planetEntityManager->persist($deposit);
-                $this->planetEntityManager->persist($descriptor);
-            }
-        }
+//		$colonyPack = $this->colonyPacks[$colonizationPack];
+//
+//		foreach ($this->colonyPacks as $colonyPackName => $colonyPack) {
+//            foreach ($colonyPack['deposits'] as $resource => $data) {
+//                $deposit = new PlanetEntity\PeakDeposit();
+//
+//                /** @var PlanetEntity\Resource\Blueprint $blueprint */
+//                if (isset($data['blueprint']) && ($blueprint = $this->getBlueprint($data['blueprint'])) != null) {
+//                    $descriptor = new PlanetEntity\Resource\Thing();
+//                    $descriptor->setAmount(isset($data['amount']) ? $data['amount'] : 1);
+//                    $descriptor->setBlueprint($blueprint);
+//                    $descriptor->setDescription($blueprint->getConcept() . " - " . $blueprint->getDescription());
+//                } else {
+//                    $descriptor = new PlanetEntity\Resource\Resource();
+//                    $descriptor->setType($resource);
+//                    $descriptor->setAmount(isset($data['amount']) ? $data['amount'] : 1);
+//                }
+//                $deposit->setPeak($settlement->getAdministrativeCenter());
+//                $descriptor->setDeposit($deposit);
+//                $this->planetEntityManager->persist($deposit);
+//                $this->planetEntityManager->persist($descriptor);
+//            }
+//        }
 	}
 
 	public function createSettlement(array $regions, PlanetEntity\Peak $administrativeCenter, PlanetEntity\Human $human) {

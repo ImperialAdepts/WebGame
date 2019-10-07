@@ -1,7 +1,7 @@
 <?php
 namespace PlanetBundle\Form;
 
-use PlanetBundle\Entity\Blueprint;
+use PlanetBundle\Entity\Resource\Blueprint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Button;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;

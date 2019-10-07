@@ -68,7 +68,7 @@ class FirstPlanetPhaseFixture extends Fixture implements ContainerAwareInterface
             PlanetsFixture::class,
             PersonFixture::class,
             PlanetMapFixture::class,
-            ResourceAndBlueprintFixture::class,
+            PlayersFixture::class,
             TeamFixture::class,
             JobFixture::class,
         ];
