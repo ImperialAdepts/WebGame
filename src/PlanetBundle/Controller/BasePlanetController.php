@@ -35,6 +35,8 @@ class BasePlanetController extends Controller
         $settlement = $this->human->getCurrentPeakPosition()->getSettlement();
 
         $this->get('twig')->addGlobal('planet', $this->planet);
+        $this->get('twig')->addGlobal('human', $this->human);
+        $this->get('twig')->addGlobal('globalHuman', $this->globalHuman);
         $this->get('twig')->addGlobal('settlement', $settlement);
         $this->get('twig')->addGlobal('settlementOwner', $this->getDoctrine()->getManager()
             ->getRepository(Entity\Human::class)->find($settlement->getOwner()->getGlobalHumanId()));

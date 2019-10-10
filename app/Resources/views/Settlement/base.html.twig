@@ -20,15 +20,58 @@
             float: left;
             width: 100%;
         }
+
     </style>
-    <ul id="submenu">
-        <li><a href="{{ path('map_dashboard') }}">Map</a></li>
-        <li><a href="{{ path('settlement_dashboard', { 'settlement': settlement.id }) }}">Dashboard</a></li>
-        <li><a href="{{ path('settlement_jobs', { 'settlement': settlement.id }) }}">Jobs</a></li>
-        <li><a href="{{ path('settlement_buildings', { 'settlement': settlement.id }) }}">Buildings</a></li>
-        <li><a href="{{ path('settlement_housing', { 'settlement': settlement.id }) }}">Housing</a></li>
-        <li><a href="{{ path('settlement_warehouses', { 'settlement': settlement.id }) }}">Storage</a></li>
-        <li><a href="{{ path('trade_list', { 'settlement': settlement.id }) }}">Trade</a></li>
-    </ul>
+    <button id="show-hidden-menu-button" class="ui-state-default ui-corner-all" onclick="return false;">Show others</button>
+    <div class="menu-settlements toggler">
+        <ul>
+            <li style="width: 100%; height: 40px;">
+                <ul id="submenu">
+                    <li><a href="{{ path('map_dashboard') }}">Map</a></li>
+                    <li><a href="{{ path('settlement_dashboard', { 'settlement': settlement.id }) }}">Dashboard</a></li>
+                    <li><a href="{{ path('settlement_jobs', { 'settlement': settlement.id }) }}">Jobs</a></li>
+                    <li><a href="{{ path('settlement_buildings', { 'settlement': settlement.id }) }}">Buildings</a></li>
+                    <li><a href="{{ path('settlement_housing', { 'settlement': settlement.id }) }}">Housing</a></li>
+                    <li><a href="{{ path('settlement_warehouses', { 'settlement': settlement.id }) }}">Storage</a></li>
+                    <li><a href="{{ path('trade_list', { 'settlement': settlement.id }) }}">Trade</a></li>
+                </ul>
+            </li>
+        </ul>
+        <ul id="hidden-menu" class="effect">
+            {% for title in globalHuman.titles %}
+                {% if title.settlementPlanet == planet and title.settlementId != settlement.id %}
+                    <li style="width: 100%; height: 40px;">
+                        <strong>{{ title.name }}</strong> <a href="">Go to</a>
+                        <small>TODO: upravit urly</small>
+                        <ul id="submenu">
+                            <li><a href="{{ path('map_dashboard') }}">Map</a></li>
+                            <li><a href="{{ path('settlement_dashboard', { 'settlement': title.settlementId }) }}">Dashboard</a></li>
+                            <li><a href="{{ path('settlement_jobs', { 'settlement': title.settlementId }) }}">Jobs</a></li>
+                            <li><a href="{{ path('settlement_buildings', { 'settlement': title.settlementId }) }}">Buildings</a></li>
+                            <li><a href="{{ path('settlement_housing', { 'settlement': title.settlementId }) }}">Housing</a></li>
+                            <li><a href="{{ path('settlement_warehouses', { 'settlement': title.settlementId }) }}">Storage</a></li>
+                            <li><a href="{{ path('trade_list', { 'settlement': title.settlementId }) }}">Trade</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+                {% if title.settlementPlanet != planet and title.settlementId != settlement.id %}
+                    <li style="width: 100%; height: 40px;">
+                        <strong>{{ title.name }} at {{ title.settlementPlanet.name }}</strong> <a href="">Go to</a>
+                        <small>TODO: upravit urly</small>
+                        <ul id="submenu">
+                            <li><a href="{{ path('map_dashboard') }}">Map</a></li>
+                            <li><a href="{{ path('settlement_dashboard', { 'settlement': title.settlementId }) }}">Dashboard</a></li>
+                            <li><a href="{{ path('settlement_jobs', { 'settlement': title.settlementId }) }}">Jobs</a></li>
+                            <li><a href="{{ path('settlement_buildings', { 'settlement': title.settlementId }) }}">Buildings</a></li>
+                            <li><a href="{{ path('settlement_housing', { 'settlement': title.settlementId }) }}">Housing</a></li>
+                            <li><a href="{{ path('settlement_warehouses', { 'settlement': title.settlementId }) }}">Storage</a></li>
+                            <li><a href="{{ path('trade_list', { 'settlement': title.settlementId }) }}">Trade</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+
     <div id="subbody">{% block subbody %}{% endblock %}</div>
 {% endblock %}
