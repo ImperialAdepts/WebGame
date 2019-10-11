@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block pagedescription %}
-	Person journal, currently in <a href="{{ path('settlement_dashboard', {'settlement': planetHuman.currentPeakPosition.settlement.id}) }}">{{ planetHuman.currentPeakPosition.settlement.name }}</a>
+	Person journal, currently in <a href="{{ path('settlement_dashboard', {'planet': human.planet.id, 'settlement': planetHuman.currentPeakPosition.settlement.id}) }}">{{ planetHuman.currentPeakPosition.settlement.name }}</a>
 {% endblock %}
 
 {% block body %}
@@ -35,7 +35,7 @@
 		<h4>{{ title.name }},
 			<a href="#{{ modalId }}" rel="modal:open"><small>succession line</small></a>
 			{% if attribute(title, 'settlementId') is defined %}
-				, <small><a href="{{ path('settlement_dashboard', {'settlement': title.settlementId }) }}">go to settlement</a></small>
+				, <small><a href="{{ path('settlement_dashboard', {'planet': title.settlementPlanet.id, 'settlement': title.settlementId }) }}">go to settlement</a></small>
 			{% endif %}
 		</h4>
 

@@ -4,6 +4,7 @@
 {% block pagedescription %}ruled by {{ settlementManager.name }}, owned by {{ settlementOwner.name }}{% endblock %}
 
 {% block body %}
+    {% import _self as this_macros %}
     <style type="text/css">
         #submenu {
             width: 100%;
@@ -26,47 +27,16 @@
     <div class="menu-settlements toggler">
         <ul>
             <li style="width: 100%; height: 40px;">
-                <ul id="submenu">
-                    <li><a href="{{ path('map_dashboard') }}">Map</a></li>
-                    <li><a href="{{ path('settlement_dashboard', { 'settlement': settlement.id }) }}">Dashboard</a></li>
-                    <li><a href="{{ path('settlement_jobs', { 'settlement': settlement.id }) }}">Jobs</a></li>
-                    <li><a href="{{ path('settlement_buildings', { 'settlement': settlement.id }) }}">Buildings</a></li>
-                    <li><a href="{{ path('settlement_housing', { 'settlement': settlement.id }) }}">Housing</a></li>
-                    <li><a href="{{ path('settlement_warehouses', { 'settlement': settlement.id }) }}">Storage</a></li>
-                    <li><a href="{{ path('trade_list', { 'settlement': settlement.id }) }}">Trade</a></li>
-                </ul>
+                {{ this_macros.settlementMenu(planet, settlement.id) }}
             </li>
         </ul>
         <ul id="hidden-menu" class="effect">
             {% for title in globalHuman.titles %}
-                {% if title.settlementPlanet == planet and title.settlementId != settlement.id %}
+                {% if title.settlementId != settlement.id %}
                     <li style="width: 100%; height: 40px;">
                         <strong>{{ title.name }}</strong> <a href="">Go to</a>
                         <small>TODO: upravit urly</small>
-                        <ul id="submenu">
-                            <li><a href="{{ path('map_dashboard') }}">Map</a></li>
-                            <li><a href="{{ path('settlement_dashboard', { 'settlement': title.settlementId }) }}">Dashboard</a></li>
-                            <li><a href="{{ path('settlement_jobs', { 'settlement': title.settlementId }) }}">Jobs</a></li>
-                            <li><a href="{{ path('settlement_buildings', { 'settlement': title.settlementId }) }}">Buildings</a></li>
-                            <li><a href="{{ path('settlement_housing', { 'settlement': title.settlementId }) }}">Housing</a></li>
-                            <li><a href="{{ path('settlement_warehouses', { 'settlement': title.settlementId }) }}">Storage</a></li>
-                            <li><a href="{{ path('trade_list', { 'settlement': title.settlementId }) }}">Trade</a></li>
-                        </ul>
-                    </li>
-                {% endif %}
-                {% if title.settlementPlanet != planet and title.settlementId != settlement.id %}
-                    <li style="width: 100%; height: 40px;">
-                        <strong>{{ title.name }} at {{ title.settlementPlanet.name }}</strong> <a href="">Go to</a>
-                        <small>TODO: upravit urly</small>
-                        <ul id="submenu">
-                            <li><a href="{{ path('map_dashboard') }}">Map</a></li>
-                            <li><a href="{{ path('settlement_dashboard', { 'settlement': title.settlementId }) }}">Dashboard</a></li>
-                            <li><a href="{{ path('settlement_jobs', { 'settlement': title.settlementId }) }}">Jobs</a></li>
-                            <li><a href="{{ path('settlement_buildings', { 'settlement': title.settlementId }) }}">Buildings</a></li>
-                            <li><a href="{{ path('settlement_housing', { 'settlement': title.settlementId }) }}">Housing</a></li>
-                            <li><a href="{{ path('settlement_warehouses', { 'settlement': title.settlementId }) }}">Storage</a></li>
-                            <li><a href="{{ path('trade_list', { 'settlement': title.settlementId }) }}">Trade</a></li>
-                        </ul>
+                        {{ this_macros.settlementMenu(title.settlementPlanet, title.settlementId) }}
                     </li>
                 {% endif %}
             {% endfor %}
@@ -75,3 +45,15 @@
 
     <div id="subbody">{% block subbody %}{% endblock %}</div>
 {% endblock %}
+
+{% macro settlementMenu(planet, settlement) %}
+    <ul id="submenu">
+        <li><a href="{{ path('map_dashboard', { 'planet': planet.id, 'settlement': settlement }) }}">Map</a></li>
+        <li><a href="{{ path('settlement_dashboard', { 'planet': planet.id, 'settlement': settlement }) }}">Dashboard</a></li>
+        <li><a href="{{ path('settlement_jobs', { 'planet': planet.id, 'settlement': settlement }) }}">Jobs</a></li>
+        <li><a href="{{ path('settlement_buildings', { 'planet': planet.id, 'settlement': settlement }) }}">Buildings</a></li>
+        <li><a href="{{ path('settlement_housing', { 'planet': planet.id, 'settlement': settlement }) }}">Housing</a></li>
+        <li><a href="{{ path('settlement_warehouses', { 'planet': planet.id, 'settlement': settlement }) }}">Storage</a></li>
+        <li><a href="{{ path('trade_list', { 'planet': planet.id, 'settlement': settlement }) }}">Trade</a></li>
+    </ul>
+{% endmacro %}

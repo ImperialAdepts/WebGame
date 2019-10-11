@@ -22,6 +22,7 @@
 				{% for buildingBlueprint in blueprints %}
 					<li>
 						<a href="{{ path('settlement_change_type', {
+							'planet': planet.id,
 							'settlement': settlement.id,
 							'blueprint': buildingBlueprint.id
 						}) }}" >

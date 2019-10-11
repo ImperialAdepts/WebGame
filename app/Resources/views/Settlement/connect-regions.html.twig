@@ -3,6 +3,7 @@
 	<ul>
 		{% for region in nearRegions %}
 			<a href="{{ path('settlement_connect_regions', {
+				'planet': planet.id,
 				'settlement': settlement.id,
 				'peakC': region.peakCenter.id,
 				'peakL': region.peakLeft.id,

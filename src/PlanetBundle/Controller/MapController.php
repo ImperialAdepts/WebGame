@@ -6,6 +6,7 @@ use AppBundle\Builder\PlanetBuilder;
 use AppBundle\Descriptor\TimeTransformator;
 use AppBundle\Entity\Human\EventDataTypeEnum;
 use AppBundle\Entity\Human\EventTypeEnum;
+use AppBundle\Entity\SolarSystem\Planet;
 use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Tracy\Debugger;
 
 /**
- * @Route(path="map")
+ * @Route(path="planet-{planet}/map")
  */
 class MapController extends BasePlanetController
 {
@@ -174,12 +175,12 @@ class MapController extends BasePlanetController
     /**
      * @Route("/planet_info", name="map_current_planet")
      */
-    public function currentPlanetInfoAction(Request $request)
+    public function currentPlanetInfoAction(Planet $planet, Request $request)
     {
         $currentPhase = TimeTransformator::timestampToPhase($this->getPlanet(), time());
         return $this->render('Map/planet_info.html.twig', [
-            'planet' => $this->getPlanet(),
-            'endphase' => TimeTransformator::phaseToTimestamp($this->getPlanet(), $currentPhase+1),
+            'planet' => $planet,
+            'endphase' => TimeTransformator::phaseToTimestamp($planet, $currentPhase+1),
         ]);
     }
 

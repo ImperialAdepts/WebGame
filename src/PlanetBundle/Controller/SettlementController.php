@@ -11,6 +11,7 @@ use AppBundle\Entity\Human\Event;
 use AppBundle\Entity\Human\EventDataTypeEnum;
 use AppBundle\Entity\Human\EventTypeEnum;
 use AppBundle\Entity\Human\SettlementTitle;
+use AppBundle\Entity\SolarSystem\Planet;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
 use PlanetBundle\Entity;
 use AppBundle\Repository\JobRepository;
@@ -27,14 +28,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Tracy\Debugger;
 
 /**
- * @Route(path="settlement")
+ * @Route(path="planet-{planet}/settlement")
  */
 class SettlementController extends BasePlanetController
 {
 	/**
 	 * @Route("/{settlement}/dashboard", name="settlement_dashboard")
 	 */
-	public function dashboardAction(Entity\Settlement $settlement, Request $request)
+	public function dashboardAction(Planet $planet, Entity\Settlement $settlement, Request $request)
 	{
         /** @var PlanetBuilder $builder */
         $builder = $this->get('planet_builder');
@@ -57,6 +58,7 @@ class SettlementController extends BasePlanetController
 
         $cutOffForm = $this->createFormBuilder(null, [
             'action' => $this->generateUrl('settlement_cut', [
+                'planet' => $planet->getId(),
                 'settlement' => $settlement->getId(),
             ]),
         ])
