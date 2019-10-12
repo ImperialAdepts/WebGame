@@ -6,6 +6,7 @@ use AppBundle\Entity\Human;
 use AppBundle\Entity\PlanetAndPhaseTrait;
 use AppBundle\Entity\SolarSystem\Planet;
 use Doctrine\ORM\Mapping as ORM;
+use PlanetBundle\Entity\SettlementDependencyTrait;
 
 /**
  * @ORM\Table(name="human_events")

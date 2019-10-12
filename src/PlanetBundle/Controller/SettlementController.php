@@ -417,4 +417,19 @@ class SettlementController extends BasePlanetController
             'settlement' => $settlement->getId(),
         ]);
     }
+
+    /**
+     * @Route("/events", name="settlement_events")
+     */
+    public function actionEventList(Planet $planet, Entity\Settlement $settlement) {
+        $events = $this->getDoctrine()->getManager()
+            ->getRepository(Event::class)->findBy([
+                'planet' => $planet->getId(),
+//                'settlement' => $settlement->getId(),
+            ]);
+
+        return $this->render('Event/list-fragment.html.twig', [
+            'events' => $events,
+        ]);
+    }
 }

@@ -48,6 +48,37 @@
     </div>
 
     <div id="subbody">{% block subbody %}{% endblock %}</div>
+
+    <script type="text/javascript">
+        $(function() {
+            $('.log-modal').each(function() {
+                $(this).on('click', function () {
+                    console.log(this);
+                    var $link = $(this);
+                    var $dialog = $('<div class="log-modal-dialog"></div>')
+                        .load($link.attr('href'))
+                        .dialog({
+                            autoOpen: false,
+                            title: $link.attr('title'),
+                            width: 800,
+                            height: 500
+                        });
+
+                    $dialog.dialog('open');
+                    return false;
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 {% endblock %}
 
 {% macro settlementMenu(planet, settlement) %}
@@ -59,5 +90,6 @@
         <li><a href="{{ path('settlement_housing', { 'planet': planet.id, 'settlement': settlement }) }}">Housing</a></li>
         <li><a href="{{ path('settlement_warehouses', { 'planet': planet.id, 'settlement': settlement }) }}">Storage</a></li>
         <li><a href="{{ path('trade_list', { 'planet': planet.id, 'settlement': settlement }) }}">Trade</a></li>
+        <li><a href="{{ path('settlement_events', { 'planet': planet.id, 'settlement': settlement }) }}" class="log-modal">Log</a></li>
     </ul>
 {% endmacro %}

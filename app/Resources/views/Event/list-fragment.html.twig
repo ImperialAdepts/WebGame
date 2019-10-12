@@ -1,0 +1,13 @@
+<div>
+	<ul>
+		{% for event in events %}
+			<li>
+				<strong>{{ event.description }}</strong>
+				<span>
+                    {{ dump(event.descriptionData) }}
+                </span>
+				<small>{{ event.time|date('H:i') }} phase {{ event.planetPhase }} on {{ event.planet.name }}</small>
+			</li>
+		{% endfor %}
+	</ul>
+</div>
