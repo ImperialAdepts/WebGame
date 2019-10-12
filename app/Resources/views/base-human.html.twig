@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block planetinfo  %}
-    {{ render(controller('PlanetBundle:Map:currentPlanetInfo')) }}
+    {{ render(controller('PlanetBundle:Map:currentPlanetInfo', { 'planet': planet.id })) }}
 {% endblock %}
 
 {% block playerinfo  %}

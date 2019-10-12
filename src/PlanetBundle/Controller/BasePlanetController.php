@@ -25,28 +25,34 @@ class BasePlanetController extends Controller
 	/** @var Entity\Human */
 	protected $globalHuman;
 
+
+
     public function init() {
         $this->globalHuman = $this->get('logged_user_settings')->getHuman();
-        $this->planet = $this->globalHuman->getPlanet();
+
+        $planetId = $this->get('request_stack')->getCurrentRequest()->get('planet');
+        if ($planetId != null) {
+            $this->planet = $this->get('repo_planet')->find($planetId);
+        } else {
+            $this->planet = $this->globalHuman->getPlanet();
+        }
 
         $this->container->get('dynamic_planet_connector')->setPlanet($this->planet, true);
-        $this->human = $this->getDoctrine()->getManager('planet')
-            ->getRepository(PlanetEntity\Human::class)->getByGlobalHuman($this->globalHuman);
-        $settlement = $this->human->getCurrentPeakPosition()->getSettlement();
+
+        if ($this->globalHuman->getPlanet() == $this->planet) {
+            $this->human = $this->getDoctrine()->getManager('planet')
+                ->getRepository(PlanetEntity\Human::class)->getByGlobalHuman($this->globalHuman);
+
+            if ($this->human === null) {
+                throw new NotFoundHttpException("Human was not found on this planet");
+            }
+        }
 
         $this->get('twig')->addGlobal('planet', $this->planet);
-        $this->get('twig')->addGlobal('settlement', $settlement);
-        $this->get('twig')->addGlobal('settlementOwner', $this->getDoctrine()->getManager()
-            ->getRepository(Entity\Human::class)->find($settlement->getOwner()->getGlobalHumanId()));
-        $this->get('twig')->addGlobal('settlementManager', $this->getDoctrine()->getManager()
-            ->getRepository(Entity\Human::class)->find($settlement->getManager()->getGlobalHumanId()));
+        $this->get('twig')->addGlobal('globalHuman', $this->globalHuman);
         $events = $this->getDoctrine()->getManager()
             ->getRepository(Entity\Human\Event::class)->getThisPhaseReport($this->globalHuman);
         $this->get('twig')->addGlobal('events', $events);
-
-        if ($this->human === null) {
-            throw new NotFoundHttpException("Human was not found on this planet");
-        }
     }
 
     /**

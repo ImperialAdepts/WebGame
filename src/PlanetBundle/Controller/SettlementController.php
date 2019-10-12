@@ -11,6 +11,7 @@ use AppBundle\Entity\Human\Event;
 use AppBundle\Entity\Human\EventDataTypeEnum;
 use AppBundle\Entity\Human\EventTypeEnum;
 use AppBundle\Entity\Human\SettlementTitle;
+use AppBundle\Entity\SolarSystem\Planet;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
 use PlanetBundle\Entity;
 use AppBundle\Repository\JobRepository;
@@ -23,18 +24,42 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Tracy\Debugger;
 
 /**
- * @Route(path="settlement")
+ * @Route(path="planet-{planet}/settlement-{settlement}")
  */
 class SettlementController extends BasePlanetController
 {
-	/**
-	 * @Route("/{settlement}/dashboard", name="settlement_dashboard")
+    public function init()
+    {
+        parent::init();
+
+        $settlementId = $this->get('request_stack')->getCurrentRequest()->get('settlement');
+        if ($settlementId != null) {
+            $settlement = $this->get('repo_settlement')->find($settlementId);
+        } else {
+            $settlement = $this->human->getCurrentPeakPosition()->getSettlement();
+        }
+
+        if ($settlement === null) {
+            throw new NotFoundHttpException("There is no such settlement with id " . $settlementId);
+        }
+
+        $this->get('twig')->addGlobal('currentSettlement', $settlement);
+        $this->get('twig')->addGlobal('currentSettlementManager', $this->getDoctrine()->getManager()
+                ->getRepository(Human::class)->find($settlement->getManager()->getGlobalHumanId()));
+        $this->get('twig')->addGlobal('currentSettlementOwner', $this->getDoctrine()->getManager()
+            ->getRepository(Human::class)->find($settlement->getOwner()->getGlobalHumanId()));
+    }
+
+
+    /**
+	 * @Route("/dashboard", name="settlement_dashboard")
 	 */
-	public function dashboardAction(Entity\Settlement $settlement, Request $request)
+	public function dashboardAction(Planet $planet, Entity\Settlement $settlement, Request $request)
 	{
         /** @var PlanetBuilder $builder */
         $builder = $this->get('planet_builder');
@@ -57,6 +82,7 @@ class SettlementController extends BasePlanetController
 
         $cutOffForm = $this->createFormBuilder(null, [
             'action' => $this->generateUrl('settlement_cut', [
+                'planet' => $planet->getId(),
                 'settlement' => $settlement->getId(),
             ]),
         ])
@@ -95,7 +121,7 @@ class SettlementController extends BasePlanetController
 	}
 
     /**
-     * @Route("/{settlement}/warehouses", name="settlement_warehouses")
+     * @Route("/warehouses", name="settlement_warehouses")
      */
     public function warehouseContentAction(Entity\Settlement $settlement, Request $request)
     {
@@ -111,7 +137,7 @@ class SettlementController extends BasePlanetController
     }
 
     /**
-     * @Route("/{settlement}/buildings", name="settlement_buildings")
+     * @Route("/buildings", name="settlement_buildings")
      */
     public function buildingsAction(Entity\Settlement $settlement, Request $request)
     {
@@ -130,7 +156,7 @@ class SettlementController extends BasePlanetController
     }
 
     /**
-     * @Route("/{settlement}/housing", name="settlement_housing")
+     * @Route("/housing", name="settlement_housing")
      */
     public function housingAction(Entity\Settlement $settlement, Request $request)
     {
@@ -218,7 +244,7 @@ class SettlementController extends BasePlanetController
     }
 
     /**
-     * @Route("/connectableRegions/{settlement}", name="settlement_connectable_regions")
+     * @Route("/connectableRegions", name="settlement_connectable_regions")
      */
     public function connectableRegionsAction(Entity\Settlement $settlement, Request $request)
     {
@@ -246,7 +272,7 @@ class SettlementController extends BasePlanetController
     }
 
     /**
-     * @Route("/{settlement}/jobs", name="settlement_jobs")
+     * @Route("/jobs", name="settlement_jobs")
      */
     public function jobsAction(Entity\Settlement $settlement, Request $request)
     {
@@ -266,7 +292,7 @@ class SettlementController extends BasePlanetController
     }
 
     /**
-     * @Route("/connectRegions/{settlement}/{peakC}_{peakL}_{peakR}", name="settlement_connect_regions")
+     * @Route("/connectRegions/{peakC}_{peakL}_{peakR}", name="settlement_connect_regions")
      */
     public function connectRegionsAction(Entity\Settlement $settlement, Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
     {
@@ -281,6 +307,7 @@ class SettlementController extends BasePlanetController
         ]);
 
         return $this->redirectToRoute('settlement_dashboard', [
+            'planet' => $this->planet->getId(),
             'settlement' => $settlement->getId(),
         ]);
     }
@@ -307,12 +334,13 @@ class SettlementController extends BasePlanetController
         ]);
 
         return $this->redirectToRoute('settlement_dashboard', [
+            'planet' => $this->planet->getId(),
             'settlement' => $settlement->getId(),
         ]);
     }
 
     /**
-     * @Route("/changeType/{settlement}to{blueprint}", name="settlement_change_type")
+     * @Route("/changeType/to{blueprint}", name="settlement_change_type")
      */
     public function changeTypeAction(Entity\Settlement $settlement, Entity\Blueprint $blueprint, Request $request)
     {
@@ -325,12 +353,13 @@ class SettlementController extends BasePlanetController
         ]);
 
         return $this->redirectToRoute('settlement_dashboard', [
+            'planet' => $this->planet->getId(),
             'settlement' => $settlement->getId(),
         ]);
     }
 
     /**
-     * @Route("/cut-to-half/{settlement}", name="settlement_cut")
+     * @Route("/cut-to-half", name="settlement_cut")
      */
     public function cutOutHalfAction(Entity\Settlement $settlement, Request $request) {
         $remainsRegions = [];
@@ -383,7 +412,24 @@ class SettlementController extends BasePlanetController
         $this->get('doctrine.orm.entity_manager')->flush();
 
         return $this->redirectToRoute('settlement_dashboard', [
+
+            'planet' => $this->planet->getId(),
             'settlement' => $settlement->getId(),
+        ]);
+    }
+
+    /**
+     * @Route("/events", name="settlement_events")
+     */
+    public function actionEventList(Planet $planet, Entity\Settlement $settlement) {
+        $events = $this->getDoctrine()->getManager()
+            ->getRepository(Event::class)->findBy([
+                'planet' => $planet->getId(),
+//                'settlement' => $settlement->getId(),
+            ]);
+
+        return $this->render('Event/list-fragment.html.twig', [
+            'events' => $events,
         ]);
     }
 }

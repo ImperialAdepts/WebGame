@@ -1,7 +1,5 @@
 {% extends 'Settlement/base.html.twig' %}
 
-{% block pagedescription %}ruled by {{ settlementManager.name }}, owned by {{ settlementOwner.name }}{% endblock %}
-
 {% block subbody %}
     <strong>Food consumption</strong>
     {{ dump(foodConsumption) }}
@@ -19,6 +17,7 @@
                         <div class="buildings-modal modal" id="{{ modalId }}">
                             <a href="#" rel="modal:close">Close</a>
                             {{ render(controller('PlanetBundle:Region:availableBuildings', {
+                                'planet': planet.id,
                                 'peakC': region.peakCenter.id,
                                 'peakL': region.peakLeft.id,
                                 'peakR': region.peakRight.id
@@ -42,11 +41,13 @@
     </table>
 
     {{ render(controller('PlanetBundle:Region:availableSettlementTypes', {
+        'planet': planet.id,
         'settlement': settlement.id,
     })) }}
 
     {{ form(cutOffForm) }}
     {{ render(controller('PlanetBundle:Settlement:connectableRegions', {
+        'planet': planet.id,
         'settlement': settlement.id
     })) }}
 {% endblock %}

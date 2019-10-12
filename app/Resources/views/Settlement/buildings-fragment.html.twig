@@ -30,6 +30,7 @@
 						<div class="buildings-modal modal" id="{{ modalId }}">
 							<a href="#" rel="modal:close">Close</a>
 							{{ render(controller('PlanetBundle:Region:availableBuildings', {
+								'planet': planet.id,
 								'peakC': region.peakCenter.id,
 								'peakL': region.peakLeft.id,
 								'peakR': region.peakRight.id
