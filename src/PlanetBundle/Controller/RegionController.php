@@ -5,6 +5,7 @@ namespace PlanetBundle\Controller;
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity\Human\EventDataTypeEnum;
 use AppBundle\Entity\Human\EventTypeEnum;
+use AppBundle\Entity\SolarSystem\Planet;
 use PlanetBundle\Entity;
 use PlanetBundle\Form\BuildersFormType;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,12 +13,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Tracy\Debugger;
 
 /**
- * @Route(path="region")
+ * @Route(path="planet-{planet}/region-{peakC}_{peakL}_{peakR}")
  */
 class RegionController extends BasePlanetController
 {
 	/**
-	 * @Route("/build-plan/{blueprint}/{peakC}_{peakL}_{peakR}", name="region_build_plan_settlement")
+	 * @Route("/build-plan/{blueprint}", name="region_build_plan_settlement")
 	 */
 	public function buildPlanAction(Entity\Blueprint $blueprint, Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
 	{
@@ -44,12 +45,13 @@ class RegionController extends BasePlanetController
         ]);
 
 		return $this->redirectToRoute('settlement_dashboard', [
+            'planet' => $this->planet->getId(),
 			'settlement' => $region->getSettlement()->getId(),
 		]);
 	}
 
     /**
-     * @Route("/build/{blueprint}/{peakC}_{peakL}_{peakR}/{count}", name="region_build_settlement")
+     * @Route("/build/{blueprint}/{count}", name="region_build_settlement")
      */
     public function buildAction(Entity\Blueprint $blueprint, Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, $count = 1, Request $request)
     {
@@ -78,7 +80,7 @@ class RegionController extends BasePlanetController
 
     /**
      * popup
-     * @Route("/available-buildings/{peakC}_{peakL}_{peakR}", name="region_build_availability")
+     * @Route("/available-buildings", name="region_build_availability")
      */
     public function availableBuildingsAction(Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
     {
@@ -89,6 +91,7 @@ class RegionController extends BasePlanetController
             'builderForm' => $this->createForm(BuildersFormType::class, [], [
                 'blueprints' => $blueprints,
                 'action' => $this->generateUrl('region_buildform_handler', [
+                    'planet' => $this->planet->getId(),
                     'peakC' => $peakC->getId(),
                     'peakL' => $peakL->getId(),
                     'peakR' => $peakR->getId(),
@@ -100,9 +103,9 @@ class RegionController extends BasePlanetController
     }
 
     /**
-     * @Route("/builder-form-handler/{peakC}_{peakL}_{peakR}", name="region_buildform_handler")
+     * @Route("/builder-form-handler", name="region_buildform_handler")
      */
-    public function handleBuilderFormAction(Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
+    public function handleBuilderFormAction(Planet $planet, Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
     {
         /** @var Entity\Region $region */
         $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
@@ -111,6 +114,7 @@ class RegionController extends BasePlanetController
         $form = $this->createForm(BuildersFormType::class, $request->get('builders_form'), [
             'blueprints' => $blueprints,
             'action' => $this->generateUrl('region_buildform_handler', [
+                'planet' => $planet->getId(),
                 'peakC' => $peakC->getId(),
                 'peakL' => $peakL->getId(),
                 'peakR' => $peakR->getId(),
@@ -145,12 +149,13 @@ class RegionController extends BasePlanetController
         }
 
         return $this->redirectToRoute('settlement_dashboard', [
+            'planet' => $this->planet->getId(),
             'settlement' => $region->getSettlement()->getId(),
         ]);
     }
 
     /**
-     * @Route("/available-settlements/{peakC}_{peakL}_{peakR}", name="region_settlement_availability")
+     * @Route("/available-settlements", name="region_settlement_availability")
      */
     public function availableSettlementsAction(Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
     {
@@ -183,14 +188,13 @@ class RegionController extends BasePlanetController
     }
 
 	/**
-	 * @Route("/screen/{regionUuid}", name="region_deposit_screening")
+	 * @Route("/screen", name="region_deposit_screening")
 	 */
-	public function depositScreeningAction($regionUuid, Request $request)
+	public function depositScreeningAction(Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
 	{
 	    /** @var Entity\Region $region */
-		$region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->getByUuid($regionUuid);
+        $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
 
-		srand($regionUuid);
 		$deposits = [];
 		if (random_int(1, 10) == 1) {
 			$lightDeposit = new Entity\OreDeposit();

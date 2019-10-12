@@ -198,6 +198,7 @@ class MapController extends BasePlanetController
         ]);
 
 		return $this->redirectToRoute('settlement_dashboard', [
+            'planet' => $this->planet->getId(),
 		    'settlement' => $administrativeCenter->getSettlement()->getId(),
 		]);
 	}

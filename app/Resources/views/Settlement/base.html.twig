@@ -1,7 +1,7 @@
 {% extends 'base-human.html.twig' %}
 
-{% block pagetitle %}{{ settlement.name }}{% endblock %}
-{% block pagedescription %}ruled by {{ settlementManager.name }}, owned by {{ settlementOwner.name }}{% endblock %}
+{% block pagetitle %}{{ currentSettlement.name }}{% endblock %}
+{% block pagedescription %}ruled by {{ currentSettlementManager.name }}, owned by {{ currentSettlementOwner.name }}{% endblock %}
 
 {% block body %}
     {% import _self as this_macros %}
@@ -34,7 +34,11 @@
             {% for title in globalHuman.titles %}
                 {% if title.settlementId != settlement.id %}
                     <li style="width: 100%; height: 40px;">
-                        <strong>{{ title.name }}</strong> <a href="">Go to</a>
+                        <strong>{{ title.name }}</strong>
+                        {% if title.settlementPlanet != planet %}
+                            <small>on {{ title.settlementPlanet.name }}</small>
+                        {% endif %}
+                        <a href="">Go to</a>
                         <small>TODO: upravit urly</small>
                         {{ this_macros.settlementMenu(title.settlementPlanet, title.settlementId) }}
                     </li>

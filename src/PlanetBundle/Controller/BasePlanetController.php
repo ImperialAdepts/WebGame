@@ -42,13 +42,6 @@ class BasePlanetController extends Controller
         if ($this->globalHuman->getPlanet() == $this->planet) {
             $this->human = $this->getDoctrine()->getManager('planet')
                 ->getRepository(PlanetEntity\Human::class)->getByGlobalHuman($this->globalHuman);
-            $settlement = $this->human->getCurrentPeakPosition()->getSettlement();
-            $this->get('twig')->addGlobal('settlement', $settlement);
-            $this->get('twig')->addGlobal('human', $this->human);
-            $this->get('twig')->addGlobal('settlementOwner', $this->getDoctrine()->getManager()
-                ->getRepository(Entity\Human::class)->find($settlement->getOwner()->getGlobalHumanId()));
-            $this->get('twig')->addGlobal('settlementManager', $this->getDoctrine()->getManager()
-                ->getRepository(Entity\Human::class)->find($settlement->getManager()->getGlobalHumanId()));
 
             if ($this->human === null) {
                 throw new NotFoundHttpException("Human was not found on this planet");
