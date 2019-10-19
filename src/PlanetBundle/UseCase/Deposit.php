@@ -1,11 +1,11 @@
 <?php
 namespace PlanetBundle\UseCase;
 
-trait EnergyDeposit
+trait Deposit
 {
     /** @var float */
-    private $maxCapacity;
+    private $spaceCapacity;
 
     /** @var float */
-    private $storedEnergy;
+    private $weightCapacity;
 }
