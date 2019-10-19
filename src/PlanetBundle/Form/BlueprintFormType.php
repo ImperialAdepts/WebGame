@@ -20,8 +20,11 @@ class BlueprintFormType extends AbstractType
         ]);
         $structure = ConceptToBlueprintAdapter::getStructure($options['concept']);
         foreach ($structure as $partName => $useCase) {
-            if (isset($useCase['class'])) {
-                $builder->add($partName, BlueprintChoiceType::class, ['useCase' => $useCase['class']]);
+//            Debugger::dump($partName);
+//            Debugger::dump($useCase);
+
+            if (isset($useCase['partClass'])) {
+                $builder->add($partName, BlueprintChoiceType::class, ['useCase' => $useCase['partClass']['value']]);
             } else {
                 $builder->add($partName, TextType::class);
             }

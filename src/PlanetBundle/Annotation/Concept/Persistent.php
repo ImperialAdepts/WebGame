@@ -20,4 +20,12 @@ class Persistent
     {
         $this->type = $type;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 }

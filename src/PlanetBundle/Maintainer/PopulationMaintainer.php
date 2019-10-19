@@ -13,6 +13,7 @@ use PlanetBundle\Entity\Region;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\EntityManager;
 use PlanetBundle\Entity\RegionDeposit;
+use PlanetBundle\Entity\Resource\Thing;
 
 class PopulationMaintainer
 {
@@ -20,7 +21,7 @@ class PopulationMaintainer
         $peoples = People::in($resourceHandler);
         $births = [];
         foreach ($peoples as $people) {
-            $births[$people->getResourceDescriptor()] = round($people->getDeposit()->getAmount() * $people->getFertilityRate() / 20) + 1;
+            $births[$people->getResourceDescriptor()] = 1;//round($people->getDeposit()->getAmount() * $people->getFertilityRate() / 20) + 1;
         }
         return $births;
     }
@@ -34,17 +35,10 @@ class PopulationMaintainer
 
         $unusedHumansAdapter = People::findByDescriptor($resourceHandler, ResourceDescriptorEnum::PEOPLE);
         if ($unusedHumansAdapter == null) {
-            if ($resourceHandler instanceof Region) {
-                $unusedHumansDeposit = new RegionDeposit();
-                $unusedHumansDeposit->setResourceDescriptor(ResourceDescriptorEnum::PEOPLE);
-                $unusedHumansDeposit->setRegion($resourceHandler);
-            }
-            if ($resourceHandler instanceof Peak) {
-                $unusedHumansDeposit = new PeakDeposit();
-                $unusedHumansDeposit->setResourceDescriptor(ResourceDescriptorEnum::PEOPLE);
-                $unusedHumansDeposit->setPeak($resourceHandler);
-            }
-            $unusedHumansDeposit->setAmount($birthCount);
+            $unusedHumans = new Thing();
+            $unusedHumans->setDescription(ResourceDescriptorEnum::PEOPLE);
+            $unusedHumans->setDeposit($resourceHandler->getDeposit());
+            $unusedHumans->setAmount($birthCount);
         } else {
             $unusedHumansAdapter->getDeposit()->setAmount($unusedHumansAdapter->getDeposit()->getAmount() + $birthCount);
         }

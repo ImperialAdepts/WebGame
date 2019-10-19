@@ -64,14 +64,19 @@ class BlueprintChoiceType extends AbstractType
             $data = $event->getData();
             $form = $event->getForm();
 
+            $form->add('blueprint', BlueprintFormType::class, [
+                'concept' => $data['createFromConcept'],
+                'required' => true,
+            ]);
+
             // checks if the Product object is "new"
             // If no data is passed to the form, the data is "null".
             // This should be considered a new "Product"
             if (isset($data['createFromConcept']) && !empty($data['createFromConcept'])) {
-                $form->add('blueprint', BlueprintFormType::class, [
-                    'concept' => $data['createFromConcept'],
-                    'required' => true,
-                ]);
+//                $form->add('blueprint', BlueprintFormType::class, [
+//                    'concept' => $data['createFromConcept'],
+//                    'required' => true,
+//                ]);
             }
         });
     }
@@ -80,6 +85,7 @@ class BlueprintChoiceType extends AbstractType
     {
         parent::configureOptions($resolver);
         $resolver->setRequired('useCase');
+        $resolver->setAllowedTypes('useCase', 'string');
         $resolver->setDefaults([
             'data_class' => BlueprintDTO::class,
         ]);

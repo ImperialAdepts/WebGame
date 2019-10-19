@@ -16,6 +16,7 @@ use PlanetBundle\Entity\Resource\Blueprint;
 class Peak implements ResourcefullInterface
 {
     use SettlementDependencyTrait;
+    use DepositDependencyTrait;
 
 	/**
 	 * @var integer
@@ -157,14 +158,6 @@ class Peak implements ResourcefullInterface
     public function setOreDeposits(OreDeposit $oreDeposits)
     {
         $this->oreDeposits = $oreDeposits;
-    }
-
-    /**
-     * @return PeakDeposit[]
-     */
-    public function getDeposit()
-    {
-        return $this->deposit;
     }
 
     /**

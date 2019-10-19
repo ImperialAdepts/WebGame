@@ -26,6 +26,11 @@ class ConceptToBlueprintAdapter
     public static function getStructure($conceptClass) {
         $structure = [];
         $reader = new AnnotationReader();
+
+        if (!class_exists($conceptClass)) {
+            return $structure;
+        }
+
         $reflectionClass = new \ReflectionClass($conceptClass);
         foreach ($reflectionClass->getProperties() as $prop) {
             $persistentAnnotation = $reader->getPropertyAnnotation($prop, Persistent::class);
@@ -39,11 +44,10 @@ class ConceptToBlueprintAdapter
             }
 
             if ($partAnnotation != null) {
-                $structure[$prop->getName()]['class'] = $partAnnotation->getUseCase();
+                $structure[$prop->getName()]['partClass'] = $partAnnotation->getUseCase();
             }
             if ($persistentAnnotation != null) {
                 $structure[$prop->getName()]['blueprintValue'] = $persistentAnnotation->getType();
-                $structure[$prop->getName()]['value'] = $persistentAnnotation->getType();
             }
             if ($changebleAnnotation != null) {
                 $structure[$prop->getName()]['descriptorValue'] = $changebleAnnotation->getType();
