@@ -1,13 +1,17 @@
 <?php
 namespace PlanetBundle\UseCase;
 
+use PlanetBundle\Annotation\Concept\Part;
 use PlanetBundle\UseCase;
 
 trait LongRangeWeaponSpaceMount
 {
     use SpaceMountedStructurePart;
 
-    /** @var UseCase\LongRangeWeapon */
+    /**
+     * @var UseCase\LongRangeWeapon
+     * @Part(UseCase\LongRangeWeapon::class)
+     */
     private $longRangeWeapon;
 
     /**

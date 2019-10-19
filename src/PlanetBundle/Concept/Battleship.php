@@ -10,7 +10,7 @@ class Battleship extends SpaceShip
     use UseCase\LongRangeWeaponSpaceMount;
 
     public function getFlyingRange() {
-        return $this->getSublightEngine()->getThrust()/$this->getWeight();
+        return $this->getSublightEngine()->getMaxThrust()/$this->getWeight();
     }
 
     public function getWeight() {

@@ -1,27 +1,31 @@
 <?php
 namespace PlanetBundle\UseCase;
 
+use PlanetBundle\Annotation\Concept\Persistent;
 use PlanetBundle\UseCase;
 
 trait EnergySource
 {
-    /** @var float */
-    private $kWhPerYear;
+    /**
+     * @var float
+     * @Persistent("float")
+     */
+    private $kWhPerYearProduction;
 
     /**
      * @return float
      */
-    public function getKWhPerYear()
+    public function getKWhPerYearProduction()
     {
-        return $this->kWhPerYear;
+        return $this->kWhPerYearProduction;
     }
 
     /**
-     * @param float $kWhPerYear
+     * @param float $kWhPerYearProduction
      */
-    public function setKWhPerYear($kWhPerYear)
+    public function setKWhPerYearProduction($kWhPerYearProduction)
     {
-        $this->kWhPerYear = $kWhPerYear;
+        $this->kWhPerYearProduction = $kWhPerYearProduction;
     }
 
 

@@ -4,6 +4,7 @@ namespace PlanetBundle\Entity\Resource;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use Doctrine\ORM\Mapping as ORM;
+use PlanetBundle\Concept\Concept;
 
 /**
  * Blueprint
@@ -152,6 +153,13 @@ class Blueprint
 
     }
 
+    public function getConceptAdapter($currentData) {
+        $conceptName = 'PlanetBundle\\Concept\\' . $this->getConcept();
+        /** @var Concept $adapter */
+        $adapter = new $conceptName();
+        $adapter->injectChangeableData($currentData);
+        return $adapter;
+    }
 
 }
 

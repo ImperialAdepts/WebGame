@@ -1,27 +1,30 @@
 <?php
 namespace PlanetBundle\UseCase;
 
-use PlanetBundle\UseCase;
+use PlanetBundle\Annotation\Concept\Persistent;
 
 trait SublightEngine
 {
-    /** @var float */
-    private $thrust;
+    /**
+     * @var float N/s
+     * @Persistent("float")
+     */
+    private $maxThrust;
 
     /**
      * @return float
      */
-    public function getThrust()
+    public function getMaxThrust()
     {
-        return $this->thrust;
+        return $this->maxThrust;
     }
 
     /**
-     * @param float $thrust
+     * @param float $maxThrust
      */
-    public function setThrust($thrust)
+    public function setMaxThrust($maxThrust)
     {
-        $this->thrust = $thrust;
+        $this->maxThrust = $maxThrust;
     }
 
 }

@@ -1,11 +1,15 @@
 <?php
 namespace PlanetBundle\UseCase;
 
+use PlanetBundle\Annotation\Concept\Part;
 use PlanetBundle\UseCase;
 
 trait SpaceStructure
 {
-    /** @var UseCase\EnergySource */
+    /**
+     * @var UseCase\EnergySource
+     * @Part(UseCase\EnergySource::class)
+     */
     private $energySource;
 
     /**

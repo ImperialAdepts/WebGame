@@ -1,6 +1,11 @@
 <?php
 namespace PlanetBundle\Concept;
 
+use Doctrine\Common\Annotations\AnnotationException;
+use Doctrine\Common\Annotations\AnnotationReader;
+use PlanetBundle\Annotation\Concept\Changeble;
+use PlanetBundle\Annotation\Concept\Part;
+use PlanetBundle\Annotation\Concept\Persistent;
 use Symfony\Component\Debug\Debug;
 use Tracy\Debugger;
 
@@ -20,15 +25,28 @@ class ConceptToBlueprintAdapter
 
     public static function getStructure($conceptClass) {
         $structure = [];
-
+        $reader = new AnnotationReader();
         $reflectionClass = new \ReflectionClass($conceptClass);
         foreach ($reflectionClass->getProperties() as $prop) {
-            preg_match_all('|@var (.*?) \*/|', $prop->getDocComment(), $annotations);
-            $class = $annotations[1][0];
-            if ($class != null && $class !== $conceptClass && !in_array($class, ['int', 'float'])) {
-                $structure[$prop->getName()]['class'] = 'PlanetBundle\\'.$class;
-            } else {
-                $structure[$prop->getName()]['value'] = $prop->getDocComment();
+            $persistentAnnotation = $reader->getPropertyAnnotation($prop, Persistent::class);
+            $changebleAnnotation = $reader->getPropertyAnnotation($prop, Changeble::class);
+            $partAnnotation = $reader->getPropertyAnnotation($prop, Part::class);
+
+            if (($partAnnotation != null && $persistentAnnotation != null)
+                || ($partAnnotation != null && $changebleAnnotation != null)
+                || ($changebleAnnotation != null && $persistentAnnotation != null)) {
+                throw new AnnotationException("There can be only one ConceptAnnotation in {$prop->getDeclaringClass()}#{$prop->getName()}");
+            }
+
+            if ($partAnnotation != null) {
+                $structure[$prop->getName()]['class'] = $partAnnotation->getUseCase();
+            }
+            if ($persistentAnnotation != null) {
+                $structure[$prop->getName()]['blueprintValue'] = $persistentAnnotation->getType();
+                $structure[$prop->getName()]['value'] = $persistentAnnotation->getType();
+            }
+            if ($changebleAnnotation != null) {
+                $structure[$prop->getName()]['descriptorValue'] = $changebleAnnotation->getType();
             }
         }
 
@@ -42,11 +60,11 @@ class ConceptToBlueprintAdapter
     public static function getPartsByUseCase($object, $useCase) {
         $parts = [];
 
+        $reader = new AnnotationReader();
         $reflectionClass = new \ReflectionClass($object);
         foreach ($reflectionClass->getProperties() as $prop) {
-            preg_match_all('|@var (.*?) \*/|', $prop->getDocComment(), $annotations);
-            $object = $annotations[1][0];
-            if ($object != null && in_array($useCase, class_uses($object))) {
+            $partAnnotation = $reader->getPropertyAnnotation($prop, Part::class);
+            if ($partAnnotation != null && $object != null && $partAnnotation->getUseCase() == $useCase) {
                 $parts[] = $prop->getValue($object);
             }
         }

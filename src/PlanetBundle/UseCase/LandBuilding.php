@@ -1,17 +1,22 @@
 <?php
 namespace PlanetBundle\UseCase;
 
+use PlanetBundle\Annotation\Concept\Persistent;
+
 trait LandBuilding
 {
-    /** @var float */
-    private $m2;
+    /**
+     * @var float m2
+     * @Persistent("float")
+     */
+    private $area;
 
     /**
      * @return float
      */
-    public function getM2()
+    public function getArea()
     {
-        return $this->m2;
+        return $this->area;
     }
 
 }
