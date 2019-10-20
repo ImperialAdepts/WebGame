@@ -19,4 +19,11 @@ trait LandBuilding
         return $this->area;
     }
 
+    /**
+     * @param float $area
+     */
+    public function setArea($area)
+    {
+        $this->area = $area;
+    }
 }

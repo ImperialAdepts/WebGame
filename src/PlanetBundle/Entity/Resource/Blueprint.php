@@ -189,7 +189,10 @@ class Blueprint
     public function getPartBlueprint($partName)
     {
         $parts = $this->getPartsByUsage();
-        return $parts[$partName];
+        if (isset($parts[$partName])) {
+            return $parts[$partName];
+        }
+        return null;
     }
 
     public function setPartsByUsage($parts)
@@ -217,10 +220,11 @@ class Blueprint
 
     }
 
-    public function getConceptAdapter($currentData) {
-        $conceptName = 'PlanetBundle\\Concept\\' . $this->getConcept();
+    public function getConceptAdapter($currentData = []) {
+        $conceptName = $this->getConcept();
         /** @var Concept $adapter */
         $adapter = new $conceptName();
+        $adapter->setBlueprintSettings($this);
         $adapter->injectChangeableData($currentData);
         return $adapter;
     }

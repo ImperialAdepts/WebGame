@@ -6,6 +6,7 @@ use AppBundle\Entity\Human\EventDataTypeEnum;
 use AppBundle\Entity\Human\EventTypeEnum;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
 use PlanetBundle\Concept\Battleship;
+use PlanetBundle\Concept\Concept;
 use PlanetBundle\Concept\ConceptToBlueprintAdapter;
 use PlanetBundle\Concept\Reactor;
 use PlanetBundle\Form\BlueprintAdapter;
@@ -56,14 +57,17 @@ class BlueprintController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var BlueprintAdapter $blueprint */
-            $blueprint = $form->getData();
+            /** @var BlueprintAdapter $blueprintAdapter */
+            $blueprintAdapter = $form->getData();
+            $blueprint = new PlanetEntity\Resource\Blueprint();
+            $blueprint->setConcept($conceptName);
+            $blueprintAdapter->setIntoEntity($blueprint);
 
-            $this->get('doctrine.orm.planet_entity_manager')->persist($blueprint->getBlueprintEntity());
+            $this->get('doctrine.orm.planet_entity_manager')->persist($blueprint);
             $this->get('doctrine.orm.planet_entity_manager')->flush();
 
-            $this->addFlash('done', "Blueprint {$blueprint->getName()} created");
-            return $this->redirectToRoute('blueprint_dashboard');
+            $this->addFlash('done', "Blueprint {$blueprint->getDescription()} created");
+            return $this->redirectToRoute('blueprint_edit', ['blueprint' => $blueprint->getId()]);
         }
 
         $conceptNames = explode('\\', $conceptName);
@@ -96,27 +100,36 @@ class BlueprintController extends Controller
         ]);
 
         $availableBlueprints = [];
-        $partForms = [];
-        $conceptRepository = new ConceptRepository();
         foreach (ConceptToBlueprintAdapter::getParts($blueprint->getConcept()) as $partName => $useCase) {
             $availableBlueprints[$partName] = $this->get('repo_blueprint')->getByUseCase($useCase);
+        }
 
-//            $partForms[$partName] = $this->createForm(ChoiceType::class, [
-//                'multiple' => false,
-//                'expanded' => false,
-//                'required' => true,
-//                'choices' => $conceptRepository->getByUseCase($useCase),
-//                'choices_as_values' => true,
-//                'choice_label' => function ($choice) {
-//                    return $choice;
-//                },
-//            ])->createView();
+        $testPlanet = new GlobalEntity\SolarSystem\Planet();
+        $testPlanet->setOrbitPeriod(2000);
+
+        // TODO: kontext naplnit informacemi od postavy hrace
+        /** @var Concept $concept */
+        $concept = $blueprint->getConceptAdapter();
+        $concept->addContext('planet', $testPlanet);
+
+        $statistics = [];
+        /**
+         * @var string $description
+         * @var \ReflectionMethod $method
+         */
+        foreach (ConceptToBlueprintAdapter::getDependentInformations($blueprint->getConcept()) as $description => $method) {
+            $args = [];
+            foreach ($method->getParameters() as $parameter) {
+                $args[] = $concept->getContext($parameter->getName());
+            }
+            $statistics[$description] = $method->invokeArgs($concept, $args);
         }
 
         return $this->render('Blueprint/edit-fragment.html.twig', [
             'blueprint' => $blueprint,
             'traitForm' => $blueprintTraitForm->createView(),
             'parts' => ConceptToBlueprintAdapter::getParts($blueprint->getConcept()),
+            'statistics' => $statistics,
             'availableBlueprints' => $availableBlueprints,
         ]);
     }

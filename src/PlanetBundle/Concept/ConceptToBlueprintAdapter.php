@@ -4,6 +4,7 @@ namespace PlanetBundle\Concept;
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use PlanetBundle\Annotation\Concept\Changeble;
+use PlanetBundle\Annotation\Concept\DependentInformation;
 use PlanetBundle\Annotation\Concept\Part;
 use PlanetBundle\Annotation\Concept\Persistent;
 use Symfony\Component\Debug\Debug;
@@ -85,6 +86,33 @@ class ConceptToBlueprintAdapter
         foreach (self::getStructure($conceptClass) as $traitName => $traitConstraints) {
             if (isset($traitConstraints['blueprintValue'])) {
                 yield $traitName => $traitConstraints['blueprintValue'];
+            }
+        }
+    }
+
+    /**
+     * @param $conceptClass
+     * @return string[] dependentInfo => \ReflectionMethod
+     * @throws AnnotationException
+     * @throws \ReflectionException
+     */
+    public static function getDependentInformations($conceptClass) {
+        $reader = new AnnotationReader();
+        if (!class_exists($conceptClass)) {
+            return [];
+        }
+
+        $reflectionClass = new \ReflectionClass($conceptClass);
+        foreach ($reflectionClass->getMethods() as $method) {
+            $dependentInfoAnnotation = $reader->getMethodAnnotation($method, DependentInformation::class);
+
+            if ($dependentInfoAnnotation != null) {
+                if ($dependentInfoAnnotation->getLabel() != null) {
+                    $label = $dependentInfoAnnotation->getLabel();
+                    yield $label['label'] => $method;
+                } else {
+                    yield $method->getShortName() => $method;
+                }
             }
         }
     }

@@ -5,6 +5,12 @@
 {% for partName, useCase in parts %}
     <div class="part">
         <strong>{{ partName }} ({{ useCase }})</strong>
+
+        {% for description, info in statistics %}
+            <dt>{{ description }}</dt>
+            <dd>{{ info }}</dd>
+        {% endfor %}
+
         {% if blueprint.getPartBlueprint(partName) is not null %}
             using <strong>{{ blueprint.getPartBlueprint(partName).description }}</strong>
         {% else %}

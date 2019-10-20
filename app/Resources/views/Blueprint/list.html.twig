@@ -9,7 +9,7 @@
             <li>
                 <strong>{{ data.label }}</strong> <a href="{{ path('blueprint_create', {'conceptName': concept}) }}">create new</a>,<br>
                 {% for blueprint in data.blueprints %}
-                    {{ blueprint }},
+                    <a href="{{ path('blueprint_edit', {'blueprint': blueprint.id }) }}">{{ blueprint }}</a>,
                 {% endfor %}
             </li>
         {% endfor %}
