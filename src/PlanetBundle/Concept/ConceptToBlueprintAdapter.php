@@ -61,6 +61,35 @@ class ConceptToBlueprintAdapter
         return $structure;
     }
 
+    /**
+     * @param $conceptClass
+     * @return string[] partName => partUseCase
+     * @throws AnnotationException
+     * @throws \ReflectionException
+     */
+    public static function getParts($conceptClass) {
+        foreach (self::getStructure($conceptClass) as $partName => $partSettings) {
+            if (isset($partSettings['partClass']) && isset($partSettings['partClass']['value'])) {
+                yield $partName => $partSettings['partClass']['value'];
+            }
+        }
+    }
+
+    /**
+     * @param $conceptClass
+     * @return string[] traitName => traitConstraints
+     * @throws AnnotationException
+     * @throws \ReflectionException
+     */
+    public static function getTraits($conceptClass) {
+        foreach (self::getStructure($conceptClass) as $traitName => $traitConstraints) {
+            if (isset($traitConstraints['blueprintValue'])) {
+                yield $traitName => $traitConstraints['blueprintValue'];
+            }
+        }
+    }
+
+
     public static function getPartsByUseCase($object, $useCase) {
         $parts = [];
 

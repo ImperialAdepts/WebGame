@@ -9,7 +9,7 @@ trait BlueprintDependencyTrait
     /**
      * @var Blueprint
      *
-     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Resource\Blueprint")
+     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Resource\Blueprint", cascade={"all"})
      * @ORM\JoinColumn(name="blueprint_id", referencedColumnName="id", nullable=false)
      */
     private $blueprint;

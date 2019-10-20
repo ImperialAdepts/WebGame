@@ -5,6 +5,7 @@ use PlanetBundle\Concept\ConceptToBlueprintAdapter;
 use PlanetBundle\Concept\Reactor;
 use PlanetBundle\Entity\Resource\Blueprint;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -16,20 +17,14 @@ class BlueprintFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', TextType::class, [
-        ]);
-        $structure = ConceptToBlueprintAdapter::getStructure($options['concept']);
-        foreach ($structure as $partName => $useCase) {
-//            Debugger::dump($partName);
-//            Debugger::dump($useCase);
-
-            if (isset($useCase['partClass'])) {
-                $builder->add($partName, BlueprintChoiceType::class, ['useCase' => $useCase['partClass']['value']]);
-            } else {
-                $builder->add($partName, TextType::class);
-            }
+        $builder->add('name', TextType::class, []);
+        $traits = ConceptToBlueprintAdapter::getTraits($options['concept']);
+        foreach ($traits as $traitName => $traitConstraints) {
+            $builder->add($traitName, TextType::class, [
+                'required' => true,
+            ]);
         }
-        $builder->add('concept', HiddenType::class, ['data' => $options['concept']]);
+        $builder->add('blueprintId', HiddenType::class);
         $builder->add('save', SubmitType::class);
     }
 
@@ -38,7 +33,8 @@ class BlueprintFormType extends AbstractType
         parent::configureOptions($resolver);
         $resolver->setRequired('concept');
         $resolver->setDefaults([
-            'data_class' => BlueprintDTO::class,
+            'data_class' => BlueprintAdapter::class,
+            'csrf_protection' => false,
         ]);
     }
 

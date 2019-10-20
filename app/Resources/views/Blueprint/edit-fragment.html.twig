@@ -1,0 +1,18 @@
+<div class="traits">
+    {{ form(traitForm) }}
+</div>
+
+{% for partName, useCase in parts %}
+    <div class="part">
+        <strong>{{ partName }} ({{ useCase }})</strong>
+        {% if blueprint.getPartBlueprint(partName) is not null %}
+            using <strong>{{ blueprint.getPartBlueprint(partName).description }}</strong>
+        {% else %}
+            <small>Blueprint missing</small>
+        {% endif %}
+        <small>Change blueprint to: </small>
+        {% for usableBlueprint in availableBlueprints[partName] %}
+            <a href="{{ path('blueprint_set_part', {'blueprintTo': blueprint.id, 'blueprint': usableBlueprint.id, 'part': partName }) }}">{{ usableBlueprint.description }}</a>
+        {% endfor %}
+    </div>
+{% endfor %}

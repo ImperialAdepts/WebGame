@@ -3,8 +3,10 @@
 namespace PlanetBundle\Entity\Resource;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use PlanetBundle\Concept\Concept;
+use Tracy\Debugger;
 
 /**
  * Blueprint
@@ -44,7 +46,19 @@ class Blueprint
      */
     private $concept;
 
-	/**
+    /**
+     * @var BlueprintPart[]
+     *
+     * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\Resource\BlueprintPart", mappedBy="parentBlueprint", cascade={"all"}, orphanRemoval=true)
+     */
+    private $parts;
+
+    public function __construct()
+    {
+        $this->parts = new ArrayCollection();
+    }
+
+    /**
 	 * Get id
 	 *
 	 * @return int
@@ -141,6 +155,56 @@ class Blueprint
     public function setConcept($concept)
     {
         $this->concept = $concept;
+    }
+
+    /**
+     * @return BlueprintPart[]
+     */
+    public function getParts()
+    {
+        return $this->parts;
+    }
+
+    /**
+     * @param BlueprintPart[] $parts
+     */
+    public function setParts($parts)
+    {
+        $this->parts = $parts;
+    }
+
+    public function getPartsByUsage()
+    {
+        $parts = [];
+        foreach ($this->getParts() as $blueprintPart) {
+            $parts[$blueprintPart->getUsagePlace()] = $blueprintPart->getBlueprint();
+        }
+        return $parts;
+    }
+
+    /**
+     * @param $partName
+     * @return Blueprint
+     */
+    public function getPartBlueprint($partName)
+    {
+        $parts = $this->getPartsByUsage();
+        return $parts[$partName];
+    }
+
+    public function setPartsByUsage($parts)
+    {
+        foreach ($parts as $usagePlace => $blueprint) {
+            $this->addPart($usagePlace, $blueprint);
+        }
+    }
+
+    public function addPart($usagePlace, Blueprint $blueprint) {
+        $part = new BlueprintPart();
+        $part->setParentBlueprint($this);
+        $part->setBlueprint($blueprint);
+        $part->setUsagePlace($usagePlace);
+        $this->getParts()->add($part);
     }
 
 	function __toString()

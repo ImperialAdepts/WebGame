@@ -8,10 +8,11 @@ use AppBundle\Fixture\ResourceAndBlueprintFixture;
 use PlanetBundle\Concept\Battleship;
 use PlanetBundle\Concept\ConceptToBlueprintAdapter;
 use PlanetBundle\Concept\Reactor;
-use PlanetBundle\Form\BlueprintDTO;
+use PlanetBundle\Form\BlueprintAdapter;
 use PlanetBundle\Form\BlueprintFormType;
 use PlanetBundle\Repository\ConceptRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -55,7 +56,7 @@ class BlueprintController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var BlueprintDTO $blueprint */
+            /** @var BlueprintAdapter $blueprint */
             $blueprint = $form->getData();
 
             $this->get('doctrine.orm.planet_entity_manager')->persist($blueprint->getBlueprintEntity());
@@ -71,6 +72,95 @@ class BlueprintController extends Controller
         return $this->render('Blueprint/create.html.twig', [
             'concept' => $conceptLastName,
             'createForm' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/edit/{blueprint}", name="blueprint_edit")
+     */
+    public function editAction(PlanetEntity\Resource\Blueprint $blueprint, Request $request)
+    {
+        return $this->render('Blueprint/edit.html.twig', [
+            'blueprint' => $blueprint,
+        ]);
+    }
+
+    /**
+     * @Route("/edit/{blueprint}", name="blueprint_edit_fragment", methods={"GET"})
+     */
+    public function editFragmentAction(PlanetEntity\Resource\Blueprint $blueprint, Request $request)
+    {
+        $blueprintTraitForm = $this->createForm(BlueprintFormType::class, new BlueprintAdapter($blueprint), [
+            'concept' => $blueprint->getConcept(),
+            'action' => $this->generateUrl('blueprint_edit_fragment_save'),
+        ]);
+
+        $availableBlueprints = [];
+        $partForms = [];
+        $conceptRepository = new ConceptRepository();
+        foreach (ConceptToBlueprintAdapter::getParts($blueprint->getConcept()) as $partName => $useCase) {
+            $availableBlueprints[$partName] = $this->get('repo_blueprint')->getByUseCase($useCase);
+
+//            $partForms[$partName] = $this->createForm(ChoiceType::class, [
+//                'multiple' => false,
+//                'expanded' => false,
+//                'required' => true,
+//                'choices' => $conceptRepository->getByUseCase($useCase),
+//                'choices_as_values' => true,
+//                'choice_label' => function ($choice) {
+//                    return $choice;
+//                },
+//            ])->createView();
+        }
+
+        return $this->render('Blueprint/edit-fragment.html.twig', [
+            'blueprint' => $blueprint,
+            'traitForm' => $blueprintTraitForm->createView(),
+            'parts' => ConceptToBlueprintAdapter::getParts($blueprint->getConcept()),
+            'availableBlueprints' => $availableBlueprints,
+        ]);
+    }
+
+    /**
+     * @Route("/save", name="blueprint_edit_fragment_save", methods={"POST"})
+     */
+    public function editFragmentSaveAction(Request $request)
+    {
+        $blueprintFormData = $request->get('blueprint_form');
+        /** @var PlanetEntity\Resource\Blueprint $blueprint */
+        $blueprint = $this->get('repo_blueprint')->find($blueprintFormData['blueprintId']);
+        $blueprintTraitForm = $this->createForm(BlueprintFormType::class, new BlueprintAdapter($blueprint), ['concept' => $blueprint->getConcept()]);
+
+        $blueprintTraitForm->handleRequest($request);
+
+        if ($blueprintTraitForm->isSubmitted() && $blueprintTraitForm->isValid()) {
+            /** @var BlueprintAdapter $blueprintAdapter */
+            $blueprintAdapter = $blueprintTraitForm->getData();
+            $blueprintAdapter->setIntoEntity($blueprint);
+
+            $this->get('doctrine.orm.planet_entity_manager')->persist($blueprint);
+            $this->get('doctrine.orm.planet_entity_manager')->flush();
+
+            $this->addFlash('done', "Blueprint {$blueprintAdapter->getName()} created");
+
+            return $this->redirectToRoute('blueprint_edit_fragment', [
+                'blueprint' => $blueprint->getId(),
+            ]);
+        }
+    }
+
+    /**
+     * @Route("/set-{blueprintTo}-into-{part}-{blueprint}", name="blueprint_set_part")
+     */
+    public function setBlueprintToPartAction(PlanetEntity\Resource\Blueprint $blueprintTo, PlanetEntity\Resource\Blueprint $blueprint, $part, Request $request)
+    {
+        $blueprintTo->addPart($part, $blueprint);
+
+        $this->get('doctrine.orm.planet_entity_manager')->persist($blueprintTo);
+        $this->get('doctrine.orm.planet_entity_manager')->flush();
+
+        return $this->redirectToRoute('blueprint_edit_fragment', [
+            'blueprint' => $blueprintTo->getId(),
         ]);
     }
 }

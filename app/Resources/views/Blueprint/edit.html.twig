@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Edit {{ blueprint.concept }} named {{ blueprint.description }}{% endblock %}
+{% block pagedescription %}<a href="{{ path('blueprint_dashboard') }}">back</a> {% endblock %}
+
+{% block body %}
+    {{ render(controller('PlanetBundle:Blueprint:editFragment', {
+        'blueprint': blueprint.id,
+    })) }}
+{% endblock %}
