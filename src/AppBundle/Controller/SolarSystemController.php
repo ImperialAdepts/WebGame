@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Builder\GalaxyBuilder;
+use AppBundle\Builder\SpaceSectorAddress;
 use AppBundle\Descriptor\TimeTransformator;
 use AppBundle\Entity\Human\EventTypeEnum;
 use AppBundle\EnumAlignmentType;
@@ -42,6 +44,24 @@ class SolarSystemController extends Controller
     public function systemDetailAction(Entity\SolarSystem\System $system)
     {
         return $this->render('Planet/solar-system.html.twig', [
+            'systemAddress' => $system->getSectorAddress(),
+            'system' => $system,
+            'sun' => $system->getCentralSun(),
+        ]);
+    }
+
+    /**
+     * @Route("/system-guess/{systemUUID}", name="solar_system_guess")
+     */
+    public function systemGuessAction($systemUUID)
+    {
+        /** @var Entity\Galaxy\SpaceSectorAddress $spaceAddress */
+        $spaceAddress = Entity\Galaxy\SpaceSectorAddress::decode($systemUUID);
+
+        $system = GalaxyBuilder::buildSystem($spaceAddress);
+
+        return $this->render('Planet/solar-system.html.twig', [
+            'systemAddress' => $systemUUID,
             'system' => $system,
             'sun' => $system->getCentralSun(),
         ]);

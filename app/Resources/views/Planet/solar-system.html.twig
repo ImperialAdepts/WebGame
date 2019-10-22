@@ -4,6 +4,7 @@
 
 {% block body %}
     {% import _self as this_macros %}
+    <a href="{{ path('galaxy_sector', {'addressCode': systemAddress }) }}">Sector map</a>
 
     {{ this_macros.planetInfo(sun) }}
 {% endblock %}

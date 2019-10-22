@@ -32,6 +32,12 @@ class System
 	private $systemName;
 
     /**
+     * @var string
+     * @ORM\Column(name="sector_address", type="string")
+     */
+    private $sectorAddress;
+
+    /**
      * @return int
      */
     public function getId()
@@ -77,6 +83,22 @@ class System
     public function setSystemName($systemName)
     {
         $this->systemName = $systemName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSectorAddress()
+    {
+        return $this->sectorAddress;
+    }
+
+    /**
+     * @param string $sectorAddress
+     */
+    public function setSectorAddress($sectorAddress)
+    {
+        $this->sectorAddress = $sectorAddress;
     }
 
 }

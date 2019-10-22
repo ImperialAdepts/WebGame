@@ -1,0 +1,9 @@
+<div style="padding: 1px; float: left;">
+    {% for x, line in sectors %}
+        {% for y, sector in line %}
+            {{ render(controller('AppBundle:Galaxy:sector', {'addressCode': sector.address.encode})) }}
+        {% endfor %}
+        <div style="clear: left"></div>
+    {% endfor %}
+</div>
+
