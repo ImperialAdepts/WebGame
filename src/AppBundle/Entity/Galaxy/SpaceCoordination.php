@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\Entity\Galaxy;
 
-class SpaceSectorCoordination
+class SpaceCoordination
 {
     /** @var integer */
     private $x;

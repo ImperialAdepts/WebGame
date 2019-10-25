@@ -51,17 +51,19 @@ class SolarSystemController extends Controller
     }
 
     /**
-     * @Route("/system-guess/{systemUUID}", name="solar_system_guess")
+     * @Route("/system-guess/{systemAddress}/{localGroupCoord}", name="solar_system_guess")
      */
-    public function systemGuessAction($systemUUID)
+    public function systemGuessAction($systemAddress, $localGroupCoord)
     {
-        /** @var Entity\Galaxy\SpaceSectorAddress $spaceAddress */
-        $spaceAddress = Entity\Galaxy\SpaceSectorAddress::decode($systemUUID);
+        /** @var Entity\Galaxy\SectorAddress $spaceAddress */
+        $spaceAddress = Entity\Galaxy\SectorAddress::decode($systemAddress);
+        $localGroupCoordinations = Entity\Galaxy\SpaceCoordination::decode($localGroupCoord);
 
-        $system = GalaxyBuilder::buildSystem($spaceAddress);
+        $sector = GalaxyBuilder::getSector($spaceAddress);
+        $system = Entity\Galaxy\LocalGroup::buildSystem($sector->getLocalGroup(), $localGroupCoordinations);
 
         return $this->render('Planet/solar-system.html.twig', [
-            'systemAddress' => $systemUUID,
+            'systemAddress' => $systemAddress,
             'system' => $system,
             'sun' => $system->getCentralSun(),
         ]);

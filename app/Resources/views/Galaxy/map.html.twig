@@ -1,9 +1,20 @@
-<div style="padding: 1px; float: left;">
-    {% for x, line in sectors %}
-        {% for y, sector in line %}
-            {{ render(controller('AppBundle:Galaxy:sector', {'addressCode': sector.address.encode})) }}
-        {% endfor %}
-        <div style="clear: left"></div>
-    {% endfor %}
-</div>
+{% import _self as this_macros %}
 
+{{ this_macros.localGroup(currentSector.localGroup) }}
+
+{% macro localGroup(localGroup) %}
+        {% for x, line in localGroup.systems %}
+                <div style="padding: 1px; float: left; border-color: #0088CC; border-width: 1px; border-style: solid;">
+                        {% for y, systemStack in line %}
+                                <div style="padding: 1px; float: left; border-color: #0088CC; border-width: 1px; border-style: solid; width: 40px; height: 40px;">
+                                        {% for z, system in systemStack %}
+                                                {% if system is not null %}
+                                                        <a href="{{ path('solar_system_guess', {'systemAddress': system.sectorAddress, 'localGroupCoord': system.localGroupCoordination}) }}" title="{{ system.systemName }}">{{ z }}</a>,
+                                                {% endif %}
+                                        {% endfor %}
+                                </div>
+                                <div style="clear: left"></div>
+                        {% endfor %}
+                </div>
+        {% endfor %}
+{% endmacro %}

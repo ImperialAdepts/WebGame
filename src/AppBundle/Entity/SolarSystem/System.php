@@ -38,6 +38,12 @@ class System
     private $sectorAddress;
 
     /**
+     * @var string
+     * @ORM\Column(name="local_group_coordination", type="string")
+     */
+    private $localGroupCoordination;
+
+    /**
      * @return int
      */
     public function getId()
@@ -99,6 +105,22 @@ class System
     public function setSectorAddress($sectorAddress)
     {
         $this->sectorAddress = $sectorAddress;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocalGroupCoordination()
+    {
+        return $this->localGroupCoordination;
+    }
+
+    /**
+     * @param string $localGroupCoordination
+     */
+    public function setLocalGroupCoordination($localGroupCoordination)
+    {
+        $this->localGroupCoordination = $localGroupCoordination;
     }
 
 }
