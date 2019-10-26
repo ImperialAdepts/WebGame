@@ -60,11 +60,11 @@ class LocalGroup
         }
 
         $system = new System();
-        $system->setSystemName(md5($localGroup->getSector()->getAddress()->encode().$coordination->encode()));
         $system->setSectorAddress($localGroup->getSector()->getAddress());
         $system->setLocalGroupCoordination($coordination);
 
         $sun = new Planet();
+        $sun->setSystem($system);
         $sun->setGravity(rand(20, 500));
         $sun->setDiameter(rand(200, 1000000000));
         $sun->setWeight(rand(100, 100000000));
@@ -72,6 +72,7 @@ class LocalGroup
 
         for ($i = 0; $i<rand(3, 20); $i++) {
             $satellite = new Planet();
+            $satellite->setSystem($system);
             $satellite->setGravity(rand(0.1, 50));
             $satellite->setDiameter(rand(200, 10000));
             $satellite->setWeight(rand(100, 100000));
@@ -79,6 +80,7 @@ class LocalGroup
 
             for ($y = 0; $y<rand(0, 3); $y++) {
                 $subsatellite = new Planet();
+                $subsatellite->setSystem($system);
                 $subsatellite->setGravity(rand(0.1, 5));
                 $subsatellite->setDiameter(rand(2, 100));
                 $subsatellite->setWeight(rand(10, 1000));

@@ -3,7 +3,7 @@
 {% block pagetitle %}{{ planet.name }}{% endblock %}
 {% block pagedescription %}Dashboard{% endblock %}
 {% block body %}
-	<a href="{{ path('solar_system_detail', { 'system': planet.system.id }) }}">{{ planet.system.systemName }}</a><br/><br/>
+	<a href="{{ path('solar_system_detail', { 'system': planet.system.id }) }}">{{ planet.system.name }}</a><br/><br/>
 
 	Gravity: {{ planet.gravity }}g<br/>
 	Phase {{ planet|phase }}<br/>

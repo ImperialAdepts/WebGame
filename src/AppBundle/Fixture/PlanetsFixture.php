@@ -30,7 +30,7 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
         $manager = $this->container->get('doctrine.orm.entity_manager');
 
 	    $solarSystemModel = new GeneralEntity\SolarSystem\System();
-	    $solarSystemModel->setSystemName("Our Solar system model");
+	    $solarSystemModel->setName("The solar system");
 	    $solarSystemModel->setSectorAddress(GeneralEntity\Galaxy\SectorAddress::createZeroSectorAddress());
 	    $solarSystemModel->setLocalGroupCoordination(new GeneralEntity\Galaxy\SpaceCoordination(0,0,1));
         $manager->persist($solarSystemModel);
@@ -63,7 +63,7 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
         $manager->persist($earth);
 
         $testSystem = new GeneralEntity\SolarSystem\System();
-        $testSystem->setSystemName("Testing system with mess");
+        $testSystem->setName("Mess");
         $testSystem->setSectorAddress(GeneralEntity\Galaxy\SectorAddress::createZeroSectorAddress());
         $testSystem->setLocalGroupCoordination(new GeneralEntity\Galaxy\SpaceCoordination(0,0,0));
         $manager->persist($testSystem);

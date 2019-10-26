@@ -3,6 +3,7 @@
 namespace AppBundle\Entity\SolarSystem;
 
 use AppBundle\UuidSerializer;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 /**
  * Planet
@@ -126,14 +127,31 @@ class Planet
      */
     private $nextUpdateTime = 0;
 
-	public function getName()
+    public function __construct()
+    {
+        $this->satelites = new ArrayCollection();
+    }
+
+    public function getName()
 	{
-		return UuidSerializer\UuidName::getPlanetName([
-		    $this->id,
-            $this->type,
-            $this->weight,
-            $this->orbitDiameter,
-        ]);
+	    if ($this->getSystem()->getCentralSun() === $this) {
+	        return $this->getSystem()->getName() . " star";
+        }
+	    $planetNumber = 0;
+	    foreach ($this->getSystem()->getCentralSun()->getSatelites() as $planet) {
+	        $planetNumber++;
+	        if ($planet === $this) {
+                return $this->getSystem()->getName() . " " . UuidSerializer\UuidName::convertToRomanNumber($planetNumber);
+            }
+	        $moonNumber = 0;
+            foreach ($planet->getSatelites() as $moon) {
+                $moonNumber++;
+                if ($moon === $this) {
+                    return $this->getSystem()->getName() . " " . UuidSerializer\UuidName::convertToRomanNumber($planetNumber).chr(96+$moonNumber);
+                }
+            }
+        }
+	    return $this->getSystem()->getName() . " noname";
 	}
 
     /**
@@ -169,7 +187,7 @@ class Planet
     }
 
     /**
-     * @return mixed
+     * @return System
      */
     public function getSystem()
     {
@@ -177,9 +195,9 @@ class Planet
     }
 
     /**
-     * @param mixed $system
+     * @param System $system
      */
-    public function setSystem($system)
+    public function setSystem(System $system)
     {
         $this->system = $system;
     }
@@ -410,9 +428,9 @@ class Planet
      * @param Planet shine source
      * @return float in kW per m2
      */
-    public function getShinePowerFromSource(Planet $planet) {
-        return $this->getDiameter()*$this->getWeight()/($distance*$distance);
-    }
+//    public function getShinePowerFromSource(Planet $planet) {
+//        return $this->getDiameter()*$this->getWeight()/($distance*$distance);
+//    }
 
     /**
      * @return int

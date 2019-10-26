@@ -1,3 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}
+    {% if currentSystem is defined %}
+        {{ currentSystem.name }}
+    {% else %}
+        {{ currentSector.address.encode }}
+    {% endif %}
+{% endblock %}
+
+{% block body %}
 {% import _self as this_macros %}
 
 <style type="text/css">
@@ -38,6 +49,9 @@
         /*border-width: 1px;*/
         /*border-style: dashed;*/
     }
+    body div#content {
+        width: 1400px;
+    }
 </style>
 
 {% for line in sectors %}
@@ -51,6 +65,8 @@
     </div>
 {% endfor %}
 
+{% endblock %}
+
 {% macro localGroup(localGroup, currentSystem = null) %}
         {% for x, line in localGroup.systems %}
                 <div style="padding: 1px; float: left;">
@@ -61,7 +77,7 @@
                                                         <a class="systemSign"
                                                                 {% if currentSystem is not null and system.sectorAddress == currentSystem.sectorAddress %}id="current-system"{% endif %}
                                                                 href="{{ path('solar_system_guess', {'systemAddress': system.sectorAddress.encode, 'localGroupCoord': system.localGroupCoordination.encode}) }}"
-                                                                title="{{ z }}: {{ system.systemName }}">&#x2742;</a>
+                                                                title="{{ z }}: {{ system.name }}">&#x2742;</a>
                                                 {% endif %}
                                         {% endfor %}
                                 </div>
