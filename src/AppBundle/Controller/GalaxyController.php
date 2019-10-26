@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use AppBundle\Entity;
 use PlanetBundle\Entity as PlanetEntity;
+use Tracy\Debugger;
 
 /**
  * @Route(path="galaxy")
@@ -21,8 +22,11 @@ class GalaxyController extends Controller
 	 */
 	public function mapAction()
 	{
+	    $currentSector = GalaxyBuilder::getSector(Entity\Galaxy\SectorAddress::createZeroSectorAddress());
+
 		return $this->render('Galaxy/map.html.twig', [
-		    'currentSector' => GalaxyBuilder::getSector(Entity\Galaxy\SectorAddress::createZeroSectorAddress()),
+		    'currentSector' => $currentSector,
+            'rightSectors' => [],
 		]);
 	}
 
@@ -33,9 +37,24 @@ class GalaxyController extends Controller
     {
         /** @var Entity\Galaxy\SectorAddress $spaceAddress */
         $spaceAddress = Entity\Galaxy\SectorAddress::decode($addressCode);
-        $sector = GalaxyBuilder::getSector($spaceAddress);
+        $currentSector = GalaxyBuilder::getSector($spaceAddress);
+
+        $sectors = [];
+        $firstInLine = $currentSector->getAddress();
+        for($i = 0; $i< 5; $i++) {
+            $line = [];
+            $line[] = $firstInLine;
+            $lastInLine = $firstInLine;
+            for($x = 0; $x< 5; $x++) {
+                $line[] = $lastInLine = $lastInLine->getUp();
+            }
+            $firstInLine = $firstInLine->getRight();
+            $sectors[] = $line;
+        }
+
         return $this->render('Galaxy/map.html.twig', [
-            'currentSector' => $sector,
+            'currentSector' => $currentSector,
+            'sectors' => $sectors,
         ]);
     }
 }

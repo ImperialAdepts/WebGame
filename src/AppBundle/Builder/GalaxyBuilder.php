@@ -20,7 +20,7 @@ class GalaxyBuilder
         array_shift($coordAdresses);
         $quadrantDistance = $quadrant->getX() + $quadrant->getY() + $quadrant->getZ();
         /** @var Sector $sector */
-        $sector = new Sector(new SectorAddress([new SpaceCoordination($quadrant->getX(), $quadrant->getY(), $quadrant->getZ())]), $quadrantDistance * pow(10, 20) + rand(0, pow(10, 18)));
+        $sector = new Sector(new SectorAddress($quadrant, [new SpaceCoordination($quadrant->getX(), $quadrant->getY(), $quadrant->getZ())]), $quadrantDistance * pow(10, 20) + rand(0, pow(10, 18)));
         foreach ($coordAdresses as $coord) {
             $sector = $sector->getSubSector($coord);
         }

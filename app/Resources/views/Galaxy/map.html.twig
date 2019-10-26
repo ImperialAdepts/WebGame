@@ -1,6 +1,17 @@
 {% import _self as this_macros %}
 
-{{ this_macros.localGroup(currentSector.localGroup) }}
+{#{{ this_macros.localGroup(currentSector.localGroup) }}#}
+
+{% for line in sectors %}
+    <div style="padding: 1px; float: left; border-color: #0088CC; border-width: 1px; border-style: solid;">
+        {% for sector in line %}
+            <div style="padding: 1px; float: left; border-color: #0088CC; border-width: 1px; border-style: solid; width: 300px; height: 300px;">
+                {{ sector.encode }}<br>
+            </div>
+            <div style="clear: left"></div>
+        {% endfor %}
+    </div>
+{% endfor %}
 
 {% macro localGroup(localGroup) %}
         {% for x, line in localGroup.systems %}
