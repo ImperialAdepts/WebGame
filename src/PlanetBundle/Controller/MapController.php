@@ -4,6 +4,7 @@ namespace PlanetBundle\Controller;
 
 use AppBundle\Builder\PlanetBuilder;
 use AppBundle\Descriptor\TimeTransformator;
+use AppBundle\Entity\Human;
 use AppBundle\Entity\Human\EventDataTypeEnum;
 use AppBundle\Entity\Human\EventTypeEnum;
 use AppBundle\Entity\SolarSystem\Planet;
@@ -12,6 +13,7 @@ use AppBundle\Fixture\ResourceAndBlueprintFixture;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Tracy\Debugger;
 
@@ -20,6 +22,30 @@ use Tracy\Debugger;
  */
 class MapController extends BasePlanetController
 {
+    public function init()
+    {
+        parent::init();
+
+        $settlementId = $this->get('request_stack')->getCurrentRequest()->get('settlement');
+        if ($settlementId != null) {
+            $settlement = $this->get('repo_settlement')->find($settlementId);
+        } else {
+            $settlements = $this->get('repo_settlement')->getAll();
+            $settlement = array_pop($settlements);
+//            $settlement = $this->human->getCurrentPeakPosition()->getSettlement();
+        }
+
+        if ($settlement === null) {
+            throw new NotFoundHttpException("There is no such settlement with id " . $settlementId);
+        }
+
+        $this->get('twig')->addGlobal('currentSettlement', $settlement);
+        $this->get('twig')->addGlobal('currentSettlementManager', $this->getDoctrine()->getManager()
+            ->getRepository(Human::class)->find($settlement->getManager()->getGlobalHumanId()));
+        $this->get('twig')->addGlobal('currentSettlementOwner', $this->getDoctrine()->getManager()
+            ->getRepository(Human::class)->find($settlement->getOwner()->getGlobalHumanId()));
+    }
+
 	/**
 	 * @Route("/", name="map_dashboard")
 	 */

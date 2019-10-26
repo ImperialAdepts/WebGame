@@ -2,6 +2,9 @@
 
 namespace AppBundle\Entity\SolarSystem;
 
+use AppBundle\Entity\Galaxy\SectorAddress;
+use AppBundle\Entity\Galaxy\SpaceCoordination;
+use AppBundle\UuidSerializer\UuidName;
 use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Table(name="solar_systems")
@@ -27,9 +30,21 @@ class System
 
     /**
      * @var string
-     * @ORM\Column(name="system_name", type="string")
+     * @ORM\Column(name="system_name", type="string", nullable=true)
      */
-	private $systemName;
+	private $name;
+
+    /**
+     * @var string
+     * @ORM\Column(name="sector_address", type="string")
+     */
+    private $sectorAddress;
+
+    /**
+     * @var string
+     * @ORM\Column(name="local_group_coordination", type="string")
+     */
+    private $localGroupCoordination;
 
     /**
      * @return int
@@ -56,9 +71,9 @@ class System
     }
 
     /**
-     * @param Sun $centralSun
+     * @param Planet $centralSun
      */
-    public function setCentralSun($centralSun)
+    public function setCentralSun(Planet $centralSun)
     {
         $this->centralSun = $centralSun;
     }
@@ -66,17 +81,56 @@ class System
     /**
      * @return string
      */
-    public function getSystemName()
+    public function getName()
     {
-        return $this->systemName;
+        if (empty($this->name)) {
+            return UuidName::getPlanetName([
+                $this->sectorAddress,
+                $this->localGroupCoordination,
+                $this->centralSun->getWeight(),
+            ]);
+        }
+        return $this->name;
     }
 
     /**
-     * @param string $systemName
+     * @param string $name
      */
-    public function setSystemName($systemName)
+    public function setName($name)
     {
-        $this->systemName = $systemName;
+        $this->name = $name;
+    }
+
+    /**
+     * @return SectorAddress
+     */
+    public function getSectorAddress()
+    {
+        return SectorAddress::decode($this->sectorAddress);
+    }
+
+    /**
+     * @param SectorAddress $sectorAddress
+     */
+    public function setSectorAddress(SectorAddress $sectorAddress)
+    {
+        $this->sectorAddress = $sectorAddress->encode();
+    }
+
+    /**
+     * @return SpaceCoordination
+     */
+    public function getLocalGroupCoordination()
+    {
+        return SpaceCoordination::decode($this->localGroupCoordination);
+    }
+
+    /**
+     * @param SpaceCoordination $localGroupCoordination
+     */
+    public function setLocalGroupCoordination(SpaceCoordination $localGroupCoordination)
+    {
+        $this->localGroupCoordination = $localGroupCoordination->encode();
     }
 
 }

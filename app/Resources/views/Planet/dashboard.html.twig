@@ -3,10 +3,12 @@
 {% block pagetitle %}{{ planet.name }}{% endblock %}
 {% block pagedescription %}Dashboard{% endblock %}
 {% block body %}
+	<a href="{{ path('solar_system_detail', { 'system': planet.system.id }) }}">{{ planet.system.name }}</a><br/><br/>
+
 	Gravity: {{ planet.gravity }}g<br/>
 	Phase {{ planet|phase }}<br/>
 	{% if planet.orbitingCenter is not null %}
-		Orbiting around <a href="{{ path('planet_dashboard', { 'planet': planet.orbitingCenter.id }) }}">{{ planet.orbitingCenter.name }}</a> in distance {{ planet.orbitDiameter|distance }}<br>
+		Orbiting around <a href="{{ path('solar_system_planet_detail', { 'planet': planet.orbitingCenter.id }) }}">{{ planet.orbitingCenter.name }}</a> in distance {{ planet.orbitDiameter|distance }}<br>
 	{% endif %}
 	Phase ends {{ (endphase+2*3600)|date('d. m. Y H:i') }}<br/>
 	Phase length {{ phaseLength }}h<br/>

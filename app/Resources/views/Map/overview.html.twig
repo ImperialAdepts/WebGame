@@ -29,9 +29,10 @@
 		var peakA;
 		var peakB;
 		var peakC;
+		var planetId = {{ planet.id }};
 
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:2000/map/ajax', false);
+        xhr.open('GET', 'http://localhost:2000/planet-'+planetId+'/map/ajax', false);
         xhr.setRequestHeader("Content-Type", "text/xml");
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4) {
