@@ -26,7 +26,7 @@ class GalaxyController extends Controller
 
 		return $this->render('Galaxy/map.html.twig', [
 		    'currentSector' => $currentSector,
-            'rightSectors' => [],
+            'sectors' => $this->getSectorsAround(Entity\Galaxy\SectorAddress::createZeroSectorAddress()),
 		]);
 	}
 
@@ -39,22 +39,42 @@ class GalaxyController extends Controller
         $spaceAddress = Entity\Galaxy\SectorAddress::decode($addressCode);
         $currentSector = GalaxyBuilder::getSector($spaceAddress);
 
+        return $this->render('Galaxy/map.html.twig', [
+            'currentSector' => $currentSector,
+            'sectors' => $this->getSectorsAround($spaceAddress),
+        ]);
+    }
+
+    /**
+     * @Route("/map/system/{system}", name="galaxy_system")
+     */
+    public function systemMapAction(Entity\SolarSystem\System $system)
+    {
+        $currentSector = GalaxyBuilder::getSector($system->getSectorAddress());
+
+        return $this->render('Galaxy/map.html.twig', [
+            'currentSector' => $currentSector,
+            'currentSystem' => $system,
+            'sectors' => $this->getSectorsAround($system->getSectorAddress()),
+        ]);
+    }
+
+    private function getSectorsAround(Entity\Galaxy\SectorAddress $address) {
+        $currentSector = GalaxyBuilder::getSector($address);
+
         $sectors = [];
         $firstInLine = $currentSector->getAddress();
         for($i = 0; $i< 5; $i++) {
             $line = [];
-            $line[] = $firstInLine;
             $lastInLine = $firstInLine;
             for($x = 0; $x< 5; $x++) {
-                $line[] = $lastInLine = $lastInLine->getUp();
+                $line[] = GalaxyBuilder::getSector($lastInLine);
+                $lastInLine = $lastInLine->getUp();
             }
             $firstInLine = $firstInLine->getRight();
             $sectors[] = $line;
         }
 
-        return $this->render('Galaxy/map.html.twig', [
-            'currentSector' => $currentSector,
-            'sectors' => $sectors,
-        ]);
+        return $sectors;
     }
 }

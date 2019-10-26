@@ -56,4 +56,12 @@ class SpaceCoordination
         return $this->z;
     }
 
+    public function getSeed() {
+        $seed = 0;
+        for ($i = 1; $i<300; $i++) {
+            $seed += ++$i*$this->getX() + ++$i*$this->getY() + ++$i*$this->getZ();
+        }
+        return $seed;
+    }
+
 }

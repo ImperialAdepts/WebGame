@@ -31,6 +31,8 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
 
 	    $solarSystemModel = new GeneralEntity\SolarSystem\System();
 	    $solarSystemModel->setSystemName("Our Solar system model");
+	    $solarSystemModel->setSectorAddress(GeneralEntity\Galaxy\SectorAddress::createZeroSectorAddress());
+	    $solarSystemModel->setLocalGroupCoordination(new GeneralEntity\Galaxy\SpaceCoordination(0,0,1));
         $manager->persist($solarSystemModel);
 
 	    $sun = new GeneralEntity\SolarSystem\Planet();
@@ -62,6 +64,8 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
 
         $testSystem = new GeneralEntity\SolarSystem\System();
         $testSystem->setSystemName("Testing system with mess");
+        $testSystem->setSectorAddress(GeneralEntity\Galaxy\SectorAddress::createZeroSectorAddress());
+        $testSystem->setLocalGroupCoordination(new GeneralEntity\Galaxy\SpaceCoordination(0,0,0));
         $manager->persist($testSystem);
 
         $testStar = new GeneralEntity\SolarSystem\Planet();

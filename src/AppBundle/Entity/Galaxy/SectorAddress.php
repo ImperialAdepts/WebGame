@@ -135,7 +135,7 @@ class SectorAddress
     }
 
     public function getSeed() {
-        $seed = 0;
+        $seed = 1123581315282;
         $i = 1;
         foreach ($this->sectorCoordinations as $coordination) {
             $seed += ++$i*$coordination->getX() + ++$i*$coordination->getY() + ++$i*$coordination->getZ();

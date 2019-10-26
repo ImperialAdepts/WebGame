@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity\SolarSystem;
 
+use AppBundle\Entity\Galaxy\SectorAddress;
+use AppBundle\Entity\Galaxy\SpaceCoordination;
 use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Table(name="solar_systems")
@@ -92,35 +94,35 @@ class System
     }
 
     /**
-     * @return string
+     * @return SectorAddress
      */
     public function getSectorAddress()
     {
-        return $this->sectorAddress;
+        return SectorAddress::decode($this->sectorAddress);
     }
 
     /**
-     * @param string $sectorAddress
+     * @param SectorAddress $sectorAddress
      */
-    public function setSectorAddress($sectorAddress)
+    public function setSectorAddress(SectorAddress $sectorAddress)
     {
-        $this->sectorAddress = $sectorAddress;
+        $this->sectorAddress = $sectorAddress->encode();
     }
 
     /**
-     * @return string
+     * @return SpaceCoordination
      */
     public function getLocalGroupCoordination()
     {
-        return $this->localGroupCoordination;
+        return SpaceCoordination::decode($this->localGroupCoordination);
     }
 
     /**
-     * @param string $localGroupCoordination
+     * @param SpaceCoordination $localGroupCoordination
      */
-    public function setLocalGroupCoordination($localGroupCoordination)
+    public function setLocalGroupCoordination(SpaceCoordination $localGroupCoordination)
     {
-        $this->localGroupCoordination = $localGroupCoordination;
+        $this->localGroupCoordination = $localGroupCoordination->encode();
     }
 
 }

@@ -1,26 +1,67 @@
 {% import _self as this_macros %}
 
-{#{{ this_macros.localGroup(currentSector.localGroup) }}#}
+<style type="text/css">
+    body {
+        background-color: black;
+    }
+    .systemSign {
+        width: 1em;
+        height: 1em;
+        /*float: left;*/
+        /*background-color: gold;*/
+        color: gold;
+        margin: 2px;
+        text-decoration: none;
+        display:inline-block;
+    }
+    #current-system {
+        color: #66dd66;
+    }
+    #current-sector {
+        background-color: #333333;
+    }
+    .systemBox {
+        width: 50px;
+        height: 50px;
+        float: left;
+        text-align: center;
+    }
+    .sectorBox {
+        width: 270px;
+        height: 270px;
+        float: left;
+    }
+
+    .box {
+        /*padding: 1px;*/
+        /*border-color: #0088CC;*/
+        /*border-width: 1px;*/
+        /*border-style: dashed;*/
+    }
+</style>
 
 {% for line in sectors %}
-    <div style="padding: 1px; float: left; border-color: #0088CC; border-width: 1px; border-style: solid;">
+    <div style="padding: 1px; float: left;">
         {% for sector in line %}
-            <div style="padding: 1px; float: left; border-color: #0088CC; border-width: 1px; border-style: solid; width: 300px; height: 300px;">
-                {{ sector.encode }}<br>
+            <div class="sectorBox box" {% if currentSector is not null and sector.address == currentSector.address %}id="current-sector"{% endif %}>
+                {{ this_macros.localGroup(sector.localGroup) }}
             </div>
             <div style="clear: left"></div>
         {% endfor %}
     </div>
 {% endfor %}
 
-{% macro localGroup(localGroup) %}
+{% macro localGroup(localGroup, currentSystem = null) %}
         {% for x, line in localGroup.systems %}
-                <div style="padding: 1px; float: left; border-color: #0088CC; border-width: 1px; border-style: solid;">
+                <div style="padding: 1px; float: left;">
                         {% for y, systemStack in line %}
-                                <div style="padding: 1px; float: left; border-color: #0088CC; border-width: 1px; border-style: solid; width: 40px; height: 40px;">
+                                <div class="systemBox box">
                                         {% for z, system in systemStack %}
                                                 {% if system is not null %}
-                                                        <a href="{{ path('solar_system_guess', {'systemAddress': system.sectorAddress, 'localGroupCoord': system.localGroupCoordination}) }}" title="{{ system.systemName }}">{{ z }}</a>,
+                                                        <a class="systemSign"
+                                                                {% if currentSystem is not null and system.sectorAddress == currentSystem.sectorAddress %}id="current-system"{% endif %}
+                                                                href="{{ path('solar_system_guess', {'systemAddress': system.sectorAddress.encode, 'localGroupCoord': system.localGroupCoordination.encode}) }}"
+                                                                title="{{ z }}: {{ system.systemName }}">&#x2742;</a>
                                                 {% endif %}
                                         {% endfor %}
                                 </div>

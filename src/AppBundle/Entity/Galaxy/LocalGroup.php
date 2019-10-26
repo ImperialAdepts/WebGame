@@ -53,16 +53,16 @@ class LocalGroup
 
     public static function buildSystem(LocalGroup $localGroup, SpaceCoordination $coordination)
     {
-        srand($localGroup->getSector()->getAddress()->getSeed() + $coordination->getX() + $coordination->getY() + $coordination->getZ());
+        srand($localGroup->getSector()->getAddress()->getSeed() + $coordination->getSeed() + 1);
 
-        if ($coordination->getZ() > 1 || (rand(0, 10) > 6)) {
+        if ((rand(0, 10) > 1)) {
             return null;
         }
 
         $system = new System();
         $system->setSystemName(md5($localGroup->getSector()->getAddress()->encode().$coordination->encode()));
-        $system->setSectorAddress($localGroup->getSector()->getAddress()->encode());
-        $system->setLocalGroupCoordination($coordination->encode());
+        $system->setSectorAddress($localGroup->getSector()->getAddress());
+        $system->setLocalGroupCoordination($coordination);
 
         $sun = new Planet();
         $sun->setGravity(rand(20, 500));
