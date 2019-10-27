@@ -1,0 +1,3 @@
+{% for system in systems %}
+    <a href="{{ path('solar_system_guess', {'systemUUID': system.sectorAddress }) }}">{{ system.name }}</a>,<br>
+{% endfor %}

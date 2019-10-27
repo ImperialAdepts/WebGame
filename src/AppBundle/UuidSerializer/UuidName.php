@@ -40,6 +40,36 @@ class UuidName
         return ucfirst($adjectiveNames[$adjectiveIndex]) . ' ' .$cityNames[$nameIndex];
     }
 
+    public static function convertToRomanNumber($number)
+    {
+        $solution = '';
+
+        foreach(static::$romanLetterTable as $limit => $glyph){
+            while ($number >= $limit) {
+                $solution .= $glyph;
+                $number -= $limit;
+            }
+        }
+
+        return $solution;
+    }
+
+    protected static $romanLetterTable = [
+        1000 => 'M',
+        900 => 'CM',
+        500 => 'D',
+        400 => 'CD',
+        100 => 'C',
+        90 => 'XC',
+        50 => 'L',
+        40 => 'XL',
+        10 => 'X',
+        9 => 'IX',
+        5 => 'V',
+        4 => 'IV',
+        1 => 'I',
+    ];
+
 	private static $periodicNames = [
 		"Actinium",
 		"Aluminum",

@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}{{ system.name }}{% endblock %}
+
+{% block body %}
+    {% import _self as this_macros %}
+    <a href="{{ path('galaxy_sector', {'addressCode': systemAddress }) }}">Sector map</a>
+
+    {{ this_macros.planetInfo(sun) }}
+{% endblock %}
+
+{% macro planetInfo(planet) %}
+    {% import _self as this_macros %}
+    <div class="planet">
+        <h1>{{ planet.name }}</h1>
+        Gravity: {{ planet.gravity }}g<br/>
+        {% if planet.orbitingCenter is not null %}
+            Orbiting around <a href="{{ path('solar_system_planet_detail', { 'planet': planet.orbitingCenter.id }) }}">{{ planet.orbitingCenter.name }}</a> in distance {{ planet.orbitDiameter|distance }}<br>
+        {% endif %}
+        Planet diameter {{ planet.diameter|distance }}<br/>
+        Planet weight {{ planet.weight|weight }}<br/>
+
+        {% if planet.satelites|length > 0 %}
+            <h2>Satelites</h2>
+            <div class="satelites">
+                {% for satelite in planet.satelites %}
+                    {{ this_macros.planetInfo(satelite) }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+

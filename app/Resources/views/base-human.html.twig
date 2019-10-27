@@ -1,7 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block planetinfo  %}
-    {{ render(controller('PlanetBundle:Map:currentPlanetInfo', { 'planet': planet.id })) }}
+    <a href="{{ path('galaxy_system', { 'system': planet.system.id }) }}">{{ planet.system.name }}</a><br/><br/>
+
+    Gravity: {{ planet.gravity }}g<br/>
+    Phase {{ planet|phase }}<br/>
+    {% if planet.orbitingCenter is not null %}
+        Orbiting around <a href="{{ path('solar_system_planet_detail', { 'planet': planet.orbitingCenter.id }) }}">{{ planet.orbitingCenter.name }}</a> in distance {{ planet.orbitDiameter|distance }}<br>
+    {% endif %}
 {% endblock %}
 
 {% block playerinfo  %}

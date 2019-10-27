@@ -30,7 +30,9 @@ class MapController extends BasePlanetController
         if ($settlementId != null) {
             $settlement = $this->get('repo_settlement')->find($settlementId);
         } else {
-            $settlement = $this->human->getCurrentPeakPosition()->getSettlement();
+            $settlements = $this->get('repo_settlement')->getAll();
+            $settlement = array_pop($settlements);
+//            $settlement = $this->human->getCurrentPeakPosition()->getSettlement();
         }
 
         if ($settlement === null) {
