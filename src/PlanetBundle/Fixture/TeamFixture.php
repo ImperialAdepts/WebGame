@@ -3,6 +3,7 @@ namespace PlanetBundle\Fixture;
 
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity as GeneralEntity;
+use AppBundle\Fixture\PlanetMapFixture;
 use AppBundle\Fixture\PlanetsFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use PlanetBundle\Entity as PlanetEntity;

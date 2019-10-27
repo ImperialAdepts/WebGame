@@ -22,7 +22,7 @@ class Peak implements ResourcefullInterface
 	 * @var integer
 	 *
 	 * @ORM\Column(name="id", type="integer", length=30)
-	 * @ORM\Id
+	 * @ORM\Id()
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
 	private $id;
@@ -69,15 +69,6 @@ class Peak implements ResourcefullInterface
      * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\Human", mappedBy="currentPeakPosition", cascade={"all"})
      */
     private $humans;
-
-    /**
-     * Peak constructor.
-     * @param int $id
-     */
-    public function __construct($id = null)
-    {
-        $this->id = $id;
-    }
 
     /**
      * @return int

@@ -3,6 +3,7 @@ namespace PlanetBundle\Fixture;
 
 use AppBundle\Builder\PlanetBuilder;
 use AppBundle\Entity as GeneralEntity;
+use AppBundle\Fixture\PlanetMapFixture;
 use AppBundle\Fixture\PlanetsFixture;
 use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;

@@ -23,6 +23,7 @@ class PlayersFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements 
         echo __CLASS__."\n";
         $planets = $generalManager->getRepository(GeneralEntity\SolarSystem\Planet::class)->findAll();
         foreach ($planets as $planet) {
+            echo $planet->getName() . "\n";
             if ($planet->getDatabaseCredentials() == null) continue;
 
             $this->container->get('dynamic_planet_connector')->setPlanet($planet, true);

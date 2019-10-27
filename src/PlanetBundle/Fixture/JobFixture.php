@@ -33,7 +33,7 @@ class JobFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Cont
         $planets = $generalManager->getRepository(GeneralEntity\SolarSystem\Planet::class)->findAll();
         /** @var GeneralEntity\SolarSystem\Planet $planet */
         foreach ($planets as $planet) {
-            echo "Planet ".$planet->getName().": ";
+            echo $planet->getName() . "\n";
             if ($planet->getDatabaseCredentials() == null) {
                 echo "skipped\n";
                 continue;

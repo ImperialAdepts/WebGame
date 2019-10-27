@@ -27,7 +27,7 @@ class Region implements ResourcefullInterface
 	 * @var Peak
 	 *
 	 * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Peak")
+     * @ORM\ManyToOne(targetEntity="Peak", cascade={"persist"})
      * @ORM\JoinColumn(name="peak_center_id", referencedColumnName="id", nullable=false)
 	 * @ORM\GeneratedValue(strategy="NONE")
 	 */
@@ -37,7 +37,7 @@ class Region implements ResourcefullInterface
      * @var Peak
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Peak")
+     * @ORM\ManyToOne(targetEntity="Peak", cascade={"persist"})
      * @ORM\JoinColumn(name="peak_left_id", referencedColumnName="id", nullable=false)
      * @ORM\GeneratedValue(strategy="NONE")
      */
@@ -47,7 +47,7 @@ class Region implements ResourcefullInterface
      * @var Peak
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Peak")
+     * @ORM\ManyToOne(targetEntity="Peak", cascade={"persist"})
      * @ORM\JoinColumn(name="peak_right_id", referencedColumnName="id", nullable=false)
      * @ORM\GeneratedValue(strategy="NONE")
      */
@@ -105,6 +105,14 @@ class Region implements ResourcefullInterface
     }
 
     /**
+     * @param Peak $peakCenter
+     */
+    public function setPeakCenter(Peak $peakCenter)
+    {
+        $this->peakCenter = $peakCenter;
+    }
+
+    /**
      * @return Peak
      */
     public function getPeakLeft()
@@ -113,11 +121,27 @@ class Region implements ResourcefullInterface
     }
 
     /**
+     * @param Peak $peakLeft
+     */
+    public function setPeakLeft(Peak $peakLeft)
+    {
+        $this->peakLeft = $peakLeft;
+    }
+
+    /**
      * @return Peak
      */
     public function getPeakRight()
     {
         return $this->peakRight;
+    }
+
+    /**
+     * @param Peak $peakRight
+     */
+    public function setPeakRight(Peak $peakRight)
+    {
+        $this->peakRight = $peakRight;
     }
 
     public function getCoords() {

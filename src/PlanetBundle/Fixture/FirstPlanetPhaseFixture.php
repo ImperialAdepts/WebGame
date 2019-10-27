@@ -3,6 +3,7 @@ namespace PlanetBundle\Fixture;
 
 use AppBundle\Descriptor\TimeTransformator;
 use AppBundle\EnumAlignmentType;
+use AppBundle\Fixture\PlanetMapFixture;
 use AppBundle\Fixture\PlanetsFixture;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -36,6 +37,7 @@ class FirstPlanetPhaseFixture extends Fixture implements ContainerAwareInterface
         $planets = $generalManager->getRepository(GeneralEntity\SolarSystem\Planet::class)->findAll();
         /** @var GeneralEntity\SolarSystem\Planet $planet */
         foreach ($planets as $planet) {
+            echo $planet->getName() . "\n";
             if ($planet->getDatabaseCredentials() == null) continue;
 
             $this->container->get('dynamic_planet_connector')->setPlanet($planet, true);

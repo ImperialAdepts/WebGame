@@ -25,11 +25,12 @@ class PeakRepository extends \Doctrine\ORM\EntityRepository
         ]);
         if ($peak !== null) {
             return $peak;
+        } else {
+            $peak = new Peak();
+            $peak->setXcoord($xcoord);
+            $peak->setYcoord($ycoord);
+            $peak->setHeight($defaultHeight);
+            return $peak;
         }
-        $peak = new Peak();
-        $peak->setXcoord($xcoord);
-        $peak->setYcoord($ycoord);
-        $peak->setHeight($defaultHeight);
-        return $peak;
     }
 }

@@ -27,6 +27,7 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
 	 */
 	public function load(\Doctrine\Common\Persistence\ObjectManager $manager)
 	{
+        echo __CLASS__."\n";
         $manager = $this->container->get('doctrine.orm.entity_manager');
 
 	    $solarSystemModel = new GeneralEntity\SolarSystem\System();
@@ -52,7 +53,7 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
         $earth->setOrbitDiameter(300);
         $earth->setOrbitingCenter($sun);
         $earth->setOrbitPeriod(360);
-        $earth->setSurfaceGranularity(6);
+        $earth->setSurfaceGranularity(20);
         $earth->setDatabaseCredentials([
             'database_host' => $this->container->getParameter('planet2_database_host'),
             'database_port' => $this->container->getParameter('planet2_database_port'),
@@ -85,7 +86,7 @@ class PlanetsFixture extends Fixture implements ContainerAwareInterface, Fixture
         $testPlanet->setOrbitDiameter(150);
         $testPlanet->setOrbitingCenter($testStar);
         $testPlanet->setOrbitPeriod(60);
-        $testPlanet->setSurfaceGranularity(3);
+        $testPlanet->setSurfaceGranularity(5);
         $testPlanet->setDatabaseCredentials([
             'database_host' => $this->container->getParameter('planet1_database_host'),
             'database_port' => $this->container->getParameter('planet1_database_port'),

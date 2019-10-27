@@ -3,14 +3,17 @@ namespace PlanetBundle\Fixture;
 
 use AppBundle\Descriptor\TimeTransformator;
 use AppBundle\EnumAlignmentType;
+use AppBundle\Fixture\PlanetMapFixture;
+use AppBundle\Fixture\PlanetsFixture;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Entity as GlobalEntity;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class PersonFixture extends Fixture implements ContainerAwareInterface
+class PersonFixture extends Fixture implements ContainerAwareInterface, DependentFixtureInterface
 {
     /**
      * The dependency injection container.
@@ -27,8 +30,8 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
 	public function load(ObjectManager $generalManager)
 	{
         echo __CLASS__."\n";
-        $test1Planet = $generalManager->getRepository(GlobalEntity\SolarSystem\Planet::class, 'default')->findOneBy(['type'=>'test']);
-        $test2Planet = $generalManager->getRepository(GlobalEntity\SolarSystem\Planet::class, 'default')->findOneBy(['type'=>'EARTH']);
+        $test1Planet = $generalManager->getRepository(GlobalEntity\SolarSystem\Planet::class)->findOneBy(['type'=>'test']);
+        $test2Planet = $generalManager->getRepository(GlobalEntity\SolarSystem\Planet::class)->findOneBy(['type'=>'EARTH']);
 
 		$troi = new GlobalEntity\Gamer();
 		$troi->setLogin('troi');
@@ -144,6 +147,20 @@ class PersonFixture extends Fixture implements ContainerAwareInterface
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
+    }
+
+    /**
+     * This method must return an array of fixtures classes
+     * on which the implementing class depends on
+     *
+     * @return array
+     */
+    public function getDependencies()
+    {
+        return [
+            PlanetsFixture::class,
+            PlanetMapFixture::class,
+        ];
     }
 
 }

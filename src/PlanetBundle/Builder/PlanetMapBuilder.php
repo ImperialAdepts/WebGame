@@ -5,6 +5,7 @@ namespace PlanetBundle\Builder;
 use AppBundle\Entity as GeneralEntity;
 use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Entity\SolarSystem\Planet;
+use PlanetBundle\Entity\Peak;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PlanetMapBuilder
@@ -31,6 +32,7 @@ class PlanetMapBuilder
 
     public function build(\Doctrine\Common\Persistence\ObjectManager $planetManager, Planet $planet)
     {
+        srand(1123581315);
         $index = 0;
         foreach ($this->getRegions() as $regionPeaks) {
             $centralPeak = $planetManager->getRepository(PlanetEntity\Peak::class)->findOrCreateByCoords(
@@ -49,19 +51,42 @@ class PlanetMapBuilder
                 $regionPeaks['right']['h']+abs($regionPeaks['right']['w']*$regionPeaks['right']['h']) % 30
             );
 
-            $region = new PlanetEntity\Region($centralPeak, $leftPeak, $rightPeak);
-            $region->setFertility(abs(($centralPeak->getXcoord()*$leftPeak->getYcoord() % 6)) * 10);
-            $planetManager->persist($region);
             $planetManager->persist($centralPeak);
             $planetManager->persist($leftPeak);
             $planetManager->persist($rightPeak);
-            $planetManager->flush();
-            if ((++$index % 100) == 0) {
+            if ((++$index % 500) == 0) {
+                $planetManager->flush();
+                echo "Planet {$planet->getName()}: peak count generated: $index\n";
+            }
+        }
+        $planetManager->flush();
+        echo "Planet {$planet->getName()}: peak count generated: $index\n";
+        $index = 0;
+        foreach ($this->getRegions() as $regionPeaks) {
+            $centralPeak = $planetManager->getRepository(PlanetEntity\Peak::class)->findOneBy([
+                'xcoord' => $regionPeaks['center']['w'],
+                'ycoord' => $regionPeaks['center']['h'],
+            ]);
+            $leftPeak = $planetManager->getRepository(PlanetEntity\Peak::class)->findOneBy([
+                'xcoord' => $regionPeaks['left']['w'],
+                'ycoord' => $regionPeaks['left']['h'],
+            ]);
+            $rightPeak = $planetManager->getRepository(PlanetEntity\Peak::class)->findOneBy([
+                'xcoord' => $regionPeaks['right']['w'],
+                'ycoord' => $regionPeaks['right']['h'],
+            ]);
+
+            $region = new PlanetEntity\Region($centralPeak, $leftPeak, $rightPeak);
+            $region->setFertility(rand(0, 20)*rand(0, 5));
+            $planetManager->persist($region);
+
+            if ((++$index % 500) == 0) {
+                $planetManager->flush();
                 echo "Planet {$planet->getName()}: region count generated: $index\n";
             }
         }
-
         $planetManager->flush();
+        echo "Planet {$planet->getName()}: region count generated: $index\n";
     }
 
     private function getPeaks() {

@@ -1,5 +1,5 @@
 <?php
-namespace PlanetBundle\Fixture;
+namespace AppBundle\Fixture;
 
 use AppBundle\Entity as GeneralEntity;
 use AppBundle\Fixture\PlanetsFixture;
@@ -32,6 +32,7 @@ class PlanetMapFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implement
         $planets = $generalManager->getRepository(GeneralEntity\SolarSystem\Planet::class)->findAll();
         /** @var GeneralEntity\SolarSystem\Planet $planet */
         foreach ($planets as $planet) {
+            echo $planet->getName() . "\n";
             if ($planet->getDatabaseCredentials() == null) continue;
 
             $this->container->get('dynamic_planet_connector')->setPlanet($planet, true);
