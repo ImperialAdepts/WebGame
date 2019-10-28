@@ -20,7 +20,7 @@ class RegionController extends BasePlanetController
 	/**
 	 * @Route("/build-plan/{blueprint}", name="region_build_plan_settlement")
 	 */
-	public function buildPlanAction(Entity\Blueprint $blueprint, Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
+	public function buildPlanAction(Entity\Resource\Blueprint $blueprint, Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
 	{
         /** @var Entity\Region $region */
 		$region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
@@ -53,7 +53,7 @@ class RegionController extends BasePlanetController
     /**
      * @Route("/build/{blueprint}/{count}", name="region_build_settlement")
      */
-    public function buildAction(Entity\Blueprint $blueprint, Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, $count = 1, Request $request)
+    public function buildAction(Entity\Resource\Blueprint $blueprint, Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, $count = 1, Request $request)
     {
         /** @var Entity\Region $region */
         $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
@@ -176,7 +176,7 @@ class RegionController extends BasePlanetController
      */
     public function availableSettlementTypesAction(Entity\Settlement $settlement, Request $request)
     {
-        $blueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::ADMINISTRATIVE_DISTRICT);
+        $blueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::ADMINISTRATIVE_DISTRICT);
 
         // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
 

@@ -142,7 +142,7 @@ class SettlementController extends BasePlanetController
     public function buildingsAction(Entity\Settlement $settlement, Request $request)
     {
         $buildings = [];
-        foreach ($settlement->getDeposit() as $deposit) {
+        foreach ($settlement->getResources() as $deposit) {
             if (($building = $deposit->asUseCase(UseCaseEnum::LAND_BUILDING)) != null) {
                 $buildings[] = $building;
             }

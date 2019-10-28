@@ -6,6 +6,9 @@ use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\UuidSerializer\UuidName;
 use Doctrine\ORM\Mapping as ORM;
 use PlanetBundle\Entity\Resource\Blueprint;
+use PlanetBundle\Entity\Resource\DepositInterface;
+use PlanetBundle\Entity\Resource\ResourceDescriptor;
+use PlanetBundle\Entity\Resource\SettlementDepositsAggregator;
 
 /**
  * Settlement - management unit
@@ -240,20 +243,21 @@ class Settlement implements ResourcefullInterface
 
 	/**
 	 * @param $resourceDescriptor
-	 * @return Deposit[] region_coords => ResourceDeposit[]
+	 * @return ResourceDescriptor[] region_coords => ResourceDescriptor[]
 	 */
-	public function getDeposit($resourceDescriptor = null)
+	public function getResources($resourceDescriptor = null)
 	{
-	    $deposits = [];
+	    return $this->getDeposit()->getResourceDescriptors();
+	    $resources = [];
 	    /** @var Region $region */
         foreach ($this->getRegions() as $region) {
             if ($resourceDescriptor != null) {
                 if (($localDeposit = $region->getResourceDeposit($resourceDescriptor)) != null) {
-                    $deposits[] = $localDeposit;
+                    $resources[] = $localDeposit;
                 }
             } else {
-                foreach ($region->getDeposit() as $deposit) {
-                    $deposits[] = $deposit;
+                foreach ($region->getResources() as $deposit) {
+                    $resources[] = $deposit;
                 }
             }
         }
@@ -261,16 +265,50 @@ class Settlement implements ResourcefullInterface
         foreach ($this->getPeaks() as $peak) {
             if ($resourceDescriptor != null) {
                 if (($localDeposit = $peak->getResourceDeposit($resourceDescriptor)) != null) {
-                    $deposits[] = $localDeposit;
+                    $resources[] = $localDeposit;
                 }
             } else {
                 foreach ($peak->getDeposit() as $deposit) {
-                    $deposits[] = $deposit;
+                    $resources[] = $deposit;
                 }
             }
         }
-		return $deposits;
+		return $resources;
 	}
+
+    /**
+     * @return DepositInterface
+     */
+    public function getDeposit()
+    {
+        return new SettlementDepositsAggregator($this);
+//        $resources = [];
+//        /** @var Region $region */
+//        foreach ($this->getRegions() as $region) {
+//            if ($resourceDescriptor != null) {
+//                if (($localDeposit = $region->getResourceDeposit($resourceDescriptor)) != null) {
+//                    $resources[] = $localDeposit;
+//                }
+//            } else {
+//                foreach ($region->getResources() as $deposit) {
+//                    $resources[] = $deposit;
+//                }
+//            }
+//        }
+//        /** @var Peak $peak */
+//        foreach ($this->getPeaks() as $peak) {
+//            if ($resourceDescriptor != null) {
+//                if (($localDeposit = $peak->getResourceDeposit($resourceDescriptor)) != null) {
+//                    $resources[] = $localDeposit;
+//                }
+//            } else {
+//                foreach ($peak->getDeposit() as $deposit) {
+//                    $resources[] = $deposit;
+//                }
+//            }
+//        }
+//        return $resources;
+    }
 
     /**
      * @return int
@@ -291,7 +329,7 @@ class Settlement implements ResourcefullInterface
     public function getResourceDepositAmount($resourceDescriptor)
     {
         $count = 0;
-        foreach ($this->getDeposit($resourceDescriptor) as $deposit) {
+        foreach ($this->getResources($resourceDescriptor) as $deposit) {
             $count += $deposit->getAmount();
         }
         return $count;

@@ -7,7 +7,10 @@ use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Descriptor\UseCaseTraitEnum;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use PlanetBundle\Entity\Resource\DepositInterface;
+use PlanetBundle\Entity\Resource\ResourceDescriptor;
 
 /**
  * ResourceDeposit
@@ -18,7 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\DiscriminatorColumn(name="owner_type", type="string")
  * @ORM\DiscriminatorMap({"region" = "RegionDeposit", "peak" = "PeakDeposit"})
  */
-abstract class Deposit
+abstract class Deposit implements DepositInterface
 {
     /**
      * @var int
@@ -30,6 +33,18 @@ abstract class Deposit
     private $id;
 
     /**
+     * @var ResourceDescriptor[]
+     *
+     * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\Resource\ResourceDescriptor", mappedBy="deposit")
+     */
+    private $resourceDescriptors;
+
+    public function __construct()
+    {
+        $this->resourceDescriptors = new ArrayCollection();
+    }
+
+    /**
      * Get id
      *
      * @return int
@@ -37,6 +52,27 @@ abstract class Deposit
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return ResourceDescriptor[]
+     */
+    public function getResourceDescriptors()
+    {
+        return $this->resourceDescriptors;
+    }
+
+    public function addResourceDescriptors(ResourceDescriptor $resourceDescriptor)
+    {
+        $this->resourceDescriptors->add($resourceDescriptor);
+    }
+
+    /**
+     * @param ResourceDescriptor[] $resourceDescriptors
+     */
+    public function setResourceDescriptors($resourceDescriptors)
+    {
+        $this->resourceDescriptors = $resourceDescriptors;
     }
 
 }

@@ -37,7 +37,7 @@ class PopulationMaintainer
         if ($unusedHumansAdapter == null) {
             $unusedHumans = new Thing();
             $unusedHumans->setDescription(ResourceDescriptorEnum::PEOPLE);
-            $unusedHumans->setDeposit($resourceHandler->getDeposit());
+            $unusedHumans->setDeposit($resourceHandler->getResources());
             $unusedHumans->setAmount($birthCount);
         } else {
             $unusedHumansAdapter->getDeposit()->setAmount($unusedHumansAdapter->getDeposit()->getAmount() + $birthCount);

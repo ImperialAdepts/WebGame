@@ -28,7 +28,7 @@ class AbstractResourceDepositAdapter
         /** @var AbstractResourceDepositAdapter[] $adapters */
         $adapters = [];
         /** @var Deposit[] $deposits */
-        foreach ($resourcefull->getDeposit() as $deposit) {
+        foreach ($resourcefull->getResources() as $deposit) {
             /** @var Deposit $deposit */
             $useCaseAdapter = $deposit->asUseCase($useCaseName);
             if ($useCaseAdapter != null) {

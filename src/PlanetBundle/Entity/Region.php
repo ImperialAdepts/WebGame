@@ -22,6 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Region implements ResourcefullInterface
 {
     use SettlementDependencyTrait;
+    use DepositDependencyTrait;
 
 	/**
 	 * @var Peak
@@ -195,7 +196,7 @@ class Region implements ResourcefullInterface
     /**
      * @return Deposit[]
      */
-    public function getDeposit()
+    public function getResources()
     {
         return $this->resourceDeposits;
     }
@@ -206,8 +207,8 @@ class Region implements ResourcefullInterface
      */
     public function getResourceDeposit($resourceDescriptor)
     {
-        foreach ($this->getDeposit() as $deposit) {
-            if ($deposit->getResourceDescriptor() == $resourceDescriptor) return $deposit;
+        foreach ($this->getDeposit()->getResourceDescriptors() as $resourceDescriptor2) {
+            if ($resourceDescriptor == $resourceDescriptor2) return $resourceDescriptor2;
         }
         return null;
     }
@@ -230,7 +231,7 @@ class Region implements ResourcefullInterface
             $deposit->setResourceDescriptor($blueprint->getResourceDescriptor());
             $deposit->setBlueprint($blueprint);
             $deposit->setRegion($this);
-            $this->getDeposit()->add($deposit);
+            $this->getResources()->add($deposit);
         }
     }
 

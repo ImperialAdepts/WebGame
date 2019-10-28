@@ -4,6 +4,7 @@ namespace PlanetBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use PlanetBundle\Entity\Deposit;
+use PlanetBundle\Entity\Resource\DepositInterface;
 
 trait DepositDependencyTrait
 {
@@ -16,7 +17,7 @@ trait DepositDependencyTrait
     private $deposit;
 
     /**
-     * @return Deposit
+     * @return DepositInterface
      */
     public function getDeposit()
     {
