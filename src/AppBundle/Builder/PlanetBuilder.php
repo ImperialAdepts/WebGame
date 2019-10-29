@@ -6,6 +6,7 @@ use AppBundle\Entity\Human;
 use AppBundle\Entity\Human\Title;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
 use Doctrine\Common\Persistence\ObjectManager;
+use PlanetBundle\Concept\ColonizationShip;
 use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\ORM\EntityManager;
 
@@ -18,19 +19,16 @@ class PlanetBuilder
     private $generalEntityManager;
 	/** @var ObjectManager */
 	private $planetEntityManager;
-	private $colonyPacks;
 
     /**
      * PlanetBuilder constructor.
      * @param ObjectManager $generalEntityManager
      * @param ObjectManager $planetEntityManager
-     * @param array $colonyPacks
      */
-    public function __construct(ObjectManager $generalEntityManager, ObjectManager $planetEntityManager, $colonyPacks = [])
+    public function __construct(ObjectManager $generalEntityManager, ObjectManager $planetEntityManager)
     {
         $this->generalEntityManager = $generalEntityManager;
         $this->planetEntityManager = $planetEntityManager;
-        $this->colonyPacks = $colonyPacks;
     }
 
     public function buildProject(PlanetEntity\BuildingProject $project)
@@ -115,36 +113,16 @@ class PlanetBuilder
     /**
      * @param PlanetEntity\Peak $administrativeCenter
      * @param PlanetEntity\Human $human
-     * @param $colonizationPack
-     * @throws \Doctrine\ORM\ORMException
+     * @param PlanetEntity\Deposit $colonizationPackageDeposit
      */
-	public function newColony(PlanetEntity\Peak $administrativeCenter, PlanetEntity\Human $human, $colonizationPack)
+	public function newColony(PlanetEntity\Peak $administrativeCenter, PlanetEntity\Human $human, PlanetEntity\Deposit $colonizationPackageDeposit)
 	{
 	    $regions = $this->planetEntityManager->getRepository(PlanetEntity\Region::class)->findPeakSurrounding($administrativeCenter);
 	    $settlement = $this->createSettlement($regions, $administrativeCenter, $human);
 
-		$colonyPack = $this->colonyPacks[$colonizationPack];
-
-		foreach ($this->colonyPacks as $colonyPackName => $colonyPack) {
-            foreach ($colonyPack['deposits'] as $resource => $data) {
-                $deposit = new PlanetEntity\PeakDeposit();
-
-                /** @var PlanetEntity\Resource\Blueprint $blueprint */
-                if (isset($data['blueprint']) && ($blueprint = $this->getBlueprint($data['blueprint'])) != null) {
-                    $descriptor = new PlanetEntity\Resource\Thing();
-                    $descriptor->setAmount(isset($data['amount']) ? $data['amount'] : 1);
-                    $descriptor->setBlueprint($blueprint);
-                    $descriptor->setDescription($blueprint->getConcept() . " - " . $blueprint->getDescription());
-                } else {
-                    $descriptor = new PlanetEntity\Resource\Resource();
-                    $descriptor->setType($resource);
-                    $descriptor->setAmount(isset($data['amount']) ? $data['amount'] : 1);
-                }
-                $deposit->setPeak($settlement->getAdministrativeCenter());
-                $descriptor->setDeposit($deposit);
-                $this->planetEntityManager->persist($deposit);
-                $this->planetEntityManager->persist($descriptor);
-            }
+        foreach ($colonizationPackageDeposit->getResourceDescriptors() as $resourceDescriptor) {
+            $resourceCopy = clone $resourceDescriptor;
+            $settlement->getDeposit()->addResourceDescriptors($resourceCopy);
         }
 	}
 
@@ -169,6 +147,7 @@ class PlanetBuilder
         $protectorTitle->setSettlementId($settlement->getId());
         $protectorTitle->setSettlementPlanet(DynamicPlanetConnector::$PLANET);
         $this->generalEntityManager->persist($protectorTitle);
+
         $globalHuman->getTitles()->add($protectorTitle);
         $globalHuman->setTitle($protectorTitle);
 

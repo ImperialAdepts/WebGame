@@ -2,19 +2,12 @@
 
 namespace PlanetBundle\Controller;
 
-use AppBundle\Entity\Human\EventDataTypeEnum;
-use AppBundle\Entity\Human\EventTypeEnum;
-use AppBundle\Fixture\ResourceAndBlueprintFixture;
-use PlanetBundle\Concept\Battleship;
 use PlanetBundle\Concept\Concept;
 use PlanetBundle\Concept\ConceptToBlueprintAdapter;
-use PlanetBundle\Concept\Reactor;
 use PlanetBundle\Form\BlueprintAdapter;
 use PlanetBundle\Form\BlueprintFormType;
 use PlanetBundle\Repository\ConceptRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use PlanetBundle\Entity as PlanetEntity;

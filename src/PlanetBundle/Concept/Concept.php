@@ -1,6 +1,8 @@
 <?php
 namespace PlanetBundle\Concept;
 
+use PlanetBundle\Entity\Resource\Blueprint;
+
 abstract class Concept
 {
     /** @var array */
@@ -28,5 +30,13 @@ abstract class Concept
             $setterName = 'set'.ucfirst($trait);
             $this->$setterName($value);
         }
+    }
+
+    public function getBlueprint($description) {
+        $blueprint = new Blueprint();
+        $blueprint->setConcept(get_class($this));
+        $blueprint->setDescription($description);
+
+        return $blueprint;
     }
 }

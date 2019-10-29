@@ -282,32 +282,6 @@ class Settlement implements ResourcefullInterface
     public function getDeposit()
     {
         return new SettlementDepositsAggregator($this);
-//        $resources = [];
-//        /** @var Region $region */
-//        foreach ($this->getRegions() as $region) {
-//            if ($resourceDescriptor != null) {
-//                if (($localDeposit = $region->getResourceDeposit($resourceDescriptor)) != null) {
-//                    $resources[] = $localDeposit;
-//                }
-//            } else {
-//                foreach ($region->getResources() as $deposit) {
-//                    $resources[] = $deposit;
-//                }
-//            }
-//        }
-//        /** @var Peak $peak */
-//        foreach ($this->getPeaks() as $peak) {
-//            if ($resourceDescriptor != null) {
-//                if (($localDeposit = $peak->getResourceDeposit($resourceDescriptor)) != null) {
-//                    $resources[] = $localDeposit;
-//                }
-//            } else {
-//                foreach ($peak->getDeposit() as $deposit) {
-//                    $resources[] = $deposit;
-//                }
-//            }
-//        }
-//        return $resources;
     }
 
     /**

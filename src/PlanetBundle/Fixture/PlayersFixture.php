@@ -34,6 +34,9 @@ class PlayersFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements 
             $humans = $manager->getRepository(PlanetEntity\Human::class)->findAll();
             $peaks = $manager->getRepository(PlanetEntity\Peak::class)->findAll();
 
+            /** @var PlanetEntity\StandardizedDeposit $standardColonizationDeposit */
+            $standardColonizationDeposit = $this->getReference(StandardColonizationShipFixture::DEPOSIT_CODE);
+
             $peakCounter = floor(count($peaks)/3);
             /** @var PlanetEntity\Human $human */
             foreach ($humans as $human) {
@@ -41,7 +44,7 @@ class PlayersFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements 
                 $administrativeCenter = $peaks[$peakCounter];
                 $peakCounter += ceil(count($peaks) / count($humans));
                 $peakCounter = $peakCounter % count($peaks);
-                $builder->newColony($administrativeCenter, $human, 'simple');
+                $builder->newColony($administrativeCenter, $human, $standardColonizationDeposit);
                 $human->setCurrentPeakPosition($administrativeCenter);
 
                 $globalHuman = $generalManager->getRepository(GeneralEntity\Human::class)->find($human->getGlobalHumanId());
@@ -71,6 +74,7 @@ class PlayersFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements 
     {
         return [
             TroiColoniesFixture::class,
+            StandardColonizationShipFixture::class,
         ];
     }
 }

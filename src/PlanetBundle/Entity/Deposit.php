@@ -21,7 +21,7 @@ use PlanetBundle\Entity\Resource\Thing;
  * @ORM\Table(name="deposits")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="owner_type", type="string")
- * @ORM\DiscriminatorMap({"region" = "RegionDeposit", "peak" = "PeakDeposit"})
+ * @ORM\DiscriminatorMap({"region" = "RegionDeposit", "peak" = "PeakDeposit", "standardized" = "StandardizedDeposit"})
  */
 abstract class Deposit implements DepositInterface
 {
@@ -37,7 +37,7 @@ abstract class Deposit implements DepositInterface
     /**
      * @var ResourceDescriptor[]
      *
-     * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\Resource\ResourceDescriptor", mappedBy="deposit")
+     * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\Resource\ResourceDescriptor", mappedBy="deposit", cascade={"persist", "remove"})
      */
     private $resourceDescriptors;
 

@@ -1,10 +1,13 @@
 <?php
-namespace PlanetBundle\UseCase;
+namespace PlanetBundle\Concept;
 
 use PlanetBundle\Annotation\Concept\Persistent;
+use PlanetBundle\UseCase;
 
-trait LivingBuilding
+class LivingBuilding
 {
+    use UseCase\LandBuilding;
+
     /**
      * @var integer number of good lived person
      * @Persistent("integer")

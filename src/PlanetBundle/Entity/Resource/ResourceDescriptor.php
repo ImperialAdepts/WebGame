@@ -4,6 +4,7 @@ namespace PlanetBundle\Entity\Resource;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use Doctrine\ORM\Mapping as ORM;
+use PlanetBundle\Entity\Deposit;
 use PlanetBundle\Entity\DepositDependencyTrait;
 
 /**
@@ -82,5 +83,17 @@ abstract class ResourceDescriptor
         $this->workHours = $workHours;
     }
 
+    public function cloneToDeposit(Deposit $targetDeposit) {
+        if ($this instanceof Thing) {
+            $descriptor = new Thing();
+            $descriptor->setAmount($this->getAmount());
+            $descriptor->setBlueprint($this->getBlueprint());
+            $descriptor->setDescription($this->getDescription());
+        } elseif ($this instanceof Resource) {
+            $descriptor = new Resource();
+            $descriptor->setType($this->getType());
+            $descriptor->setAmount($this->getAmount());
+        }
+    }
 }
 
