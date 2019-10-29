@@ -9,7 +9,7 @@
 			{% for building in buildings %}
 				<li>
 					{{ render(controller('PlanetBundle:ResourceDeposit:depositDetail', {
-						'deposit': building.deposit.id,
+						'descriptor': building.id,
 					})) }}
 				</li>
 			{% endfor %}

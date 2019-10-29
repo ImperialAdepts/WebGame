@@ -9,8 +9,10 @@ use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Descriptor\UseCaseTraitEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use PlanetBundle\Entity\Resource\Blueprint;
 use PlanetBundle\Entity\Resource\DepositInterface;
 use PlanetBundle\Entity\Resource\ResourceDescriptor;
+use PlanetBundle\Entity\Resource\Thing;
 
 /**
  * ResourceDeposit
@@ -65,6 +67,7 @@ abstract class Deposit implements DepositInterface
     public function addResourceDescriptors(ResourceDescriptor $resourceDescriptor)
     {
         $this->resourceDescriptors->add($resourceDescriptor);
+        $resourceDescriptor->setDeposit($this);
     }
 
     /**
@@ -73,6 +76,32 @@ abstract class Deposit implements DepositInterface
     public function setResourceDescriptors($resourceDescriptors)
     {
         $this->resourceDescriptors = $resourceDescriptors;
+    }
+
+    /**
+     * @param string $useCase trait class
+     * @return Thing[]
+     */
+    public function filterByUseCase($useCase)
+    {
+        foreach ($this->getResourceDescriptors() as $descriptor) {
+            if ($descriptor instanceof Thing && $descriptor->hasUsecase($useCase)) {
+                yield $descriptor;
+            }
+        }
+    }
+
+    /**
+     * @param Blueprint $blueprint
+     * @return Thing[]
+     */
+    public function filterByBlueprint(Blueprint $blueprint)
+    {
+        foreach ($this->getResourceDescriptors() as $descriptor) {
+            if ($descriptor instanceof Thing && $descriptor->getBlueprint() === $blueprint) {
+                yield $descriptor;
+            }
+        }
     }
 
 }

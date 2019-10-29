@@ -9,19 +9,21 @@
 	{% endif %}
 	<table border="1">
 		<tr>
-			{% for name, adapter in adapters %}
-				<td>
-					<strong>{{ name }}</strong>
-					{% if adapter is not null%}
-						{{ render(controller('PlanetBundle:ResourceDeposit:adapterDetail', {
-							'useCase': name,
-							'deposit': adapter.deposit.id
-						})) }}
-					{% else %}
-						<br/><small>Adapter missing</small>
-					{% endif %}
-				</td>
-			{% endfor %}
+			<td colspan="{{ adapters|length }}">{{ dump(adapters|first) }}</td>
+			<td>
+				{% for name, adapter in adapters %}
+						<strong>{{ name }}</strong><br>
+						{% if adapter is not null%}
+							{#						{{ render(controller('PlanetBundle:ResourceDeposit:adapterDetail', {#}
+							{#							'useCase': name,#}
+							{#							'deposit': adapter.deposit.id#}
+							{#						})) }}#}
+						{% else %}
+							<br/><small>Adapter missing</small>
+						{% endif %}
+				{% endfor %}
+			</td>
+			<td>{{ dump(statistics) }}</td>
 		</tr>
 	</table>
 </div>

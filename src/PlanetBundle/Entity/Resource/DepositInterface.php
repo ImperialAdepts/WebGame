@@ -1,6 +1,8 @@
 <?php
 namespace PlanetBundle\Entity\Resource;
 
+use PlanetBundle\Concept\Concept;
+
 interface DepositInterface
 {
     /**
@@ -12,4 +14,16 @@ interface DepositInterface
      * @param ResourceDescriptor $resourceDescriptor
      */
     public function addResourceDescriptors(ResourceDescriptor $resourceDescriptor);
+
+    /**
+     * @param string $useCase trait class
+     * @return Thing[]
+     */
+    public function filterByUseCase($useCase);
+
+    /**
+     * @param Blueprint $blueprint
+     * @return Thing[]
+     */
+    public function filterByBlueprint(Blueprint $blueprint);
 }

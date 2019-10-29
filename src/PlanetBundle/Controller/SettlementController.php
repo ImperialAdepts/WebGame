@@ -20,6 +20,7 @@ use PlanetBundle\Entity\Region;
 use PlanetBundle\Form\PeakSelectorType;
 use PlanetBundle\Form\RegionSelectorType;
 use PlanetBundle\Repository\RegionRepository;
+use PlanetBundle\UseCase\LandBuilding;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -141,12 +142,28 @@ class SettlementController extends BasePlanetController
      */
     public function buildingsAction(Entity\Settlement $settlement, Request $request)
     {
-        $buildings = [];
-        foreach ($settlement->getResources() as $deposit) {
-            if (($building = $deposit->asUseCase(UseCaseEnum::LAND_BUILDING)) != null) {
-                $buildings[] = $building;
-            }
+        if ($settlement->getAdministrativeCenter()->getDeposit() == null) {
+            $deposit = new Entity\PeakDeposit();
+            $deposit->setPeak($settlement->getAdministrativeCenter());
+            $this->getDoctrine()->getManager('planet')->persist($deposit);
+            $this->getDoctrine()->getManager('planet')->persist($settlement);
         }
+
+        $blueprint = $this->get('repo_blueprint')->find(1);
+        $warehouse = new Entity\Resource\Thing();
+        $warehouse->setDescription('warehouse');
+        $warehouse->setAmount(1);
+        $warehouse->setUseCases([
+            LandBuilding::class,
+        ]);
+        $warehouse->setBlueprint($blueprint);
+        $settlement->getDeposit()->addResourceDescriptors($warehouse);
+
+        $this->getDoctrine()->getManager('planet')->persist($warehouse);
+        $this->getDoctrine()->getManager('planet')->persist($settlement);
+        $this->getDoctrine()->getManager('planet')->flush();
+
+        $buildings = $settlement->getDeposit()->filterByUseCase(LandBuilding::class);
 
         return $this->render('Settlement/buildings-fragment.html.twig', [
             'settlement' => $settlement,

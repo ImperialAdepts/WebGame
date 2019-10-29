@@ -106,5 +106,17 @@ class Thing extends ResourceDescriptor
     {
         $this->useCases = $useCases;
     }
+
+    /**
+     * @param string $useCase
+     * @return boolean
+     */
+    public function hasUsecase($useCase) {
+        return in_array($useCase, class_uses($this->getBlueprint()->getConcept()));
+    }
+
+    public function getConceptAdapter() {
+        return $this->getBlueprint()->getConceptAdapter($this->getTraitValues());
+    }
 }
 

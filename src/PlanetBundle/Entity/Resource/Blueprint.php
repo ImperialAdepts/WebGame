@@ -107,8 +107,14 @@ class Blueprint
      */
     public function getUseCases()
     {
-        return [];
-        return $this->getConcept()->getUseCases();
+        foreach (class_uses($this->getConcept()) as $use) {
+            yield $use;
+        }
+        foreach (class_parents($this->getConcept()) as $parent) {
+            foreach (class_uses($parent) as $use) {
+                yield $use;
+            }
+        }
     }
 
     /**
