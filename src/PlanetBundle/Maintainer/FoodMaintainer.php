@@ -7,21 +7,24 @@ use AppBundle\Descriptor\Adapters\People;
 use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
+use PlanetBundle\Concept\Food;
+use PlanetBundle\Entity\Deposit;
 use PlanetBundle\Entity\Region;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\EntityManager;
+use PlanetBundle\Entity\Resource\DepositInterface;
 
 class FoodMaintainer
 {
     const PEOPLE_STARVATION_RATIO = 0.3;
 
     /**
-     * @param ResourcefullInterface $resourceHandler
+     * @param Deposit $deposit
      * @return int[] resource_descriptor => unit amount consumption
      */
-    public function getFoodConsumptionEstimation(ResourcefullInterface $resourceHandler) {
-        $foodEnergyNeeded = People::countFoodEnergyConsumption(People::in($resourceHandler));
-        $foods = BasicFood::in($resourceHandler);
+    public function getFoodConsumptionEstimation(DepositInterface $deposit) {
+        $foodEnergyNeeded = People::countFoodEnergyConsumption($deposit->filterByConcept(People::class));
+        $foods = $deposit->filterByConcept(Food::class);
         $allEnergy = BasicFood::countEnergy($foods);
         if ($allEnergy <= 0) {
             return [];
@@ -41,7 +44,7 @@ class FoodMaintainer
      * @return string[] resorce_descriptor => change amount
      */
     public function eatFood(Region $region) {
-        $consumption = $this->getFoodConsumptionEstimation($region);
+        $consumption = $this->getFoodConsumptionEstimation($region->getDeposit());
         $missingEnergy = 0;
 
         $realChanges = [];

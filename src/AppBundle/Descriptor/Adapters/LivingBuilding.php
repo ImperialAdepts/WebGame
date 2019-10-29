@@ -35,7 +35,7 @@ class LivingBuilding extends AbstractResourceDepositAdapter
      * @param LivingBuilding[] $houses
      * @return int
      */
-    public static function countLivingCapacity(array $houses) {
+    public static function countLivingCapacity($houses) {
         $housingCapacity = 0;
         /** @var LivingBuilding $house */
         foreach ($houses as $house) {

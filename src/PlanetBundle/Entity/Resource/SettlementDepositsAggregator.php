@@ -25,20 +25,9 @@ class SettlementDepositsAggregator implements DepositInterface
      */
     public function getResourceDescriptors()
     {
-        /** @var Region $region */
-        foreach ($this->settlement->getRegions() as $region) {
-            if ($region->getDeposit() != null) {
-                foreach ($region->getDeposit()->getResourceDescriptors() as $descriptor) {
-                    yield $descriptor;
-                }
-            }
-        }
-        /** @var Peak $peak */
-        foreach ($this->settlement->getPeaks() as $peak) {
-            if ($peak->getDeposit() != null) {
-                foreach ($peak->getDeposit()->getResourceDescriptors() as $descriptor) {
-                    yield $descriptor;
-                }
+        foreach ($this->getDeposits() as $deposit) {
+            foreach ($deposit->getResourceDescriptors() as $descriptor) {
+                yield $descriptor;
             }
         }
     }
@@ -63,20 +52,13 @@ class SettlementDepositsAggregator implements DepositInterface
      */
     public function filterByUseCase($useCase)
     {
-        /** @var Region $region */
-        foreach ($this->settlement->getRegions() as $region) {
-            foreach ($region->getDeposit()->filterByUseCase($useCase) as $descriptor) {
-                yield $descriptor;
+        $descriptors = [];
+        foreach ($this->getDeposits() as $deposit) {
+            foreach ($deposit->filterByUseCase($useCase) as $descriptor) {
+                $descriptors[] = $descriptor;
             }
         }
-        /** @var Peak $peak */
-        foreach ($this->settlement->getPeaks() as $peak) {
-            if ($peak->getDeposit() != null) {
-                foreach ($peak->getDeposit()->filterByUseCase($useCase) as $descriptor) {
-                    yield $descriptor;
-                }
-            }
-        }
+        return $descriptors;
     }
 
     /**
@@ -85,19 +67,38 @@ class SettlementDepositsAggregator implements DepositInterface
      */
     public function filterByBlueprint(Blueprint $blueprint)
     {
+        $descriptors = [];
+        foreach ($this->getDeposits() as $deposit) {
+            foreach ($deposit->filterByBlueprint($blueprint) as $descriptor) {
+                $descriptors[] = $descriptor;
+            }
+        }
+        return $descriptors;
+    }
+
+    /**
+     * @param string $concept
+     * @return Thing[]
+     */
+    public function filterByConcept($concept)
+    {
+        $descriptors = [];
+        foreach ($this->getDeposits() as $deposit) {
+            foreach ($deposit->filterbyConcept($concept) as $descriptor) {
+                $descriptors[] = $descriptor;
+            }
+        }
+        return $descriptors;
+    }
+
+    private function getDeposits() {
         /** @var Region $region */
         foreach ($this->settlement->getRegions() as $region) {
-            foreach ($region->getDeposit()->filterByBlueprint($blueprint) as $descriptor) {
-                yield $descriptor;
-            }
+            yield $region->getDeposit();
         }
         /** @var Peak $peak */
         foreach ($this->settlement->getPeaks() as $peak) {
-            if ($peak->getDeposit() != null) {
-                foreach ($peak->getDeposit()->filterByBlueprint($blueprint) as $descriptor) {
-                    yield $descriptor;
-                }
-            }
+            yield $peak->getDeposit();
         }
     }
 }

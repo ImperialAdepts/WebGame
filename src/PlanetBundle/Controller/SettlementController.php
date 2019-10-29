@@ -13,6 +13,8 @@ use AppBundle\Entity\Human\EventTypeEnum;
 use AppBundle\Entity\Human\SettlementTitle;
 use AppBundle\Entity\SolarSystem\Planet;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
+use PlanetBundle\Concept\Food;
+use PlanetBundle\Concept\People;
 use PlanetBundle\Entity;
 use AppBundle\Repository\JobRepository;
 use PlanetBundle\Entity\Peak;
@@ -20,7 +22,10 @@ use PlanetBundle\Entity\Region;
 use PlanetBundle\Form\PeakSelectorType;
 use PlanetBundle\Form\RegionSelectorType;
 use PlanetBundle\Repository\RegionRepository;
+use PlanetBundle\UseCase\Deposit;
 use PlanetBundle\UseCase\LandBuilding;
+use PlanetBundle\UseCase\LivingBuilding;
+use PlanetBundle\UseCase\Portable;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -116,8 +121,8 @@ class SettlementController extends BasePlanetController
             'buildingBlueprints' => $blueprintsByRegions,
             'human' => $settlement->getManager(),
             'cutOffForm' => $cutOffForm->getForm()->createView(),
-            'foodConsumption' => $this->get('maintainer_food')->getFoodConsumptionEstimation($settlement),
-            'populationChanges' => $this->get('maintainer_population')->getBirths($settlement),
+            'foodConsumption' => $this->get('maintainer_food')->getFoodConsumptionEstimation($settlement->getDeposit()),
+            'populationChanges' => $this->get('maintainer_population')->getBirths($settlement->getDeposit()),
         ]);
 	}
 
@@ -126,8 +131,8 @@ class SettlementController extends BasePlanetController
      */
     public function warehouseContentAction(Entity\Settlement $settlement, Request $request)
     {
-        $warehouses = Adapters\Warehouse::in($settlement);
-        $portables = Adapters\Portable::in($settlement);
+        $warehouses = $settlement->getDeposit()->filterByUseCase(Deposit::class);
+        $portables = $settlement->getDeposit()->filterByUseCase(Portable::class);
 
         return $this->render('Settlement/warehouse-content-fragment.html.twig', [
             'settlement' => $settlement,
@@ -177,26 +182,25 @@ class SettlementController extends BasePlanetController
      */
     public function housingAction(Entity\Settlement $settlement, Request $request)
     {
-        /** @var Adapters\LivingBuilding[] $houses */
-        $houses = Adapters\LivingBuilding::in($settlement);
+        $houses = $settlement->getDeposit()->filterByUseCase(LivingBuilding::class);
         $peopleCount = 0;
         $peopleBirths = 0;
-        foreach (Adapters\People::in($settlement) as $people) {
-            $peopleCount += $people->getPeopleCount();
+        foreach ($settlement->getDeposit()->filterByConcept(People::class) as $people) {
+            $peopleCount += $people->getAmount();
         }
-        foreach ($this->get('maintainer_population')->getBirths($settlement) as $birthCount) {
+        foreach ($this->get('maintainer_population')->getBirths($settlement->getDeposit()) as $birthCount) {
             $peopleBirths += $birthCount;
         }
 
-        $foods = Adapters\BasicFood::in($settlement);
+        $foods = $settlement->getDeposit()->filterByConcept(Food::class);
 
         return $this->render('Settlement/housing.html.twig', [
             'settlement' => $settlement,
             'people' => $peopleCount,
             'peopleBirths' => $peopleBirths,
             'foods' => $foods,
-            'foodEnergy' => Adapters\BasicFood::countEnergy($foods),
-            'foodVariety' => Adapters\BasicFood::countVariety($this->get('maintainer_food')->getFoodConsumptionEstimation($settlement)),
+            'foodEnergy' => 0,//Adapters\BasicFood::countEnergy($foods),
+            'foodVariety' => Adapters\BasicFood::countVariety($this->get('maintainer_food')->getFoodConsumptionEstimation($settlement->getDeposit())),
             'housingCapacity' => Adapters\LivingBuilding::countLivingCapacity($houses),
             'houses' => $houses,
             'human' => $this->getHuman(),

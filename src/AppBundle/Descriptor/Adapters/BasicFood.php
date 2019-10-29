@@ -32,7 +32,7 @@ class BasicFood extends AbstractResourceDepositAdapter
      * @param BasicFood[] $foods
      * @return int
      */
-    public static function countEnergy(array $foods) {
+    public static function countEnergy($foods) {
         $energy = 0;
         /** @var BasicFood $food */
         foreach ($foods as $food) {
@@ -43,7 +43,7 @@ class BasicFood extends AbstractResourceDepositAdapter
         return $energy;
     }
 
-    public static function countVariety(array $foodChanges) {
+    public static function countVariety($foodChanges) {
         if (count($foodChanges) == 0) return 0;
         $average = 0;
         foreach ($foodChanges as $resourceDescriptor => $count) {

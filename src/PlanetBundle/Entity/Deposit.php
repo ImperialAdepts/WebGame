@@ -84,11 +84,13 @@ abstract class Deposit implements DepositInterface
      */
     public function filterByUseCase($useCase)
     {
+        $descriptors = [];
         foreach ($this->getResourceDescriptors() as $descriptor) {
             if ($descriptor instanceof Thing && $descriptor->hasUsecase($useCase)) {
-                yield $descriptor;
+                $descriptors[] = $descriptor;
             }
         }
+        return $descriptors;
     }
 
     /**
@@ -97,12 +99,24 @@ abstract class Deposit implements DepositInterface
      */
     public function filterByBlueprint(Blueprint $blueprint)
     {
+        $descriptors = [];
         foreach ($this->getResourceDescriptors() as $descriptor) {
             if ($descriptor instanceof Thing && $descriptor->getBlueprint() === $blueprint) {
-                yield $descriptor;
+                $descriptors[] = $descriptor;
             }
         }
+        return $descriptors;
     }
 
+    public function filterByConcept($concept)
+    {
+        $descriptors = [];
+        foreach ($this->getResourceDescriptors() as $descriptor) {
+            if ($descriptor instanceof Thing && $descriptor->getBlueprint()->getConcept() === $concept) {
+                $descriptors[] = $descriptor;
+            }
+        }
+        return $descriptors;
+    }
 }
 

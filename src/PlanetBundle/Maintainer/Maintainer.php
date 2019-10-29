@@ -7,6 +7,7 @@ use AppBundle\Descriptor\Adapters\Team;
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use PlanetBundle\Entity\Deposit;
 use PlanetBundle\Entity\Region;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\EntityManager;
@@ -48,15 +49,15 @@ class Maintainer
     }
 
     /**
-     * @param ResourcefullInterface $resourcefull
+     * @param Deposit $deposit
      * @param $resourceDescriptor
      * @return int
      */
-    public function getConsumption(ResourcefullInterface $resourcefull, $resourceDescriptor) {
+    public function getConsumption(Deposit $deposit, $resourceDescriptor) {
         // TODO: add cache
         $consumptionCount = 0;
         $consumptionBatches = [
-            $this->foodMaitainer->getFoodConsumptionEstimation($resourcefull),
+            $this->foodMaitainer->getFoodConsumptionEstimation($deposit),
             ];
         foreach ($consumptionBatches as $consumptions) {
             if (isset($consumptions[$resourceDescriptor])) {

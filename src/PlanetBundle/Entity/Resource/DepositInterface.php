@@ -26,4 +26,10 @@ interface DepositInterface
      * @return Thing[]
      */
     public function filterByBlueprint(Blueprint $blueprint);
+
+    /**
+     * @param string $concept
+     * @return Thing[]
+     */
+    public function filterByConcept($concept);
 }

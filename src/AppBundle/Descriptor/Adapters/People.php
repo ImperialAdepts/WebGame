@@ -33,7 +33,7 @@ class People extends AbstractResourceDepositAdapter
      * @param People[] $peoples
      * @return int
      */
-    public static function countPeople(array $peoples) {
+    public static function countPeople($peoples) {
         $peopleCount = 0;
         /** @var People $people */
         foreach ($peoples as $people) {
@@ -65,7 +65,7 @@ class People extends AbstractResourceDepositAdapter
      * @param People[] $peoples
      * @return int Joule
      */
-    public static function countFoodEnergyConsumption(array $peoples) {
+    public static function countFoodEnergyConsumption($peoples) {
         $energyCount = 0;
         /** @var People $people */
         foreach ($peoples as $people) {
