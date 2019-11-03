@@ -2,14 +2,10 @@
 
 namespace PlanetBundle\Maintainer;
 
-use AppBundle\Descriptor\Adapters\BasicFood;
-use AppBundle\Descriptor\Adapters\Team;
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Entity\Human;
 use AppBundle\Repository\HumanRepository;
 use PlanetBundle\Entity\Region;
-use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\EntityManager;
 
 class HumanMaintainer

@@ -2,7 +2,6 @@
 
 namespace PlanetBundle\Entity\Resource;
 
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use PlanetBundle\Concept\Concept;
@@ -221,7 +220,7 @@ class Blueprint
 		return $this->getResourceDescriptor().' '.$this->getDescription();
 	}
 
-    public function addWorkSheet(WorkSheet $workSheet)
+    public function addWorkSheet(BlueprintRecipe $workSheet)
     {
 
     }

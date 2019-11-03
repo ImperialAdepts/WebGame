@@ -2,9 +2,6 @@
 
 namespace PlanetBundle\Maintainer;
 
-use AppBundle\Descriptor\Adapters\BasicFood;
-use AppBundle\Descriptor\Adapters\Team;
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use PlanetBundle\Entity\Deposit;

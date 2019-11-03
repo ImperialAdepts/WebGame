@@ -3,7 +3,7 @@ namespace PlanetBundle\Concept;
 
 use PlanetBundle\UseCase;
 
-class Warehouse extends Concept
+class Warehouse extends ExoSkeletalHull
 {
     use UseCase\LandBuilding;
     use UseCase\Deposit;

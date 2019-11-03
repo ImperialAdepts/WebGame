@@ -2,7 +2,6 @@
 
 namespace PlanetBundle\Entity\Job;
 
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Entity\Notification\ProjectNotification;
 use PlanetBundle\Entity\DepositDependencyTrait;
 use PlanetBundle\Entity\Region;

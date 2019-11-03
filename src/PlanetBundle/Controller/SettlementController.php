@@ -3,9 +3,6 @@
 namespace PlanetBundle\Controller;
 
 use AppBundle\Builder\PlanetBuilder;
-use AppBundle\Descriptor\Adapters;
-use AppBundle\Descriptor\ResourceDescriptorEnum;
-use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity\Human;
 use AppBundle\Entity\Human\Event;
 use AppBundle\Entity\Human\EventDataTypeEnum;
@@ -14,6 +11,7 @@ use AppBundle\Entity\Human\SettlementTitle;
 use AppBundle\Entity\SolarSystem\Planet;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
 use PlanetBundle\Concept\Food;
+use PlanetBundle\Concept\LivingBuilding;
 use PlanetBundle\Concept\People;
 use PlanetBundle\Entity;
 use AppBundle\Repository\JobRepository;
@@ -22,16 +20,12 @@ use PlanetBundle\Entity\Region;
 use PlanetBundle\Form\PeakSelectorType;
 use PlanetBundle\Form\RegionSelectorType;
 use PlanetBundle\Repository\RegionRepository;
-use PlanetBundle\UseCase\Deposit;
-use PlanetBundle\UseCase\LandBuilding;
-use PlanetBundle\UseCase\LivingBuilding;
-use PlanetBundle\UseCase\Portable;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use PlanetBundle\UseCase;
 use Tracy\Debugger;
 
 /**
@@ -73,7 +67,9 @@ class SettlementController extends BasePlanetController
         /** @var Entity\Region $region */
         foreach ($settlement->getRegions() as $region) {
             // TODO: zmenit na aktualne prihlaseneho cloveka
-            $blueprintsByRegions[$region->getCoords()] = $builder->getAvailableBlueprints($region, $settlement->getManager());
+            if ($region->getDeposit() != null) {
+                $blueprintsByRegions[$region->getCoords()] = $builder->getAvailableBlueprints($region->getDeposit(), $settlement->getManager());
+            }
         }
 
         $peaks = [];
@@ -131,8 +127,8 @@ class SettlementController extends BasePlanetController
      */
     public function warehouseContentAction(Entity\Settlement $settlement, Request $request)
     {
-        $warehouses = $settlement->getDeposit()->filterByUseCase(Deposit::class);
-        $portables = $settlement->getDeposit()->filterByUseCase(Portable::class);
+        $warehouses = $settlement->getDeposit()->filterByUseCase(UseCase\Deposit::class);
+        $portables = $settlement->getDeposit()->filterByUseCase(UseCase\Portable::class);
 
         return $this->render('Settlement/warehouse-content-fragment.html.twig', [
             'settlement' => $settlement,
@@ -159,7 +155,7 @@ class SettlementController extends BasePlanetController
         $warehouse->setDescription('warehouse');
         $warehouse->setAmount(1);
         $warehouse->setUseCases([
-            LandBuilding::class,
+            UseCase\LandBuilding::class,
         ]);
         $warehouse->setBlueprint($blueprint);
         $settlement->getDeposit()->addResourceDescriptors($warehouse);
@@ -168,7 +164,7 @@ class SettlementController extends BasePlanetController
         $this->getDoctrine()->getManager('planet')->persist($settlement);
         $this->getDoctrine()->getManager('planet')->flush();
 
-        $buildings = $settlement->getDeposit()->filterByUseCase(LandBuilding::class);
+        $buildings = $settlement->getDeposit()->filterByUseCase(UseCase\LandBuilding::class);
 
         return $this->render('Settlement/buildings-fragment.html.twig', [
             'settlement' => $settlement,
@@ -194,14 +190,24 @@ class SettlementController extends BasePlanetController
 
         $foods = $settlement->getDeposit()->filterByConcept(Food::class);
 
+        $foodEnergy = 0;
+        foreach ($foods as $food) {
+            $foodEnergy += $food->getConceptAdapter()->getEnergy()*$food->getAmount();
+        }
+
+        $housingCapacity = 0;
+        foreach ($houses as $house) {
+            $housingCapacity += $house->getConceptAdapter()->getPeopleCapacity()*$house->getAmount();
+        }
+
         return $this->render('Settlement/housing.html.twig', [
             'settlement' => $settlement,
             'people' => $peopleCount,
             'peopleBirths' => $peopleBirths,
             'foods' => $foods,
-            'foodEnergy' => 0,//Adapters\BasicFood::countEnergy($foods),
-            'foodVariety' => Adapters\BasicFood::countVariety($this->get('maintainer_food')->getFoodConsumptionEstimation($settlement->getDeposit())),
-            'housingCapacity' => Adapters\LivingBuilding::countLivingCapacity($houses),
+            'foodEnergy' => $foodEnergy,
+            'foodVariety' => Food::countVariety($foods),
+            'housingCapacity' => $housingCapacity,
             'houses' => $houses,
             'human' => $this->getHuman(),
         ]);
@@ -214,31 +220,35 @@ class SettlementController extends BasePlanetController
     {
         /** @var Entity\Region $region */
         $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
-        $transporterBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_TRANSPORTERS);
-        $builderBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_BUILDERS);
-        $merchantBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_MERCHANTS);
-        $scientistBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_SCIENTISTS);
-        $workerBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_WORKERS);
-        $farmerBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_FARMERS);
-        $armyBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_SOLDIERS);
+        $transporterBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\Blueprint::class)->getByUseCase(UseCase\TeamTransporters::class);
+        $builderBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\Blueprint::class)->getByUseCase(UseCase\TeamBuilders::class);
+        $merchantBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\Blueprint::class)->getByUseCase(UseCase\TeamMerchants::class);
+        $scientistBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\Blueprint::class)->getByUseCase(UseCase\TeamScientists::class);
+        $workerBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\Blueprint::class)->getByUseCase(UseCase\TeamWorkers::class);
+        $farmerBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\Blueprint::class)->getByUseCase(UseCase\TeamFarmers::class);
+        $armyBlueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\Blueprint::class)->getByUseCase(UseCase\TeamSoldiers::class);
 
         /** @var Adapters\LivingBuilding[] $teams */
-        $teams = Adapters\Team::in($region);
+        $teams = $region->getDeposit() ? $region->getDeposit()->filterByUseCase(UseCase\Team::class) : [];
         $peopleCount = $region->getPeopleCount();
-        $employees = Adapters\Team::countPeople($teams);
+        $employees = 0;
+
+        foreach ($teams as $team) {
+            $employees += $team->getConceptAdapter()->getPeopleCount();
+        }
 
         return $this->render('Settlement/teams.html.twig', [
             'settlement' => $region->getSettlement(),
             'region' => $region,
             'people' => $peopleCount,
             'unemployedPeople' => $peopleCount - $employees,
-            'transporters' => Adapters\TeamTransporter::in($region),
-            'builders' => Adapters\TeamBuilder::in($region),
-            'merchants' => Adapters\TeamMerchant::in($region),
-            'scientists' => Adapters\TeamScientist::in($region),
-            'workers' => Adapters\TeamWorker::in($region),
-            'farmers' => Adapters\TeamFarmer::in($region),
-            'army' => Adapters\TeamArmy::in($region),
+            'transporters' => $region->getDeposit() ? $region->getDeposit()->filterByUseCase(UseCase\TeamTransporters::class) : [],
+            'builders' => $region->getDeposit() ? $region->getDeposit()->filterByUseCase(UseCase\TeamBuilders::class) : [],
+            'merchants' => $region->getDeposit() ? $region->getDeposit()->filterByUseCase(UseCase\TeamMerchants::class) : [],
+            'scientists' => $region->getDeposit() ? $region->getDeposit()->filterByUseCase(UseCase\TeamScientists::class) : [],
+            'workers' => $region->getDeposit() ? $region->getDeposit()->filterByUseCase(UseCase\TeamWorkers::class) : [],
+            'farmers' => $region->getDeposit() ? $region->getDeposit()->filterByUseCase(UseCase\TeamFarmers::class) : [],
+            'army' => $region->getDeposit() ? $region->getDeposit()->filterByUseCase(UseCase\TeamSoldiers::class) : [],
             'transporterBlueprints' => $transporterBlueprints,
             'builderBlueprints' => $builderBlueprints,
             'merchantBlueprints' => $merchantBlueprints,
@@ -252,7 +262,7 @@ class SettlementController extends BasePlanetController
     /**
      * @Route("/create-team/{peakC}_{peakL}_{peakR}/{blueprint}", name="settlement_team_create")
      */
-    public function createTeamAction(Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Entity\Blueprint $blueprint, Request $request)
+    public function createTeamAction(Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Entity\Resource\Blueprint $blueprint, Request $request)
     {
         /** @var Entity\Region $region */
         $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
@@ -363,7 +373,7 @@ class SettlementController extends BasePlanetController
     /**
      * @Route("/changeType/to{blueprint}", name="settlement_change_type")
      */
-    public function changeTypeAction(Entity\Settlement $settlement, Entity\Blueprint $blueprint, Request $request)
+    public function changeTypeAction(Entity\Settlement $settlement, Entity\Resource\Blueprint $blueprint, Request $request)
     {
         $settlement->setType($blueprint->getResourceDescriptor());
         $this->getDoctrine()->getManager('planet')->persist($settlement);

@@ -1,7 +1,6 @@
 <?php
 namespace AppBundle\Builder;
 
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Entity\Human;
 use AppBundle\Entity\Human\Title;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
@@ -130,7 +129,7 @@ class PlanetBuilder
         $globalHuman = $this->generalEntityManager->find(Human::class, $human->getGlobalHumanId());
 
         $settlement = new PlanetEntity\Settlement();
-        $settlement->setType(ResourceDescriptorEnum::VILLAGE);
+        $settlement->setType('village');
         $settlement->setRegions($regions);
         $settlement->setAdministrativeCenter($administrativeCenter);
         $settlement->setOwner($human);
@@ -163,35 +162,33 @@ class PlanetBuilder
         return $settlement;
     }
 
-	public function getAvailableBlueprints(PlanetEntity\Region $region, PlanetEntity\Human $human) {
+	public function getAvailableBlueprints(PlanetEntity\Resource\DepositInterface $deposit, PlanetEntity\Human $human) {
 	    // TODO: overit ze dotycny vlastni blueprinty
         $availables = [];
-        $blueprints = $this->planetEntityManager->getRepository(PlanetEntity\Resource\Blueprint::class)->getAll();
-        /** @var Entity\Blueprint $blueprint */
-        foreach ($blueprints as $blueprint) {
-            foreach ($blueprint->getConstraints() as $resourceType => $amount) {
-                if ($resourceType == ResourceDescriptorEnum::VILLAGE
-                    || $resourceType == ResourceDescriptorEnum::FARM_DISTRICT
-                    || $resourceType == ResourceDescriptorEnum::RESOURCE_DISTRICT
-                    || $resourceType == ResourceDescriptorEnum::LABORATORY_DISTRICT) {
-                    if ($region->getSettlement() == null) {
-                        continue 2;
-                    }
-                    if ($resourceType == $region->getSettlement()->getType()) {
-                        continue;
-                    } else {
-                        continue 2;
-                    }
+        $recipes = $this->planetEntityManager->getRepository(PlanetEntity\Resource\BlueprintRecipe::class)->findAll();
+        /** @var PlanetEntity\Resource\BlueprintRecipe $recipe */
+        foreach ($recipes as $recipe) {
+            foreach ($recipe->getInputs() as $blueprintId => $amount) {
+                $blueprint = $this->planetEntityManager->getRepository(PlanetEntity\Resource\Blueprint::class)->find($blueprintId);
+                if ($blueprint == null) {
+                    continue;
                 }
-                if ($region->getSettlement() == null) {
-                    continue 2;
-                }
-                $resourceDeposit = $region->getResourceDeposit($resourceType);
-                if ($resourceDeposit == null || $resourceDeposit->getAmount() < $amount) {
+                $resourceDeposits = $deposit->filterByBlueprint($blueprint);
+                if (PlanetEntity\Deposit::sumAmounts($resourceDeposits) < $amount) {
                     continue 2;
                 }
             }
-            $availables[] = $blueprint;
+            foreach ($recipe->getTools() as $blueprintId => $amount) {
+                $blueprint = $this->planetEntityManager->getRepository(PlanetEntity\Resource\Blueprint::class)->find($blueprintId);
+                if ($blueprint == null) {
+                    continue;
+                }
+                $resourceDeposits = $deposit->filterByBlueprint($blueprint);
+                if (PlanetEntity\Deposit::sumAmounts($resourceDeposits) < $amount) {
+                    continue 2;
+                }
+            }
+            $availables[] = $recipe;
         }
         return $availables;
     }

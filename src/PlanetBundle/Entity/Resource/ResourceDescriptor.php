@@ -2,7 +2,6 @@
 
 namespace PlanetBundle\Entity\Resource;
 
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use Doctrine\ORM\Mapping as ORM;
 use PlanetBundle\Entity\Deposit;
 use PlanetBundle\Entity\DepositDependencyTrait;

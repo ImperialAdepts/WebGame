@@ -2,7 +2,6 @@
 
 namespace PlanetBundle\Entity\Notification;
 
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

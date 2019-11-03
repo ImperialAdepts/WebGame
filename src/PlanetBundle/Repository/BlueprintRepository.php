@@ -2,8 +2,6 @@
 
 namespace PlanetBundle\Repository;
 
-use AppBundle\Descriptor\UseCaseEnum;
-
 /**
  * BlueprintRepository
  *
@@ -45,17 +43,6 @@ class BlueprintRepository extends \Doctrine\ORM\EntityRepository
         ;
 
         return $qb->getQuery()->getResult();
-    }
-
-    public function getWarehouseable()
-    {
-        $buildingUC = UseCaseEnum::LAND_BUILDING;
-        $portableUC = UseCaseEnum::PORTABLES;
-        return $this->getEntityManager()
-            ->createQuery(
-                "SELECT b FROM PlanetBundle:Resource\Blueprint b WHERE b.useCases LIKE '%$portableUC%' AND b.useCases NOT LIKE '%$buildingUC%' ORDER BY b.id ASC"
-            )
-            ->getResult();
     }
 
 }

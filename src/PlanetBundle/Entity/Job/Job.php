@@ -2,7 +2,6 @@
 
 namespace PlanetBundle\Entity\Job;
 
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use PlanetBundle\Entity\Resource\Blueprint;
 use PlanetBundle\Entity\Human;
 use AppBundle\Entity\Notification\ProjectNotification;

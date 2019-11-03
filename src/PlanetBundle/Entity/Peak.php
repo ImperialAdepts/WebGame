@@ -1,10 +1,10 @@
 <?php
 
 namespace PlanetBundle\Entity;
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use PlanetBundle\Concept\People;
 use PlanetBundle\Entity\Resource\Blueprint;
 
 /**
@@ -52,7 +52,7 @@ class Peak implements ResourcefullInterface
      * @var OreDeposit[]
      * Known deposits, not all!
      *
-     * @ORM\OneToMany(targetEntity="OreDeposit", mappedBy="region")
+     * @ORM\OneToMany(targetEntity="OreDeposit", mappedBy="peak", cascade={"all"})
      */
     private $oreDeposits;
 
@@ -171,9 +171,13 @@ class Peak implements ResourcefullInterface
      * @return int
      */
     public function getPeopleCount() {
-        $deposit = $this->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
-        if ($deposit == null) return 0;
-        return $deposit->getAmount();
+        if ($this->getDeposit() == null) return 0;
+        $count = 0;
+        $peoples = $this->getDeposit()->filterByConcept(People::class);
+        foreach ($peoples as $people) {
+            $count += $people->getAmount();
+        }
+        return $count;
     }
 
     public function getNPCCapacity() {

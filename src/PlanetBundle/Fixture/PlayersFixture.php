@@ -30,12 +30,14 @@ class PlayersFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements 
             $manager = $this->container->get('doctrine')->getManager('planet');
 
             /** @var PlanetBuilder $builder */
-            $builder = new \AppBundle\Builder\PlanetBuilder($generalManager, $manager, $this->container->getParameter('default_colonization_packs'));
+            $builder = new \AppBundle\Builder\PlanetBuilder($generalManager, $manager);
             $humans = $manager->getRepository(PlanetEntity\Human::class)->findAll();
             $peaks = $manager->getRepository(PlanetEntity\Peak::class)->findAll();
 
-            /** @var PlanetEntity\StandardizedDeposit $standardColonizationDeposit */
-            $standardColonizationDeposit = $this->getReference(StandardColonizationShipFixture::DEPOSIT_CODE);
+            /** @var PlanetEntity\Resource\StandardizedDeposit $standardColonizationDeposit */
+            $standardColonizationDeposit = $manager->getRepository(PlanetEntity\Resource\StandardizedDeposit::class)->findOneBy([
+                'code' => StandardColonizationShipFixture::DEPOSIT_CODE,
+            ]);
 
             $peakCounter = floor(count($peaks)/3);
             /** @var PlanetEntity\Human $human */

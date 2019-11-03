@@ -1,9 +1,6 @@
 <?php
 
 namespace PlanetBundle\Entity;
-use AppBundle\Descriptor\Adapters\LandBuilding;
-use AppBundle\Descriptor\Adapters\LivingBuilding;
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Descriptor\ResourcefullInterface;
 use AppBundle\Entity as GeneralEntity;
 use PlanetBundle\Entity as PlanetEntity;

@@ -4,9 +4,6 @@ namespace AppBundle\Controller;
 
 use AppBundle\Builder\Maintainer;
 use AppBundle\Builder\PlanetBuilder;
-use AppBundle\Descriptor\Adapters\Team;
-use AppBundle\Descriptor\Adapters\Workable;
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Entity; use PlanetBundle\Entity as PlanetEntity;
 use PlanetBundle\Maintainer\PlanetMaintainer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

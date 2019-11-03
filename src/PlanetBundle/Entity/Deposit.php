@@ -2,11 +2,6 @@
 
 namespace PlanetBundle\Entity;
 
-use AppBundle\Descriptor\Adapters\AbstractResourceDepositAdapter;
-use AppBundle\Descriptor\ResourceDescriptorEnum;
-use AppBundle\Descriptor\ResourcefullInterface;
-use AppBundle\Descriptor\UseCaseEnum;
-use AppBundle\Descriptor\UseCaseTraitEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use PlanetBundle\Entity\Resource\Blueprint;
@@ -21,7 +16,7 @@ use PlanetBundle\Entity\Resource\Thing;
  * @ORM\Table(name="deposits")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="owner_type", type="string")
- * @ORM\DiscriminatorMap({"region" = "RegionDeposit", "peak" = "PeakDeposit", "standardized" = "StandardizedDeposit"})
+ * @ORM\DiscriminatorMap({"region" = "RegionDeposit", "peak" = "PeakDeposit", "standardized" = "PlanetBundle\Entity\Resource\StandardizedDeposit"})
  */
 abstract class Deposit implements DepositInterface
 {
@@ -118,5 +113,37 @@ abstract class Deposit implements DepositInterface
         }
         return $descriptors;
     }
+
+    /**
+     * @param ResourceDescriptor[] $descriptors
+     * @return int
+     */
+    public static function sumAmounts($descriptors) {
+        $count = 0;
+        foreach ($descriptors as $descriptor) {
+            $count += $descriptor->getAmount();
+        }
+        return 0;
+    }
+
+    /**
+     * @param $descriptors
+     * @param callable $callback
+     * @return int
+     */
+    public static function sumCallbacks($descriptors, callable $callback) {
+        $sum = 0;
+        foreach ($descriptors as $descriptor) {
+            $sum += $callback($descriptor);
+        }
+        return 0;
+    }
+
+    public function __toString()
+    {
+        return get_class($this)."#".$this->getId();
+    }
+
+
 }
 

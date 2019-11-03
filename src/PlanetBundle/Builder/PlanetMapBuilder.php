@@ -34,26 +34,15 @@ class PlanetMapBuilder
     {
         srand(1123581315);
         $index = 0;
-        foreach ($this->getRegions() as $regionPeaks) {
-            $centralPeak = $planetManager->getRepository(PlanetEntity\Peak::class)->findOrCreateByCoords(
-                $regionPeaks['center']['w'],
-                $regionPeaks['center']['h'],
-                $regionPeaks['center']['h']+abs($regionPeaks['center']['w']*$regionPeaks['center']['h']) % 30
-            );
-            $leftPeak = $planetManager->getRepository(PlanetEntity\Peak::class)->findOrCreateByCoords(
-                $regionPeaks['left']['w'],
-                $regionPeaks['left']['h'],
-                $regionPeaks['left']['h']+abs($regionPeaks['left']['w']*$regionPeaks['left']['h']) % 30
-            );
-            $rightPeak = $planetManager->getRepository(PlanetEntity\Peak::class)->findOrCreateByCoords(
-                $regionPeaks['right']['w'],
-                $regionPeaks['right']['h'],
-                $regionPeaks['right']['h']+abs($regionPeaks['right']['w']*$regionPeaks['right']['h']) % 30
+        foreach ($this->getPeaks() as $peak) {
+            $peakEntity = $planetManager->getRepository(PlanetEntity\Peak::class)->findOrCreateByCoords(
+                $peak['w'],
+                $peak['h'],
+                $peak['h']+abs($peak['w']*$peak['h']) % 30
             );
 
-            $planetManager->persist($centralPeak);
-            $planetManager->persist($leftPeak);
-            $planetManager->persist($rightPeak);
+            $planetManager->persist($peakEntity);
+
             if ((++$index % 500) == 0) {
                 $planetManager->flush();
                 echo "Planet {$planet->getName()}: peak count generated: $index\n";
@@ -61,8 +50,9 @@ class PlanetMapBuilder
         }
         $planetManager->flush();
         echo "Planet {$planet->getName()}: peak count generated: $index\n";
+
         $index = 0;
-        foreach ($this->getRegions() as $regionPeaks) {
+        foreach ($this->getRegionPeaks() as $regionPeaks) {
             $centralPeak = $planetManager->getRepository(PlanetEntity\Peak::class)->findOneBy([
                 'xcoord' => $regionPeaks['center']['w'],
                 'ycoord' => $regionPeaks['center']['h'],
@@ -80,10 +70,11 @@ class PlanetMapBuilder
             $region->setFertility(rand(0, 20)*rand(0, 5));
             $planetManager->persist($region);
 
-            if ((++$index % 500) == 0) {
+//            if ((++$index % 500) == 0) {
+                ++$index;
                 $planetManager->flush();
                 echo "Planet {$planet->getName()}: region count generated: $index\n";
-            }
+//            }
         }
         $planetManager->flush();
         echo "Planet {$planet->getName()}: region count generated: $index\n";
@@ -115,7 +106,7 @@ class PlanetMapBuilder
         return 4*($this->hemisphereSize-abs($height));
     }
 
-    private function getRegions() {
+    private function getRegionPeaks() {
         foreach ($this->getPeaks() as $pcoord) {
             $HLen = $this->getWidthLength($pcoord['h']);
             if (abs($pcoord['h']) === $this->hemisphereSize) {

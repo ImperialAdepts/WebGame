@@ -1,13 +1,18 @@
 <?php
 namespace PlanetBundle\Fixture;
 
-use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity as GeneralEntity;
 use AppBundle\Fixture\PlanetMapFixture;
 use AppBundle\Fixture\PlanetsFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use PlanetBundle\UseCase\TeamBuilders;
+use PlanetBundle\UseCase\TeamFarmers;
+use PlanetBundle\UseCase\TeamMerchants;
+use PlanetBundle\UseCase\TeamScientists;
+use PlanetBundle\UseCase\TeamTransporters;
+use PlanetBundle\UseCase\TeamWorkers;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -33,12 +38,12 @@ class TeamFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements Con
         /** @var ObjectManager $manager */
         $manager = $this->container->get('doctrine')->getManager('planet');
         $blueprints = array_merge(
-            $transporterBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_TRANSPORTERS),
-            $builderBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_BUILDERS),
-            $merchantBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_MERCHANTS),
-            $scientistBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_SCIENTISTS),
-            $workerBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_WORKERS),
-            $farmerBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::TEAM_FARMERS)
+            $transporterBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(TeamTransporters::class),
+            $builderBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(TeamBuilders::class),
+            $merchantBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(TeamMerchants::class),
+            $scientistBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(TeamScientists::class),
+            $workerBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(TeamWorkers::class),
+            $farmerBlueprints = $manager->getRepository(PlanetEntity\Resource\Blueprint::class)->getByUseCase(TeamFarmers::class)
         );
 		$regions = $manager->getRepository(PlanetEntity\Region::class)->findAll();
         foreach ($regions as $region) {

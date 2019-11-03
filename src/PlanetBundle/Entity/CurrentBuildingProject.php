@@ -2,9 +2,7 @@
 
 namespace PlanetBundle\Entity;
 
-use AppBundle\Descriptor\ResourceDescriptorEnum;
-use AppBundle\Entity\Blueprint;
-use AppBundle\Entity\Notification\ProjectNotification;
+use PlanetBundle\Entity\Resource\Blueprint;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -77,10 +75,7 @@ class CurrentBuildingProject extends BuildingProject
 	 */
 	public function getMandaysLeft()
 	{
-		if (!array_key_exists(ResourceDescriptorEnum::MANDAY, $this->missingResources)) {
-			return 0;
-		}
-		return $this->missingResources[ResourceDescriptorEnum::MANDAY];
+		return 666;
 	}
 
 	/**
@@ -88,7 +83,7 @@ class CurrentBuildingProject extends BuildingProject
 	 */
 	public function setMandaysLeft($mandaysLeft)
 	{
-		$this->missingResources[ResourceDescriptorEnum::MANDAY] = $mandaysLeft;
+		$this->missingResources['ResourceDescriptorEnum::MANDAY'] = $mandaysLeft;
 	}
 
 	/**

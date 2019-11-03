@@ -2,16 +2,15 @@
 
 namespace PlanetBundle\Entity\Resource;
 
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * class WorkSheet
  *
- * @ORM\Table(name="worksheets")
- * @ORM\Entity(repositoryClass="PlanetBundle\Repository\WorkSheetRepository")
+ * @ORM\Table(name="bluprint_recipes")
+ * @ORM\Entity(repositoryClass="PlanetBundle\Repository\BlueprintRecipeRepository")
  */
-class WorkSheet
+class BlueprintRecipe
 {
 	/**
 	 * @var int
@@ -31,7 +30,7 @@ class WorkSheet
 
 	/**
      * Every resource will be consumed
-	 * @var string[] resource_descriptor => count
+	 * @var string[] blueprint_id => count
 	 *
 	 * @ORM\Column(name="inputs", type="json_array")
 	 */
@@ -39,7 +38,7 @@ class WorkSheet
 
     /**
      * Every resource will be used
-     * @var string[] resource_descriptor => count
+     * @var string[] concept => hours count
      *
      * @ORM\Column(name="tools", type="json_array")
      */
@@ -47,7 +46,7 @@ class WorkSheet
 
     /**
      * Every resource will be produced
-     * @var string[] resource_descriptor => count
+     * @var string[] blueprint_id => count
      *
      * @ORM\Column(name="products", type="json_array")
      */
@@ -68,7 +67,7 @@ class WorkSheet
 	 *
 	 * @param string $description
 	 *
-	 * @return WorkSheet
+	 * @return BlueprintRecipe
 	 */
 	public function setDescription($description)
 	{
@@ -88,26 +87,13 @@ class WorkSheet
 	}
 
 
-	/**
-	 * Get mandays
-	 *
-	 * @return int
-	 */
-	public function getMandays()
-	{
-	    if (isset($this->inputs[ResourceDescriptorEnum::MANDAY])) {
-            return $this->inputs[ResourceDescriptorEnum::MANDAY];
-        } else {
-	        return 0;
-        }
-	}
 
 	/**
 	 * Set requirements
 	 *
 	 * @param array $inputs
 	 *
-	 * @return WorkSheet
+	 * @return BlueprintRecipe
 	 */
 	public function setInputs($inputs)
 	{
@@ -127,6 +113,22 @@ class WorkSheet
 	}
 
     /**
+     * @param Blueprint $blueprint
+     * @param int $count
+     */
+    public function addInputBlueprint(Blueprint $blueprint, $count = 1) {
+        $this->inputs['things'][$blueprint->getId()] = $count;
+    }
+
+    /**
+     * @param Resource $resource
+     * @param int $count
+     */
+    public function addInputResource($resource, $count = 1) {
+        $this->inputs['resources'][$resource->getId()] = $count;
+    }
+
+    /**
      * @return string[]
      */
     public function getTools()
@@ -140,6 +142,10 @@ class WorkSheet
     public function setTools($tools)
     {
         $this->tools = $tools;
+    }
+
+    public function addTool($concept, $count = 1) {
+        $this->tools[$concept] = $count;
     }
 
     /**
@@ -156,6 +162,18 @@ class WorkSheet
     public function setProducts($products)
     {
         $this->products = $products;
+    }
+
+    public function addProductThing(Blueprint $blueprint, $count = 1) {
+        $this->products['things'][$blueprint->getId()] = $count;
+    }
+
+    /**
+     * @param Resource $resource
+     * @param int $count
+     */
+    public function addProductResource($resource, $count = 1) {
+        $this->products['resources'][$resource->getId()] = $count;
     }
 }
 

@@ -2,11 +2,9 @@
 
 namespace PlanetBundle\Entity\Job;
 
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use PlanetBundle\Entity\Resource\Blueprint;
 use AppBundle\Entity\Notification\ProjectNotification;
 use PlanetBundle\Entity\Region;
-use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
 use PlanetBundle\Entity\DepositDependencyTrait;
 use PlanetBundle\Entity\Resource\BlueprintDependencyTrait;

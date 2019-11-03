@@ -1,8 +1,6 @@
 <?php
 namespace PlanetBundle\Fixture;
 
-use AppBundle\Descriptor\ResourceDescriptorEnum;
-use AppBundle\Descriptor\UseCaseEnum;
 use AppBundle\Entity as GeneralEntity;
 use AppBundle\Fixture\PlanetsFixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -14,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Tracy\Debugger;
 
-class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements ContainerAwareInterface//, DependentFixtureInterface
+class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements ContainerAwareInterface, DependentFixtureInterface
 {
     const DEPOSIT_CODE = "standard-colonization-pack";
     /**
@@ -48,7 +46,7 @@ class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fi
             $deposit = new PlanetEntity\Resource\StandardizedDeposit(self::DEPOSIT_CODE);
             $this->fillDeposit($deposit);
             $manager->persist($deposit);
-            $this->setReference(self::DEPOSIT_CODE, $deposit);
+            $this->setReference(self::DEPOSIT_CODE.$planet->getId(), $deposit);
             $manager->flush();
 
             echo "done\n";
@@ -109,14 +107,4 @@ class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fi
         return $thing;
     }
 
-    /**
-     * This method must return an array of groups
-     * on which the implementing class belongs to
-     *
-     * @return string[]
-     */
-    public static function getGroups(): array
-    {
-        return ['test'];
-    }
 }

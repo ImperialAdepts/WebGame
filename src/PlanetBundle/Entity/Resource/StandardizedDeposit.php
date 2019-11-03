@@ -2,16 +2,11 @@
 
 namespace PlanetBundle\Entity\Resource;
 
-use AppBundle\Descriptor\Adapters\AbstractResourceDepositAdapter;
-use AppBundle\Descriptor\ResourceDescriptorEnum;
-use AppBundle\Descriptor\ResourcefullInterface;
-use AppBundle\Descriptor\UseCaseEnum;
-use AppBundle\Descriptor\UseCaseTraitEnum;
 use Doctrine\ORM\Mapping as ORM;
 use PlanetBundle\Entity\Deposit;
 
 /**
- * @ORM\Table(name="standardized_deposits")
+ * @ORM\Table(name="deposit_standardized")
  * @ORM\Entity()
  */
 class StandardizedDeposit extends Deposit

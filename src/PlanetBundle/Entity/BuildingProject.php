@@ -2,7 +2,6 @@
 
 namespace PlanetBundle\Entity;
 
-use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Entity\ProjectNotification;
 use Doctrine\ORM\Mapping as ORM;
 use PlanetBundle\Entity\Resource\BlueprintDependencyTrait;

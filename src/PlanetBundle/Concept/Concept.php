@@ -1,12 +1,57 @@
 <?php
 namespace PlanetBundle\Concept;
 
+use PlanetBundle\Annotation\Concept\Persistent;
 use PlanetBundle\Entity\Resource\Blueprint;
 
 abstract class Concept
 {
     /** @var array */
     private $context;
+
+    /**
+     * @var float m3
+     * @Persistent("float")
+     */
+    private $space;
+
+    /**
+     * @var float kg
+     * @Persistent("float")
+     */
+    private $weight;
+
+    /**
+     * @return float
+     */
+    public function getSpace()
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param float $space
+     */
+    public function setSpace($space)
+    {
+        $this->space = $space;
+    }
+
+    /**
+     * @return float
+     */
+    public function getWeight()
+    {
+        return $this->weight;
+    }
+
+    /**
+     * @param float $weight
+     */
+    public function setWeight($weight)
+    {
+        $this->weight = $weight;
+    }
 
     public static function getParts() {
         return [];
