@@ -291,32 +291,18 @@ class PlanetMaintainer
         /** @var PlanetEntity\Settlement $settlement */
         foreach ($settlements as $settlement) {
             $settlementPopulationIncrease = 0;
-            $regions = [];
-            /** @var PlanetEntity\Region $region */
-            foreach ($settlement->getRegions() as $region) {
-                $regions[$region->getCoords()] = $this->populationMaintainer->getBirths($region);
-                foreach ($this->populationMaintainer->getBirths($region) as $birth) {
+            /** @var PlanetEntity\Deposit $deposit */
+            foreach ($settlement->getDeposits() as $deposit) {
+                foreach ($this->populationMaintainer->getBirths($deposit) as $birth) {
                     $settlementPopulationIncrease += $birth;
                 }
 
-                $this->populationMaintainer->doBirths($region);
-                $this->planetEntityManager->persist($region);
-            }
-            $peaks = [];
-            /** @var PlanetEntity\Peak $peak */
-            foreach ($settlement->getPeaks() as $peak) {
-                $peaks[$peak->getId()] = $this->populationMaintainer->getBirths($peak);
-                foreach ($this->populationMaintainer->getBirths($peak) as $birth) {
-                    $settlementPopulationIncrease += $birth;
-                }
-                $this->populationMaintainer->doBirths($peak);
-                $this->planetEntityManager->persist($peak);
+                $this->populationMaintainer->doBirths($deposit);
+                $this->planetEntityManager->persist($deposit);
             }
             $globalHuman = $this->generalHumanRepository->find($settlement->getManager()->getGlobalHumanId());
             $this->eventBuilder->create(Human\EventTypeEnum::SETTLEMENT_PEOPLE_BORN, $globalHuman, [
                 Human\EventDataTypeEnum::POPULATION_CHANGE => $settlementPopulationIncrease,
-                Human\EventDataTypeEnum::REGIONS => $regions,
-                Human\EventDataTypeEnum::PEAKS => $peaks,
             ]);
         }
     }
@@ -363,14 +349,14 @@ class PlanetMaintainer
 
         /** @var PlanetEntity\Settlement $settlement */
         foreach ($settlements as $settlement) {
-            /** @var PlanetEntity\Region $region */
-            foreach ($settlement->getRegions() as $region) {
-                $this->foodMaintainer->eatFood($region);
+            /** @var PlanetEntity\Deposit $deposit */
+            foreach ($settlement->getDeposits() as $deposit) {
+                $this->foodMaintainer->eatFood($deposit);
 
                 /** @var Team $team */
-                foreach (Team::in($region) as $team) {
-                    $team->getDeposit()->setWorkHours(24*365);
-                    $this->planetEntityManager->persist($team->getDeposit());
+                foreach ($deposit->filterByUseCase(Team::class) as $team) {
+                    $team->getConceptAdapter()->setWorkHours(24*365);
+                    $this->planetEntityManager->persist($team);
                 }
             }
         }

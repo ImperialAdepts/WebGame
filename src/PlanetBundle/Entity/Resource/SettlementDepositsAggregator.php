@@ -25,7 +25,7 @@ class SettlementDepositsAggregator implements DepositInterface
      */
     public function getResourceDescriptors()
     {
-        foreach ($this->getDeposits() as $deposit) {
+        foreach ($this->getSubDeposits() as $deposit) {
             foreach ($deposit->getResourceDescriptors() as $descriptor) {
                 yield $descriptor;
             }
@@ -53,7 +53,7 @@ class SettlementDepositsAggregator implements DepositInterface
     public function filterByUseCase($useCase)
     {
         $descriptors = [];
-        foreach ($this->getDeposits() as $deposit) {
+        foreach ($this->getSubDeposits() as $deposit) {
             foreach ($deposit->filterByUseCase($useCase) as $descriptor) {
                 $descriptors[] = $descriptor;
             }
@@ -68,7 +68,7 @@ class SettlementDepositsAggregator implements DepositInterface
     public function filterByBlueprint(Blueprint $blueprint)
     {
         $descriptors = [];
-        foreach ($this->getDeposits() as $deposit) {
+        foreach ($this->getSubDeposits() as $deposit) {
             foreach ($deposit->filterByBlueprint($blueprint) as $descriptor) {
                 $descriptors[] = $descriptor;
             }
@@ -83,7 +83,7 @@ class SettlementDepositsAggregator implements DepositInterface
     public function filterByConcept($concept)
     {
         $descriptors = [];
-        foreach ($this->getDeposits() as $deposit) {
+        foreach ($this->getSubDeposits() as $deposit) {
             foreach ($deposit->filterbyConcept($concept) as $descriptor) {
                 $descriptors[] = $descriptor;
             }
@@ -91,7 +91,7 @@ class SettlementDepositsAggregator implements DepositInterface
         return $descriptors;
     }
 
-    private function getDeposits() {
+    public function getSubDeposits() {
         /** @var Region $region */
         foreach ($this->settlement->getRegions() as $region) {
             if ($region->getDeposit() != null) {

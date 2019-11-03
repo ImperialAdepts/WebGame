@@ -30,7 +30,7 @@ class CronController extends Controller
         $this->getDoctrine()->getManager('planet')->flush();
 
         return $this->redirectToRoute('settlement_dashboard', [
-            'planet' => $this->planet->getId(),
+            'planet' => $planet->getId(),
             'settlement' => $settlementToRedirect->getId(),
         ]);
     }

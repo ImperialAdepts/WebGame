@@ -8,6 +8,7 @@
     {% if planet.orbitingCenter is not null %}
         Orbiting around <a href="{{ path('solar_system_planet_detail', { 'planet': planet.orbitingCenter.id }) }}">{{ planet.orbitingCenter.name }}</a> in distance {{ planet.orbitDiameter|distance }}<br>
     {% endif %}
+    <a href="{{ path('cron_new_phase', { 'planet': planet.id, 'settlementToRedirect': currentSettlement.id }) }}">New phase</a>
 {% endblock %}
 
 {% block playerinfo  %}

@@ -3,6 +3,7 @@
 namespace PlanetBundle\Controller;
 
 use AppBundle\Builder\PlanetBuilder;
+use AppBundle\Descriptor\TimeTransformator;
 use AppBundle\Entity;
 use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
@@ -53,6 +54,7 @@ class BasePlanetController extends Controller
         $events = $this->getDoctrine()->getManager()
             ->getRepository(Entity\Human\Event::class)->getThisPhaseReport($this->globalHuman);
         $this->get('twig')->addGlobal('events', $events);
+        $this->get('twig')->addGlobal('endphase', TimeTransformator::phaseToTimestamp($this->planet, $this->planet->getLastPhaseUpdate()+1));
     }
 
     /**

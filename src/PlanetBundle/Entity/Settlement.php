@@ -285,6 +285,13 @@ class Settlement implements ResourcefullInterface
     }
 
     /**
+     * @return Deposit[]
+     */
+    public function getDeposits() {
+        return $this->getDeposit()->getSubDeposits();
+    }
+
+    /**
      * @return int
      */
 	public function getPeopleCount() {
