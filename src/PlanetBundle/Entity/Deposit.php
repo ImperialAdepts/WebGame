@@ -4,6 +4,7 @@ namespace PlanetBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use PlanetBundle\Concept\Food;
 use PlanetBundle\Entity\Resource\Blueprint;
 use PlanetBundle\Entity\Resource\DepositInterface;
 use PlanetBundle\Entity\Resource\ResourceDescriptor;
@@ -50,6 +51,8 @@ abstract class Deposit implements DepositInterface
     {
         return $this->id;
     }
+
+    public abstract function getResourceHandler();
 
     /**
      * @return ResourceDescriptor[]
@@ -123,20 +126,49 @@ abstract class Deposit implements DepositInterface
         foreach ($descriptors as $descriptor) {
             $count += $descriptor->getAmount();
         }
-        return 0;
+        return $count;
     }
 
     /**
-     * @param $descriptors
+     * @param Thing[] $things
      * @param callable $callback
      * @return int
      */
-    public static function sumCallbacks($descriptors, callable $callback) {
+    public static function sumCallbacks($things, callable $callback) {
         $sum = 0;
-        foreach ($descriptors as $descriptor) {
-            $sum += $callback($descriptor);
+        foreach ($things as $thing) {
+            $sum += $callback($thing->getConceptAdapter()) * $thing->getAmount();
         }
-        return 0;
+        return $sum;
+    }
+
+    /**
+     * @param Thing[] $things
+     * @return float|int
+     */
+    public static function countVariety($things) {
+        if (count($things) == 0) return 0;
+        $average = 0;
+        $average = $average / count($things);
+        $varietyFactor = 0;
+
+        $countsByBlueprint = [];
+        /** @var Thing $thing */
+        foreach ($things as $thing) {
+            if (!isset($countsByBlueprint[$thing->getBlueprint()->getConcept()])) {
+                $countsByBlueprint[$thing->getBlueprint()->getId()] = 0;
+            }
+            $countsByBlueprint[$thing->getBlueprint()->getId()] += $thing->getAmount();
+        }
+
+        foreach ($countsByBlueprint as $concept => $amount) {
+            if ($amount > $average) {
+                $varietyFactor += 1;
+            } else {
+                $varietyFactor += ($average / $amount);
+            }
+        }
+        return $varietyFactor;
     }
 
     public function __toString()

@@ -44,5 +44,9 @@ class StandardizedDeposit extends Deposit
         $this->code = $code;
     }
 
+    public function getResourceHandler()
+    {
+        return null;
+    }
 }
 

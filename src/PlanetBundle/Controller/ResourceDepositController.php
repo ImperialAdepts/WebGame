@@ -23,6 +23,7 @@ class ResourceDepositController extends BasePlanetController
         $statistics = [];
         if ($descriptor instanceof Entity\Resource\Thing) {
             $conceptAdapter = $descriptor->getConceptAdapter();
+            $conceptAdapter->addContext('settlement', $descriptor->getDeposit()->getResourceHandler()->getSettlement());
             foreach ($descriptor->getBlueprint()->getUseCases() as $useCase) {
                 $adapters[$useCase] = $conceptAdapter;
             }

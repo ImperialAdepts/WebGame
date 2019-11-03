@@ -18,6 +18,7 @@ class HumanReadableMeasuresExtension extends AbstractExtension
             new TwigFilter('volume', [$this, 'formatVolume']),
             new TwigFilter('weight', [$this, 'formatWeight']),
             new TwigFilter('phase', [$this, 'formatPlanetTime']),
+            new TwigFilter('energy', [$this, 'formatEnergy']),
         ];
     }
 
@@ -87,5 +88,24 @@ class HumanReadableMeasuresExtension extends AbstractExtension
         $cycle = floor($phase/$planet->getOrbitPhaseCount());
         $phaseOffset = $phase % $planet->getOrbitPhaseCount();
         return sprintf("%s of cycle %s", $phaseOffset, $cycle);
+    }
+
+    /**
+     * @param int $numberInJoule
+     * @return string
+     */
+    public function formatEnergy($numberInJoule) {
+        if ($numberInJoule < 0.5) {
+            return round($numberInJoule*1000, 1).' J';
+        }
+        if ($numberInJoule <= 500) {
+            return round($numberInJoule, 1).' kJ';
+        }
+        $numberInMegaJoule = $numberInJoule / pow(10, 6);
+        if ($numberInMegaJoule <= 500000) {
+            return round($numberInMegaJoule, 1).' MJ';
+        }
+        $numberInGigaJoule = $numberInJoule / pow(10, 9);
+        return round($numberInGigaJoule, 1).' GT';
     }
 }

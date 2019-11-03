@@ -4,7 +4,7 @@ namespace PlanetBundle\Concept;
 use PlanetBundle\Annotation\Concept\Persistent;
 use PlanetBundle\UseCase;
 
-class LivingBuilding
+class LivingBuilding extends Concept
 {
     use UseCase\LandBuilding;
 

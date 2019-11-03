@@ -10,6 +10,7 @@ use PlanetBundle\Entity\Region;
 use Doctrine\ORM\EntityManager;
 use PlanetBundle\Entity\Resource\DepositInterface;
 use PlanetBundle\Entity\Resource\Thing;
+use Tracy\Debugger;
 
 class FoodMaintainer
 {
@@ -37,36 +38,51 @@ class FoodMaintainer
         $consumptionPercentace = $foodEnergyNeeded / $allEnergy;
         $foodConsumption = [];
         foreach ($foods as $food) {
-            $units = $food->getUnitsByEnergy(ceil($food->getEnergy()*$consumptionPercentace));
-            $foodConsumption[$food->getResourceDescriptor()] = $units;
-            $foodEnergyNeeded -= $food->getEnergy($units);
+            $foodConcept = $food->getConceptAdapter();
+            $units = $this->countFoodUnits($foodConcept, $foodConcept->getEnergy()*$food->getAmount()*$consumptionPercentace);
+
+            if (isset($foodConsumption[$food->getId()])) {
+                $foodConsumption[$food->getId()] += $units;
+            } else {
+                $foodConsumption[$food->getId()] = $units;
+            }
+            $foodEnergyNeeded -= $foodConcept->getEnergy()*$units;
+
+            if ($foodEnergyNeeded <= 0) break;
         }
         return $foodConsumption;
     }
 
+    private function countFoodUnits(Concept\Food $food, $energy) {
+        return ceil($energy / $food->getEnergy());
+    }
+
     /**
-     * @param Region $region
+     * @param Deposit $deposit
      * @return string[] resorce_descriptor => change amount
      */
-    public function eatFood(Region $region) {
-        $consumption = $this->getFoodConsumptionEstimation($region->getDeposit());
-        $missingEnergy = 0;
+    public function eatFood(Deposit $deposit) {
+        $consumption = $this->getFoodConsumptionEstimation($deposit);
+        $missingFood = 0;
 
         $realChanges = [];
-        foreach ($consumption as $foodResourceDescriptor => $consumedAmount) {
-            $food = BasicFood::findByDescriptor($region, $foodResourceDescriptor);
-            if ($consumedAmount > $food->getAmount()) {
-                $missingEnergy += $food->getEnergy($consumedAmount - $food->getAmount());
-                $realConsumedFood = $food->getAmount();
-            } else {
-                $realConsumedFood = $consumedAmount;
+        $foods = $deposit->filterByConcept(Concept\Food::class);
+        foreach ($foods as $food) {
+            if (isset($consumption[$food->getId()])) {
+                $amountToConsume = $consumption[$food->getId()];
+                if ($amountToConsume > $food->getAmount()) {
+                    $missingFood[$food->getId()] = $amountToConsume - $food->getAmount();
+                    $realConsumedFood = $food->getAmount();
+                } else {
+                    $realConsumedFood = $amountToConsume;
+                }
+                $food->setAmount($food->getAmount() - $realConsumedFood);
+                $realChanges[$food->getId()] = $consumption[$food->getId()];
             }
-            $realChanges[$foodResourceDescriptor] = $realConsumedFood;
-            $food->getDeposit()->setAmount($food->getAmount() - $realConsumedFood);
         }
 
-        if ($missingEnergy > 0) {
-            $hungryPeople = floor($missingEnergy / 3000);
+        if ($missingFood > 0) {
+            $hungryPeople = floor($missingFood / 3000);
             $diedPeople = round($hungryPeople * self::PEOPLE_STARVATION_RATIO) + 1;
             // TODO: Kill people
         }

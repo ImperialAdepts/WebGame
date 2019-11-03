@@ -94,7 +94,7 @@ class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fi
         $containerHouse->setArea(60);
         $containerHouse->setPeopleCapacity(3);
         $containerHouse->setPeopleMaxCapacity(30);
-        $deposit->addResourceDescriptors($this->newThings(10, $containerWarehouse->getBlueprint("Container house")));
+        $deposit->addResourceDescriptors($this->newThings(10, $containerHouse->getBlueprint("Container house")));
 
         return;
 

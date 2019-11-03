@@ -20,6 +20,7 @@ use PlanetBundle\Entity\Region;
 use PlanetBundle\Form\PeakSelectorType;
 use PlanetBundle\Form\RegionSelectorType;
 use PlanetBundle\Repository\RegionRepository;
+use Symfony\Component\Debug\Debug;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -178,35 +179,29 @@ class SettlementController extends BasePlanetController
      */
     public function housingAction(Entity\Settlement $settlement, Request $request)
     {
-        $houses = $settlement->getDeposit()->filterByUseCase(LivingBuilding::class);
-        $peopleCount = 0;
+        $houses = $settlement->getDeposit()->filterByConcept(LivingBuilding::class);
         $peopleBirths = 0;
-        foreach ($settlement->getDeposit()->filterByConcept(People::class) as $people) {
-            $peopleCount += $people->getAmount();
-        }
+        $peoples = $settlement->getDeposit()->filterByConcept(People::class);
         foreach ($this->get('maintainer_population')->getBirths($settlement->getDeposit()) as $birthCount) {
             $peopleBirths += $birthCount;
         }
 
-        $foods = $settlement->getDeposit()->filterByConcept(Food::class);
+        $foods = $settlement->getDeposit()->filterByUseCase(UseCase\Consumable::class);
+        $foodEnergy = Entity\Deposit::sumCallbacks($foods, function ($food) { return $food->getEnergy(); });
+        $housingCapacity = Entity\Deposit::sumCallbacks($houses, function (LivingBuilding $house) { return $house->getPeopleCapacity(); });
+        $consumation = Entity\Deposit::sumCallbacks($peoples, function (People $people) { return $people->getBasalMetabolism(DynamicPlanetConnector::getPlanet()); });
 
-        $foodEnergy = 0;
-        foreach ($foods as $food) {
-            $foodEnergy += $food->getConceptAdapter()->getEnergy()*$food->getAmount();
-        }
-
-        $housingCapacity = 0;
-        foreach ($houses as $house) {
-            $housingCapacity += $house->getConceptAdapter()->getPeopleCapacity()*$house->getAmount();
-        }
+        $timeLeft = Entity\Deposit::sumCallbacks($foods, function (Food $food) use ($settlement) { return $food->getTimeDeposit($settlement); });
 
         return $this->render('Settlement/housing.html.twig', [
             'settlement' => $settlement,
-            'people' => $peopleCount,
+            'people' => Entity\Deposit::sumAmounts($peoples),
             'peopleBirths' => $peopleBirths,
             'foods' => $foods,
             'foodEnergy' => $foodEnergy,
-            'foodVariety' => Food::countVariety($foods),
+            'foodVariety' => Entity\Deposit::countVariety($foods),
+            'foodEnergyConsumation' => $consumation,
+            'foodTimeElapsed' => $timeLeft,
             'housingCapacity' => $housingCapacity,
             'houses' => $houses,
             'human' => $this->getHuman(),

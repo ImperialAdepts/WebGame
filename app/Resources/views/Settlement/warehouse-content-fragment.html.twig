@@ -7,7 +7,7 @@
 			{% for portableResource in resources %}
 				<li>
 					{{ render(controller('PlanetBundle:ResourceDeposit:depositDetail', {
-						'deposit': portableResource.deposit.id,
+						'descriptor': portableResource.id,
 					})) }}
 				</li>
 			{% endfor %}
@@ -23,7 +23,7 @@
 			{% for warehouse in warehouses %}
 				<li>
 					{{ render(controller('PlanetBundle:ResourceDeposit:depositDetail', {
-						'deposit': warehouse.deposit.id,
+						'descriptor': warehouse.id,
 					})) }}
 				</li>
 			{% endfor %}

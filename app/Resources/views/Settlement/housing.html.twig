@@ -1,31 +1,16 @@
 {% extends 'Settlement/base.html.twig' %}
 
 {% block subbody %}
-	<strong>Housing:</strong>
+	<strong>Demography:</strong>
+
 	<dt>People:</dt>
 	<dd>{{ people }}
-	{% if peopleBirths != 0 %}
-		<small>+{{ peopleBirths }}</small>
-	{% endif %}
+		{% if peopleBirths != 0 %}
+			<small>+{{ peopleBirths }}</small>
+		{% endif %}
 	</dd>
-	{% if foods|length > 0 %}
-		<dt>Food energy:</dt>
-		<dd>{{ foodEnergy }}</dd>
-		<dt>Food variety:</dt>
-		<dd>{{ foodVariety }}</dd>
-		<ul>
-			{% for food in foods %}
-				<li>
-					{{ render(controller('PlanetBundle:ResourceDeposit:depositDetail', {
-						'deposit': food.deposit.id,
-					})) }}
-				</li>
-			{% endfor %}
-		</ul>
 
-	{% else %}
-		<small>There is no food to eat.</small>
-	{% endif %}
+	<strong>Housing:</strong>
 	{% if houses|length > 0 %}
 		<dt>Housing capacity:</dt>
 		<dd>{{ housingCapacity }}</dd>
@@ -33,7 +18,7 @@
 			{% for house in houses %}
 				<li>
 					{{ render(controller('PlanetBundle:ResourceDeposit:depositDetail', {
-						'deposit': house.deposit.id,
+						'descriptor': house.id,
 					})) }}
 				</li>
 			{% endfor %}
@@ -42,4 +27,27 @@
 	{% else %}
 		<small>There is no place to live.</small>
 	{% endif %}
+
+	<strong>Food:</strong>
+	{% if foods|length > 0 %}
+		<dt>Food energy:</dt>
+		<dd>{{ foodEnergy|energy }} <small>-{{ foodEnergyConsumation|energy }}</small></dd>
+		<dt>Food variety:</dt>
+		<dd>{{ foodVariety }}</dd>
+		<dt>Food left in:</dt>
+		<dd>{{ foodTimeElapsed }}</dd>
+		<ul>
+			{% for food in foods %}
+				<li>
+					{{ render(controller('PlanetBundle:ResourceDeposit:depositDetail', {
+						'descriptor': food.id,
+					})) }}
+				</li>
+			{% endfor %}
+		</ul>
+
+	{% else %}
+		<small>There is no food to eat.</small>
+	{% endif %}
+
 {% endblock %}

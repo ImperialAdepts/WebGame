@@ -29,6 +29,9 @@ trait Consumable
      * @return int cycle count
      */
     public function getTimeDeposit(Settlement $settlement) {
+        if ($settlement->getPeopleCount() == 0) {
+            return 1000;
+        }
         return $this->energy / ($settlement->getPeopleCount() * People::BASE_METABOLISM * 365);
     }
 
