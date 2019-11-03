@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use PlanetBundle\Entity\Deposit;
 
 /**
- * @ORM\Table(name="standardized_deposits")
+ * @ORM\Table(name="deposit_standardized")
  * @ORM\Entity()
  */
 class StandardizedDeposit extends Deposit

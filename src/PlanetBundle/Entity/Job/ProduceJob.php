@@ -8,7 +8,7 @@ use PlanetBundle\Entity\Resource\Blueprint;
 use PlanetBundle\Entity\Region;
 use AppBundle\Entity\ResourceDeposit;
 use Doctrine\ORM\Mapping as ORM;
-use PlanetBundle\Entity\Resource\WorkSheetDependencyTrait;
+use PlanetBundle\Entity\Resource\BlueprintRecipeDependencyTrait;
 
 /**
  * @ORM\Table(name="job_produces")
@@ -16,6 +16,6 @@ use PlanetBundle\Entity\Resource\WorkSheetDependencyTrait;
  */
 class ProduceJob extends Job
 {
-    use WorkSheetDependencyTrait;
+    use BlueprintRecipeDependencyTrait;
 }
 

@@ -11,6 +11,7 @@ use AppBundle\UuidSerializer\UuidName;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Expr\Math;
 use PlanetBundle\Builder\RegionTerrainTypeEnumBuilder;
+use PlanetBundle\Concept\People;
 use PlanetBundle\Entity as PlanetEntity;
 use Doctrine\ORM\Mapping as ORM;
 /**
@@ -207,6 +208,9 @@ class Region implements ResourcefullInterface
      */
     public function getResourceDeposit($resourceDescriptor)
     {
+        if ($this->getDeposit() == null) {
+            return null;
+        }
         foreach ($this->getDeposit()->getResourceDescriptors() as $resourceDescriptor2) {
             if ($resourceDescriptor == $resourceDescriptor2) return $resourceDescriptor2;
         }
@@ -333,16 +337,26 @@ class Region implements ResourcefullInterface
 
     public function getUsedArea()
     {
-        return LandBuilding::countUsedArea(LandBuilding::in($this));
+        $area = 0;
+        if (!$this->getDeposit()) {
+            return $area;
+        }
+        foreach ($this->getDeposit()->filterByUseCase(\PlanetBundle\UseCase\LandBuilding::class) as $thing) {
+            $area += $thing->getConceptAdapter()->getArea();
+        }
+        return $area;
     }
 
     /**
      * @return int
      */
     public function getPeopleCount() {
-        $deposit = $this->getResourceDeposit(ResourceDescriptorEnum::PEOPLE);
-        if ($deposit == null) return 0;
-        return $deposit->getAmount();
+        if ($this->getDeposit() == null) return 0;
+        $peopleCount = 0;
+        foreach ($this->getDeposit()->filterByConcept(People::class) as $people) {
+            $peopleCount += $people->getAmount();
+        }
+        return $peopleCount;
     }
 
 

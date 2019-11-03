@@ -5,7 +5,7 @@ namespace PlanetBundle\Entity\Job;
 use PlanetBundle\Entity\Resource\Blueprint;
 use AppBundle\Entity\Notification\ProjectNotification;
 use Doctrine\ORM\Mapping as ORM;
-use PlanetBundle\Entity\Resource\WorkSheetDependencyTrait;
+use PlanetBundle\Entity\Resource\BlueprintRecipeDependencyTrait;
 
 /**
  * @ORM\Table(name="job_builds")
@@ -13,6 +13,6 @@ use PlanetBundle\Entity\Resource\WorkSheetDependencyTrait;
  */
 class BuildJob extends Job
 {
-    use WorkSheetDependencyTrait;
+    use BlueprintRecipeDependencyTrait;
 }
 

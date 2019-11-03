@@ -4,6 +4,7 @@ namespace PlanetBundle\Maintainer;
 
 use AppBundle\Descriptor\ResourceDescriptorEnum;
 use AppBundle\Entity\ResourceDeposit;
+use AppBundle\PlanetConnection\DynamicPlanetConnector;
 use PlanetBundle\Concept\People;
 use PlanetBundle\Entity\Deposit;
 use PlanetBundle\Entity\Resource\DepositInterface;
@@ -16,7 +17,7 @@ class PopulationMaintainer
         $peoples = $deposit->filterByConcept(People::class);
         $births = [];
         foreach ($peoples as $people) {
-            $births[$people->getResourceDescriptor()] = 1;//round($people->getDeposit()->getAmount() * $people->getFertilityRate() / 20) + 1;
+            $births[$people->getBlueprint()->getDescription()] = round($people->getAmount() * $people->getConceptAdapter()->getFertilityRate(DynamicPlanetConnector::getPlanet()) / 20) + 1;
         }
         return $births;
     }

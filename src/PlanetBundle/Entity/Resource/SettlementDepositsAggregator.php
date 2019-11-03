@@ -94,11 +94,15 @@ class SettlementDepositsAggregator implements DepositInterface
     private function getDeposits() {
         /** @var Region $region */
         foreach ($this->settlement->getRegions() as $region) {
-            yield $region->getDeposit();
+            if ($region->getDeposit() != null) {
+                yield $region->getDeposit();
+            }
         }
         /** @var Peak $peak */
         foreach ($this->settlement->getPeaks() as $peak) {
-            yield $peak->getDeposit();
+            if ($peak->getDeposit() != null) {
+                yield $peak->getDeposit();
+            }
         }
     }
 }

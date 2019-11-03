@@ -166,10 +166,10 @@ class PlanetBuilder
 	public function getAvailableBlueprints(PlanetEntity\Region $region, PlanetEntity\Human $human) {
 	    // TODO: overit ze dotycny vlastni blueprinty
         $availables = [];
-        $blueprints = $this->planetEntityManager->getRepository(PlanetEntity\Resource\Blueprint::class)->getAll();
-        /** @var Entity\Blueprint $blueprint */
-        foreach ($blueprints as $blueprint) {
-            foreach ($blueprint->getConstraints() as $resourceType => $amount) {
+        $recipes = $this->planetEntityManager->getRepository(PlanetEntity\Resource\BlueprintRecipe::class)->findAll();
+        /** @var PlanetEntity\Resource\BlueprintRecipe $recipe */
+        foreach ($recipes as $recipe) {
+            foreach ($recipe->getInputs() as $resourceType => $amount) {
                 if ($resourceType == ResourceDescriptorEnum::VILLAGE
                     || $resourceType == ResourceDescriptorEnum::FARM_DISTRICT
                     || $resourceType == ResourceDescriptorEnum::RESOURCE_DISTRICT
@@ -191,7 +191,29 @@ class PlanetBuilder
                     continue 2;
                 }
             }
-            $availables[] = $blueprint;
+            foreach ($recipe->getTools() as $resourceType => $amount) {
+                if ($resourceType == ResourceDescriptorEnum::VILLAGE
+                    || $resourceType == ResourceDescriptorEnum::FARM_DISTRICT
+                    || $resourceType == ResourceDescriptorEnum::RESOURCE_DISTRICT
+                    || $resourceType == ResourceDescriptorEnum::LABORATORY_DISTRICT) {
+                    if ($region->getSettlement() == null) {
+                        continue 2;
+                    }
+                    if ($resourceType == $region->getSettlement()->getType()) {
+                        continue;
+                    } else {
+                        continue 2;
+                    }
+                }
+                if ($region->getSettlement() == null) {
+                    continue 2;
+                }
+                $resourceDeposit = $region->getResourceDeposit($resourceType);
+                if ($resourceDeposit == null || $resourceDeposit->getAmount() < $amount) {
+                    continue 2;
+                }
+            }
+            $availables[] = $recipe;
         }
         return $availables;
     }

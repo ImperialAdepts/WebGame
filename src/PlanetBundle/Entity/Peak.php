@@ -52,7 +52,7 @@ class Peak implements ResourcefullInterface
      * @var OreDeposit[]
      * Known deposits, not all!
      *
-     * @ORM\OneToMany(targetEntity="OreDeposit", mappedBy="region")
+     * @ORM\OneToMany(targetEntity="OreDeposit", mappedBy="peak", cascade={"all"})
      */
     private $oreDeposits;
 

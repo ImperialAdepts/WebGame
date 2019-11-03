@@ -1,8 +1,16 @@
 <?php
 namespace PlanetBundle\Concept;
 
+use PlanetBundle\Annotation\Concept\CreationSource;
+use PlanetBundle\Annotation\Concept\CreationWaste;
 use PlanetBundle\Annotation\Concept\Persistent;
+use PlanetBundle\Annotation\Concept\CreationDifficulty;
 
+/**
+ * @CreationWaste(minCrapAmount=5, maxCrapAmount=20)
+ * @CreationDifficulty(workHourPerCubicMeter="3", workHourPerTon="10")
+ * @CreationSource(Traverse::class)
+ */
 class Skeleton extends Concept
 {
     /**

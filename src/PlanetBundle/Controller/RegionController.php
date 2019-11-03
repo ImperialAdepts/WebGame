@@ -2,7 +2,7 @@
 
 namespace PlanetBundle\Controller;
 
-use AppBundle\Descriptor\UseCaseEnum;
+use PlanetBundle\UseCase;
 use AppBundle\Entity\Human\EventDataTypeEnum;
 use AppBundle\Entity\Human\EventTypeEnum;
 use AppBundle\Entity\SolarSystem\Planet;
@@ -85,7 +85,7 @@ class RegionController extends BasePlanetController
     public function availableBuildingsAction(Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
     {
         $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
-        $blueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LAND_BUILDING);
+        $blueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\Blueprint::class)->getByUseCase(UseCase\LandBuilding::class);
 
         return $this->render('Region/available-buildings-fragment.html.twig', [
             'builderForm' => $this->createForm(BuildersFormType::class, [], [
@@ -109,7 +109,7 @@ class RegionController extends BasePlanetController
     {
         /** @var Entity\Region $region */
         $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
-        $blueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::LAND_BUILDING);
+        $blueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\Blueprint::class)->getByUseCase(UseCase\LandBuilding::class);
 
         $form = $this->createForm(BuildersFormType::class, $request->get('builders_form'), [
             'blueprints' => $blueprints,
@@ -123,7 +123,7 @@ class RegionController extends BasePlanetController
 
         foreach ($request->get('builders_form') as $blueprintId => $options) {
             if (isset($options['count']) && ($count = $options['count']) > 0) {
-                $blueprint = $this->getDoctrine()->getManager('planet')->find(Entity\Blueprint::class, $blueprintId);
+                $blueprint = $this->getDoctrine()->getManager('planet')->find(Entity\Resource\Blueprint::class, $blueprintId);
 
                 $built = 0;
                 // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
@@ -159,7 +159,7 @@ class RegionController extends BasePlanetController
      */
     public function availableSettlementsAction(Entity\Peak $peakC, Entity\Peak $peakL, Entity\Peak $peakR, Request $request)
     {
-        $blueprints = $this->getDoctrine()->getManager('planet')->getManager()->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::ADMINISTRATIVE_DISTRICT);
+        $blueprints = $this->getDoctrine()->getManager('planet')->getManager()->getRepository(Entity\Resource\Blueprint::class)->getByUseCase(UseCase\AdministrativeDistrict::class);
         $region = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Region::class)->findByPeaks($peakC, $peakL, $peakR);
 
         // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
@@ -176,7 +176,7 @@ class RegionController extends BasePlanetController
      */
     public function availableSettlementTypesAction(Entity\Settlement $settlement, Request $request)
     {
-        $blueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\Blueprint::class)->getByUseCase(UseCaseEnum::ADMINISTRATIVE_DISTRICT);
+        $blueprints = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\Blueprint::class)->getByUseCase(UseCase\AdministrativeDistrict::class);
 
         // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
 

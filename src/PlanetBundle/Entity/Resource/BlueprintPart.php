@@ -39,6 +39,13 @@ class BlueprintPart
      */
     private $usagePlace;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="integral", type="boolean", nullable=false)
+     */
+    private $integral = false;
+
 	/**
 	 * Get id
 	 *
@@ -80,5 +87,22 @@ class BlueprintPart
     {
         $this->usagePlace = $usagePlace;
     }
+
+    /**
+     * @return bool
+     */
+    public function isIntegral()
+    {
+        return $this->integral;
+    }
+
+    /**
+     * @param bool $integral
+     */
+    public function setIntegral($integral)
+    {
+        $this->integral = $integral;
+    }
+
 }
 

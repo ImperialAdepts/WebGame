@@ -221,7 +221,7 @@ class Blueprint
 		return $this->getResourceDescriptor().' '.$this->getDescription();
 	}
 
-    public function addWorkSheet(WorkSheet $workSheet)
+    public function addWorkSheet(BlueprintRecipe $workSheet)
     {
 
     }

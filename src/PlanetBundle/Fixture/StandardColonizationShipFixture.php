@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Tracy\Debugger;
 
-class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements ContainerAwareInterface//, DependentFixtureInterface
+class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fixture implements ContainerAwareInterface, DependentFixtureInterface
 {
     const DEPOSIT_CODE = "standard-colonization-pack";
     /**
@@ -45,10 +45,10 @@ class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fi
             $this->container->get('dynamic_planet_connector')->setPlanet($planet, true);
             $manager = $this->container->get('doctrine')->getManager('planet');
 
-            $deposit = new PlanetEntity\Resource\StandardizedDeposit(self::DEPOSIT_CODE);
+            $deposit = new PlanetEntity\Resource\StandardizedDeposit(self::DEPOSIT_CODE.$planet->getId());
             $this->fillDeposit($deposit);
             $manager->persist($deposit);
-            $this->setReference(self::DEPOSIT_CODE, $deposit);
+            $this->setReference(self::DEPOSIT_CODE.$planet->getId(), $deposit);
             $manager->flush();
 
             echo "done\n";
@@ -109,14 +109,4 @@ class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fi
         return $thing;
     }
 
-    /**
-     * This method must return an array of groups
-     * on which the implementing class belongs to
-     *
-     * @return string[]
-     */
-    public static function getGroups(): array
-    {
-        return ['test'];
-    }
 }

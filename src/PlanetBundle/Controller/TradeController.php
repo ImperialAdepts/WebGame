@@ -11,6 +11,7 @@ use AppBundle\Entity\Human\EventTypeEnum;
 use PlanetBundle\Entity;
 use AppBundle\Repository\JobRepository;
 use PlanetBundle\Repository\RegionRepository;
+use PlanetBundle\UseCase\Portable;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,7 +47,7 @@ class TradeController extends BasePlanetController
      */
     public function sellAction(Entity\Deposit $deposit, Request $request)
     {
-        $portables = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Blueprint::class)->getByUseCase(UseCaseEnum::PORTABLES);
+        $portables = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\Blueprint::class)->getByUseCase(Portable::class);
         return $this->render('Trade/make-offer.html.twig', [
             'settlement' => $deposit->getResourceHandler()->getSettlement(),
             'priceBlueprints' => $portables,
@@ -57,7 +58,7 @@ class TradeController extends BasePlanetController
     /**
      * @Route("/set-offer/{deposit}/{blueprint}/{count}", name="trade_set_offer")
      */
-    public function setOfferAction(Entity\Deposit $deposit, Entity\Blueprint $blueprint, $count, Request $request)
+    public function setOfferAction(Entity\Deposit $deposit, Entity\Resource\Blueprint $blueprint, $count, Request $request)
     {
         $offer = new Entity\TradeOffer();
         $offer->setBlueprint($blueprint);
