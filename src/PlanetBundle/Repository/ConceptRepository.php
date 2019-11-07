@@ -17,7 +17,7 @@ class ConceptRepository
             Concept\Food::class,
             Concept\Warehouse::class,
             Concept\BurnerGenerator::class,
-            Concept\LiquidFuelTank::class,
+            Concept\FuelTank::class,
             Concept\People::class,
         ];
     }

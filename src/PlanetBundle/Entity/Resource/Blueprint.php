@@ -52,9 +52,17 @@ class Blueprint
      */
     private $parts;
 
+    /**
+     * @var BlueprintRecipe[]
+     *
+     * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\Resource\BlueprintRecipe", mappedBy="mainProduct", cascade={"all"}, orphanRemoval=true)
+     */
+    private $recipes;
+
     public function __construct()
     {
         $this->parts = new ArrayCollection();
+        $this->recipes = new ArrayCollection();
     }
 
     /**
@@ -178,6 +186,27 @@ class Blueprint
         $this->parts = $parts;
     }
 
+    /**
+     * @return BlueprintRecipe[]
+     */
+    public function getRecipes()
+    {
+        return $this->recipes;
+    }
+
+    public function addRecipe(BlueprintRecipe $recipe) {
+        $this->recipes->add($recipe);
+    }
+
+    /**
+     * @param BlueprintRecipe[] $recipes
+     */
+    public function setRecipes($recipes)
+    {
+        $this->recipes = $recipes;
+    }
+
+
     public function getPartsByUsage()
     {
         $parts = [];
@@ -219,11 +248,6 @@ class Blueprint
 	{
 		return $this->getResourceDescriptor().' '.$this->getDescription();
 	}
-
-    public function addWorkSheet(BlueprintRecipe $workSheet)
-    {
-
-    }
 
     public function getConceptAdapter($currentData = []) {
         $conceptName = $this->getConcept();

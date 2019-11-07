@@ -11,7 +11,7 @@ use AppBundle\Entity\Human\SettlementTitle;
 use AppBundle\Entity\SolarSystem\Planet;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
 use PlanetBundle\Concept\Food;
-use PlanetBundle\Concept\LivingBuilding;
+use PlanetBundle\Concept\House;
 use PlanetBundle\Concept\People;
 use PlanetBundle\Entity;
 use AppBundle\Repository\JobRepository;
@@ -179,7 +179,7 @@ class SettlementController extends BasePlanetController
      */
     public function housingAction(Entity\Settlement $settlement, Request $request)
     {
-        $houses = $settlement->getDeposit()->filterByConcept(LivingBuilding::class);
+        $houses = $settlement->getDeposit()->filterByConcept(House::class);
         $peopleBirths = 0;
         $peoples = $settlement->getDeposit()->filterByConcept(People::class);
         foreach ($this->get('maintainer_population')->getBirths($settlement->getDeposit()) as $birthCount) {
@@ -188,7 +188,7 @@ class SettlementController extends BasePlanetController
 
         $foods = $settlement->getDeposit()->filterByUseCase(UseCase\Consumable::class);
         $foodEnergy = Entity\Deposit::sumCallbacks($foods, function ($food) { return $food->getEnergy(); });
-        $housingCapacity = Entity\Deposit::sumCallbacks($houses, function (LivingBuilding $house) { return $house->getPeopleCapacity(); });
+        $housingCapacity = Entity\Deposit::sumCallbacks($houses, function (House $house) { return $house->getPeopleCapacity(); });
         $consumation = Entity\Deposit::sumCallbacks($peoples, function (People $people) { return $people->getBasalMetabolism(DynamicPlanetConnector::getPlanet()); });
 
         $timeLeft = Entity\Deposit::sumCallbacks($foods, function (Food $food) use ($settlement) { return $food->getTimeDeposit($settlement); });

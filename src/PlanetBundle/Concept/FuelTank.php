@@ -3,7 +3,7 @@ namespace PlanetBundle\Concept;
 
 use PlanetBundle\UseCase;
 
-class LiquidFuelTank extends Concept
+class FuelTank extends ExoSkeletalHull
 {
     use UseCase\LandBuilding;
     use UseCase\Deposit;
