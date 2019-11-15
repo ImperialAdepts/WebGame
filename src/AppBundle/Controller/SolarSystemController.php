@@ -44,7 +44,7 @@ class SolarSystemController extends Controller
     public function systemDetailAction(Entity\SolarSystem\System $system)
     {
         return $this->render('Planet/solar-system.html.twig', [
-            'systemAddress' => $system->getSectorAddress(),
+            'systemAddress' => $system->getSectorAddress()->encode(),
             'system' => $system,
             'sun' => $system->getCentralSun(),
         ]);

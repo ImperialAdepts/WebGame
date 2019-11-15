@@ -21,7 +21,7 @@
 		<h2>Satelites</h2>
 		<ul>
 			{% for satelite in planet.satelites %}
-				<li><a href="{{ path('planet_dashboard', { 'planet': satelite.id }) }}">{{ satelite.name }}</a>, distance {{ satelite.orbitDiameter|distance }}</li>
+				<li><a href="{{ path('solar_system_planet_detail', { 'planet': satelite.id }) }}">{{ satelite.name }}</a>, distance {{ satelite.orbitDiameter|distance }}</li>
 			{% endfor %}
 		</ul>
 	{% endif %}
