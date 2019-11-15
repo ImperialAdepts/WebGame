@@ -22,11 +22,20 @@ class GalaxyController extends Controller
 	 */
 	public function mapAction()
 	{
-	    $currentSector = GalaxyBuilder::getSector(Entity\Galaxy\SectorAddress::createZeroSectorAddress());
+	    /** @var Entity\SolarSystem\System $system */
+        $system = $this->get('logged_user_settings')->getHuman()->getPlanet()->getSystem();
+
+        $existingSystems = $this->getDoctrine()->getManager()->getRepository(Entity\SolarSystem\System::class)->findBy([
+            'sectorAddress' => $system->getSectorAddress()->encode(),
+        ]);
+	    $currentSector = GalaxyBuilder::getSector($system->getSectorAddress(), $existingSystems);
+
+	    $pivotSector = GalaxyBuilder::getSector($system->getSectorAddress()->getLeft()->getLeft());
 
 		return $this->render('Galaxy/map.html.twig', [
 		    'currentSector' => $currentSector,
-            'sectors' => $this->getSectorsAround(Entity\Galaxy\SectorAddress::createZeroSectorAddress()),
+            'currentSystem' => $system,
+            'sectors' => $this->getSectorsAround($pivotSector),
 		]);
 	}
 
@@ -37,11 +46,19 @@ class GalaxyController extends Controller
     {
         /** @var Entity\Galaxy\SectorAddress $spaceAddress */
         $spaceAddress = Entity\Galaxy\SectorAddress::decode($addressCode);
+
+        /** @var Entity\SolarSystem\System $system */
+        $system = $this->get('logged_user_settings')->getHuman()->getPlanet()->getSystem();
+
+        $existingSystems = $this->getDoctrine()->getManager()->getRepository(Entity\SolarSystem\System::class)->findBy([
+            'sectorAddress' => $system->getSectorAddress()->encode(),
+        ]);
         $currentSector = GalaxyBuilder::getSector($spaceAddress);
 
         return $this->render('Galaxy/map.html.twig', [
             'currentSector' => $currentSector,
-            'sectors' => $this->getSectorsAround($spaceAddress),
+            'currentSystem' => $system,
+            'sectors' => $this->getSectorsAround($spaceAddress, $existingSystems),
         ]);
     }
 
@@ -59,7 +76,7 @@ class GalaxyController extends Controller
         ]);
     }
 
-    private function getSectorsAround(Entity\Galaxy\SectorAddress $address) {
+    private function getSectorsAround(Entity\Galaxy\SectorAddress $address, array $existingSystems = []) {
         $currentSector = GalaxyBuilder::getSector($address);
 
         $sectors = [];
@@ -68,7 +85,7 @@ class GalaxyController extends Controller
             $line = [];
             $lastInLine = $firstInLine;
             for($x = 0; $x< 5; $x++) {
-                $line[] = GalaxyBuilder::getSector($lastInLine);
+                $line[] = GalaxyBuilder::getSector($lastInLine, $existingSystems);
                 $lastInLine = $lastInLine->getUp();
             }
             $firstInLine = $firstInLine->getRight();

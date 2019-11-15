@@ -15,15 +15,20 @@ class LocalGroup
     /** @var float */
     private $weight;
 
+    /** @var System[] */
+    private $builtSystems;
+
     /**
      * LocalGroup constructor.
      * @param Sector $sector
      * @param float $weight
+     * @param array $builtSystems
      */
-    public function __construct(Sector $sector, $weight)
+    public function __construct(Sector $sector, $weight, array $builtSystems = [])
     {
         $this->sector = $sector;
         $this->weight = $weight;
+        $this->builtSystems = $builtSystems;
     }
 
     /**
@@ -48,6 +53,11 @@ class LocalGroup
      * @return System
      */
     public function getSystem(SpaceCoordination $coordination) {
+        foreach ($this->builtSystems as $builtSystem) {
+            if ($this->sector->getAddress()->encode() === $builtSystem->getSectorAddress()->encode() && $coordination->encode() === $builtSystem->getLocalGroupCoordination()->encode()) {
+                return $builtSystem;
+            }
+        }
         return self::buildSystem($this, $coordination);
     }
 

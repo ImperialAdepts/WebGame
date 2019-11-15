@@ -76,8 +76,12 @@ class SectorAddress
         return count($this->sectorCoordinations);
     }
 
+    /**
+     * TODO: dopsat podle vzoru ostatnich smeru
+     * @return SectorAddress
+     */
     public function getLeft() {
-
+        return $this;
     }
 
     /**

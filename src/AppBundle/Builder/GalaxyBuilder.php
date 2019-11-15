@@ -14,13 +14,22 @@ class GalaxyBuilder
 
     private static $firstLevelCache = null;
 
-    public static function getSector(SectorAddress $coordAdress) {
+    /**
+     * @param SectorAddress $coordAdress
+     * @param System[] $alreadyBuiltSystems
+     * @return Sector
+     */
+    public static function getSector(SectorAddress $coordAdress, array $alreadyBuiltSystems = []) {
         $coordAdresses = $coordAdress->getSectorCoordinations();
         $quadrant = $coordAdresses[0];
         array_shift($coordAdresses);
         $quadrantDistance = $quadrant->getX() + $quadrant->getY() + $quadrant->getZ();
         /** @var Sector $sector */
-        $sector = new Sector(new SectorAddress($quadrant, [new SpaceCoordination($quadrant->getX(), $quadrant->getY(), $quadrant->getZ())]), $quadrantDistance * pow(10, 20) + rand(0, pow(10, 18)));
+        $sector = new Sector(
+            new SectorAddress($quadrant, [new SpaceCoordination($quadrant->getX(), $quadrant->getY(), $quadrant->getZ())]),
+            $quadrantDistance * pow(10, 20) + rand(0, pow(10, 18)),
+            $alreadyBuiltSystems
+        );
         foreach ($coordAdresses as $coord) {
             $sector = $sector->getSubSector($coord);
         }
