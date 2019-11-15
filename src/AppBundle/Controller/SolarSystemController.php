@@ -55,6 +55,16 @@ class SolarSystemController extends Controller
      */
     public function systemGuessAction($systemAddress, $localGroupCoord)
     {
+        $existingSystem = $this->getDoctrine()->getRepository(Entity\SolarSystem\System::class)->findOneBy([
+            'sectorAddress' => $systemAddress,
+            'localGroupCoordination' => $localGroupCoord,
+        ]);
+        if ($existingSystem) {
+            return $this->redirectToRoute('solar_system_detail', [
+                'system' => $existingSystem->getId(),
+            ]);
+        }
+
         /** @var Entity\Galaxy\SectorAddress $spaceAddress */
         $spaceAddress = Entity\Galaxy\SectorAddress::decode($systemAddress);
         $localGroupCoordinations = Entity\Galaxy\SpaceCoordination::decode($localGroupCoord);
