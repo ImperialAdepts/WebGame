@@ -24,7 +24,7 @@ use PlanetBundle\Entity\Resource\Thing;
  *     "recipe" = "PlanetBundle\Entity\Resource\BlueprintRecipeDeposit"
  *     })
  */
-abstract class Deposit implements DepositInterface
+abstract class Deposit implements DepositInterface, \IteratorAggregate
 {
     /**
      * @var int
@@ -146,9 +146,6 @@ abstract class Deposit implements DepositInterface
                     $thing->setAmount(0);
                 }
             }
-//            if ($left > 0) {
-//                throw new \Exception("There is no enough resources of ".$resourceToConsume->getDescription());
-//            }
         }
         return $left;
     }
@@ -222,6 +219,12 @@ abstract class Deposit implements DepositInterface
         }
         return $varietyFactor;
     }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->getResourceDescriptors());
+    }
+
 
     public function __toString()
     {

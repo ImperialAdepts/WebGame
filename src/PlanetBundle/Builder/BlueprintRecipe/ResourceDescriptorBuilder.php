@@ -1,6 +1,6 @@
 <?php
 
-namespace PlanetBundle\Builder;
+namespace PlanetBundle\Builder\BlueprintRecipe;
 
 use AppBundle\Descriptor\ResourcefullInterface;
 use PlanetBundle\Concept\Team\Team;
@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManager;
 use PlanetBundle\Entity\Deposit;
 use Tracy\Debugger;
 
-class RegionBuilder
+class ResourceDescriptorBuilder
 {
     /** @var Entity\Resource\DepositInterface */
     private $deposit;
@@ -37,14 +37,18 @@ class RegionBuilder
      * @return boolean
      */
     public function isValidBuildable() {
-        foreach ($this->recipe->getInputs() as $input) {
-            if (!$this->deposit->contains($input)) {
-                return false;
+        if ($this->recipe->getInputs()) {
+            foreach ($this->recipe->getInputs() as $input) {
+                if (!$this->deposit->contains($input)) {
+                    return false;
+                }
             }
         }
-        foreach ($this->recipe->getTools() as $tool) {
-            if (!$this->deposit->contains($tool)) {
-                return false;
+        if ($this->recipe->getTools()) {
+            foreach ($this->recipe->getTools() as $tool) {
+                if (!$this->deposit->contains($tool)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -52,23 +56,27 @@ class RegionBuilder
 
     public function getValidationErrors() {
         $errors = [];
-        foreach ($this->recipe->getInputs() as $input) {
-            if (!$this->deposit->contains($input)) {
-                if ($input instanceof Entity\Resource\Thing) {
-                    $errors['input'][] = [
-                        'blueprint' => $input->getBlueprint(),
-                        'missingCount' => $input->getAmount() - Deposit::sumAmounts($this->deposit->filterByBlueprint($input->getBlueprint())),
-                    ];
+        if ($this->recipe->getInputs()) {
+            foreach ($this->recipe->getInputs() as $input) {
+                if (!$this->deposit->contains($input)) {
+                    if ($input instanceof Entity\Resource\Thing) {
+                        $errors['input'][] = [
+                            'blueprint' => $input->getBlueprint(),
+                            'missingCount' => $input->getAmount() - Deposit::sumAmounts($this->deposit->filterByBlueprint($input->getBlueprint())),
+                        ];
+                    }
                 }
             }
         }
-        foreach ($this->recipe->getTools() as $tool) {
-            if (!$this->deposit->contains($tool)) {
-                if ($tool instanceof Entity\Resource\Thing) {
-                    $errors['tool'][] = [
-                        'blueprint' => $tool->getBlueprint(),
-                        'missingCount' => $tool->getAmount() - Deposit::sumAmounts($this->deposit->filterByBlueprint($tool->getBlueprint())),
-                    ];
+        if ($this->recipe->getTools()) {
+            foreach ($this->recipe->getTools() as $tool) {
+                if (!$this->deposit->contains($tool)) {
+                    if ($tool instanceof Entity\Resource\Thing) {
+                        $errors['tool'][] = [
+                            'blueprint' => $tool->getBlueprint(),
+                            'missingCount' => $tool->getAmount() - Deposit::sumAmounts($this->deposit->filterByBlueprint($tool->getBlueprint())),
+                        ];
+                    }
                 }
             }
         }
@@ -82,27 +90,31 @@ class RegionBuilder
         if (!$this->isValidBuildable()) return 0;
 
         $possibleCount = null;
-        foreach ($this->recipe->getInputs() as $input) {
-            if ($input instanceof Entity\Resource\Thing) {
-                $resourcePosibility = Deposit::sumAmounts($this->deposit->filterByBlueprint($input->getBlueprint())) / $input->getAmount();
-                if ($resourcePosibility < 1) {
-                    return 0;
-                } elseif ($possibleCount === null) {
-                    $possibleCount = $resourcePosibility;
-                } elseif ($resourcePosibility < $possibleCount) {
-                    $possibleCount = $resourcePosibility;
+        if ($this->recipe->getInputs()) {
+            foreach ($this->recipe->getInputs() as $input) {
+                if ($input instanceof Entity\Resource\Thing) {
+                    $resourcePosibility = Deposit::sumAmounts($this->deposit->filterByBlueprint($input->getBlueprint())) / $input->getAmount();
+                    if ($resourcePosibility < 1) {
+                        return 0;
+                    } elseif ($possibleCount === null) {
+                        $possibleCount = $resourcePosibility;
+                    } elseif ($resourcePosibility < $possibleCount) {
+                        $possibleCount = $resourcePosibility;
+                    }
                 }
             }
         }
-        foreach ($this->recipe->getTools() as $tool) {
-            if ($tool instanceof Entity\Resource\Thing) {
-                $resourcePosibility = Deposit::sumAmounts($this->deposit->filterByBlueprint($tool->getBlueprint())) / $tool->getAmount();
-                if ($resourcePosibility < 1) {
-                    return 0;
-                } elseif ($possibleCount === null) {
-                    $possibleCount = $resourcePosibility;
-                } elseif ($resourcePosibility < $possibleCount) {
-                    $possibleCount = $resourcePosibility;
+        if ($this->recipe->getTools()) {
+            foreach ($this->recipe->getTools() as $tool) {
+                if ($tool instanceof Entity\Resource\Thing) {
+                    $resourcePosibility = Deposit::sumAmounts($this->deposit->filterByBlueprint($tool->getBlueprint())) / $tool->getAmount();
+                    if ($resourcePosibility < 1) {
+                        return 0;
+                    } elseif ($possibleCount === null) {
+                        $possibleCount = $resourcePosibility;
+                    } elseif ($resourcePosibility < $possibleCount) {
+                        $possibleCount = $resourcePosibility;
+                    }
                 }
             }
         }
@@ -144,12 +156,16 @@ class RegionBuilder
             return false;
         }
 
-        foreach ($this->recipe->getInputs()->getResourceDescriptors() as $productedResources) {
-            $this->deposit->consume($productedResources);
+        if ($this->recipe->getInputs()) {
+            foreach ($this->recipe->getInputs() as $productedResources) {
+                $this->deposit->consume($productedResources);
+            }
         }
 
-        foreach ($this->recipe->getProducts()->getResourceDescriptors() as $productedResources) {
-            $this->deposit->addResourceDescriptors($productedResources);
+        if ($this->recipe->getProducts()) {
+            foreach ($this->recipe->getProducts() as $productedResources) {
+                $this->deposit->addResourceDescriptors($productedResources);
+            }
         }
 
         return true;

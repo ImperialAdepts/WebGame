@@ -10,7 +10,7 @@ use AppBundle\Entity\Human\EventTypeEnum;
 use AppBundle\Entity\Human\SettlementTitle;
 use AppBundle\Entity\SolarSystem\Planet;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
-use PlanetBundle\Builder\RegionBuilder;
+use PlanetBundle\Builder\BlueprintRecipe\ResourceDescriptorBuilder;
 use PlanetBundle\Concept\Food;
 use PlanetBundle\Concept\House;
 use PlanetBundle\Concept\People;
@@ -480,7 +480,7 @@ class SettlementController extends BasePlanetController
 
                 // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
                 $this->getDoctrine()->getManager('planet')->transactional(function ($em) use ($recipe, $settlement, $count, &$built) {
-                    $builder = new RegionBuilder($settlement->getDeposit(), $recipe);
+                    $builder = new ResourceDescriptorBuilder($settlement->getDeposit(), $recipe);
                     $builder->setSupervisor($this->getHuman());
                     $builder->setAllRegionTeams();
                     $builder->setCount($count);

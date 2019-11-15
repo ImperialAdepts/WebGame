@@ -2,7 +2,7 @@
 
 namespace PlanetBundle\Controller;
 
-use PlanetBundle\Builder\RegionBuilder;
+use PlanetBundle\Builder\BlueprintRecipe\ResourceDescriptorBuilder;
 use PlanetBundle\UseCase;
 use AppBundle\Entity\Human\EventDataTypeEnum;
 use AppBundle\Entity\Human\EventTypeEnum;
@@ -62,7 +62,7 @@ class RegionController extends BasePlanetController
 
         // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
         $this->getDoctrine()->getManager('planet')->transactional(function ($em) use ($recipe, $region, $count) {
-            $builder = new RegionBuilder($region->getDeposit(), $recipe);
+            $builder = new ResourceDescriptorBuilder($region->getDeposit(), $recipe);
             $builder->setSupervisor($this->getHuman());
             $builder->setAllRegionTeams();
             $builder->setCount($count);
@@ -136,7 +136,7 @@ class RegionController extends BasePlanetController
                 $built = 0;
                 // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
                 $this->getDoctrine()->getManager('planet')->transactional(function ($em) use ($recipe, $region, $count, &$built) {
-                    $builder = new RegionBuilder($region->getDeposit(), $recipe);
+                    $builder = new ResourceDescriptorBuilder($region->getDeposit(), $recipe);
                     $builder->setSupervisor($this->getHuman());
                     $builder->setAllRegionTeams();
                     $builder->setCount($count);
