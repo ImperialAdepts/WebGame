@@ -68,21 +68,26 @@
 {% endblock %}
 
 {% macro localGroup(localGroup, currentSystem = null) %}
-        {% for x, line in localGroup.systems %}
-                <div style="padding: 1px; float: left;">
-                        {% for y, systemStack in line %}
-                                <div class="systemBox box">
-                                        {% for z, system in systemStack %}
-                                                {% if system is not null %}
-                                                        <a class="systemSign"
-                                                                {% if currentSystem is not null and system.id == currentSystem.id %}id="current-system"{% endif %}
-                                                                href="{{ path('solar_system_guess', {'systemAddress': system.sectorAddress.encode, 'localGroupCoord': system.localGroupCoordination.encode}) }}"
-                                                                title="{{ z }}: {{ system.name }}">&#x2742;</a>
-                                                {% endif %}
-                                        {% endfor %}
-                                </div>
-                                <div style="clear: left"></div>
-                        {% endfor %}
-                </div>
-        {% endfor %}
+    {% import _self as this_macros %}
+    {% for x, line in localGroup.systems %}
+            <div style="padding: 1px; float: left;">
+                    {% for y, systemStack in line %}
+                            <div class="systemBox box">
+                                    {% for z, system in systemStack %}
+                                            {% if system is not null %}
+                                                    <a class="systemSign"
+                                                            {% if currentSystem is not null and system.id == currentSystem.id %}id="current-system"{% endif %}
+                                                            href="{{ path('solar_system_guess', {'systemAddress': system.sectorAddress.encode, 'localGroupCoord': system.localGroupCoordination.encode}) }}"
+                                                            title="{{ this_macros.systemTitle(x, y, z, system, currentSystem) }}">&#x2742;</a>
+                                            {% endif %}
+                                    {% endfor %}
+                            </div>
+                            <div style="clear: left"></div>
+                    {% endfor %}
+            </div>
+    {% endfor %}
+{% endmacro %}
+
+{% macro systemTitle(x, y, z, system, currentSystem) %}
+    {{ z }}: {{ system.name }}, lenght: {{ currentSystem.distance(system)|spaceDistance }}
 {% endmacro %}

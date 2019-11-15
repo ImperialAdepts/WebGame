@@ -133,5 +133,16 @@ class System
         $this->localGroupCoordination = $localGroupCoordination->encode();
     }
 
+    /**
+     * @param System $system
+     * @return float
+     */
+    public function distance(System $system) {
+        $diff = $this->getLocalGroupCoordination()->difference($system->getLocalGroupCoordination());
+        $distanceInGroup = SpaceCoordination::UNIT_DISTANCE * sqrt($diff->getX()*$diff->getX() + $diff->getY()*$diff->getY() + $diff->getZ()*$diff->getZ());
+        $distanceInGroup += $this->getSectorAddress()->distance($system->getSectorAddress());
+        return $distanceInGroup;
+    }
+
 }
 

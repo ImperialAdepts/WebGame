@@ -1,8 +1,13 @@
 <?php
 namespace AppBundle\Entity\Galaxy;
 
+use AppBundle\Entity\SolarSystem\System;
+
 class SpaceCoordination
 {
+    /** @var int light years */
+    const UNIT_DISTANCE = 1;
+
     /** @var integer */
     private $x;
     /** @var integer */
@@ -54,6 +59,14 @@ class SpaceCoordination
     public function getZ()
     {
         return $this->z;
+    }
+
+    /**
+     * @param SpaceCoordination $coordination
+     * @return SpaceCoordination
+     */
+    public function difference(SpaceCoordination $coordination) {
+        return new self($this->x - $coordination->x, $this->y - $coordination->y, $this->z - $coordination->z);
     }
 
     public function getSeed() {

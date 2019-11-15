@@ -14,6 +14,7 @@ class HumanReadableMeasuresExtension extends AbstractExtension
     {
         return [
             new TwigFilter('distance', [$this, 'formatDistance']),
+            new TwigFilter('spaceDistance', [$this, 'formatSpaceDistance']),
             new TwigFilter('area', [$this, 'formatArea']),
             new TwigFilter('volume', [$this, 'formatVolume']),
             new TwigFilter('weight', [$this, 'formatWeight']),
@@ -44,6 +45,14 @@ class HumanReadableMeasuresExtension extends AbstractExtension
         }
         $numberInLightYear =  $numberInAU/173;
         return round($numberInLightYear, 1).' ly';
+    }
+
+    /**
+     * @param int $numberInLy distance in meters
+     * @return string
+     */
+    public function formatSpaceDistance($numberInLy) {
+        return round($numberInLy, 2).' ly';
     }
 
     /**

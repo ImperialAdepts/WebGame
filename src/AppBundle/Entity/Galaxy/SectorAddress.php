@@ -138,6 +138,34 @@ class SectorAddress
         return new self($quadrant, array_reverse($newCoordinations));
     }
 
+    /**
+     * TODO: opravit
+     * @param SectorAddress $address
+     * @return float
+     */
+    public function distance(SectorAddress $address) {
+        $coordsA = $address->getSectorCoordinations();
+        $coordsB = $this->getSectorCoordinations();
+        $i = 0;
+        $diffs = [];
+        foreach ($coordsA as $coordinationA) {
+            $coordinationB = $coordsB[$i++];
+            $diffs[] = $coordinationA->difference($coordinationB);
+        }
+
+        $reversedDiffs = array_reverse($diffs);
+        $length = 0;
+        $unit = LocalGroup::SIZE * SpaceCoordination::UNIT_DISTANCE;
+        $i = 0;
+        $reverseDesities = array_reverse(self::$levelDensity);
+        foreach ($reversedDiffs as $diff) {
+            $density = $reverseDesities[$i++];
+            $length += $unit * sqrt($diff->getX()*$diff->getX() + $diff->getY()*$diff->getY() + $diff->getZ()*$diff->getZ());
+            $unit *= $density;
+        }
+        return $length;
+    }
+
     public function getSeed() {
         $seed = 1123581315282;
         $i = 1;
