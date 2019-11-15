@@ -17,7 +17,12 @@ use PlanetBundle\Entity\Resource\Thing;
  * @ORM\Table(name="deposits")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="owner_type", type="string")
- * @ORM\DiscriminatorMap({"region" = "RegionDeposit", "peak" = "PeakDeposit", "standardized" = "PlanetBundle\Entity\Resource\StandardizedDeposit"})
+ * @ORM\DiscriminatorMap({
+ *     "region" = "RegionDeposit",
+ *     "peak" = "PeakDeposit",
+ *     "standardized" = "PlanetBundle\Entity\Resource\StandardizedDeposit",
+ *     "recipe" = "PlanetBundle\Entity\Resource\BlueprintRecipeDeposit"
+ *     })
  */
 abstract class Deposit implements DepositInterface
 {
@@ -33,13 +38,20 @@ abstract class Deposit implements DepositInterface
     /**
      * @var ResourceDescriptor[]
      *
-     * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\Resource\ResourceDescriptor", mappedBy="deposit", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="PlanetBundle\Entity\Resource\ResourceDescriptor", mappedBy="deposit", cascade={"all"})
      */
     private $resourceDescriptors;
 
-    public function __construct()
+    /**
+     * Deposit constructor.
+     * @param ResourceDescriptor[] $resourceDescriptors
+     */
+    public function __construct(array $resourceDescriptors = [])
     {
         $this->resourceDescriptors = new ArrayCollection();
+        foreach ($resourceDescriptors as $descriptor) {
+            $this->addResourceDescriptors($descriptor);
+        }
     }
 
     /**
@@ -116,6 +128,46 @@ abstract class Deposit implements DepositInterface
         }
         return $descriptors;
     }
+
+    public function consume(ResourceDescriptor $resourceToConsume)
+    {
+        if (!$this->contains($resourceToConsume)) {
+            throw new \Exception("There is no enough resources of ".$resourceToConsume->getDescription());
+        }
+        $left = $resourceToConsume->getAmount();
+        if ($resourceToConsume instanceof Thing) {
+            foreach ($this->filterByBlueprint($resourceToConsume->getBlueprint()) as $thing) {
+                if ($thing->getAmount() >= $left) {
+                    $thing->setAmount($thing->getAmount() - $left);
+                    $left = 0;
+                    break;
+                } else {
+                    $left -= $thing->getAmount();
+                    $thing->setAmount(0);
+                }
+            }
+//            if ($left > 0) {
+//                throw new \Exception("There is no enough resources of ".$resourceToConsume->getDescription());
+//            }
+        }
+        return $left;
+    }
+
+    public function contains(ResourceDescriptor $resourceToFind)
+    {
+        $left = $resourceToFind->getAmount();
+        if ($resourceToFind instanceof Thing) {
+            foreach ($this->filterByBlueprint($resourceToFind->getBlueprint()) as $thing) {
+                if ($thing->getAmount() >= $left) {
+                    return true;
+                } else {
+                    $left -= $thing->getAmount();
+                }
+            }
+        }
+        return false;
+    }
+
 
     /**
      * @param ResourceDescriptor[] $descriptors

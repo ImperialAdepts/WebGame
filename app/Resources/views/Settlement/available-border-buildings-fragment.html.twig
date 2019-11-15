@@ -1,0 +1,43 @@
+<div>
+	{% if blueprints|length > 0 %}
+		<strong>Buildings to build:</strong>
+		{{ dump(blueprintAnalyzes) }}
+		<ul>
+			{% for buildingBlueprint in blueprints %}
+				<li>
+					<strong>[{{ buildingBlueprint.id }}]</strong>
+					{% if blueprintAnalyzes[buildingBlueprint.id].count > 0 %}
+					<a href="{{ path('region_build_settlement', {
+						'peakC': region.peakCenter.id,
+						'peakL': region.peakLeft.id,
+						'peakR': region.peakRight.id,
+						'blueprint': buildingBlueprint.id
+					}) }}">
+						Build {{ buildingBlueprint.description }} ASAP</a>
+					<a href="{{ path('region_build_settlement', {
+						'peakC': region.peakCenter.id,
+						'peakL': region.peakLeft.id,
+						'peakR': region.peakRight.id,
+						'blueprint': buildingBlueprint.id,
+						'count': blueprintAnalyzes[buildingBlueprint.id].count
+					}) }}">
+						[&times;{{ blueprintAnalyzes[buildingBlueprint.id].count}}]</a>
+					{% else %}
+						Build {{ buildingBlueprint.description }} cant be build immediately because {{ dump(blueprintAnalyzes[buildingBlueprint.id]) }}
+					{% endif %}
+				</li>
+				<li>
+					<a href="{{ path('region_build_plan_settlement', {
+						'peakC': region.peakCenter.id,
+						'peakL': region.peakLeft.id,
+						'peakR': region.peakRight.id,
+						'blueprint': buildingBlueprint.id
+					}) }}">
+						Build {{ buildingBlueprint.description }} later</a>
+				</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<small>You can't build anything here.</small>
+	{% endif %}
+</div>

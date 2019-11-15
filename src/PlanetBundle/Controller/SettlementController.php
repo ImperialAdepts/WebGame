@@ -10,6 +10,7 @@ use AppBundle\Entity\Human\EventTypeEnum;
 use AppBundle\Entity\Human\SettlementTitle;
 use AppBundle\Entity\SolarSystem\Planet;
 use AppBundle\PlanetConnection\DynamicPlanetConnector;
+use PlanetBundle\Builder\RegionBuilder;
 use PlanetBundle\Concept\Food;
 use PlanetBundle\Concept\House;
 use PlanetBundle\Concept\People;
@@ -17,6 +18,7 @@ use PlanetBundle\Entity;
 use AppBundle\Repository\JobRepository;
 use PlanetBundle\Entity\Peak;
 use PlanetBundle\Entity\Region;
+use PlanetBundle\Form\BuildersFormType;
 use PlanetBundle\Form\PeakSelectorType;
 use PlanetBundle\Form\RegionSelectorType;
 use PlanetBundle\Repository\RegionRepository;
@@ -152,13 +154,11 @@ class SettlementController extends BasePlanetController
         }
 
         $blueprint = $this->get('repo_blueprint')->find(1);
-        $warehouse = new Entity\Resource\Thing();
+        $warehouse = new Entity\Resource\Thing($blueprint, 1);
         $warehouse->setDescription('warehouse');
-        $warehouse->setAmount(1);
         $warehouse->setUseCases([
             UseCase\LandBuilding::class,
         ]);
-        $warehouse->setBlueprint($blueprint);
         $settlement->getDeposit()->addResourceDescriptors($warehouse);
 
         $this->getDoctrine()->getManager('planet')->persist($warehouse);
@@ -439,6 +439,67 @@ class SettlementController extends BasePlanetController
 
         return $this->redirectToRoute('settlement_dashboard', [
 
+            'planet' => $this->planet->getId(),
+            'settlement' => $settlement->getId(),
+        ]);
+    }
+
+
+    /**
+     * popup
+     * @Route("/available-buildings", name="settlement_build_availability")
+     */
+    public function availableBuildingsAction(Planet $planet, Entity\Settlement $settlement, Request $request)
+    {
+        $recipes = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\BlueprintRecipe::class)->findAll();
+
+        return $this->render('Region/available-buildings-fragment.html.twig', [
+            'builderForm' => $this->createForm(BuildersFormType::class, [], [
+                'blueprints' => $recipes,
+                'action' => $this->generateUrl('settlement_buildform_handler', [
+                    'planet' => $this->planet->getId(),
+                    'settlement' => $settlement->getId(),
+                ]),
+            ])->createView(),
+            'settlement' => $settlement,
+            'human' => $this->getHuman(),
+        ]);
+    }
+
+    /**
+     * @Route("/builder-form-handler", name="settlement_buildform_handler")
+     */
+    public function handleBuilderFormAction(Planet $planet, Entity\Settlement $settlement, Request $request)
+    {
+        $recipe = $this->getDoctrine()->getManager('planet')->getRepository(Entity\Resource\BlueprintRecipe::class)->findAll();
+
+        $built = 0;
+        foreach ($request->get('builders_form') as $recipeId => $options) {
+            if ($settlement->getDeposit() != null && isset($options['count']) && ($count = $options['count']) > 0) {
+                $recipe = $this->getDoctrine()->getManager('planet')->find(Entity\Resource\BlueprintRecipe::class, $recipeId);
+
+                // TODO: zkontrolovat, ze ma pravo stavet v tomto regionu
+                $this->getDoctrine()->getManager('planet')->transactional(function ($em) use ($recipe, $settlement, $count, &$built) {
+                    $builder = new RegionBuilder($settlement->getDeposit(), $recipe);
+                    $builder->setSupervisor($this->getHuman());
+                    $builder->setAllRegionTeams();
+                    $builder->setCount($count);
+                    $built += $builder->build();
+                });
+
+                $this->createEvent(EventTypeEnum::SETTLEMENT_BUILD, [
+                    EventDataTypeEnum::BLUEPRINT => [
+                        'id' => $recipe->getId(),
+                        'desc' => $recipe->getDescription(),
+                    ],
+                    EventDataTypeEnum::REGION => $settlement->getName(),
+                    'countRequested' => $options['count'],
+                    'countBuilt' => $built,
+                ]);
+            }
+        }
+
+        return $this->redirectToRoute('settlement_dashboard', [
             'planet' => $this->planet->getId(),
             'settlement' => $settlement->getId(),
         ]);

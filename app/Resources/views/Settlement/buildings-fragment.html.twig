@@ -19,6 +19,17 @@
 	{% endif %}
 	<table>
 		<tr>
+			<td>
+				{% set modalId = "buildings-modal-for-settlement" %}
+				<a href="#{{ modalId }}" rel="modal:open">Build in settlement</a>
+				<div class="buildings-modal modal" id="{{ modalId }}">
+					<a href="#" rel="modal:close">Close</a>
+					{{ render(controller('PlanetBundle:Settlement:availableBuildings', {
+						'planet': planet.id,
+						'settlement': settlement.id
+					})) }}
+				</div>
+			</td>
 			{% for region in settlement.regions %}
 				<td>
 					<h3>Region {{ region.name }}</h3>

@@ -112,9 +112,9 @@ class PlanetBuilder
     /**
      * @param PlanetEntity\Peak $administrativeCenter
      * @param PlanetEntity\Human $human
-     * @param PlanetEntity\Deposit $colonizationPackageDeposit
+     * @param PlanetEntity\Resource\StandardizedDeposit $colonizationPackageDeposit
      */
-	public function newColony(PlanetEntity\Peak $administrativeCenter, PlanetEntity\Human $human, PlanetEntity\Deposit $colonizationPackageDeposit)
+	public function newColony(PlanetEntity\Peak $administrativeCenter, PlanetEntity\Human $human, PlanetEntity\Resource\StandardizedDeposit $colonizationPackageDeposit)
 	{
 	    $regions = $this->planetEntityManager->getRepository(PlanetEntity\Region::class)->findPeakSurrounding($administrativeCenter);
 	    $settlement = $this->createSettlement($regions, $administrativeCenter, $human);

@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Region implements ResourcefullInterface
 {
     use SettlementDependencyTrait;
-    use DepositDependencyTrait;
+    use DepositOwnerTrait;
 
 	/**
 	 * @var Peak

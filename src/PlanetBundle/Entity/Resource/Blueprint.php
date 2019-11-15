@@ -27,7 +27,7 @@ class Blueprint
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="description", type="string", unique=true, length=255)
+	 * @ORM\Column(name="description", type="string", unique=false, length=255)
 	 */
 	private $description;
 

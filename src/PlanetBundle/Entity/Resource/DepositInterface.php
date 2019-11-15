@@ -32,4 +32,16 @@ interface DepositInterface
      * @return Thing[]
      */
     public function filterByConcept($concept);
+
+    /**
+     * @param ResourceDescriptor $resourceToConsume
+     * @throws \Exception when there is little resources
+     */
+    public function consume(ResourceDescriptor $resourceToConsume);
+
+    /**
+     * @param ResourceDescriptor $resourceToFind
+     * @return boolean
+     */
+    public function contains(ResourceDescriptor $resourceToFind);
 }

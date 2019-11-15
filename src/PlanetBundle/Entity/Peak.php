@@ -16,7 +16,7 @@ use PlanetBundle\Entity\Resource\Blueprint;
 class Peak implements ResourcefullInterface
 {
     use SettlementDependencyTrait;
-    use DepositDependencyTrait;
+    use DepositOwnerTrait;
 
 	/**
 	 * @var integer

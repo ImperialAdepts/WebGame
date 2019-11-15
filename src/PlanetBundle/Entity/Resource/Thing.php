@@ -37,7 +37,25 @@ class Thing extends ResourceDescriptor
      */
     private $traitValues = [];
 
-	/**
+    /**
+     * Thing constructor.
+     * @param Blueprint $blueprint
+     * @param int $amount
+     * @param string|null $description
+     */
+    public function __construct(Blueprint $blueprint, $amount = 1, $description = null)
+    {
+        $this->setBlueprint($blueprint);
+        $this->setAmount($amount);
+        if ($description != null) {
+            $this->description = $description;
+        } else {
+            $this->description = $blueprint->getDescription();
+        }
+    }
+
+
+    /**
 	 * Set name
 	 *
 	 * @param string $description

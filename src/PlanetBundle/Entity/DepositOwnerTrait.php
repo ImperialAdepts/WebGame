@@ -6,12 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use PlanetBundle\Entity\Deposit;
 use PlanetBundle\Entity\Resource\DepositInterface;
 
-trait DepositDependencyTrait
+trait DepositOwnerTrait
 {
     /**
      * @var Deposit
      *
-     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Deposit")
+     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Deposit", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="deposit_id", referencedColumnName="id", nullable=true)
      */
     private $deposit;

@@ -4,6 +4,7 @@ namespace PlanetBundle\Form;
 use PlanetBundle\Entity\Resource\Blueprint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Button;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,7 +15,7 @@ class BlueprintCountType extends AbstractType
     {
         $builder
             ->add('count', NumberType::class, [
-                'label' => $options['blueprint']->getDescription(),
+                'label' => $options['blueprint']->getDescription() .' - '. $options['blueprint']->getMainProduct()->getDescription() . "×".$options['blueprint']->getMainProduct()->getAmount(),
                 'required' => false,
                 'empty_data' => 0,
                 'data' => 0,

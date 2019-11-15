@@ -11,10 +11,10 @@ class BuildersFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        foreach ($options['blueprints'] as $blueprint) {
+        foreach ($options['blueprints'] as $blueprintRecipe) {
             $builder
-                ->add($blueprint->getId(), BlueprintCountType::class, [
-                    'blueprint' => $blueprint,
+                ->add($blueprintRecipe->getId(), BlueprintCountType::class, [
+                    'blueprint' => $blueprintRecipe,
                 ]);
         }
         $builder->add('build', SubmitType::class);

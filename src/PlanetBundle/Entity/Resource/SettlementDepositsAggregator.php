@@ -1,6 +1,7 @@
 <?php
 namespace PlanetBundle\Entity\Resource;
 
+use PlanetBundle\Entity\Deposit;
 use PlanetBundle\Entity\Peak;
 use PlanetBundle\Entity\PeakDeposit;
 use PlanetBundle\Entity\Region;
@@ -105,4 +106,36 @@ class SettlementDepositsAggregator implements DepositInterface
             }
         }
     }
+
+    /**
+     * @param ResourceDescriptor $resourceToConsume
+     * @throws \Exception when there is little resources
+     */
+    public function consume(ResourceDescriptor $resourceToConsume)
+    {
+        /** @var Deposit $deposit */
+        foreach ($this->getSubDeposits() as $deposit) {
+            $left = $deposit->consume($resourceToConsume);
+            $resourceToConsume->setAmount($left);
+            if ($left == 0) {
+                return;
+            }
+        }
+    }
+
+    public function contains(ResourceDescriptor $resourceToFind)
+    {
+        $containsCount = 0;
+        if ($resourceToFind instanceof Thing) {
+            foreach ($this->filterByBlueprint($resourceToFind->getBlueprint()) as $thing) {
+                $containsCount += $thing->getAmount();
+                if ($containsCount >= $resourceToFind->getAmount()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
 }

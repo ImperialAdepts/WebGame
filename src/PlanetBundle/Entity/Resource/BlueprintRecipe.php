@@ -23,58 +23,53 @@ class BlueprintRecipe
 
     /**
      * @var Blueprint
-     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Resource\Blueprint")
-     * @ORM\JoinColumn(name="main_blueprint_id", referencedColumnName="id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Resource\Thing", cascade={"persist"})
+     * @ORM\JoinColumn(name="main_product_id", referencedColumnName="id", nullable=true)
      */
 	private $mainProduct;
-
-    /**
-     * @var int
-     * @ORM\Column(name="main_product_count", type="integer")
-     */
-	private $mainProductCount = 1;
 
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="description", type="string", length=255)
+	 * @ORM\Column(name="description", type="string", length=255, unique=false)
 	 */
 	private $description = "";
 
-	/**
-     * Every resource will be consumed
-	 * @var string[] blueprint_id => count
-	 *
-	 * @ORM\Column(name="inputs", type="json_array")
-	 */
-	private $inputs = [];
+    /**
+     * @var BlueprintRecipeDeposit
+     *
+     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Resource\BlueprintRecipeDeposit", cascade={"persist"})
+     * @ORM\JoinColumn(name="input_deposit_id", referencedColumnName="id", nullable=true)
+     */
+	private $inputs;
 
     /**
-     * Every resource will be used
-     * @var string[] concept => hours count
+     * @var BlueprintRecipeDeposit
      *
-     * @ORM\Column(name="tools", type="json_array")
+     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Resource\BlueprintRecipeDeposit", cascade={"persist"})
+     * @ORM\JoinColumn(name="tool_deposit_id", referencedColumnName="id", nullable=true)
      */
-    private $tools = [];
+    private $tools;
 
     /**
-     * Every resource will be produced
-     * @var string[] blueprint_id => count
+     * @var BlueprintRecipeDeposit
      *
-     * @ORM\Column(name="products", type="json_array")
+     * @ORM\ManyToOne(targetEntity="PlanetBundle\Entity\Resource\BlueprintRecipeDeposit", cascade={"persist"})
+     * @ORM\JoinColumn(name="product_deposit_id", referencedColumnName="id", nullable=false)
      */
-    private $products = [];
+    private $products;
 
     /**
      * BlueprintRecipe constructor.
-     * @param Blueprint $mainProduct
+     * @param Thing $mainProduct
      * @param integer|null $id
      */
-    public function __construct(Blueprint $mainProduct, $id = null)
+    public function __construct(Thing $mainProduct, $id = null)
     {
         $this->id = $id;
         $this->mainProduct = $mainProduct;
-        $mainProduct->addRecipe($this);
+        $this->products = new BlueprintRecipeDeposit([$mainProduct]);
+        $mainProduct->getBlueprint()->addRecipe($this);
     }
 
     /**
@@ -104,21 +99,6 @@ class BlueprintRecipe
         $mainProduct->addRecipe($this);
     }
 
-    /**
-     * @return int
-     */
-    public function getMainProductCount()
-    {
-        return $this->mainProductCount;
-    }
-
-    /**
-     * @param int $mainProductCount
-     */
-    public function setMainProductCount($mainProductCount)
-    {
-        $this->mainProductCount = $mainProductCount;
-    }
 
 	/**
 	 * Set name
@@ -149,11 +129,11 @@ class BlueprintRecipe
 	/**
 	 * Set requirements
 	 *
-	 * @param array $inputs
+	 * @param BlueprintRecipeDeposit $inputs
 	 *
 	 * @return BlueprintRecipe
 	 */
-	public function setInputs($inputs)
+	public function setInputs(BlueprintRecipeDeposit $inputs)
 	{
 		$this->inputs = $inputs;
 
@@ -163,7 +143,7 @@ class BlueprintRecipe
 	/**
 	 * Get requirements
 	 *
-	 * @return array
+	 * @return BlueprintRecipeDeposit
 	 */
 	public function getInputs()
 	{
@@ -171,23 +151,7 @@ class BlueprintRecipe
 	}
 
     /**
-     * @param Blueprint $blueprint
-     * @param int $count
-     */
-    public function addInputBlueprint(Blueprint $blueprint, $count = 1) {
-        $this->inputs['things'][$blueprint->getId()] = $count;
-    }
-
-    /**
-     * @param Resource $resource
-     * @param int $count
-     */
-    public function addInputResource($resource, $count = 1) {
-        $this->inputs['resources'][$resource->getId()] = $count;
-    }
-
-    /**
-     * @return string[]
+     * @return BlueprintRecipeDeposit
      */
     public function getTools()
     {
@@ -195,28 +159,15 @@ class BlueprintRecipe
     }
 
     /**
-     * @param string[] $tools
+     * @param BlueprintRecipeDeposit $tools
      */
-    public function setTools($tools)
+    public function setTools(BlueprintRecipeDeposit $tools)
     {
         $this->tools = $tools;
     }
 
     /**
-     * @param $concept
-     * @param int $workhours
-     * @param int $count how many entities must be involved same time
-     */
-    public function addTool($concept, $workhours, $count = 1) {
-        $this->tools[] = [
-            'concept' => $concept,
-            'workhours' => $workhours,
-            'count' => $count,
-        ];
-    }
-
-    /**
-     * @return string[]
+     * @return BlueprintRecipeDeposit
      */
     public function getProducts()
     {
@@ -224,23 +175,12 @@ class BlueprintRecipe
     }
 
     /**
-     * @param string[] $products
+     * @param BlueprintRecipeDeposit $products
      */
-    public function setProducts($products)
+    public function setProducts(BlueprintRecipeDeposit $products)
     {
         $this->products = $products;
     }
 
-    public function addProductThing(Blueprint $blueprint, $count = 1) {
-        $this->products['things'][$blueprint->getId()] = $count;
-    }
-
-    /**
-     * @param Resource $resource
-     * @param int $count
-     */
-    public function addProductResource($resource, $count = 1) {
-        $this->products['resources'][$resource->getId()] = $count;
-    }
 }
 

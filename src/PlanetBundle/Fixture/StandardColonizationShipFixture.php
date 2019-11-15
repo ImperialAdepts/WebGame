@@ -4,6 +4,7 @@ namespace PlanetBundle\Fixture;
 use AppBundle\Entity as GeneralEntity;
 use AppBundle\Fixture\PlanetsFixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
+use Doctrine\ORM\EntityManager;
 use PlanetBundle\Builder\RegionTerrainTypeEnumBuilder;
 use PlanetBundle\Concept;
 use PlanetBundle\Entity as PlanetEntity;
@@ -48,7 +49,7 @@ class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fi
             $manager = $this->container->get('doctrine')->getManager('planet');
 
             $deposit = new PlanetEntity\Resource\StandardizedDeposit(self::DEPOSIT_CODE);
-            $this->fillDeposit($deposit);
+            $this->fillDeposit($deposit, $manager);
 
             $manager->persist($deposit);
             $this->setReference(self::DEPOSIT_CODE.$planet->getId(), $deposit);
@@ -84,87 +85,115 @@ class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fi
      * @param PlanetEntity\Resource\StandardizedDeposit $deposit
      * @return PlanetEntity\Resource\BlueprintRecipe[]
      */
-    private function fillDeposit(PlanetEntity\Resource\StandardizedDeposit $deposit)
+    private function fillDeposit(PlanetEntity\Resource\StandardizedDeposit $deposit, EntityManager $entityManager)
     {
         $human = new Concept\People();
         $deposit->addResourceDescriptors($this->newThings(100, $humanBlueprint = $human->getBlueprint("Earthling")));
+        $entityManager->persist($humanBlueprint); $entityManager->flush();
         {
-            $sex = new PlanetEntity\Resource\BlueprintRecipe($humanBlueprint);
+            $sex = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($humanBlueprint, 1));
             $sex->setDescription("Sexual reproduction");
-            $sex->addTool($humanBlueprint, 365 * 24, 2); // clovekorok prace
+            $sex->setTools(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($humanBlueprint, 365 * 24, 2), // clovekorok prace
+            ]));
         }
         $teamFarmers = new Concept\Team\Farmers();
         $teamFarmers->setPeopleCount(5);
         $deposit->addResourceDescriptors($this->newThings(1, $farmerBlueprint = $teamFarmers->getBlueprint("Small farmers")));
+        $entityManager->persist($farmerBlueprint); $entityManager->flush();
         {
-            $createTeam = new PlanetEntity\Resource\BlueprintRecipe($farmerBlueprint);
+            $createTeam = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($farmerBlueprint, 1));
             $createTeam->setDescription("Organize farmers");
-            $createTeam->addInputBlueprint($humanBlueprint, 5);
+            $createTeam->setInputs(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($humanBlueprint, 5),
+            ]));
         }
         $teamWorkers = new Concept\Team\Workers();
         $teamWorkers->setPeopleCount(5);
         $deposit->addResourceDescriptors($this->newThings(1, $workerBlueprint = $teamWorkers->getBlueprint("Worker pack")));
+        $entityManager->persist($workerBlueprint); $entityManager->flush();
         {
-            $createTeam = new PlanetEntity\Resource\BlueprintRecipe($workerBlueprint);
+            $createTeam = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($workerBlueprint, 1));
             $createTeam->setDescription("Organize workers");
-            $createTeam->addInputBlueprint($humanBlueprint, 5);
+            $createTeam->setInputs(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($humanBlueprint, 5),
+            ]));
         }
         $merchants = new Concept\Team\Merchants();
         $merchants->setPeopleCount(5);
         $deposit->addResourceDescriptors($this->newThings(1, $merchantTeamBlueprint = $merchants->getBlueprint("Merchant caravan")));
+        $entityManager->persist($merchantTeamBlueprint); $entityManager->flush();
         {
-            $createTeam = new PlanetEntity\Resource\BlueprintRecipe($merchantTeamBlueprint);
+            $createTeam = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($merchantTeamBlueprint, 1));
             $createTeam->setDescription("Organize merchants");
-            $createTeam->addInputBlueprint($humanBlueprint, 5);
+            $createTeam->setInputs(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($humanBlueprint, 5),
+            ]));
         }
         $scientists = new Concept\Team\Scientists();
         $scientists->setPeopleCount(5);
         $deposit->addResourceDescriptors($this->newThings(1, $scientistTeamBlueprint = $scientists->getBlueprint("Scientist")));
+        $entityManager->persist($scientistTeamBlueprint); $entityManager->flush();
         {
-            $createTeam = new PlanetEntity\Resource\BlueprintRecipe($scientistTeamBlueprint);
+            $createTeam = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($scientistTeamBlueprint, 1));
             $createTeam->setDescription("Organize scientists");
-            $createTeam->addInputBlueprint($humanBlueprint, 5);
+            $createTeam->setInputs(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($humanBlueprint, 5),
+            ]));
         }
         $soldiers = new Concept\Team\Soldiers();
         $soldiers->setPeopleCount(50);
         $deposit->addResourceDescriptors($this->newThings(1, $soldienTeamBlueprint = $soldiers->getBlueprint("Army")));
+        $entityManager->persist($soldienTeamBlueprint); $entityManager->flush();
         {
-            $createTeam = new PlanetEntity\Resource\BlueprintRecipe($soldienTeamBlueprint);
+            $createTeam = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($soldienTeamBlueprint, 1));
             $createTeam->setDescription("Organize army");
-            $createTeam->addInputBlueprint($humanBlueprint, 5);
+            $createTeam->setInputs(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($humanBlueprint, 5),
+            ]));
         }
         $transporters = new Concept\Team\Transporters();
         $transporters->setPeopleCount(10);
         $deposit->addResourceDescriptors($this->newThings(1, $transporterTeamBlueprint = $transporters->getBlueprint("Logistic group")));
+        $entityManager->persist($transporterTeamBlueprint); $entityManager->flush();
         {
-            $createTeam = new PlanetEntity\Resource\BlueprintRecipe($transporterTeamBlueprint);
+            $createTeam = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($transporterTeamBlueprint, 1));
             $createTeam->setDescription("Organize transports");
-            $createTeam->addInputBlueprint($humanBlueprint, 5);
+            $createTeam->setInputs(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($humanBlueprint, 5),
+            ]));
         }
         $builders = new Concept\Team\Builders();
         $builders->setPeopleCount(25);
         $deposit->addResourceDescriptors($this->newThings(1, $builderTeamBlueprint = $builders->getBlueprint("Builder team")));
+        $entityManager->persist($builderTeamBlueprint); $entityManager->flush();
         {
-            $createTeam = new PlanetEntity\Resource\BlueprintRecipe($builderTeamBlueprint);
+            $createTeam = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($builderTeamBlueprint, 1));
             $createTeam->setDescription("Organize builders");
-            $createTeam->addInputBlueprint($humanBlueprint, 25);
+            $createTeam->setInputs(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($humanBlueprint, 25),
+            ]));
         }
         {
-            $cloning = new PlanetEntity\Resource\BlueprintRecipe($humanBlueprint);
+            $cloning = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($humanBlueprint, 100));
             $cloning->setDescription("Cloning people");
-            $cloning->setMainProductCount(100);
-            $cloning->addTool($humanBlueprint, 1, 1);
-            $cloning->addTool($scientistTeamBlueprint, 365*2, 2);
+            $cloning->setTools(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($humanBlueprint, 1),
+                new PlanetEntity\Resource\Thing($scientistTeamBlueprint, 365*2),
+            ]));
         }
 
         $ironOre = new Concept\MetalOre();
         $ironOre->setQuality(1);
         $ironOre->setWeight(10);
         $deposit->addResourceDescriptors($this->newThings(100, $ironOreBlueprint = $ironOre->getBlueprint("Iron ore")));
+        $entityManager->persist($ironOreBlueprint); $entityManager->flush();
         {
-            $ironMining = new PlanetEntity\Resource\BlueprintRecipe($ironOreBlueprint);
+            $ironMining = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($ironOreBlueprint, 1));
             $ironMining->setDescription("Mining");
-            $ironMining->addTool($workerBlueprint, 20);
+            $ironMining->setTools(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($workerBlueprint, 20),
+            ]));
         }
 
         $ironPlate = new Concept\MetalPlate();
@@ -173,12 +202,16 @@ class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fi
         $ironPlate->setThickness(3);
         $ironPlate->setWeightPerM2(100);
         $deposit->addResourceDescriptors($this->newThings(100, $ironPlateBlueprint = $ironPlate->getBlueprint("Iron plate")));
+        $entityManager->persist($ironPlateBlueprint); $entityManager->flush();
         {
-            $plating = new PlanetEntity\Resource\BlueprintRecipe($ironPlateBlueprint);
-            $plating->setMainProductCount(100);
+            $plating = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($ironPlateBlueprint, 100));
             $plating->setDescription("Plating");
-            $plating->addTool($workerBlueprint, 10);
-            $plating->addInputBlueprint($ironOreBlueprint, 120);
+            $plating->setTools(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($workerBlueprint, 10),
+            ]));
+            $plating->setInputs(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($ironOreBlueprint, 120),
+            ]));
         }
         $ironTraverse = new Concept\MetalTraverse();
         $ironTraverse->setWeight(3);
@@ -186,42 +219,70 @@ class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fi
         $ironTraverse->setThickness(3);
         $ironTraverse->setWeightPerM2(300);
         $deposit->addResourceDescriptors($this->newThings(1, $ironTraverseBlueprint = $ironTraverse->getBlueprint("Iron Traverse")));
+        $entityManager->persist($ironTraverseBlueprint); $entityManager->flush();
         {
-            $traversing = new PlanetEntity\Resource\BlueprintRecipe($ironTraverseBlueprint);
-            $traversing->setMainProductCount(100);
+            $traversing = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($ironTraverseBlueprint, 100));
             $traversing->setDescription("Traversing");
-            $traversing->addTool($workerBlueprint, 10);
-            $plating->addInputBlueprint($ironOreBlueprint, 120);
+            $traversing->setInputs(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($ironOreBlueprint, 120),
+            ]));
+            $traversing->setTools(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($workerBlueprint, 10),
+            ]));
+        }
+
+        $farm = new Concept\Farm();
+        $farm->setSpace(500);
+        $deposit->addResourceDescriptors($this->newThings(0, $farmBlueprint = $farm->getBlueprint("Farm")));
+        $entityManager->persist($farmBlueprint); $entityManager->flush();
+        {
+            $makeFarm = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($farmBlueprint, 1));
+            $makeFarm->setDescription("Settle farm");
+            $makeFarm->setTools(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($farmerBlueprint, 1),
+            ]));
         }
 
         $wheet = new Concept\Food();
         $wheet->setEnergy(8000);
         $deposit->addResourceDescriptors($this->newThings(5000, $wb = $wheet->getBlueprint("Wheet")));
+        $entityManager->persist($wb); $entityManager->flush();
         {
-            $smallFarming = new PlanetEntity\Resource\BlueprintRecipe($wb);
+            $smallFarming = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($wb, 20));
             $smallFarming->setDescription("Carefull farming");
-            $smallFarming->setMainProductCount(20);
-            $smallFarming->addInputBlueprint($wb, 1);
-            $smallFarming->addTool($farmerBlueprint, 5);
-            $smallFarming->addTool(Concept\Farm::class, 1);
+            $smallFarming->setTools(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($farmerBlueprint, 5),
+                new PlanetEntity\Resource\Thing($farmBlueprint, 1),
+            ]));
+            $smallFarming->setInputs(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($wb, 1),
+            ]));
 
-            $bigFarming = new PlanetEntity\Resource\BlueprintRecipe($wb);
+            $bigFarming = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($wb, 15000));
             $bigFarming->setDescription("Agro industry");
-            $bigFarming->setMainProductCount(15000);
-            $bigFarming->addInputBlueprint($wb, 1000);
-            $bigFarming->addTool($farmerBlueprint, 500);
-            $bigFarming->addTool(Concept\Farm::class, 1000);
+            $bigFarming->setTools(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($farmerBlueprint, 500),
+                new PlanetEntity\Resource\Thing($farmBlueprint, 1),
+            ]));
+            $bigFarming->setInputs(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($wb, 1000),
+            ]));
         }
 
         $container = new Concept\Container();
         $container->setArea(60);
         $container->setWeight(1000);
         $deposit->addResourceDescriptors($this->newThings(5000, $containerBlueprint = $container->getBlueprint("Generic container")));
+        $entityManager->persist($containerBlueprint); $entityManager->flush();
         {
-            $creation = new PlanetEntity\Resource\BlueprintRecipe($containerBlueprint);
+            $creation = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($containerBlueprint, 1));
             $creation->setDescription("Container creation");
-            $creation->addTool($teamWorkers, 10);
-            $creation->addInputBlueprint($ironPlateBlueprint, 4);
+            $creation->setTools(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($workerBlueprint, 10),
+            ]));
+            $creation->setInputs(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($ironPlateBlueprint, 4),
+            ]));
         }
 
         $containerWarehouse = new Concept\Warehouse();
@@ -230,11 +291,16 @@ class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fi
         $containerWarehouse->setSpaceCapacity(350);
         $containerWarehouse->setWeightCapacity(10000);
         $deposit->addResourceDescriptors($this->newThings(3, $containerWarehouse = $containerWarehouse->getBlueprint("Container warehouse")));
+        $entityManager->persist($containerWarehouse); $entityManager->flush();
         {
-            $place = new PlanetEntity\Resource\BlueprintRecipe($containerWarehouse);
+            $place = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($containerWarehouse, 1));
             $place->setDescription("Make warehouse from container");
-            $place->addTool($builderTeamBlueprint, 10);
-            $place->addInputBlueprint($containerBlueprint);
+            $place->setTools(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($builderTeamBlueprint, 10),
+            ]));
+            $place->setInputs(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($containerBlueprint),
+            ]));
         }
 
         $containerHouse = new Concept\House();
@@ -242,19 +308,21 @@ class StandardColonizationShipFixture extends \Doctrine\Bundle\FixturesBundle\Fi
         $containerHouse->setPeopleCapacity(3);
         $containerHouse->setPeopleMaxCapacity(30);
         $deposit->addResourceDescriptors($this->newThings(10, $containerHouse = $containerHouse->getBlueprint("Container house")));
+        $entityManager->persist($containerHouse); $entityManager->flush();
         {
-            $place = new PlanetEntity\Resource\BlueprintRecipe($containerHouse);
+            $place = new PlanetEntity\Resource\BlueprintRecipe(new PlanetEntity\Resource\Thing($containerHouse, 1));
             $place->setDescription("Make house from container");
-            $place->addTool($builderTeamBlueprint, 10);
-            $place->addInputBlueprint($containerBlueprint);
+            $place->setInputs(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($containerBlueprint),
+            ]));
+            $place->setTools(new PlanetEntity\Resource\BlueprintRecipeDeposit([
+                new PlanetEntity\Resource\Thing($builderTeamBlueprint, 10),
+            ]));
         }
     }
 
     private function newThings($count, PlanetEntity\Resource\Blueprint $blueprint) {
-        $thing = new PlanetEntity\Resource\Thing();
-        $thing->setBlueprint($blueprint);
-        $thing->setAmount($count);
-        return $thing;
+        return new PlanetEntity\Resource\Thing($blueprint, $count);
     }
 
 }
