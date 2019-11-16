@@ -63,18 +63,20 @@
                 region = regionTriangles[i];
 
 				renderRegion(scene, region);
+				renderStatistic(scene, region["statistics"]);
 				renderRegionBorders(scene, region);
 			}
 			var peak;
-			for(var i=0; i<peaks.length; i++) {
-				peak = peaks[i];
-				if (peak["adinistrativeCenter"] != null) {
-					renderAdministrativeCenter(scene, peak);
+			Object.keys(peaks).forEach(function(keyy,index) {
+				peak = peaks[keyy];
+				renderStatistic(scene, peak["statistics"]);
+				if (peak["administrativeCenter"] != null) {
+					// renderAdministrativeCenter(scene, peak);
 				}
 				if (peak["tradeCenter"] != null) {
-					renderTradeCenter(scene, peak);
+					// renderTradeCenter(scene, peak);
 				}
-			}
+			});
 			//
 			renderer = new THREE.WebGLRenderer( { antialias: true } );
 			renderer.setPixelRatio( window.devicePixelRatio );
@@ -181,6 +183,25 @@
 			}
 		}
 
+		function renderStatistic(scene, statisticBars) {
+			let wireframe;
+			let geometry;
+			let bar;
+			for(let i=0; i<statisticBars.length; i++) {
+				bar = statisticBars[i];
+				wireframe = new THREE.MeshBasicMaterial( { color: bar.color, wireframe: true, wireframeLinewidth: 5, side: THREE.DoubleSide } )
+				geometry = new THREE.Geometry();
+				geometry.vertices.push(
+						new THREE.Vector3(bar["base"]["x"], bar["base"]["y"], bar["base"]["z"]),
+						new THREE.Vector3(bar["base"]["x"], bar["base"]["y"], bar["base"]["z"]),
+						new THREE.Vector3(bar["top"]["x"], bar["top"]["y"], bar["top"]["z"])
+				);
+				geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
+				geometry.computeFaceNormals();
+				scene.add( new THREE.Mesh( geometry, wireframe ) );
+			}
+		}
+
 		function renderAdministrativeCenter(scene, peak) {
 			var color = 0xFF0000;
 			// if (region["settlement"] == null) {
@@ -191,21 +212,21 @@
 				side: THREE.DoubleSide
 			});
 			var geometry = new THREE.PointLight();
+			// geometry.point.push(
+			// 		new THREE.Vector3(peak["projection"]["x"], peak["projection"]["y"], peak["projection"]["z"])
+			// );
 
-			peakA = peaks[region["peaks"][0]];
-			peakB = peaks[region["peaks"][1]];
-			peakC = peaks[region["peaks"][2]];
-			geometry.vertices.push(
-					new THREE.Vector3(peakA["projection"]["x"], peakA["projection"]["y"], peakA["projection"]["z"]),
-					new THREE.Vector3(peakB["projection"]["x"], peakB["projection"]["y"], peakB["projection"]["z"]),
-					new THREE.Vector3(peakC["projection"]["x"], peakC["projection"]["y"], peakC["projection"]["z"])
-			);
-
-			geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
-			geometry.computeFaceNormals();
+			// geometry.vertices.push(
+			// 		new THREE.Vector3(peak["projection"]["x"]+1, peak["projection"]["y"]+1, peak["projection"]["z"]),
+			// 		new THREE.Vector3(peak["projection"]["x"]-1, peak["projection"]["y"]-1, peak["projection"]["z"]),
+			// 		new THREE.Vector3(peak["projection"]["x"]+1, peak["projection"]["y"]-1, peak["projection"]["z"])
+			// );
+			//
+			// geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
+			// geometry.computeFaceNormals();
 
 			var mesh = new THREE.Mesh( geometry, material );
-			mesh.region = region;
+			mesh.peak = peak;
 			triangles.push(mesh);
 			scene.add( mesh );
 		}

@@ -8,8 +8,11 @@ use AppBundle\Entity\Human;
 use AppBundle\Entity\Human\EventDataTypeEnum;
 use AppBundle\Entity\Human\EventTypeEnum;
 use AppBundle\Entity\SolarSystem\Planet;
+use PlanetBundle\Concept\Food;
 use PlanetBundle\Entity as PlanetEntity;
 use AppBundle\Fixture\ResourceAndBlueprintFixture;
+use PlanetBundle\UseCase\LandBuilding;
+use PlanetBundle\UseCase\Portable;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -88,6 +91,7 @@ class MapController extends BasePlanetController
             if ($peak->getSettlement() != null && $peak == $peak->getSettlement()->getTradeCenter()) {
                 $p->tradeCenter = $this->computeProjection($peak->getXcoord(), $peak->getYcoord(), $peak->getHeight(), 2);
             }
+            $p->statistics = $this->getStatisticsProjections($peak->getXcoord(), $peak->getYcoord(), $peak->getDeposit());
 
             $peaks[$peak->getId()] = $p;
         }
@@ -101,6 +105,10 @@ class MapController extends BasePlanetController
             ];
             $r->type = $region->getTerrainType();
 
+            $regionCenter = new \stdClass();
+            $regionCenter->x = ($region->getPeakLeft()->getXcoord() + $region->getPeakRight()->getXcoord() + $region->getPeakCenter()->getXcoord())/3;
+            $regionCenter->y = ($region->getPeakLeft()->getYcoord() + $region->getPeakRight()->getYcoord() + $region->getPeakCenter()->getYcoord())/3;
+
             if ($region->getSettlement() !== null) {
                 $r->settlement = new \stdClass();
                 $r->settlement->owner = $region->getSettlement()->getOwner()->getId();
@@ -111,6 +119,7 @@ class MapController extends BasePlanetController
                 $r->settlement->borderPeaks[] = $this->computeProjection($region->getPeakLeft()->getXcoord(), $region->getPeakLeft()->getYcoord(), $region->getPeakLeft()->getHeight(), 3);
                 $r->settlement->borderPeaks[] = $this->computeProjection($region->getPeakRight()->getXcoord(), $region->getPeakRight()->getYcoord(), $region->getPeakRight()->getHeight(), 3);
             }
+            $r->statistics = $this->getStatisticsProjections($regionCenter->x, $regionCenter->y, $region->getDeposit());
             $regions[] = $r;
         }
 
@@ -132,6 +141,41 @@ class MapController extends BasePlanetController
         $projection->z = $peakRadius * cos(deg2rad($heightDegrees)) * sin(deg2rad($widthDegrees));
         $projection->y = $peakRadius * sin(deg2rad($heightDegrees));
         return $projection;
+    }
+
+    private function getStatisticsProjections($coordx, $coordy, PlanetEntity\Deposit $deposit = null) {
+        $statistics = $this->createStatistics($deposit);
+        $bars = [];
+        $statCount = 0;
+        $colors = ["#00F", "#9F9", "#0F0", "#A33", "#555"];
+        $statisticCounter = 0;
+        foreach ($statistics as $name => $statistic) {
+            if ($statistic >= 1) {
+                $value = 1+log($statistic, 2);
+            } else {
+                $value = 0;
+            }
+            $bar = new \stdClass();
+            $bar->base = $this->computeProjection($coordx, $coordy, 0, $statCount);
+            $bar->top = $this->computeProjection($coordx, $coordy, 0, $statCount += $value);
+            $bar->color = $colors[$statisticCounter++ % count($statistics)];
+            $bars[] = $bar;
+        }
+        return $bars;
+    }
+
+    private function createStatistics(PlanetEntity\Deposit $deposit = null) {
+        srand(12548);
+        if ($deposit == null) {
+            return [];
+        }
+
+        $statistics = [];
+        $statistics['objectCount'] = PlanetEntity\Deposit::sumAmounts($deposit->getResourceDescriptors());
+        $statistics['foodCount'] = PlanetEntity\Deposit::sumAmounts($deposit->filterByConcept(Food::class));
+        $statistics['buildings'] = PlanetEntity\Deposit::sumAmounts($deposit->filterByConcept(LandBuilding::class));
+        $statistics['portables'] = PlanetEntity\Deposit::sumAmounts($deposit->filterByConcept(Portable::class));
+        return $statistics;
     }
 
     /**
