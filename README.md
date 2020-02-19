@@ -1,3 +1,5 @@
+Robot opinions: [![Maintainability](https://api.codeclimate.com/v1/badges/8bdffcbe593df3a79495/maintainability)](https://codeclimate.com/github/ImperialAdepts/WebGame/maintainability)
+
 How to run on linux
 =========
 - install `docker` and `docker-compose`: `sudo apt-get install docker docker-compose`
